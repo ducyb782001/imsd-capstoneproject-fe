@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@layer base {
+  /* @font-face {
+    font-family: "BanqueBold";
+    src: url("/fonts/UTM-BanqueB.ttf") format("truetype");
+  } */
+}
+
+@layer components {
+  /* .btn-primary {
+    @apply px-8 py-2 font-bold text-white rounded-full focus:outline-none;
+  } */
+}
+
+@layer utilities {
+  /* Scroll thumb styles */
+  .scrollbar::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #27272e;
+    border-radius: 1rem;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:active {
+    background-color: #131314;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b3b46;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Scroll track styles (Background) */
+  .scrollbar::-webkit-scrollbar-track {
+    background: #131314;
+    border-radius: 4px;
+  }
+  .scrollbar::-webkit-scrollbar-track:hover,
+  .scrollbar::-webkit-scrollbar-track:active {
+    background: #131314;
+  }
+}
+
+.smooth-transform {
+  transition: all 0.2s ease;
+}
+
+/* .text-gradient-yellow {
+  @apply text-transparent bg-clip-text bg-gradient-to-b from-[#885a0a] via-[#FFD183] to-[#704808];
+} */
+
+/* hide arrows when set input type="number" */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+[data-reach-dialog-content] {
+  width: 50vw;
+  margin: 10vh auto;
+  background: white;
+  padding: 0;
+  outline: none;
+}
+/* end css input */
+
+.text-shadow {
+  text-shadow: 2px 2px black;
+}
+
+.h-min-content {
+  height: min-content;
+}
+
+.auto-fill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 252px);
+}
+
+/* change input text color and background color when auto fill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgb(0, 0, 0);
+  box-shadow: 0 0 0px 1000px #00000000 inset;
+  -webkit-box-shadow: 0 0 0px 1000px #00000000 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+/* end */
+
+.block-border {
+  @apply border-2 border-[#EFEAFA] rounded-lg px-4 md:px-6 pt-6 pb-8;
+}
+
+.form-message {
+  font-size: 12px;
+  color: red;
+}

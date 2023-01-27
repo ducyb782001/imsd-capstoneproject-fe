@@ -1,0 +1,21 @@
+.menu-item:hover p {
+  color: #6a44d2;
+}
+
+.menu-item:hover svg path {
+  fill: #6a44d2;
+}
+
+.icon-active svg path {
+  fill: #6a44d2;
+}
+
+/* 276 is main nav's width */
+.horizontal-nav-width {
+  width: calc(100vw - 276px);
+}
+
+/* icon mobile css */
+.menu-icon-active svg path {
+  fill: #6a44d2;
+}
