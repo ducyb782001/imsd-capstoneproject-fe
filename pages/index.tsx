@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -17,7 +18,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-            Get started by editingblablas testtttest commit 1 &nbsp;
+            Get started by editingblablas testtttest commit 234352 &nbsp;
             <code className={styles.code}>pages/index.tsx</code>
           </p>
           <div>
