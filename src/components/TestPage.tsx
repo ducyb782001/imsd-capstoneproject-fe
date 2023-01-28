@@ -11,7 +11,9 @@ function TestPage(props) {
   return (
     <div className="flex flex-col gap-4">
       <PrimaryBtn>ABCD</PrimaryBtn>
-      <SecondaryBtn>XYZ</SecondaryBtn>
+      <SecondaryBtn className="border-transparent hover:bg-transparent">
+        XYZ
+      </SecondaryBtn>
       <PrimaryBtn accessoriesLeft={<PlusIcon />} className="w-[200px]">
         Thêm sản phẩm
       </PrimaryBtn>
@@ -19,6 +21,7 @@ function TestPage(props) {
         accessoriesLeft={<SearchIcon />}
         title="Primary input 1"
         placeholder="Primary input placeholder"
+        accessoriesRight={<SearchIcon />}
       />
       <PrimaryInputCheckbox accessoriesLeft={"Text o ben tay trai"} />
       <PrimaryTextArea />
