@@ -207,6 +207,7 @@ function ModalConnectWallet({ label, ...props }) {
                       href="https://docs.pancakeswap.finance/get-started/connection-guide"
                       target="_blank"
                       className="flex justify-center mt-6"
+                      rel="noreferrer"
                     >
                       <svg
                         viewBox="0 0 24 24"

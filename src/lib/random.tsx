@@ -15,7 +15,7 @@ export function getRandomArbitrary(min: number, max: number) {
 export function getRandomInt(min: number, max: number) {
   min = Math.ceil(min)
   max = Math.floor(max)
-  let r = Math.floor(Math.random() * (max - min + 1)) + min
+  const r = Math.floor(Math.random() * (max - min + 1)) + min
   // if (r < 10) {
   //   return "0" + r;
   // }

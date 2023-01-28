@@ -16,6 +16,7 @@ function Home(props) {
 
   useEffect(() => {
     if (account) {
+      console.log("ABCD")
     }
   }, [account])
 
