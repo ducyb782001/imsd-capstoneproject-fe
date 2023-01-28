@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useWeb3React } from "@web3-react/core"
 import { Web3Provider } from "@ethersproject/providers"
 import IconHamberger from "./icons/IconHamberger"
 import IconCloseDialog from "./icons/IconCloseDialog"
@@ -25,8 +24,6 @@ function MobileNav() {
   }
 
   const router = useRouter()
-  const context = useWeb3React<Web3Provider>()
-  const { account } = context
 
   useEffect(() => {
     if (isHover) {

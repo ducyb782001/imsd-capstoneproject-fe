@@ -14,8 +14,6 @@
   "dependencies": {
     "@reach/dialog": "^0.16.0",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
-    "@web3-react/core": "^6.1.9",
-    "@web3-react/injected-connector": "^6.0.7",
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.1",
     "cookie": "^0.4.2",
@@ -43,7 +41,6 @@
     "tsparticles": "^2.1.4"
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^7.1.2",
     "@types/node": "^16.9.6",
     "@types/react": "^18.0.21",
     "@types/react-date-range": "^1.4.4",

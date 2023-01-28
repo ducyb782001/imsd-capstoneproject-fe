@@ -1,7 +1,7 @@
 export default function timeBetweenDates(toDate: Date, startDate: Date) {
-  let dateEntered = toDate
-  let now = startDate
-  let difference = dateEntered.getTime() - now.getTime()
+  const dateEntered = toDate
+  const now = startDate
+  const difference = dateEntered.getTime() - now.getTime()
 
   if (difference <= 0) {
     // Timer done
