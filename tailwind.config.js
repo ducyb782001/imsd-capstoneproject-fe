@@ -24,10 +24,12 @@ module.exports = {
         primaryLight: "#522DB9",
         primaryDark: "#402390",
         gray: "#7F7F7F",
+        secondary: "#7F7F7F",
         grayDark: "#373737",
         grayLight: "#D6DDE8",
         // secondary: "#7e0e42",
         blue: "#53B9EA",
+        grayBorder: "#EFEAFA",
       },
       textColor: {
         // gray: "#777692",
