@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-import { ethers } from "ethers"
 import React, { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import IconCarretDown from "./icons/IconCarretDown"
