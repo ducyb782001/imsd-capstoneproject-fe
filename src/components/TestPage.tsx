@@ -1,4 +1,7 @@
-import React from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import React, { useState } from "react"
+import DemoDropDown from "./DemoDropDown"
+import DemoPopup from "./DemoPopup"
 import PlusIcon from "./icons/PlusIcon"
 import SearchIcon from "./icons/SearchIcon"
 import PrimaryBtn from "./PrimaryBtn"
@@ -7,9 +10,24 @@ import PrimaryInputCheckbox from "./PrimaryInputCheckbox"
 import PrimaryTextArea from "./PrimaryTextArea"
 import SecondaryBtn from "./SecondaryBtn"
 
+const listNhaCungCapDemo = [
+  { id: "1", name: "Chinh Bac" },
+  { id: "2", name: "ABCD" },
+]
+
+const variants = {
+  open: { opacity: 1, height: "auto" },
+  collapsed: {
+    opacity: 0,
+    height: 0,
+  },
+}
+
 function TestPage(props) {
+  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const [isShowBelow, setIsShowBelow] = useState(false)
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mb-20">
       <PrimaryBtn>ABCD</PrimaryBtn>
       <SecondaryBtn className="border-transparent hover:bg-transparent">
         XYZ
@@ -25,6 +43,39 @@ function TestPage(props) {
       />
       <PrimaryInputCheckbox accessoriesLeft={"Text o ben tay trai"} />
       <PrimaryTextArea />
+      <DemoPopup className="w-[300px]" />
+      <DemoDropDown
+        title="Chọn nhà cung cấp demo"
+        listDropdown={listNhaCungCapDemo}
+        textDefault={"Chọn nhà sản xuất"}
+        showing={nhaCungCapSelected}
+        setShowing={setNhaCungCapSelected}
+      />
+      <div className="mt-10">
+        <PrimaryInputCheckbox
+          accessoriesRight={
+            <p className="text-xl">
+              Click vào đây thì nó show ra và đẩy xuống dưới
+            </p>
+          }
+          onClick={() => setIsShowBelow(!isShowBelow)}
+        />
+        <AnimatePresence initial={false}>
+          {isShowBelow && (
+            <motion.div
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={variants}
+              transition={{
+                duration: 0.2,
+              }}
+            >
+              <div className="h-[50px]">Cục nó show thêm khi ấn</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
