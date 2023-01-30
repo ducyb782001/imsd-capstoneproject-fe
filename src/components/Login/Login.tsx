@@ -1,14 +1,7 @@
-import axios from "axios"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
-import { useMutation } from "react-query"
-import { toast } from "react-toastify"
-
-import cookie from "cookie"
-import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
 import PasswordInput from "../PasswordInput"
-import TextInput from "../TextInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
 import UnderlineText from "../UnderlineText"
@@ -21,43 +14,6 @@ function Login(props) {
 
   const router = useRouter()
 
-  // useEffect(() => {
-  //   const cookies = cookie.parse(window.document.cookie)
-  //   if (cookies.token) {
-  //     router.push("/dashboard")
-  //   } else {
-  //     router.push("/login")
-  //   }
-  // }, [cookie])
-
-  // const loginMutation = useMutation(
-  //   (login) => {
-  //     return axios.post(loginUrl, login)
-  //   },
-  //   {
-  //     onSuccess: (data, error, variables) => {
-  //       if (typeof window !== "undefined") {
-  //         const token = data?.data?.token
-  //         const maxAge = data?.data?.expiresIn
-  //         localStorage.setItem("token", token)
-  //         window.document.cookie = cookie.serialize("token", token, {
-  //           // maxAge: 30 * 24 * 60 * 60,
-  //           maxAge: maxAge,
-  //           path: "/",
-  //         })
-  //       }
-  //       toast.success("Login successful!")
-  //       setDisabled(true)
-  //       setTimeout(() => {
-  //         router.push("/")
-  //       }, 300)
-  //     },
-  //     onError: (data: any) => {
-  //       console.log("login error", data)
-  //       toast.error(data?.response.data.message || data?.message)
-  //     },
-  //   },
-  // )
 
   const handleLogin = (event) => {
     event.preventDefault()
