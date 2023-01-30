@@ -15,7 +15,7 @@ import UnderlineText from "../UnderlineText"
 function Signup(props) {
   const router = useRouter()
 
-  const handleSignUp = (event) => {
+  const handleLogin = (event) => {
     router.push("/login")
     }
   return (
@@ -43,7 +43,7 @@ function Signup(props) {
             <PrimaryBtn className="mt-11">Sign up</PrimaryBtn>
             <TextDescription className="mt-6 text-center">
               Already have an account?{" "}
-              <UnderlineText className="font-medium" onClick={handleSignUp}>Log in</UnderlineText>
+              <UnderlineText className="font-medium" onClick={handleLogin}>Log in</UnderlineText>
             </TextDescription>
           </div>
         </div>

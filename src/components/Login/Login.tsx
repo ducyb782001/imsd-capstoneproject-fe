@@ -12,6 +12,7 @@ import TextInput from "../TextInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
 import UnderlineText from "../UnderlineText"
+import PrimaryInput from "../PrimaryInput"
 
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
@@ -86,8 +87,9 @@ const handleSignUp = (event) => {
             </div>
             <p className="mt-4">Welcome back! Please enter your details.</p>
             <div className="flex flex-col w-full gap-6 mt-11">
-              <label className="font-bold">Email</label>
-              <TextInput
+              <PrimaryInput
+                title="Email"
+                className="font-bold"
                 placeholder="Enter your email"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
