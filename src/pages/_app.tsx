@@ -36,9 +36,9 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Welcome to CMS system</title>
+        <title>Welcome to IMSD system</title>
         <meta name="description" content="" />
-        <meta property="og:title" content="Welcome to Fadogo" />
+        <meta property="og:title" content="Welcome to IMSD system" />
         <meta property="og:description" content="" />
         <meta property="og:image" content="/images/og.jpeg" />
 
