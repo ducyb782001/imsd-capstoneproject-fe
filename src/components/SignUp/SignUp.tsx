@@ -5,9 +5,9 @@ import { LeftBlock } from "../Login/Login"
 import PasswordInput from "../PasswordInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
-import TextInput from "../TextInput"
 import Title from "../Title"
 import UnderlineText from "../UnderlineText"
+import PrimaryInput from "../PrimaryInput"
 
 
 
@@ -33,7 +33,7 @@ function Signup(props) {
               Create an account to get started.
             </TextDescription>
             <div className="flex flex-col w-full gap-6 mt-11">
-              <TextInput placeholder="Enter your email" title="Email" />
+              <PrimaryInput placeholder="Enter your email" title="Email" />
               <PasswordInput />
               <PasswordInput
                 title="Confirm Password"
