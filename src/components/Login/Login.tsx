@@ -45,7 +45,6 @@ const handleSignUp = (event) => {
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
                 title="Email"
-                className="font-bold"
                 placeholder="Enter your email"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
