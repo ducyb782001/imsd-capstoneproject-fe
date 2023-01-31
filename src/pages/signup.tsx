@@ -1,6 +1,6 @@
 import React from "react"
-import Signup from "../components/SignUp/SignUp"
-import Login from "../components/SignUp/SignUp"
+import Signup from "../components/Login/SignUp"
+import Login from "../components/Login/SignUp"
 
 function login(props) {
   return (
