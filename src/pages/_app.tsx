@@ -36,32 +36,21 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Welcome to CMS system</title>
-        <meta name="description" content="" />
-        <meta property="og:title" content="Welcome to Fadogo" />
-        <meta property="og:description" content="" />
+        <title>Chào mừng tới IMSD</title>
+        <meta
+          name="description"
+          content="IMSD giúp các nhà phân phối quản lý kho dễ dàng hơn"
+        />
+        <meta property="og:title" content="IMSD - the best" />
+        <meta
+          property="og:description"
+          content="IMSD giúp các nhà phân phối trong việc quản lý kho hàng, nhập xuất hàng hóa và kiểm soát hóa đơn."
+        />
         <meta property="og:image" content="/images/og.jpeg" />
-
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-PJX3J32')
-            `,
-          }}
-        ></script> */}
-        {/*
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PJX3J32"
-            height={0}
-            width={0}
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript> */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+        />
       </Head>
 
       <ToastContainer
