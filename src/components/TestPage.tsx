@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
+import BarChart from "./Chart/BarChart"
 import DemoDropDown from "./DemoDropDown"
 import DemoPopup from "./DemoPopup"
 import PlusIcon from "./icons/PlusIcon"
@@ -76,6 +77,7 @@ function TestPage(props) {
           )}
         </AnimatePresence>
       </div>
+      <BarChart />
     </div>
   )
 }
