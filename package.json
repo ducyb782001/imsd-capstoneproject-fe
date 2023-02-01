@@ -36,7 +36,9 @@
     "react-table": "^7.7.0",
     "react-toastify": "^9.0.3",
     "react-tsparticles": "^2.1.4",
-    "tsparticles": "^2.1.4"
+    "tsparticles": "^2.1.4",
+    "chart.js": "^4.2.0",
+    "react-chartjs-2": "^5.2.0"
   },
   "devDependencies": {
     "@types/node": "^16.9.6",
