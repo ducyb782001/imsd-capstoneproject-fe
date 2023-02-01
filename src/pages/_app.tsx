@@ -41,7 +41,7 @@ function App({ Component, pageProps }) {
           name="description"
           content="IMSD giúp các nhà phân phối quản lý kho dễ dàng hơn"
         />
-        <meta property="og:title" content="IMSD - the best " />
+        <meta property="og:title" content="IMSD - the best" />
         <meta
           property="og:description"
           content="IMSD giúp các nhà phân phối trong việc quản lý kho hàng, nhập xuất hàng hóa và kiểm soát hóa đơn."

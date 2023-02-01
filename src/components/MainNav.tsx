@@ -4,11 +4,12 @@ import MobileNav from "./MobileNav"
 import React, { useEffect, useState } from "react"
 import cookie from "cookie"
 import Line from "./Line"
+import { AnimatePresence, motion } from "framer-motion"
+import { variants } from "../lib/constants"
 
 function MainNav() {
   const [isLogin, setIsLogin] = useState(false)
   const router = useRouter()
-
   // useEffect(() => {
   //   const cookies = cookie.parse(window.document.cookie)
   //   if (cookies.token) {
@@ -34,7 +35,7 @@ function MainNav() {
 
           <Line className="mt-2" />
 
-          <div className="flex flex-col gap-1 mt-2">menu</div>
+          <div className="flex flex-col gap-1 mt-2">Menu</div>
         </div>
       </div>
 
@@ -63,5 +64,31 @@ function Item({ icon, children, href = "", isActive = false }) {
         </div>
       </a>
     </Link>
+  )
+}
+
+function MenuItem({ ...props }) {
+  const [isShowItem, setIsShowItem] = useState(false)
+  return (
+    <div className="">
+      <p className="text-xl" onClick={() => setIsShowItem(!isShowItem)}>
+        Click vào đây thì nó show ra và đẩy xuống dưới
+      </p>
+      <AnimatePresence initial={false}>
+        {isShowItem && (
+          <motion.div
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={variants}
+            transition={{
+              duration: 0.2,
+            }}
+          >
+            <div className="h-[50px]">Cục nó show thêm khi ấn</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
