@@ -29,6 +29,9 @@ function Login(props) {
 const handleSignUp = (event) => {
   router.push("/signup")
   }
+  const handleForgotPass = (event) => {
+    router.push("/forgotPassword")
+    }
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">
@@ -53,7 +56,7 @@ const handleSignUp = (event) => {
               />
             </div>
             <div className="flex justify-end w-full mt-2 text-violet-500">
-              <p>Forgot Password</p>
+              <UnderlineText className="font-medium" onClick={handleForgotPass}>Forgot Password</UnderlineText>
             </div>
             <PrimaryBtn
               onClick={handleLogin}
