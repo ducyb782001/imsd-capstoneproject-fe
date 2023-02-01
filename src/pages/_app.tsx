@@ -36,16 +36,10 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Chào mừng tới IMSD</title>
-        <meta
-          name="description"
-          content="IMSD giúp các nhà phân phối quản lý kho dễ dàng hơn"
-        />
-        <meta property="og:title" content="IMSD - the best" />
-        <meta
-          property="og:description"
-          content="IMSD giúp các nhà phân phối trong việc quản lý kho hàng, nhập xuất hàng hóa và kiểm soát hóa đơn."
-        />
+        <title>Welcome to IMSD system</title>
+        <meta name="description" content="" />
+        <meta property="og:title" content="Welcome to IMSD system" />
+        <meta property="og:description" content="" />
         <meta property="og:image" content="/images/og.jpeg" />
         <meta
           name="viewport"
