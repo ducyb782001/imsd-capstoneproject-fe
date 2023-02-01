@@ -77,7 +77,7 @@ function TestPage(props) {
           )}
         </AnimatePresence>
       </div>
-      <BarChart />
+      {/* <BarChart /> */}
     </div>
   )
 }
