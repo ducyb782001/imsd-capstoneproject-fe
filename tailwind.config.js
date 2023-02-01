@@ -19,7 +19,7 @@ module.exports = {
       },
       colors: {
         ...defaultTheme.colors,
-        background: "#090513",
+        background: "#F6F5FA",
         primary: "#6A44D2",
         primaryLight: "#522DB9",
         primaryDark: "#402390",

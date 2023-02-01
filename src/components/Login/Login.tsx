@@ -1,12 +1,11 @@
-import axios from "axios"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
-import { useMutation } from "react-query"
-import { toast } from "react-toastify"
-
-import cookie from "cookie"
-import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
+import PasswordInput from "../PasswordInput"
+import PrimaryBtn from "../PrimaryBtn"
+import TextDescription from "../TextDescription"
+import UnderlineText from "../UnderlineText"
+import PrimaryInput from "../PrimaryInput"
 
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
@@ -15,53 +14,24 @@ function Login(props) {
 
   const router = useRouter()
 
-  // useEffect(() => {
-  //   const cookies = cookie.parse(window.document.cookie)
-  //   if (cookies.token) {
-  //     router.push("/dashboard")
-  //   } else {
-  //     router.push("/login")
-  //   }
-  // }, [cookie])
 
-  // const loginMutation = useMutation(
-  //   (login) => {
-  //     return axios.post(loginUrl, login)
-  //   },
-  //   {
-  //     onSuccess: (data, error, variables) => {
-  //       if (typeof window !== "undefined") {
-  //         const token = data?.data?.token
-  //         const maxAge = data?.data?.expiresIn
-  //         localStorage.setItem("token", token)
-  //         window.document.cookie = cookie.serialize("token", token, {
-  //           // maxAge: 30 * 24 * 60 * 60,
-  //           maxAge: maxAge,
-  //           path: "/",
-  //         })
-  //       }
-  //       toast.success("Login successful!")
-  //       setDisabled(true)
-  //       setTimeout(() => {
-  //         router.push("/")
-  //       }, 300)
-  //     },
-  //     onError: (data: any) => {
-  //       console.log("login error", data)
-  //       toast.error(data?.response.data.message || data?.message)
-  //     },
-  //   },
-  // )
-
-  // const handleLogin = (event) => {
-  //   event.preventDefault()
-  //   // @ts-ignore
-  //   loginMutation.mutate({
-  //     email: userEmail,
-  //     password: userPassword,
-  //   })
-  // }
-
+  const handleLogin = (event) => {
+    event.preventDefault()
+    // @ts-ignore
+    loginMutation.mutate({
+      email: userEmail,
+      password: userPassword,
+    })
+  }
+  const handleForgot = (event) => {
+    router.push("/login")
+  }
+const handleSignUp = (event) => {
+  router.push("/signup")
+  }
+  const handleForgotPass = (event) => {
+    router.push("/forgotPassword")
+    }
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">
@@ -72,28 +42,34 @@ function Login(props) {
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-white">
           <div className="min-w-full md:min-w-[440px]">
             <div className="text-2xl md:text-4xl">
-              Welcome to Loyalty system
+              Login
             </div>
-            <p className="mt-4">Please log in to continue.</p>
+            <p className="mt-4">Welcome back! Please enter your details.</p>
             <div className="flex flex-col w-full gap-6 mt-11">
-              <input
-                placeholder="Enter your email"
+              <PrimaryInput
                 title="Email"
+                placeholder="Enter your email"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
-              <input
+              <PasswordInput
                 onChange={(event) => setUserPassword(event.target.value)}
               />
             </div>
-            <div className="flex justify-end w-full mt-2">
-              <p>Forgot Password</p>
+            <div className="flex justify-end w-full mt-2 text-violet-500">
+              <UnderlineText className="font-medium" onClick={handleForgotPass}>Forgot Password</UnderlineText>
             </div>
-            {/* <button onClick={handleLogin} disabled={disabled} className="mt-11">
+            <PrimaryBtn
+              onClick={handleLogin}
+              disabled={disabled}
+              className="mt-11"
+            >
               Log in
-            </button> */}
-            {/* <p className="mt-6 text-center">
-              Don't have an account? <p className="font-medium">Sign Up</p>
-            </p> */}
+            </PrimaryBtn>
+            <TextDescription className="mt-6 text-center">
+              Don't have an account?{" "}
+              <UnderlineText className="font-medium" onClick={handleSignUp}>Sign Up</UnderlineText>
+            </TextDescription>
+
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import React from "react"
-import Login from "../components/Login/Login"
+import Signup from "../components/Login/SignUp"
 
 function login(props) {
   return (
-      <Login />
+      <Signup />
   )
 }
 
