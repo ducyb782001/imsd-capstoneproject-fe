@@ -1,8 +1,5 @@
 import React from "react"
 import { Bar } from "react-chartjs-2"
-import Chart from "chart.js/auto"
-import { CategoryScale } from "chart.js"
-Chart.register(CategoryScale)
 
 const data = {
   labels: [
@@ -96,7 +93,7 @@ const options = {
   },
 }
 
-function TestChart(props) {
+function BarChart(props) {
   return (
     <div className="w-full h-[500px] bg-white">
       <Bar data={data} options={options} />
@@ -104,4 +101,4 @@ function TestChart(props) {
   )
 }
 
-export default TestChart
+export default BarChart

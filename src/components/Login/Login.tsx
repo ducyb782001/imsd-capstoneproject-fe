@@ -1,11 +1,17 @@
+import axios from "axios"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
-import LeftBlockBackground from "./LeftBlockBackground"
+import { useMutation } from "react-query"
+import { toast } from "react-toastify"
 import PasswordInput from "../PasswordInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
-import UnderlineText from "../UnderlineText"
 import PrimaryInput from "../PrimaryInput"
+import Title from "../Title"
+import UnderlineText from "../UnderlineText"
+import cookie from "cookie"
+import { loginUrl } from "../../constants/APIConfig"
+import LeftBlockBackground from "./LeftBlockBackground"
 
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
@@ -14,12 +20,49 @@ function Login(props) {
 
   const router = useRouter()
 
+  useEffect(() => {
+    const cookies = cookie.parse(window.document.cookie)
+    if (cookies.token) {
+      router.push("/")
+    } else {
+      router.push("/login")
+    }
+  }, [cookie])
+
+  const loginMutation = useMutation(
+    (login) => {
+      return axios.post(loginUrl, login)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (typeof window !== "undefined") {
+          const token = data?.data?.token
+          const maxAge = data?.data?.expiresIn
+          localStorage.setItem("token", token)
+          window.document.cookie = cookie.serialize("token", token, {
+            // maxAge: 30 * 24 * 60 * 60,
+            maxAge: maxAge,
+            path: "/",
+          })
+        }
+        toast.success("Login successful!")
+        setDisabled(true)
+        setTimeout(() => {
+          router.push("/")
+        }, 300)
+      },
+      onError: (data: any) => {
+        console.log("login error", data)
+        toast.error("Wrong username or password!")
+      },
+    },
+  )
 
   const handleLogin = (event) => {
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({
-      email: userEmail,
+      username: userEmail,
       password: userPassword,
     })
   }
@@ -32,6 +75,7 @@ const handleSignUp = (event) => {
   const handleForgotPass = (event) => {
     router.push("/forgotPassword")
     }
+    
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">

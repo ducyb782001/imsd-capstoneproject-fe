@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
+import { variants } from "../lib/constants"
 import BarChart from "./Chart/BarChart"
 import DemoDropDown from "./DemoDropDown"
 import DemoPopup from "./DemoPopup"
@@ -15,14 +16,6 @@ const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
   { id: "2", name: "ABCD" },
 ]
-
-const variants = {
-  open: { opacity: 1, height: "auto" },
-  collapsed: {
-    opacity: 0,
-    height: 0,
-  },
-}
 
 function TestPage(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
@@ -77,7 +70,7 @@ function TestPage(props) {
           )}
         </AnimatePresence>
       </div>
-      <BarChart />
+      {/* <BarChart /> */}
     </div>
   )
 }
