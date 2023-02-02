@@ -23,7 +23,7 @@ function Login(props) {
   useEffect(() => {
     const cookies = cookie.parse(window.document.cookie)
     if (cookies.token) {
-      router.push("/dashboard")
+      router.push("/")
     } else {
       router.push("/login")
     }
@@ -31,7 +31,7 @@ function Login(props) {
 
   const loginMutation = useMutation(
     (login) => {
-      return axios.post("https://localhost:7265/api/Authentication/Login", login)
+      return axios.post(loginUrl, login)
     },
     {
       onSuccess: (data, error, variables) => {
@@ -53,7 +53,7 @@ function Login(props) {
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error(data?.response.data.message || data?.message)
+        toast.error("Wrong username or password!")
       },
     },
   )
@@ -75,6 +75,7 @@ const handleSignUp = (event) => {
   const handleForgotPass = (event) => {
     router.push("/forgotPassword")
     }
+    
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">

@@ -1,10 +1,11 @@
-export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-// thay cai baseURl nay = url cua ong
-// export const baseUrl = "localhost gi gi do cua ong"
+// export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
+// Dev baseUrl
+export const baseUrl = `https://localhost:7265/api`
 
 //auth url
-// chi can chinh sua cai router o day thoi
-export const loginUrl = `${baseUrl}/partner/login`
+
+export const loginUrl = `${baseUrl}/Authentication/Login`
 
 export const logoutUrl = `${baseUrl}/partner/logout`
 
