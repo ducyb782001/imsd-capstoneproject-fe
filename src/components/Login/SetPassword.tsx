@@ -10,8 +10,9 @@ import EmailSendingIcon from "../icons/EmailSendingIcon"
 import ArrowLeftIcon from "../icons/ArrowLeftIcon"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { LeftBlock } from "./Login"
+import KeyIcon from "../icons/KeyIcon"
 
-function ForgotPassword(props) {
+function SetPassword(props) {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [disabled, setDisabled] = useState(false)
@@ -41,31 +42,32 @@ const handleSignUp = (event) => {
          <div className="flex flex-col items-center justify-center w-full h-full px-4 ">
            <div className="min-w-[440px] mt-6 flex flex-col items-center justify-center">
              <div className="">
-             <EmailSendingIcon/>
+             <KeyIcon/>
              </div>
-             <Title>Please confirm your email</Title>
+             <Title>Set new password</Title>
             <TextDescription className="mt-4">
-               Please check your inbox for a confirmation email.<br/>
-               Click the link in the email to confirm your email address.
+               Your new password must be different to previously used passwords.
              </TextDescription>
            </div>
-           <div className="mt-7 bg-white rounded-md w-96 h-40" >
-           <TextDescription className="mt-9 text-center">
-               Didn't receive the email?{" "}
-               <UnderlineText className="font-medium" onClick={handleSignUp}>Click to resend</UnderlineText><br/>
-               <div className="flex flex-col items-center justify-center mt-10" onClick={handleLogin}>
-               <ArrowLeftIcon accessoriesRight={<UnderlineText className="font-medium" > Back to login</UnderlineText>}/>
-
+           <div className="mt-7 bg-white rounded-md w-4/5 h-3/5" >
+           <div className="flex flex-col ml-16 w-4/5 gap-6 mt-16 ">
+           <PasswordInput />
+              <PasswordInput
+                title="Confirm Password"
+                placeholder="Confirm your password"
+              />
+                <PrimaryBtn className="mt-1">Reset password</PrimaryBtn>
+                <div className="flex flex-col items-center justify-center" onClick={handleLogin}>
+                <ArrowLeftIcon accessoriesRight={<UnderlineText className="font-medium" > Back to login</UnderlineText>}/>
+</div>
                </div>
-              
-             </TextDescription>
+            </div>
            </div>
          </div>
        </div>
       
     </div>
-  </div>
   )
 }
 
-export default ForgotPassword
+export default SetPassword
