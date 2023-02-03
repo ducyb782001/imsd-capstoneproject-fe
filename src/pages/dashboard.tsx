@@ -1,8 +1,8 @@
 import React from "react"
-import Layout from "../components/Layout"
 import Dashboard from "../components/Dashboard/Dashboard"
+import Layout from "../components/Layout"
 
-function index() {
+function dashboard(props) {
   return (
     <Layout>
       <Dashboard />
@@ -10,4 +10,4 @@ function index() {
   )
 }
 
-export default index
+export default dashboard

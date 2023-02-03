@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import IconHamberger from "./icons/IconHamberger"
 import IconCloseDialog from "./icons/IconCloseDialog"
 import Line from "./Line"
+import UserDropdownMobile from "./UserDropdownMobile"
 
 function MobileNav() {
   const node = useRef()
@@ -73,6 +74,7 @@ function MobileNav() {
       <motion.div className="w-full">
         <div className={`flex items-center justify-between h-full w-full`}>
           <IconHamberger onClick={toggleHoverMenu} />
+          <UserDropdownMobile />
         </div>
         <motion.div
           initial={false}
@@ -98,6 +100,7 @@ function MobileNav() {
                 <div className="flex items-center justify-between">
                   <Link href="/">
                     <a>
+                      Logo
                       {/* <img src="/logo-mobile.svg" className="min-w-[131px]" /> */}
                     </a>
                   </Link>
@@ -112,21 +115,9 @@ function MobileNav() {
                     label="Dashboard"
                     isActive={router.asPath.includes("/dashboard")}
                   />
-
-                  <MobileMenuItem
-                    href="/brand"
-                    label="Brand"
-                    isActive={router.asPath.includes("/brand")}
-                  />
-
-                  <MobileMenuItem
-                    href="/settings"
-                    label="Settings"
-                    isActive={router.asPath.includes("/settings")}
-                  />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <Line className="mb-3" />
                 <MobileMenuItem
                   href="/integration"
@@ -138,7 +129,7 @@ function MobileNav() {
                   label="Help Center"
                   isActive={router.asPath.includes("/help-center")}
                 />
-              </div>
+              </div> */}
             </div>
           </motion.div>
         </motion.div>
@@ -181,7 +172,7 @@ function MobileMenuItem({ href, isActive, icon = null, label, ...props }) {
           }`}
           {...props}
         >
-          <div className={`${isActive ? "menu-icon-active" : ""}`}>{icon}</div>
+          {/* <div className={`${isActive ? "menu-icon-active" : ""}`}>{icon}</div> */}
           <p
             className={`text-sm text-center ${
               isActive ? "text-primary" : "text-gray"
