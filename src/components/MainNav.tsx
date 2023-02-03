@@ -98,7 +98,13 @@ function MainNav() {
   ]
 
   const mainMenu = [
-    { id: 1, name: "Thống kê", href: "/dashboard", icon: <DashboardIcon /> },
+    {
+      id: 1,
+      name: "Thống kê",
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
     {
       id: 2,
       name: "Quản lý hàng hóa",
@@ -216,7 +222,12 @@ function MenuItem({
   return (
     <div>
       <div
-        className="flex items-center justify-between px-4 py-3 cursor-pointer menu-item hover:bg-[#F6F5FA]"
+        className={`flex items-center justify-between px-4 py-3 cursor-pointer menu-item hover:bg-[#F6F5FA] ${
+          isActive
+            ? "bg-[#F6F5FA] text-primary icon-active"
+            : "bg-transparent text-[#4F4F4F]"
+        }
+        `}
         onClick={handleClickMenuItem}
       >
         <div className="flex items-center gap-2">

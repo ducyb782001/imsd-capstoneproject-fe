@@ -6,8 +6,153 @@ import IconHamberger from "./icons/IconHamberger"
 import IconCloseDialog from "./icons/IconCloseDialog"
 import Line from "./Line"
 import UserDropdownMobile from "./UserDropdownMobile"
+import DashboardIcon from "./icons/DashboardIcon"
+import ManageGoodsIcon from "./icons/ManageGoodsIcon"
+import ImportGoodsIcon from "./icons/ImportGoodsIcon"
+import ExportGoodsIcon from "./icons/ExportGoodsIcon"
+import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
+import CheckGoodsIcon from "./icons/CheckGoodsIcon"
+import UserIcon from "./icons/UserIcon"
 
 function MobileNav() {
+  const router = useRouter()
+  const subMenuManageGoods = [
+    {
+      id: 1,
+      name: "Sản phẩm",
+      href: "/manage-goods",
+      isActive: router.asPath.includes("/manage-goods"),
+    },
+    {
+      id: 2,
+      name: "Nhà cung cấp",
+      href: "/suppliers",
+      isActive: router.asPath.includes("/suppliers"),
+    },
+  ]
+  const subMenuImportGoods = [
+    {
+      id: 1,
+      name: "Danh sách nhập hàng",
+      href: "/manage-import-goods",
+      isActive: router.asPath.includes("/manage-import-goods"),
+    },
+    {
+      id: 2,
+      name: "Tạo phiếu nhập hàng",
+      href: "/create-import-report",
+      isActive: router.asPath.includes("/create-import-report"),
+    },
+  ]
+  const subMenuExportGoods = [
+    {
+      id: 1,
+      name: "Danh sách xuất hàng",
+      href: "/manage-export-goods",
+      isActive: router.asPath.includes("/manage-export-goods"),
+    },
+    {
+      id: 2,
+      name: "Tạo phiếu xuất hàng",
+      href: "/create-export-report",
+      isActive: router.asPath.includes("/create-export-report"),
+    },
+  ]
+  //indev
+  const subMenuReturnGoods = [
+    {
+      id: 1,
+      name: "Danh sách trả hàng",
+      href: "/return-goods-list",
+      isActive: router.asPath.includes("/return-goods-list"),
+    },
+  ]
+  //indev
+  const subMenuCheckGoods = [
+    {
+      id: 1,
+      name: "Lịch sử kiểm hàng",
+      href: "/check-goods-list",
+      isActive: router.asPath.includes("/check-goods-list"),
+    },
+  ]
+  //indev
+  const subMenuUser = [
+    {
+      id: 1,
+      name: "Quản lý nhân viên",
+      href: "/check-goods-list",
+      isActive: router.asPath.includes("/check-goods-list"),
+    },
+  ]
+
+  const mainMenu = [
+    {
+      id: 1,
+      name: "Thống kê",
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
+    {
+      id: 2,
+      name: "Quản lý hàng hóa",
+      subMenu: subMenuManageGoods,
+      icon: <ManageGoodsIcon />,
+      href: "/manage-goods",
+      isActive:
+        router.asPath.includes("/manage-goods") ||
+        router.asPath.includes("/suppliers"),
+    },
+    {
+      id: 3,
+      name: "Nhập hàng",
+      subMenu: subMenuImportGoods,
+      icon: <ImportGoodsIcon />,
+      href: "/manage-import-goods",
+      isActive:
+        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/create-import-report"),
+    },
+    {
+      id: 4,
+      name: "Xuất hàng",
+      subMenu: subMenuExportGoods,
+      icon: <ExportGoodsIcon />,
+      href: "/manage-export-goods",
+      isActive:
+        router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/create-export-report"),
+    },
+    // indev
+    {
+      id: 5,
+      name: "Trả hàng",
+      subMenu: subMenuReturnGoods,
+      icon: <ReturnGoodsIcon />,
+      href: "/return-goods-list",
+      isActive: router.asPath.includes("/return-goods-list"),
+    },
+    // indev
+    {
+      id: 6,
+      name: "Kiểm hàng",
+      subMenu: subMenuCheckGoods,
+      icon: <CheckGoodsIcon />,
+      href: "/return-goods-list",
+      isActive: router.asPath.includes("/xyz"),
+    },
+    // indev
+    {
+      id: 7,
+      name: "Nhân viên",
+      subMenu: subMenuUser,
+      icon: <UserIcon />,
+      href: "/return-goods-list",
+      isActive: router.asPath.includes("/abcd"),
+    },
+  ]
+
   const node = useRef()
   const [isHover, toggleHover] = useState(false)
 
@@ -22,8 +167,6 @@ function MobileNav() {
     }
     toggleHover(false)
   }
-
-  const router = useRouter()
 
   useEffect(() => {
     if (isHover) {
@@ -110,11 +253,17 @@ function MobileNav() {
                 <Line className="mt-5 mb-3" />
 
                 <div className="flex flex-col gap-[6px]">
-                  <MobileMenuItem
-                    href="/dashboard"
-                    label="Dashboard"
-                    isActive={router.asPath.includes("/dashboard")}
-                  />
+                  {mainMenu &&
+                    mainMenu.map((i) => (
+                      <MobileMenuItem
+                        key={i?.id}
+                        icon={i?.icon}
+                        name={i?.name}
+                        subMenuItem={i?.subMenu}
+                        href={i?.href}
+                        isActive={i?.isActive}
+                      />
+                    ))}
                 </div>
               </div>
               {/* <div>
@@ -157,7 +306,52 @@ const variants = {
   },
 }
 
-function MobileMenuItem({ href, isActive, icon = null, label, ...props }) {
+function MobileMenuItem({
+  subMenuItem = undefined,
+  href,
+  isActive,
+  icon = null,
+  name,
+  ...props
+}) {
+  return (
+    <motion.div
+      variants={variants}
+      // whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      className="w-full"
+    >
+      <Link href={href || ""}>
+        <a
+          className={`items-center px-3 rounded py-[14px] gap-2 flex cursor-pointer ${
+            isActive ? " bg-[#F6F5FA]" : "bg-transparent"
+          }`}
+          {...props}
+        >
+          <div className={`${isActive ? "menu-icon-active" : ""}`}>{icon}</div>
+          <p
+            className={`text-sm text-center ${
+              isActive ? "text-primary" : "text-gray"
+            }`}
+          >
+            {name}
+          </p>
+        </a>
+      </Link>
+      {subMenuItem &&
+        subMenuItem.map((i) => (
+          <MenuItem
+            key={i?.id}
+            href={i?.href}
+            isActive={i?.isActive}
+            name={i?.name}
+          />
+        ))}
+    </motion.div>
+  )
+}
+
+function MenuItem({ href, isActive, icon = null, name, ...props }) {
   return (
     <motion.div
       variants={variants}
@@ -178,7 +372,7 @@ function MobileMenuItem({ href, isActive, icon = null, label, ...props }) {
               isActive ? "text-primary" : "text-gray"
             }`}
           >
-            {label}
+            {name}
           </p>
         </a>
       </Link>
