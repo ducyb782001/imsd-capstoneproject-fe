@@ -208,7 +208,7 @@ function MenuItem({
     e.stopPropagation()
     setIsShowItem(!isShowItem)
     setIsOpenMenu(!isOpenMenu)
-    if (!!href) {
+    if (href) {
       router.push(`${href}`)
     }
   }
