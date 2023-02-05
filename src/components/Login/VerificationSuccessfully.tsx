@@ -31,7 +31,7 @@ function VerifySuccessful(props) {
              <CheckedIcon/>
              </div>
              <Title>Successful verification!</Title>
-            <TextDescription className="mt-4" children="You have successfully verified your email address."/>
+            <TextDescription className="mt-4">You have successfully verified your email address.</TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-8/12 h-40 flex flex-col items-center justify-center" >
            <PrimaryBtn

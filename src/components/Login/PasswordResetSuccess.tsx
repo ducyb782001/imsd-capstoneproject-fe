@@ -37,7 +37,7 @@ function ResetSuccessful(props) {
              <CheckedIcon/>
              </div>
              <Title>Password reset</Title>
-            <TextDescription className="mt-4" children="Your password has been successfully reset. Click below to login magically."/>
+            <TextDescription className="mt-4">Your password has been successfully reset. Click below to login magically.</TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-8/12 h-1/4 flex flex-col items-center justify-center" >
            <PrimaryBtn

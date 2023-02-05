@@ -36,7 +36,7 @@ function CheckPasswordAlert(props) {
              <EmailSendingIcon/>
              </div>
              <Title>Please confirm your email</Title>
-            <TextDescription className="mt-4" children="We sent a password reset link to."/>
+            <TextDescription className="mt-4" >We sent a password reset link to.</TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-96 h-40" >
            <TextDescription className="mt-9 text-center">
