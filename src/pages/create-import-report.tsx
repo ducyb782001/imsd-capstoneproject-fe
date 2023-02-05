@@ -4,7 +4,7 @@ import Layout from "../components/Layout"
 
 function createImportReport(props) {
   return (
-    <Layout>
+    <Layout headTitle="">
       <CreateImportReport />
     </Layout>
   )

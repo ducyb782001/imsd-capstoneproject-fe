@@ -4,7 +4,7 @@ import Footer from "./Footer"
 import HorizontalNav from "./HorizontalNav"
 import MainNav from "./MainNav"
 
-function Layout({ headTitle = "Danh sách sản phẩm", ...props }) {
+function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
   return (
     <div className="flex bg-[#F6F5FA] w-full">

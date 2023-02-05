@@ -64,7 +64,7 @@ const columns = [
         Header: " ",
         accessor: (data: any) => {
           return (
-            <Link href={`/member-detail/${data?.id}`}>
+            <Link href={`/product-detail/${data?.id}`}>
               <a className="w-full">
                 <ShowDetailIcon />
               </a>
@@ -79,10 +79,11 @@ const columns = [
 const dataTest = [
   { id: 1, firstName: "Test 1", lastName: "Test last2" },
   { id: 2, firstName: "Test 1", lastName: "Test last2" },
-  { id: "3", name: "Chinh Bac" },
-  { id: "4", name: "Chinh Bac" },
-  { id: "5", name: "ABCD" },
-  { id: "6", name: "Chinh Bac" },
+  { id: 3, name: "Chinh Bac" },
+  { id: 4, name: "Chinh Bac" },
+  { id: 5, name: "ABCD" },
+  { id: 6, name: "Chinh Bac" },
+  { id: 7, name: "Chinh Bac" },
 ]
 
 const listNhaCungCapDemo = [
@@ -102,6 +103,15 @@ function ManageGoods({ ...props }) {
   ])
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+
+  const listFilter = [
+    {
+      applied: "Orders",
+      condition: "Equals",
+      queryParamKey: "orders_0",
+      value: "23",
+    },
+  ]
 
   return (
     <div>
@@ -145,14 +155,14 @@ function ManageGoods({ ...props }) {
               </div>
             </DatePicker>
           </div>
-          {/* <ShowLabelBar
-            isExpandedLabelBar={undefined}
-            listFilter={undefined}
+          <ShowLabelBar
+            isExpandedLabelBar={true}
+            listFilter={listFilter}
             handleRemoveFilter={undefined}
             appliedDate={undefined}
             dateRange={undefined}
             handleRemoveDatefilter={undefined}
-          /> */}
+          />
         </div>
 
         {/* Table */}

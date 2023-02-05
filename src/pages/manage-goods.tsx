@@ -4,7 +4,7 @@ import ManageGoods from "../components/ManageGoods/ManageGoods"
 
 function manageGoods(props) {
   return (
-    <Layout>
+    <Layout headTitle="Danh sách sản phẩm">
       <ManageGoods />
     </Layout>
   )
