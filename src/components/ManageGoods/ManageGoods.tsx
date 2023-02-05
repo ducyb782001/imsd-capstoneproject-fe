@@ -12,75 +12,66 @@ import ClockIcon from "../icons/ClockIcon"
 import ShowLabelBar from "../Filter/ShowLabelBar"
 import Table from "../Table"
 import Pagination from "../Pagination"
+import Link from "next/link"
+import ShowDetailIcon from "../icons/ShowDetailIcon"
+import BigNumber from "bignumber.js"
 
 const columns = [
   {
     Header: " ",
     columns: [
       {
-        Header: "First name",
-        accessor: (data: any) => <p>{data?.firstName}</p>,
+        Header: "Mã SP",
+        accessor: (data: any) => <p>SP01</p>,
       },
       {
-        Header: "Last name",
-        accessor: (data: any) => <p>{data?.lastName}</p>,
+        Header: "Ảnh",
+        accessor: (data: any) => (
+          <div className="w-[35px] h-[35px] rounded-xl">
+            <img
+              className="object-cover rounded-xl"
+              src="/images/image-default.png"
+              alt="image-product"
+            />
+          </div>
+        ),
       },
-      // {
-      //   Header: "Email",
-      //   accessor: (data: any) => {
-      //     return <p>{data?.email}</p>
-      //   },
-      // },
-      // {
-      //   Header: "Registration Date",
-      //   accessor: (data: any) => {
-      //     return (
-      //       <p>{format(parseISO(data?.createdAt), "dd/MM/yyyy HH:mm:ss")}</p>
-      //     )
-      //   },
-      // },
-      // {
-      //   Header: "Orders",
-      //   accessor: (data: any) => {
-      //     return <p>{new BigNumber(data?.totalOrders).toFormat()}</p>
-      //   },
-      // },
-      // {
-      //   Header: "Total spending",
-      //   accessor: (data: any) => {
-      //     return <p>{new BigNumber(data?.totalSpending).toFormat()}</p>
-      //   },
-      // },
-      // {
-      //   Header: "Earned",
-      //   accessor: (data: any) => {
-      //     return <p>{new BigNumber(data?.totalEarned).toFormat()}</p>
-      //   },
-      // },
-      // {
-      //   Header: "Active point",
-      //   accessor: (data: any) => {
-      //     return <p>{new BigNumber(data?.activePoints).toFormat()}</p>
-      //   },
-      // },
-      // {
-      //   Header: "Tier",
-      //   accessor: (data: any) => {
-      //     return <TierLabel tier={data?.tier?.name || " "} />
-      //   },
-      // },
-      // {
-      //   Header: " ",
-      //   accessor: (data: any) => {
-      //     return (
-      //       <Link href={`/member-detail/${data?.id}`}>
-      //         <a className="w-full">
-      //           <ShowDetail />
-      //         </a>
-      //       </Link>
-      //     )
-      //   },
-      // },
+      {
+        Header: "Tên sản phẩm",
+        accessor: (data: any) => <p>Giỏ quà Tết 2023 TET200</p>,
+      },
+      {
+        Header: "Nhà cung cấp",
+        accessor: (data: any) => <p>Chính Bắc</p>,
+      },
+      {
+        Header: "Loại",
+        accessor: (data: any) => <p>Giỏ quà</p>,
+      },
+      {
+        Header: "Tồn kho",
+        accessor: (data: any) => <p>{new BigNumber(100).toFormat()}</p>,
+      },
+      {
+        Header: "Đơn vị",
+        accessor: (data: any) => <p>Giỏ</p>,
+      },
+      {
+        Header: "Ngày khởi tạo",
+        accessor: (data: any) => <p>12/08/2022 15:30</p>,
+      },
+      {
+        Header: " ",
+        accessor: (data: any) => {
+          return (
+            <Link href={`/member-detail/${data?.id}`}>
+              <a className="w-full">
+                <ShowDetailIcon />
+              </a>
+            </Link>
+          )
+        },
+      },
     ],
   },
 ]
@@ -88,6 +79,10 @@ const columns = [
 const dataTest = [
   { id: 1, firstName: "Test 1", lastName: "Test last2" },
   { id: 2, firstName: "Test 1", lastName: "Test last2" },
+  { id: "3", name: "Chinh Bac" },
+  { id: "4", name: "Chinh Bac" },
+  { id: "5", name: "ABCD" },
+  { id: "6", name: "Chinh Bac" },
 ]
 
 const listNhaCungCapDemo = [
