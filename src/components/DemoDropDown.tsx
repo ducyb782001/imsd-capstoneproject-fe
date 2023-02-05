@@ -5,7 +5,7 @@ import ArrowDownIcon from "./icons/ArrowDownIcon"
 import SearchIcon from "./icons/SearchIcon"
 
 function DemoDropDown({
-  title,
+  title = "",
   listDropdown,
   showing,
   setShowing,
@@ -67,7 +67,7 @@ function DemoDropDown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        <p className="mb-1 text-sm text-gray">{title}</p>
+        {title && <p className="mb-1 text-sm text-gray">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -103,7 +103,7 @@ function DemoDropDown({
         />
         <div
           id="list-dropdown"
-          className="smooth-transform z-50 flex w-full min-w-[209px] flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto"
+          className="smooth-transform z-50 flex w-full flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto"
         >
           {listResult?.map((i, index) => (
             <DropDownItem key={index} data={i} setShowing={setShowing} />
@@ -129,7 +129,7 @@ function DropDownItem({ data, setShowing }) {
 
 function DropdownSearch({ className = "", ...props }) {
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full ${className} border-b border-grayLight`}>
       <div className="absolute top-3 left-3">
         <SearchIcon />
       </div>

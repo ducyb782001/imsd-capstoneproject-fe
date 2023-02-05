@@ -29,6 +29,13 @@ function MobileNav() {
       href: "/suppliers",
       isActive: router.asPath.includes("/suppliers"),
     },
+    {
+      id: 3,
+      name: "Loại sản phẩm",
+      // Chua tao page
+      href: "/type-goods",
+      isActive: router.asPath.includes("/type-goods"),
+    },
   ]
   const subMenuImportGoods = [
     {
@@ -361,7 +368,7 @@ function MenuItem({ href, isActive, icon = null, name, ...props }) {
     >
       <Link href={href || "/"}>
         <a
-          className={`items-center px-3 rounded py-[14px] gap-2 flex cursor-pointer ${
+          className={`items-center px-3 rounded py-[14px] gap-2 flex cursor-pointer pl-11 ${
             isActive ? " bg-[#F6F5FA]" : "bg-transparent"
           }`}
           {...props}
