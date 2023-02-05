@@ -40,6 +40,13 @@ function MainNav() {
       href: "/suppliers",
       isActive: router.asPath.includes("/suppliers"),
     },
+    {
+      id: 3,
+      name: "Loại sản phẩm",
+      // Chua tao page
+      href: "/type-goods",
+      isActive: router.asPath.includes("/type-goods"),
+    },
   ]
   const subMenuImportGoods = [
     {
