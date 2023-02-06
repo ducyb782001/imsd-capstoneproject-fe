@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import DatePicker from "../DatePicker"
 import DemoDropDown from "../DemoDropDown"
 import DownloadIcon from "../icons/DownloadIcon"
@@ -15,6 +15,7 @@ import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
+import useDebounce from "../../hooks/useDebounce"
 
 const columns = [
   {
@@ -93,25 +94,69 @@ const listNhaCungCapDemo = [
 
 function ManageGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>()
-  const [dateRange, setDateRange] = useState([
-    {
-      startDate: addDays(new Date(), -30),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ])
+  const [queryParams, setQueryParams] = useState<any>({})
+  const debouncedSearchValue = useDebounce(searchParam, 500)
+  // const [appliedDate, setAppliedDate] = useState(false)
+  // const [dateRangeQuery, setDateRangeQuery] = useState({})
+  // const [dateRange, setDateRange] = useState([
+  //   {
+  //     startDate: addDays(new Date(), -30),
+  //     endDate: new Date(),
+  //     key: "selection",
+  //   },
+  // ])
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+  const [listFilter, setListFilter] = useState([])
 
-  const listFilter = [
-    {
-      applied: "Nhà cung cấp",
-      condition: "",
-      queryParamKey: "",
-      value: "Chính Bắc",
-    },
-  ]
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      // Them logic check id cua nha cung cap phai khac thi moi them vao list
+      setListFilter([
+        ...listFilter,
+        {
+          key: "supplier",
+          applied: "Nhà cung cấp",
+          value: nhaCungCapSelected?.name,
+          id: nhaCungCapSelected?.id,
+        },
+      ])
+    }
+  }, [nhaCungCapSelected])
+  useEffect(() => {
+    if (typeSelected) {
+      // Them logic check id cua type phai khac thi moi them vao list
+      setListFilter([
+        ...listFilter,
+        {
+          key: "type",
+          applied: "Loại",
+          value: typeSelected?.name,
+          id: typeSelected?.id,
+        },
+      ])
+    }
+  }, [typeSelected])
+
+  //change queryParamsObj when change listFilter in one useEffect
+  useEffect(() => {
+    if (listFilter) {
+      const queryObj = listFilter.reduce(
+        (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
+        {},
+      )
+      console.log("Query object: ", queryObj)
+
+      setQueryParams(queryObj)
+    }
+  }, [listFilter])
+
+  const handleRemoveFilter = (itemIndex) => {
+    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
+    setListFilter(listRemove)
+  }
 
   return (
     <div>
@@ -130,7 +175,7 @@ function ManageGoods({ ...props }) {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-40202020">
+          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
             <SearchInput
               placeholder="Tìm kiếm theo tên/ mã sản phẩm"
               onChange={(e) => setSearchParam(e.target.value)}
@@ -145,23 +190,23 @@ function ManageGoods({ ...props }) {
             <DemoDropDown
               listDropdown={listNhaCungCapDemo}
               textDefault={"Loại sản phẩm"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
+              showing={typeSelected}
+              setShowing={setTypeSelected}
             />
-            <DatePicker dateRange={dateRange} setDateRange={setDateRange}>
+            {/* <DatePicker dateRange={dateRange} setDateRange={setDateRange}>
               <div className="flex items-center w-full h-full gap-2 px-3 border rounded cursor-pointer smooth-transform hover:border-primary border-grayLight">
                 <ClockIcon /> <span>-</span>
                 <p className="text-[#4F4F4F]">Ngày khởi tạo</p>
               </div>
-            </DatePicker>
+            </DatePicker> */}
           </div>
           <ShowLabelBar
             isExpandedLabelBar={true}
             listFilter={listFilter}
-            handleRemoveFilter={undefined}
+            handleRemoveFilter={handleRemoveFilter}
             appliedDate={undefined}
             dateRange={undefined}
-            handleRemoveDatefilter={undefined}
+            handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
 

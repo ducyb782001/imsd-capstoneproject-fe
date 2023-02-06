@@ -74,9 +74,7 @@ function DemoDropDown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">
-              {showing?.name || showing || textDefault}
-            </p>
+            <p className="text-gray">{textDefault}</p>
           </div>
           <ArrowDownIcon color="#373737" />
         </div>
