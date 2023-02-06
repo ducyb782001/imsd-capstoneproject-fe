@@ -147,8 +147,6 @@ function ManageGoods({ ...props }) {
         (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
         {},
       )
-      console.log("Query object: ", queryObj)
-
       setQueryParams(queryObj)
     }
   }, [listFilter])
@@ -225,7 +223,7 @@ function ManageGoods({ ...props }) {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={46}
+          totalItems={dataTest?.length}
         />
       </div>
     </div>

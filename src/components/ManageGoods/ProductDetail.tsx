@@ -147,7 +147,12 @@ function ProductDetail(props) {
                     value={10000}
                     readOnly={true}
                   />
-                  <PrimaryInput title="Giá vốn" type="number" value={10000} />
+                  <PrimaryInput
+                    title="Giá vốn"
+                    type="number"
+                    value={10000}
+                    readOnly={true}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
