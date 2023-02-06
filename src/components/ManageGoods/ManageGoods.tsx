@@ -106,10 +106,10 @@ function ManageGoods({ ...props }) {
 
   const listFilter = [
     {
-      applied: "Orders",
-      condition: "Equals",
-      queryParamKey: "orders_0",
-      value: "23",
+      applied: "Nhà cung cấp",
+      condition: "",
+      queryParamKey: "",
+      value: "Chính Bắc",
     },
   ]
 
