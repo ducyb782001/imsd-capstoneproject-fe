@@ -12,7 +12,7 @@ function SecondaryBtn({
     <button
       {...props}
       onClick={onClick}
-      className={`w-full rounded-md text-black hover:text-secondary border border-primary text-sm font-medium py-3 px-4 hover:bg-primary active:bg-primaryDark active:border-primaryDark disabled:opacity-50 disabled:cursor-not-allowed smooth-transform flex justify-center items-center gap-3 change-color-svg ${className}`}
+      className={`w-full rounded-md text-black hover:text-secondary border border-primary text-base font-medium py-3 px-4 hover:bg-primary active:bg-primaryDark active:border-primaryDark disabled:opacity-50 disabled:cursor-not-allowed smooth-transform flex justify-center items-center gap-3 change-color-svg ${className}`}
     >
       {accessoriesLeft && <div className="">{accessoriesLeft}</div>}
       {children}

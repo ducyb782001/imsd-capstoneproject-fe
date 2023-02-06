@@ -1,10 +1,13 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../lib/search"
-import ArrowDownIcon from "./icons/ArrowDownIcon"
-import SearchIcon from "./icons/SearchIcon"
+import { search } from "../../lib/search"
+import DemoPopup from "../DemoPopup"
+import AddPlusIcon from "../icons/AddPlusIcon"
+import ArrowDownIcon from "../icons/ArrowDownIcon"
+import SearchIcon from "../icons/SearchIcon"
+import AddSupplierPopup from "./AddSupplierPopup"
 
-function DemoDropDown({
+function ChooseSupplierDropdown({
   title = "",
   listDropdown,
   showing,
@@ -74,7 +77,9 @@ function DemoDropDown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">{textDefault}</p>
+            <p className="text-gray">
+              {showing?.name || showing || textDefault}
+            </p>
           </div>
           <ArrowDownIcon color="#373737" />
         </div>
@@ -99,11 +104,12 @@ function DemoDropDown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Search"
+          placeholder="Tìm kiếm hoặc nhập mới"
         />
+        <AddSupplierPopup />
         <div
           id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto"
+          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
         >
           {listResult?.map((i, index) => (
             <DropDownItem key={index} data={i} setShowing={setShowing} />
@@ -114,7 +120,7 @@ function DemoDropDown({
   )
 }
 
-export default DemoDropDown
+export default ChooseSupplierDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (

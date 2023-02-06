@@ -30,6 +30,10 @@ module.exports = {
         // secondary: "#7e0e42",
         blue: "#53B9EA",
         grayBorder: "#EFEAFA",
+        successBtn: "#04CC89",
+        cancelBtn: "#FF3E71",
+        greenDark: "#029F6B",
+        cancelDark: "#B4294E",
       },
       textColor: {
         // gray: "#777692",
@@ -47,6 +51,10 @@ module.exports = {
         6535: "65fr 35fr",
         3367: "33fr 66fr",
         8020: "80fr 20fr",
+        40202020: "40fr 20fr 20fr 20fr",
+        602020: "60fr 20fr 20fr",
+        7525: "75fr 25fr",
+        73: "70fr 30fr",
       },
       fontSize: {
         fontSize10px: "10px",

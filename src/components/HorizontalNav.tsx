@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
+import UserDropdown from "./UserDropdown"
 
-function HorizontalNav(props) {
+function HorizontalNav({ headTitle = "" }) {
   // useEffect(() => {
   //   if (typeof window !== undefined) {
   //     console.log("ok")
@@ -25,10 +26,9 @@ function HorizontalNav(props) {
   }
 
   return (
-    <div className="fixed top-0 right-0 z-40 items-center justify-end hidden py-5 bg-white shadow-md dark:bg-slate-900 text-grayDark dark:text-white md:flex horizontal-nav-width pr-9">
-      <button onClick={handleChangeTheme} className="mr-5">
-        toggle
-      </button>
+    <div className="fixed top-0 right-0 z-40 items-center justify-between hidden w-full py-5 bg-white md:flex horizontal-nav-width px-7">
+      <div className="text-2xl font-semibold">{headTitle}</div>
+      <UserDropdown />
     </div>
   )
 }

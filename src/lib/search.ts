@@ -5,19 +5,15 @@ export type Country = {
   cities: string[]
 }[]
 
-export function search(searchInput: string, list: Country, type: string) {
+export function search(searchInput: string, list: []) {
   let result
   if (!searchInput) {
     return list
   }
-  if (searchInput && type.toLowerCase() === "country") {
-    result = list.filter((i) =>
-      i?.country.toLowerCase().includes(searchInput.toLowerCase()),
-    )
-  } else if (searchInput && type.toLowerCase() === "city") {
+  if (searchInput) {
     result = list.filter((i) =>
       // @ts-ignore
-      i.toLowerCase().includes(searchInput.toLowerCase()),
+      i?.name.toLowerCase().includes(searchInput.toLowerCase()),
     )
   } else {
     result = []

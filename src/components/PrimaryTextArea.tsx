@@ -5,6 +5,7 @@ function PrimaryTextArea({
   classNameTextArea = "",
   placeholder = "",
   onChange = null,
+  value = "",
   id = "",
   ...props
 }) {
@@ -21,6 +22,7 @@ function PrimaryTextArea({
         cols={30}
         rows={10}
         placeholder={placeholder}
+        value={value}
       ></textarea>
       <span className="form-message"></span>
     </div>

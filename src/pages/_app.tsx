@@ -12,6 +12,7 @@ import "../styles/globals.css"
 import "../styles/nav.css"
 import "../styles/table.css"
 import "../styles/loading.css"
+import "../styles/tooltip.css"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs
