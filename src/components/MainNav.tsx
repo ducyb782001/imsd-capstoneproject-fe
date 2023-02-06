@@ -119,7 +119,10 @@ function MainNav() {
       icon: <ManageGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-goods") ||
-        router.asPath.includes("/suppliers"),
+        router.asPath.includes("/suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/create-product"),
     },
     {
       id: 3,
