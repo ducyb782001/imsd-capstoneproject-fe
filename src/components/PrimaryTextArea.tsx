@@ -22,7 +22,7 @@ function PrimaryTextArea({
         cols={30}
         rows={10}
         placeholder={placeholder}
-        value={value}
+        defaultValue={value}
       ></textarea>
       <span className="form-message"></span>
     </div>

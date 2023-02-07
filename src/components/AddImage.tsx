@@ -26,7 +26,7 @@ function AddImage({
         <div className="flex flex-col items-center justify-center w-max">
           {children}
           <div className="flex items-center gap-1 mt-6 text-primary">
-            <UploadIcon /> Update image
+            <UploadIcon /> Cập nhật ảnh
           </div>
         </div>
       ) : (
@@ -39,9 +39,6 @@ function AddImage({
         onError={onError}
         onSuccess={onSuccess}
       />
-      {!imageUploaded && (
-        <span className="form-message">This image is required</span>
-      )}
     </label>
   )
 }
@@ -53,7 +50,7 @@ function AddImageBtn() {
     <div className="w-[200px] h-[200px] border border-dashed border-[#AD98E6] rounded flex flex-col items-center justify-center">
       <CameraIcon />
       <div className="px-4 py-3 font-medium border rounded text-primary border-primary">
-        Add Image
+        Thêm ảnh
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 function PrimaryInput({
-  title = "",
+  title = null,
   className = "",
   placeholder = "",
   type = "",
@@ -16,7 +16,7 @@ function PrimaryInput({
 }) {
   return (
     <div className={`${className}`}>
-      {title && <p className="mb-2 text-sm font-bold text-gray">{title}</p>}
+      {title && <div className="mb-2 text-sm font-bold text-gray">{title}</div>}
       {note && <p className="mb-2 text-sm text-gray">{note}</p>}
       <div className="relative w-full">
         {accessoriesLeft && (

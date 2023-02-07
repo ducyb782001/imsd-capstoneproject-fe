@@ -167,9 +167,16 @@ function ManageGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <PrimaryBtn className="max-w-[200px]" accessoriesLeft={<PlusIcon />}>
-          Thêm sản phẩm
-        </PrimaryBtn>
+        <Link href={`/add-product`}>
+          <a>
+            <PrimaryBtn
+              className="max-w-[200px]"
+              accessoriesLeft={<PlusIcon />}
+            >
+              Thêm sản phẩm
+            </PrimaryBtn>
+          </a>
+        </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">

@@ -19,10 +19,8 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
-import { useRouter } from "next/router"
-import Link from "next/link"
 
-function ProductDetail(props) {
+function EditProduct(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
   const [listUnits, setListUnits] = useState([])
@@ -50,30 +48,18 @@ function ProductDetail(props) {
           <SmallTitle>Thông tin chung</SmallTitle>
           <ReadOnlyField
             className="mt-6"
-            readOnly={true}
             title="Tên sản phẩm"
             value="Quà tết con mèo"
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
-            <PrimaryInput title="Mã sản phẩm" value="SP01" readOnly={true} />
-            <PrimaryInput title="Đơn vị tính" value="Hộp" readOnly={true} />
-            <PrimaryInput
-              title="Giá nhập"
-              type="number"
-              value={10000}
-              readOnly={true}
-            />
-            <PrimaryInput
-              title="Giá bán"
-              type="number"
-              value={10000}
-              readOnly={true}
-            />
+            <PrimaryInput title="Mã sản phẩm" value="SP01" />
+            <PrimaryInput title="Đơn vị tính" value="Hộp" />
+            <PrimaryInput title="Giá nhập" type="number" value={10000} />
+            <PrimaryInput title="Giá bán" type="number" value={10000} />
           </div>
           <PrimaryTextArea
             title="Ghi chú sản phẩm"
             value="Sản phẩm này rất tốt"
-            readOnly={true}
           />
         </div>
         <div className="mt-4 bg-white block-border">
@@ -115,14 +101,8 @@ function ProductDetail(props) {
                     title="Tồn kho ban đầu"
                     type="number"
                     value={10000}
-                    readOnly={true}
                   />
-                  <PrimaryInput
-                    title="Giá vốn"
-                    type="number"
-                    value={10000}
-                    readOnly={true}
-                  />
+                  <PrimaryInput title="Giá vốn" type="number" value={10000} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -174,13 +154,13 @@ function ProductDetail(props) {
                     title="Tồn kho ban đầu"
                     type="number"
                     value={10000}
-                    readOnly={true}
+                    
                   />
                   <PrimaryInput
                     title="Giá vốn"
                     type="number"
                     value={10000}
-                    readOnly={true}
+                    
                   />
                 </motion.div>
               )}
@@ -233,7 +213,7 @@ function ProductDetail(props) {
   )
 }
 
-export default ProductDetail
+export default EditProduct
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -253,7 +233,7 @@ function RightSideProductDetail(props) {
 
   const [imageUploaded, setImageUploaded] = useState("")
   const [loadingImage, setLoadingImage] = useState(false)
-  const router = useRouter()
+
   const onErrorUpload = (error: any) => {
     console.log("upload error", error)
     setLoadingImage(false)
@@ -265,7 +245,7 @@ function RightSideProductDetail(props) {
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
-  console.log("Router:", router)
+
   return (
     <div className="">
       <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
@@ -342,13 +322,9 @@ function RightSideProductDetail(props) {
         <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
           Thêm sản phẩm
         </PrimaryBtn> */}
-        <Link href={`/edit-product/${1}`}>
-          <a className="w-full">
-            <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-              Chỉnh sửa sản phẩm
-            </PrimaryBtn>
-          </a>
-        </Link>
+        <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
+          Chỉnh sửa sản phẩm
+        </PrimaryBtn>
       </div>
     </div>
   )

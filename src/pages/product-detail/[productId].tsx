@@ -2,7 +2,7 @@ import React from "react"
 import Layout from "../../components/Layout"
 import ProductDetail from "../../components/ManageGoods/ProductDetail"
 
-function productId(props) {
+function detailProduct(props) {
   return (
     <Layout headTitle="Chi tiết sản phẩm">
       <ProductDetail />
@@ -10,4 +10,4 @@ function productId(props) {
   )
 }
 
-export default productId
+export default detailProduct
