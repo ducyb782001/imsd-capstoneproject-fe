@@ -1,10 +1,10 @@
 import React from "react"
 
-function AddPlusIcon(props) {
+function AddPlusIcon({ width = 19, height = 19, ...props }) {
   return (
     <svg
-      width={19}
-      height={19}
+      width={width}
+      height={height}
       viewBox="0 0 19 19"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

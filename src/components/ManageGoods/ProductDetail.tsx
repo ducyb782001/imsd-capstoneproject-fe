@@ -11,10 +11,32 @@ import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
 import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
 import ChooseTypeDropdown from "./ChooseTypeDropdown"
+import SecondaryBtn from "../SecondaryBtn"
+import AddPlusIcon from "../icons/AddPlusIcon"
+import GarbageIcon from "../icons/GarbageIcon"
+import AddUnitIcon from "../icons/AddUnitIcon"
 
 function ProductDetail(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
+  const [listUnits, setListUnits] = useState([])
+  const [newType, setNewType] = useState<string>("")
+  const [newDetail, setNewDetail] = useState<string>("")
+
+  const handleAddNewUnit = () => {
+    if (newType && newDetail) {
+      setListUnits([
+        ...listUnits,
+        {
+          type: newType,
+          detail: newDetail,
+        },
+      ])
+      setNewType("")
+      setNewDetail("")
+    }
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>
@@ -128,7 +150,8 @@ function ProductDetail(props) {
               onColor="#6A44D2"
             />
           </div>
-          {isAdditionalUnit && (
+          {/* Su dung trong page detail */}
+          {/* {isAdditionalUnit && (
             <AnimatePresence initial={false}>
               {isAdditionalUnit && (
                 <motion.div
@@ -152,6 +175,46 @@ function ProductDetail(props) {
                     type="number"
                     value={10000}
                     readOnly={true}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )} */}
+
+          {/* su dung trong cac page con lai */}
+          {isAdditionalUnit && (
+            <AnimatePresence initial={false}>
+              {isAdditionalUnit && (
+                <motion.div
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={variants}
+                  transition={{
+                    duration: 0.2,
+                  }}
+                  className=""
+                >
+                  {listUnits.length > 0 && (
+                    <div className="">
+                      {listUnits.map((i, index) => (
+                        <TableUnitRow
+                          key={`unit-row-${i?.type}-${index}`}
+                          data={i}
+                          itemIndex={index}
+                          listUnits={listUnits}
+                          setListUnits={setListUnits}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <AdditionUnitRow
+                    newType={newType}
+                    setNewType={setNewType}
+                    newDetail={newDetail}
+                    setNewDetail={setNewDetail}
+                    handleAddNewUnit={handleAddNewUnit}
                   />
                 </motion.div>
               )}
@@ -231,6 +294,69 @@ function RightSideProductDetail(props) {
         <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
           Chỉnh sửa sản phẩm
         </PrimaryBtn>
+      </div>
+    </div>
+  )
+}
+
+function AdditionUnitRow({
+  newType,
+  setNewType,
+  newDetail,
+  setNewDetail,
+  handleAddNewUnit,
+}) {
+  return (
+    <div className="grid items-end gap-2 mt-3 text-white grid-cols-454510 md:gap-5">
+      <PrimaryInput
+        classNameInput="text-xs md:text-sm rounded-md"
+        placeholder="Thùng"
+        title="Đơn vị quy đổi"
+        onChange={(e) => setNewType(e.target.value)}
+        value={newType}
+      />
+      <PrimaryInput
+        classNameInput="text-xs md:text-sm rounded-md"
+        placeholder="10"
+        title="Số lượng trong đơn vị tương ứng"
+        onChange={(e) => setNewDetail(e.target.value)}
+        type="number"
+        value={newDetail}
+      />
+      <div className="h-[46px] flex items-center justify-center">
+        <AddUnitIcon className="cursor-pointer" onClick={handleAddNewUnit} />
+      </div>
+    </div>
+  )
+}
+
+function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
+  const handleRemoveProperty = () => {
+    const listRemove = listUnits.filter((i, index) => index !== itemIndex)
+    setListUnits(listRemove)
+  }
+
+  return (
+    <div className="grid items-end gap-2 mt-3 text-white grid-cols-454510 md:gap-5">
+      <PrimaryInput
+        classNameInput="text-xs md:text-sm rounded-md"
+        placeholder="Thùng"
+        title="Đơn vị quy đổi"
+        value={data?.type}
+        readOnly
+      />
+      <PrimaryInput
+        classNameInput="text-xs md:text-sm rounded-md"
+        placeholder="10"
+        title="Số lượng trong đơn vị tương ứng"
+        value={data?.detail}
+        type="number"
+        readOnly
+      />
+      <div className="h-[46px] flex items-center justify-center cursor-pointer">
+        <div onClick={handleRemoveProperty}>
+          <GarbageIcon />
+        </div>
       </div>
     </div>
   )
