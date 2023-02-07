@@ -15,6 +15,10 @@ import SecondaryBtn from "../SecondaryBtn"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
+import ReadOnlyField from "../ReadOnlyField"
+import { IKImage, IKUpload } from "imagekitio-react"
+import AddImage from "../AddImage"
+import Loading from "../Loading"
 
 function ProductDetail(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
@@ -42,11 +46,11 @@ function ProductDetail(props) {
       <div>
         <div className="bg-white block-border">
           <SmallTitle>Thông tin chung</SmallTitle>
-          <PrimaryInput
+          <ReadOnlyField
             className="mt-6"
+            readOnly={true}
             title="Tên sản phẩm"
             value="Quà tết con mèo"
-            readOnly={true}
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
             <PrimaryInput title="Mã sản phẩm" value="SP01" readOnly={true} />
@@ -244,10 +248,54 @@ function RightSideProductDetail(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+
+  const [imageUploaded, setImageUploaded] = useState("")
+  const [loadingImage, setLoadingImage] = useState(false)
+
+  const onErrorUpload = (error: any) => {
+    console.log("upload error", error)
+    setLoadingImage(false)
+  }
+
+  const onSuccessUpload = (res: any) => {
+    console.log(res)
+    // setImages([...images, res.filePath])
+    setImageUploaded(res.url)
+    setLoadingImage(false)
+  }
+
   return (
     <div className="">
-      <div className="bg-white block-border h-[365px]">
-        Ảnh sản phẩm sẽ Xử lý ảnh sau
+      <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
+        {/* Detail thi su dung img nay luon */}
+        {/* <img
+          className="object-cover w-[200px] h-[200px] rounded-md"
+          src="/images/image-product-demo.jpeg"
+          alt="image-product"
+        /> */}
+
+        {/* upload moi hoac edit thi phai su dung cai nay  */}
+        <div className="flex justify-center md:justify-start">
+          {/* <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5"> */}
+          <AddImage
+            onError={onErrorUpload}
+            onSuccess={onSuccessUpload}
+            imageUploaded={imageUploaded}
+            setLoadingImage={setLoadingImage}
+          >
+            {loadingImage ? (
+              <div className="w-full h-[176px] flex items-center justify-center">
+                <Loading />
+              </div>
+            ) : imageUploaded ? (
+              <IKImage src={imageUploaded} />
+            ) : (
+              ""
+            )}
+          </AddImage>
+          {/* </div> */}
+        </div>
+        <p className="text-xl font-semibold">Ảnh sản phẩm</p>
       </div>
       <div className="mt-4 bg-white block-border">
         <SmallTitle>Thông tin bổ sung</SmallTitle>
