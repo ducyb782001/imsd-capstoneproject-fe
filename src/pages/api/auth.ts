@@ -9,9 +9,12 @@ type Data = {
 }
 
 const imageKit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
-  privateKey: process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
+  // publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
+  // privateKey: process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY,
+  // urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
+  publicKey: "public_XiISXxtv+NpyIofQPuKlcs7wvDQ=",
+  privateKey: "private_C/8aaDWi6ivh6H4luz7JsK8nT0Q=",
+  urlEndpoint: "https://ik.imagekit.io/imsd",
 })
 
 export default function handler(
