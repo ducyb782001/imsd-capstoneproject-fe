@@ -1,0 +1,36 @@
+.input-img input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.input-img img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.smaill-input-img input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.smaill-input-img img {
+  max-width: 112px;
+}
+
+.square-input input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.square-input img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}

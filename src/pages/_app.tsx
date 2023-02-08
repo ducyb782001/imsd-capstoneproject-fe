@@ -4,6 +4,7 @@ import Head from "next/head"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { IKContext } from "imagekitio-react"
 
 import "react-date-range/dist/styles.css"
 import "react-date-range/dist/theme/default.css"
@@ -13,6 +14,7 @@ import "../styles/nav.css"
 import "../styles/table.css"
 import "../styles/loading.css"
 import "../styles/tooltip.css"
+import "../styles/add-image.css"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs
@@ -48,20 +50,28 @@ function App({ Component, pageProps }) {
         />
       </Head>
 
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-      </QueryClientProvider>
+      <IKContext
+        // urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
+        // publicKey={process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY}
+        urlEndpoint="https://ik.imagekit.io/imsd/"
+        publicKey="public_XiISXxtv+NpyIofQPuKlcs7wvDQ="
+        authenticationEndpoint="/api/auth"
+      >
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
+      </IKContext>
     </>
   )
 }

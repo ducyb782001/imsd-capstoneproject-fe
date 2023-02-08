@@ -19,15 +19,31 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
-import { useRouter } from "next/router"
-import Link from "next/link"
 
-function ProductDetail(props) {
+interface Product {
+  productId: number
+  productName: string
+  productCode: string
+  categoryId: number
+  description: string
+  supplierId: number
+  costPrice: number
+  sellingPrice: number
+  unit: string
+  inStock: number
+  stockPrice: number
+}
+
+function AddProduct(props) {
+  const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
   const [listUnits, setListUnits] = useState([])
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
+  const [imageUploaded, setImageUploaded] = useState("")
+  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const [typeProduct, setTypeProduct] = useState<any>()
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
@@ -42,38 +58,77 @@ function ProductDetail(props) {
       setNewDetail("")
     }
   }
-
+  console.log(
+    "Product: ",
+    product,
+    "Image url: ",
+    imageUploaded,
+    "Nha cung cap: ",
+    nhaCungCapSelected?.name,
+  )
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>
         <div className="bg-white block-border">
           <SmallTitle>Thông tin chung</SmallTitle>
-          <ReadOnlyField
+          <PrimaryInput
             className="mt-6"
-            readOnly={true}
-            title="Tên sản phẩm"
-            value="Quà tết con mèo"
+            title={
+              <p>
+                Tên sản phẩm <span className="text-red-500">*</span>
+              </p>
+            }
+            onChange={(e) => {
+              setProduct({ ...product, productName: e.target.value })
+            }}
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
-            <PrimaryInput title="Mã sản phẩm" value="SP01" readOnly={true} />
-            <PrimaryInput title="Đơn vị tính" value="Hộp" readOnly={true} />
+            <PrimaryInput
+              title={
+                <div className="flex gap-1">
+                  <p>Mã sản phẩm</p>
+                  <Tooltip
+                    content={
+                      <div>
+                        Mã không trùng lặp giữa các sản phẩm
+                        <p>Nếu để trống, mã sản phẩm sẽ có tiền tố SP</p>
+                      </div>
+                    }
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                </div>
+              }
+              onChange={(e) => {
+                setProduct({ ...product, productCode: e.target.value })
+              }}
+            />
+            <PrimaryInput
+              title="Đơn vị tính"
+              onChange={(e) => {
+                setProduct({ ...product, unit: e.target.value })
+              }}
+            />
             <PrimaryInput
               title="Giá nhập"
               type="number"
-              value={10000}
-              readOnly={true}
+              onChange={(e) => {
+                setProduct({ ...product, costPrice: e.target.value })
+              }}
             />
             <PrimaryInput
               title="Giá bán"
               type="number"
-              value={10000}
-              readOnly={true}
+              onChange={(e) => {
+                setProduct({ ...product, sellingPrice: e.target.value })
+              }}
             />
           </div>
           <PrimaryTextArea
             title="Ghi chú sản phẩm"
-            value="Sản phẩm này rất tốt"
-            readOnly={true}
+            onChange={(e) => {
+              setProduct({ ...product, description: e.target.value })
+            }}
           />
         </div>
         <div className="mt-4 bg-white block-border">
@@ -114,14 +169,16 @@ function ProductDetail(props) {
                   <PrimaryInput
                     title="Tồn kho ban đầu"
                     type="number"
-                    value={10000}
-                    readOnly={true}
+                    onChange={(e) => {
+                      setProduct({ ...product, inStock: e.target.value })
+                    }}
                   />
                   <PrimaryInput
-                    title="Giá vốn"
+                    title="Giá nhập"
                     type="number"
-                    value={10000}
-                    readOnly={true}
+                    onChange={(e) => {
+                      setProduct({ ...product, stockPrice: e.target.value })
+                    }}
                   />
                 </motion.div>
               )}
@@ -156,37 +213,6 @@ function ProductDetail(props) {
               onColor="#6A44D2"
             />
           </div>
-          {/* Su dung trong page detail */}
-          {/* {isAdditionalUnit && (
-            <AnimatePresence initial={false}>
-              {isAdditionalUnit && (
-                <motion.div
-                  initial="collapsed"
-                  animate="open"
-                  exit="collapsed"
-                  variants={variants}
-                  transition={{
-                    duration: 0.2,
-                  }}
-                  className="grid grid-cols-2 mt-4 gap-7"
-                >
-                  <PrimaryInput
-                    title="Tồn kho ban đầu"
-                    type="number"
-                    value={10000}
-                    readOnly={true}
-                  />
-                  <PrimaryInput
-                    title="Giá vốn"
-                    type="number"
-                    value={10000}
-                    readOnly={true}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          )} */}
-
           {/* su dung trong cac page con lai */}
           {isAdditionalUnit && (
             <AnimatePresence initial={false}>
@@ -228,12 +254,20 @@ function ProductDetail(props) {
           )}
         </div>
       </div>
-      <RightSideProductDetail />
+      <RightSideProductDetail
+        imageUploaded={imageUploaded}
+        setImageUploaded={setImageUploaded}
+        nhaCungCapSelected={nhaCungCapSelected}
+        setNhaCungCapSelected={setNhaCungCapSelected}
+        typeProduct={typeProduct}
+        setTypeProduct={setTypeProduct}
+        handleAddProduct={undefined}
+      />
     </div>
   )
 }
 
-export default ProductDetail
+export default AddProduct
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -246,59 +280,56 @@ const lisLoaiSanPhamDemo = [
   { id: "2", name: "Hoa quả" },
 ]
 
-function RightSideProductDetail(props) {
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [typeProduct, setTypeProduct] = useState<any>()
+function RightSideProductDetail({
+  imageUploaded,
+  setImageUploaded,
+  nhaCungCapSelected,
+  setNhaCungCapSelected,
+  typeProduct,
+  setTypeProduct,
+  handleAddProduct,
+}) {
   const [isEnabled, setIsEnabled] = useState(true)
 
-  const [imageUploaded, setImageUploaded] = useState("")
   const [loadingImage, setLoadingImage] = useState(false)
-  const router = useRouter()
+
   const onErrorUpload = (error: any) => {
     console.log("upload error", error)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
-    console.log(res)
+    // console.log("Res image: ", res)
     // setImages([...images, res.filePath])
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
-  console.log("Router:", router)
+
   return (
     <div className="">
       <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
-        {/* Detail thi su dung img nay luon */}
-        <img
-          className="object-cover w-[200px] h-[200px] rounded-md"
-          src="/images/image-product-demo.jpeg"
-          alt="image-product"
-        />
+        <p className="mt-4 text-xl font-semibold">Ảnh sản phẩm</p>
 
-        {/* upload moi hoac edit thi phai su dung cai nay  */}
-        {/* <div className="flex justify-center md:justify-start">
+        <div className="flex justify-center md:justify-start">
           <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5">
-          <AddImage
-            onError={onErrorUpload}
-            onSuccess={onSuccessUpload}
-            imageUploaded={imageUploaded}
-            setLoadingImage={setLoadingImage}
-          >
-            {loadingImage ? (
-              <div className="w-full h-[176px] flex items-center justify-center">
-                <Loading />
-              </div>
-            ) : imageUploaded ? (
-              <IKImage src={imageUploaded} />
-            ) : (
-              ""
-            )}
-          </AddImage>
+            <AddImage
+              onError={onErrorUpload}
+              onSuccess={onSuccessUpload}
+              imageUploaded={imageUploaded}
+              setLoadingImage={setLoadingImage}
+            >
+              {loadingImage ? (
+                <div className="w-full h-[176px] flex items-center justify-center">
+                  <Loading />
+                </div>
+              ) : imageUploaded ? (
+                <IKImage src={imageUploaded} />
+              ) : (
+                ""
+              )}
+            </AddImage>
           </div>
-        </div> */}
-
-        <p className="text-xl font-semibold">Ảnh sản phẩm</p>
+        </div>
       </div>
       <div className="mt-4 bg-white block-border">
         <SmallTitle>Thông tin bổ sung</SmallTitle>
@@ -342,13 +373,12 @@ function RightSideProductDetail(props) {
         <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
           Thêm sản phẩm
         </PrimaryBtn> */}
-        <Link href={`/edit-product/${1}`}>
-          <a className="w-full">
-            <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-              Chỉnh sửa sản phẩm
-            </PrimaryBtn>
-          </a>
-        </Link>
+        <PrimaryBtn
+          className="bg-successBtn border-successBtn active:bg-greenDark"
+          onClick={handleAddProduct}
+        >
+          Thêm sản phẩm
+        </PrimaryBtn>
       </div>
     </div>
   )
