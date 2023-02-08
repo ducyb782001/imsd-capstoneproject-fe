@@ -7,7 +7,6 @@ import PasswordInput from "../PasswordInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
 import PrimaryInput from "../PrimaryInput"
-import Title from "../Title"
 import UnderlineText from "../UnderlineText"
 import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
@@ -20,14 +19,14 @@ function Login(props) {
 
   const router = useRouter()
 
-  useEffect(() => {
-    const cookies = cookie.parse(window.document.cookie)
-    if (cookies.token) {
-      router.push("/")
-    } else {
-      router.push("/login")
-    }
-  }, [cookie])
+  // useEffect(() => {
+  //   const cookies = cookie.parse(window.document.cookie)
+  //   if (cookies.token) {
+  //     router.push("/")
+  //   } else {
+  //     router.push("/login")
+  //   }
+  // }, [cookie])
 
   const loginMutation = useMutation(
     (login) => {
@@ -59,21 +58,22 @@ function Login(props) {
   )
 
   const handleLogin = (event) => {
+    var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if(!emailRegex.test(userEmail)){
+      toast.error("Email invalid! Please input again!")
+    }
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({
-      username: userEmail,
+      email: userEmail,
       password: userPassword,
     })
   }
-  const handleForgot = (event) => {
-    router.push("/login")
-  }
-const handleSignUp = (event) => {
-  router.push("/signup")
+  const handleSignUp = (event) => {
+    router.push("/signup")
   }
   const handleForgotPass = (event) => {
-    router.push("/forgotPassword")
+    router.push("/input-forgot-email")
     }
     
   return (
