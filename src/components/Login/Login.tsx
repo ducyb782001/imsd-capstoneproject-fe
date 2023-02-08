@@ -11,11 +11,11 @@ import UnderlineText from "../UnderlineText"
 import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
-
+import { emailRegex } from "../../constants/constants"
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(true)
 
   const router = useRouter()
 
@@ -44,7 +44,7 @@ function Login(props) {
             path: "/",
           })
         }
-        toast.success("Login successful!")
+        toast.success("Đăng nhập thành công!")
         setDisabled(true)
         setTimeout(() => {
           router.push("/")
@@ -52,16 +52,12 @@ function Login(props) {
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error("Wrong username or password!")
+        toast.error("Email hoặc mật khẩu sai!")
       },
     },
   )
 
   const handleLogin = (event) => {
-    var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if(!emailRegex.test(userEmail)){
-      toast.error("Email invalid! Please input again!")
-    }
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({
@@ -74,8 +70,16 @@ function Login(props) {
   }
   const handleForgotPass = (event) => {
     router.push("/input-forgot-email")
+  }
+
+  useEffect(() => {
+    if (emailRegex.test(userEmail) && userPassword.trim() !== "") {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
     }
-    
+  })
+
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">
@@ -85,10 +89,8 @@ function Login(props) {
         <LeftBlock />
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-white">
           <div className="min-w-full md:min-w-[440px]">
-            <div className="text-2xl md:text-4xl">
-              Login
-            </div>
-            <p className="mt-4">Welcome back! Please enter your details.</p>
+            <div className="text-2xl md:text-4xl">Đăng nhập</div>
+            <p className="mt-4">Chào mừng quay trở lại! Xin mời đăng nhập!</p>
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
                 title="Email"
@@ -96,24 +98,28 @@ function Login(props) {
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput
+              title="Password"
                 onChange={(event) => setUserPassword(event.target.value)}
               />
             </div>
             <div className="flex justify-end w-full mt-2 text-violet-500">
-              <UnderlineText className="font-medium" onClick={handleForgotPass}>Forgot Password</UnderlineText>
+              <UnderlineText className="font-medium" onClick={handleForgotPass}>
+                Quên mật khẩu?
+              </UnderlineText>
             </div>
             <PrimaryBtn
               onClick={handleLogin}
               disabled={disabled}
               className="mt-11"
             >
-              Log in
+              Đăng nhập
             </PrimaryBtn>
             <TextDescription className="mt-6 text-center">
-              Don't have an account?{" "}
-              <UnderlineText className="font-medium" onClick={handleSignUp}>Sign Up</UnderlineText>
+              Chưa có tài khoản?{" "}
+              <UnderlineText className="font-medium" onClick={handleSignUp}>
+                Đăng kí
+              </UnderlineText>
             </TextDescription>
-
           </div>
         </div>
       </div>

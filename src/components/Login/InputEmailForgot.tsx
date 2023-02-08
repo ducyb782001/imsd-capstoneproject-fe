@@ -66,21 +66,21 @@ function InputEmailForgot(props) {
              <div className="">
              <KeyIcon/>
              </div>
-             <Title>Forgot password?</Title>
+             <Title>Quên mật khẩu?</Title>
             <TextDescription className="mt-4">
-               Enter the email address acsociated with your account!
+               Nhập mật khẩu đã liên kết với tài khoản của bạn!
              </TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-4/6 h-1/2" >
            <div className="flex flex-col ml-16 w-4/5 gap-6 mt-16 ">
            <PrimaryInput
                 title="Email"
-                placeholder="Enter your email"
+                placeholder="Nhập email của bạn"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
-                <PrimaryBtn className="mt-3" onClick={handleSendEmail}>Send</PrimaryBtn>
+                <PrimaryBtn className="mt-3" onClick={handleSendEmail}>Gửi</PrimaryBtn>
                 <div className="flex flex-col items-center justify-center" onClick={handleLogin}>
-                <ArrowLeftIcon className="mt-4" accessoriesRight={<UnderlineText className="font-medium" > Back to login</UnderlineText>}/>
+                <ArrowLeftIcon className="mt-4" accessoriesRight={<UnderlineText className="font-medium" > Quay lại đăng nhập</UnderlineText>}/>
                 </div>
                </div>
             </div>

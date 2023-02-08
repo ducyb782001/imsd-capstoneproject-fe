@@ -13,12 +13,14 @@ import KeyIcon from "../icons/KeyIcon"
 import { toast } from "react-toastify"
 import { useMutation } from "react-query"
 import { resetPassword } from "../../constants/APIConfig"
+import { passRegex } from "../../constants/constants"
+import Tooltip from "../ToolTip"
+import InfoIcon from "../icons/InfoIcon"
 
 function SetPassword(props) {
-  const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [userPassword2, setUserPassword2] = useState("")
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(true)
 
   const router = useRouter()
 
@@ -26,43 +28,42 @@ function SetPassword(props) {
     router.push("/login")
   }
   const handleChangePass = (event) => {
-    var passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-    if (userPassword !== userPassword2) {
-      toast.error("Confirm password failed! Please check again!")
-    }
-    if (!passRegex.test(userPassword)) {
-      toast.error(
-        "Password must contain at least 8 character, one uppercase letter, one number!",
-      )
-    }
-    if (userPassword == userPassword2 && passRegex.test(userPassword)) {
-      resetPassMutation.mutate()
-    }
+    resetPassMutation.mutate()
   }
-
 
   const resetPassMutation = useMutation(
     () => {
-      var paramLink = router.query["token"].toString();
-      var link = resetPassword+ encodeURIComponent(paramLink) +"&newpwd="+userPassword;
-      return axios.post(
-        link,
-      )
+      var paramLink = router.query["token"].toString()
+      var link =
+        resetPassword +
+        encodeURIComponent(paramLink) +
+        "&newpwd=" +
+        userPassword
+      return axios.post(link)
     },
     {
       onSuccess: (data, error, variables) => {
-        toast.success("Reset password successful!")
-        setDisabled(true)
+        toast.success("Cài lại mật khẩu thành công!")
+        setDisabled(false)
         setTimeout(() => {
           router.push("/login")
         }, 300)
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error("Reset link is expired!")
+        toast.error("Link reset mật khẩu lỗi! Xin thực hiện lại!")
       },
     },
   )
+
+
+  useEffect(() => {
+  if (userPassword == userPassword2 && passRegex.test(userPassword)) {
+    setDisabled(false);
+  }else{
+    setDisabled(true)
+  }
+  })
 
   return (
     <div className="relative">
@@ -78,24 +79,62 @@ function SetPassword(props) {
               <div className="">
                 <KeyIcon />
               </div>
-              <Title>Set new password</Title>
+              <Title>Đặt lại mật khẩu</Title>
               <TextDescription className="mt-4">
-                Your new password must be different to previously used
-                passwords.
+                Mật khẩu của bạn phải khác với những mật khẩu đã dùng trước đây.
               </TextDescription>
             </div>
             <div className="mt-7 bg-white rounded-md w-4/5 h-3/5">
               <div className="flex flex-col ml-16 w-4/5 gap-6 mt-16 ">
                 <PasswordInput
+                  title={
+                    <div className="flex gap-1">
+                      <h1>Mật khẩu</h1>
+                      <Tooltip
+                        content={
+                          <div>
+                            Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
+                            <h1>
+                              Phải bao gồm chữ in hoa, in thường, số, không được
+                              để trống
+                            </h1>
+                          </div>
+                        }
+                      >
+                        <InfoIcon />
+                      </Tooltip>
+                    </div>
+                  }
                   onChange={(event) => setUserPassword(event.target.value)}
                 />
                 <PasswordInput
-                  title="Confirm Password"
+                  title={
+                    <div className="flex gap-1">
+                      <h1>Nhập lại mật khẩu</h1>
+                      <Tooltip
+                        content={
+                          <div>
+                            Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
+                            <h1>
+                              Phải bao gồm chữ in hoa, in thường, số, không được
+                              để trống
+                            </h1>
+                          </div>
+                        }
+                      >
+                        <InfoIcon />
+                      </Tooltip>
+                    </div>
+                  }
                   onChange={(event) => setUserPassword2(event.target.value)}
-                  placeholder="Confirm your password"
+                  placeholder="Xác nhận lại mật khẩu"
                 />
-                <PrimaryBtn onClick={handleChangePass} className="mt-1">
-                  Reset password
+                <PrimaryBtn
+                  onClick={handleChangePass}
+                  disabled={disabled}
+                  className="mt-1"
+                >
+                  Cài lại mật khẩu
                 </PrimaryBtn>
                 <div
                   className="flex flex-col items-center justify-center"
@@ -105,7 +144,7 @@ function SetPassword(props) {
                     accessoriesRight={
                       <UnderlineText className="font-medium">
                         {" "}
-                        Back to login
+                        Quay lại đăng nhập
                       </UnderlineText>
                     }
                   />

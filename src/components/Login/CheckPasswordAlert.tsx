@@ -35,15 +35,15 @@ function CheckPasswordAlert(props) {
              <div className="">
              <EmailSendingIcon/>
              </div>
-             <Title>Please confirm your email</Title>
-            <TextDescription className="mt-4" >We sent a password reset link to.</TextDescription>
+             <Title>Kiểm tra email của bạn</Title>
+            <TextDescription className="mt-4" >Chúng tôi đã gửi email reset mật khẩu đến email của bạn.</TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-96 h-40" >
            <TextDescription className="mt-9 text-center">
-               Didn't receive the email?{" "}
-               <UnderlineText className="font-medium" onClick={handleResend}>Click to resend</UnderlineText><br/>
+               Chưa nhận được mail?{" "}
+               <UnderlineText className="font-medium" onClick={handleResend}>Nhấn để gửi lại</UnderlineText><br/>
                <div className="flex flex-col items-center justify-center mt-10" onClick={handleLogin}>
-               <ArrowLeftIcon accessoriesRight={<UnderlineText className="font-medium" > Back to login</UnderlineText>}/>
+               <ArrowLeftIcon accessoriesRight={<UnderlineText className="font-medium" > Quay lại đăng nhập</UnderlineText>}/>
                </div>
              </TextDescription>
            </div>

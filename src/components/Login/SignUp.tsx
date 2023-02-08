@@ -12,6 +12,8 @@ import { toast } from "react-toastify"
 import axios from "axios"
 import { useMutation } from "react-query"
 import { signUpUrl } from "../../constants/APIConfig"
+import { passRegex } from "../../constants/constants"
+import { emailRegex } from "../../constants/constants"
 
 function Signup(props) {
 
@@ -26,8 +28,6 @@ function Signup(props) {
 
   const handleSignUp = (event) => {
     event.preventDefault()
-    var passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if(userPassword!==userPassword2){
       toast.error("Confirm password failed! Please check again!")
     }
