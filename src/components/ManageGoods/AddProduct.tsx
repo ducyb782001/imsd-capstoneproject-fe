@@ -308,13 +308,10 @@ function RightSideProductDetail({
   return (
     <div className="">
       <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
-        <p className="mb-5 text-xl font-semibold">Ảnh sản phẩm</p>
+        <p className="mt-4 text-xl font-semibold">Ảnh sản phẩm</p>
+
         <div className="flex justify-center md:justify-start">
-          <div
-            className={`flex items-center justify-center border rounded-full ${
-              imageUploaded ? "border-transparent" : "border-primary"
-            }  w-[150px] h-[150px]`}
-          >
+          <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5">
             <AddImage
               onError={onErrorUpload}
               onSuccess={onSuccessUpload}
@@ -326,10 +323,7 @@ function RightSideProductDetail({
                   <Loading />
                 </div>
               ) : imageUploaded ? (
-                <IKImage
-                  src={imageUploaded}
-                  className="!w-[170px] !h-[170px] rounded-md"
-                />
+                <IKImage src={imageUploaded} />
               ) : (
                 ""
               )}
