@@ -6,9 +6,6 @@ import PlusIcon from "../icons/PlusIcon"
 import UploadIcon from "../icons/UploadIcon"
 import PrimaryBtn from "../PrimaryBtn"
 import SearchInput from "../SearchInput"
-import SmallTitle from "../SmallTitle"
-import { addDays, format } from "date-fns"
-import ClockIcon from "../icons/ClockIcon"
 import ShowLabelBar from "../Filter/ShowLabelBar"
 import Table from "../Table"
 import Pagination from "../Pagination"
@@ -53,7 +50,9 @@ const columns = [
       },
       {
         Header: "Tồn kho",
-        accessor: (data: any) => <p>{new BigNumber(data?.inStock).toFormat()}</p>,
+        accessor: (data: any) => (
+          <p>{new BigNumber(data?.inStock).toFormat()}</p>
+        ),
       },
       {
         Header: "Đơn vị",
@@ -94,15 +93,6 @@ function ManageGoods({ ...props }) {
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
-  // const [appliedDate, setAppliedDate] = useState(false)
-  // const [dateRangeQuery, setDateRangeQuery] = useState({})
-  // const [dateRange, setDateRange] = useState([
-  //   {
-  //     startDate: addDays(new Date(), -30),
-  //     endDate: new Date(),
-  //     key: "selection",
-  //   },
-  // ])
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
@@ -229,12 +219,6 @@ function ManageGoods({ ...props }) {
               showing={typeSelected}
               setShowing={setTypeSelected}
             />
-            {/* <DatePicker dateRange={dateRange} setDateRange={setDateRange}>
-              <div className="flex items-center w-full h-full gap-2 px-3 border rounded cursor-pointer smooth-transform hover:border-primary border-grayLight">
-                <ClockIcon /> <span>-</span>
-                <p className="text-[#4F4F4F]">Ngày khởi tạo</p>
-              </div>
-            </DatePicker> */}
           </div>
           <ShowLabelBar
             isExpandedLabelBar={true}
