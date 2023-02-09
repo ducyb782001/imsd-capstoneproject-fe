@@ -294,13 +294,13 @@ function RightSideProductDetail({
   const [loadingImage, setLoadingImage] = useState(false)
 
   const onErrorUpload = (error: any) => {
-    console.log("upload error", error)
+    console.log("Run upload error", error)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
-    // console.log("Res image: ", res)
     // setImages([...images, res.filePath])
+    console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
   }

@@ -30,6 +30,7 @@ function ProductDetail(props) {
   const [listUnits, setListUnits] = useState([])
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
+  const [detailProduct, setDetailProduct] = useState<any>()
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
