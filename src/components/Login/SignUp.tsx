@@ -28,15 +28,6 @@ function Signup(props) {
 
   const handleSignUp = (event) => {
     event.preventDefault()
-    if(userPassword!==userPassword2){
-      toast.error("Confirm password failed! Please check again!")
-    }
-    if(!passRegex.test(userPassword)){
-      toast.error("Password must contain at least 8 character, one uppercase letter, one number!")
-    }  
-    if(!emailRegex.test(userEmail)){
-      toast.error("Email invalid! Please input again!")
-    }
     if(userPassword==userPassword2 && passRegex.test(userPassword) && emailRegex.test(userEmail)){
     // @ts-ignore
     signUpMutation.mutate({
@@ -51,14 +42,14 @@ const signUpMutation = useMutation(
     },
     {
       onSuccess: (data, error, variables) => {
-        toast.success("Sign up successful!")
+        toast.success("Đăng kí thành công!")
         setTimeout(() => {
           router.push("/confirm-email")
         }, 300)
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error("Something wrong! please sign up again!")
+        toast.error("Có lỗi xảy ra! Xin hãy đăng nhập lại!")
       },
     },
   )
@@ -73,24 +64,24 @@ const signUpMutation = useMutation(
         <LeftBlock />
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-white">
           <div className="min-w-[440px]">
-            <Title>Sign up</Title>
+            <Title>Đăng kí</Title>
             <TextDescription className="mt-4">
-              Create an account to get started.
+              Tạo một tài khoản mới để bắt đầu.
             </TextDescription>
             <div className="flex flex-col w-full gap-6 mt-11">
-              <PrimaryInput onChange={(event) => setUserEmail(event.target.value)}  placeholder="Enter your email" title="Email" />
+              <PrimaryInput onChange={(event) => setUserEmail(event.target.value)}  placeholder="Nhập email của bạn" title="Email" />
               <PasswordInput onChange={(event) => setUserPassword2(event.target.value)}/>
               <PasswordInput
                 onChange={(event) => setUserPassword(event.target.value)}
-                title="Confirm Password"
-                placeholder="Confirm your password"
+                title="Xác nhận mật khẩu"
+                placeholder="Xác nhận mật khẩu của bạn"
               />
             </div>
-            <PrimaryBtn className="mt-11" onClick={handleSignUp}>Sign up</PrimaryBtn>
+            <PrimaryBtn className="mt-11" onClick={handleSignUp}>Đăng kí</PrimaryBtn>
             <TextDescription className="mt-6 text-center">
-              Already have an account?{" "}
+              Đã có tài khoản?{" "}
               <UnderlineText className="font-medium" onClick={handleLogin}>
-                Log in
+                Đăng nhập
               </UnderlineText>
             </TextDescription>
           </div>

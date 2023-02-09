@@ -94,7 +94,7 @@ function Login(props) {
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
                 title="Email"
-                placeholder="Enter your email"
+                placeholder="Nhập email của bạn"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput

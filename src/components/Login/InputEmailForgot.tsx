@@ -68,11 +68,11 @@ function InputEmailForgot(props) {
              </div>
              <Title>Quên mật khẩu?</Title>
             <TextDescription className="mt-4">
-               Nhập mật khẩu đã liên kết với tài khoản của bạn!
+               Nhập tài khoản hòm thư đã liên kết với tài khoản của bạn!
              </TextDescription>
            </div>
-           <div className="mt-7 bg-white rounded-md w-4/6 h-1/2" >
-           <div className="flex flex-col ml-16 w-4/5 gap-6 mt-16 ">
+           <div className="mt-7 bg-white rounded-md w-7/12 h-1/3" >
+           <div className="flex flex-col ml-16 w-4/5 gap-6 mt-12 ">
            <PrimaryInput
                 title="Email"
                 placeholder="Nhập email của bạn"
@@ -87,7 +87,6 @@ function InputEmailForgot(props) {
            </div>
          </div>
        </div>
-      
     </div>
   )
 }

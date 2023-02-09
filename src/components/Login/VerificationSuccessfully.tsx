@@ -54,9 +54,9 @@ function VerifySuccessful(props) {
               <div className="">
                 <CheckedIcon />
               </div>
-              <Title>Successful verification!</Title>
+              <Title>Xác minh thành công!</Title>
               <TextDescription className="mt-4">
-                You have successfully verified your email address.
+                Bạn đã xác minh tài khoản thành công. Xin mời đăng nhập.
               </TextDescription>
             </div>
             <div className="mt-7 bg-white rounded-md w-8/12 h-40 flex flex-col items-center justify-center">
@@ -65,7 +65,7 @@ function VerifySuccessful(props) {
                 disabled={disabled}
                 className="w-4/6 "
               >
-                Log in
+                Đăng nhập
               </PrimaryBtn>
             </div>
           </div>
