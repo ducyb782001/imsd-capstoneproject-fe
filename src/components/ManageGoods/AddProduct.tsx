@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import InfoIcon from "../icons/InfoIcon"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
@@ -19,6 +19,10 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
+import { useMutation } from "react-query"
+import { toast } from "react-toastify"
+import { useRouter } from "next/router"
+import { addNewProduct } from "../../apis/product-module"
 
 interface Product {
   productId: number
@@ -32,6 +36,8 @@ interface Product {
   unit: string
   inStock: number
   stockPrice: number
+  image: string
+  measuredUnits: any
 }
 
 function AddProduct(props) {
@@ -50,14 +56,65 @@ function AddProduct(props) {
       setListUnits([
         ...listUnits,
         {
-          type: newType,
-          detail: newDetail,
+          measuredUnitName: newType,
+          measuredUnitValue: newDetail,
         },
       ])
       setNewType("")
       setNewDetail("")
     }
   }
+  useEffect(() => {
+    if (imageUploaded) {
+      setProduct({
+        ...product,
+        image: imageUploaded,
+      })
+    }
+  }, [imageUploaded])
+
+  useEffect(() => {
+    if (listUnits) {
+      setProduct({
+        ...product,
+        measuredUnits: listUnits,
+      })
+    }
+  }, [listUnits])
+  const router = useRouter()
+  const addNewProductMutation = useMutation(
+    async (newProduct) => {
+      return await addNewProduct(newProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Add new product success")
+          router.push("/coupon")
+        } else {
+          console.log(data)
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+
+  const handleAddNewProduct = (event) => {
+    event.preventDefault()
+    // @ts-ignore
+    addNewProductMutation.mutate({
+      ...product,
+    })
+  }
+
   console.log(
     "Product: ",
     product,
@@ -261,7 +318,7 @@ function AddProduct(props) {
         setNhaCungCapSelected={setNhaCungCapSelected}
         typeProduct={typeProduct}
         setTypeProduct={setTypeProduct}
-        handleAddProduct={undefined}
+        handleAddProduct={handleAddNewProduct}
       />
     </div>
   )
@@ -441,14 +498,14 @@ function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="Thùng"
         title="Đơn vị quy đổi"
-        value={data?.type}
+        value={data?.measuredUnitName}
         readOnly
       />
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
         title="Số lượng trong đơn vị tương ứng"
-        value={data?.detail}
+        value={data?.measuredUnitValue}
         type="number"
         readOnly
       />
