@@ -20,3 +20,8 @@ export const logoutUrl = `${baseUrl}/partner/logout`
 export const meUrl = `${baseUrl}/partner/profile`
 
 export const changePasswordUrl = `${baseUrl}/partner/change-password`
+
+//Product url
+
+export const AllProductUrl = `${baseUrl}/Products/Get`
+
