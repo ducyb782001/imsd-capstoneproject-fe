@@ -7,26 +7,27 @@ import PasswordInput from "../PasswordInput"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
 import PrimaryInput from "../PrimaryInput"
+import Title from "../Title"
 import UnderlineText from "../UnderlineText"
 import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
-import { emailRegex } from "../../constants/constants"
+
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(false)
 
   const router = useRouter()
 
-  // useEffect(() => {
-  //   const cookies = cookie.parse(window.document.cookie)
-  //   if (cookies.token) {
-  //     router.push("/")
-  //   } else {
-  //     router.push("/login")
-  //   }
-  // }, [cookie])
+  useEffect(() => {
+    const cookies = cookie.parse(window.document.cookie)
+    if (cookies.token) {
+      router.push("/")
+    } else {
+      router.push("/login")
+    }
+  }, [cookie])
 
   const loginMutation = useMutation(
     (login) => {
@@ -44,7 +45,7 @@ function Login(props) {
             path: "/",
           })
         }
-        toast.success("Đăng nhập thành công!")
+        toast.success("Login successful!")
         setDisabled(true)
         setTimeout(() => {
           router.push("/")
@@ -52,7 +53,7 @@ function Login(props) {
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error("Email hoặc mật khẩu sai!")
+        toast.error("Wrong username or password!")
       },
     },
   )
@@ -61,25 +62,20 @@ function Login(props) {
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({
-      email: userEmail,
+      username: userEmail,
       password: userPassword,
     })
   }
-  const handleSignUp = (event) => {
-    router.push("/signup")
+  const handleForgot = (event) => {
+    router.push("/login")
+  }
+const handleSignUp = (event) => {
+  router.push("/signup")
   }
   const handleForgotPass = (event) => {
-    router.push("/input-forgot-email")
-  }
-
-  useEffect(() => {
-    if (emailRegex.test(userEmail) && userPassword.trim() !== "") {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
+    router.push("/forgotPassword")
     }
-  })
-
+    
   return (
     <div className="relative">
       <div className="absolute z-[2] hidden md:block">
@@ -89,37 +85,35 @@ function Login(props) {
         <LeftBlock />
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-white">
           <div className="min-w-full md:min-w-[440px]">
-            <div className="text-2xl md:text-4xl">Đăng nhập</div>
-            <p className="mt-4">Chào mừng quay trở lại! Xin mời đăng nhập!</p>
+            <div className="text-2xl md:text-4xl">
+              Login
+            </div>
+            <p className="mt-4">Welcome back! Please enter your details.</p>
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
                 title="Email"
-                placeholder="Nhập email của bạn"
+                placeholder="Enter your email"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput
-              title="Password"
                 onChange={(event) => setUserPassword(event.target.value)}
               />
             </div>
             <div className="flex justify-end w-full mt-2 text-violet-500">
-              <UnderlineText className="font-medium" onClick={handleForgotPass}>
-                Quên mật khẩu?
-              </UnderlineText>
+              <UnderlineText className="font-medium" onClick={handleForgotPass}>Forgot Password</UnderlineText>
             </div>
             <PrimaryBtn
               onClick={handleLogin}
               disabled={disabled}
               className="mt-11"
             >
-              Đăng nhập
+              Log in
             </PrimaryBtn>
             <TextDescription className="mt-6 text-center">
-              Chưa có tài khoản?{" "}
-              <UnderlineText className="font-medium" onClick={handleSignUp}>
-                Đăng kí
-              </UnderlineText>
+              Don't have an account?{" "}
+              <UnderlineText className="font-medium" onClick={handleSignUp}>Sign Up</UnderlineText>
             </TextDescription>
+
           </div>
         </div>
       </div>

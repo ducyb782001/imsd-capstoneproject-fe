@@ -16,8 +16,6 @@ import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
-import { useQueries } from "react-query"
-import { getListProduct } from "../../apis/product-module"
 
 const columns = [
   {
@@ -25,7 +23,7 @@ const columns = [
     columns: [
       {
         Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productId}</p>,
+        accessor: (data: any) => <p>SP01</p>,
       },
       {
         Header: "Ảnh",
@@ -41,23 +39,23 @@ const columns = [
       },
       {
         Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
+        accessor: (data: any) => <p>Giỏ quà Tết 2023 TET200</p>,
       },
       {
         Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+        accessor: (data: any) => <p>Chính Bắc</p>,
       },
       {
         Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+        accessor: (data: any) => <p>Giỏ quà</p>,
       },
       {
         Header: "Tồn kho",
-        accessor: (data: any) => <p>{new BigNumber(data?.inStock).toFormat()}</p>,
+        accessor: (data: any) => <p>{new BigNumber(100).toFormat()}</p>,
       },
       {
         Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+        accessor: (data: any) => <p>Giỏ</p>,
       },
       {
         Header: "Ngày khởi tạo",
@@ -97,7 +95,7 @@ const listNhaCungCapDemo = [
 function ManageGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
-  const [searchParam, setSearchParam] = useState<string>("")
+  const [searchParam, setSearchParam] = useState<string>()
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
   // const [appliedDate, setAppliedDate] = useState(false)
@@ -113,15 +111,13 @@ function ManageGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listProduct, setListProduct] = useState<any>()
-
   useEffect(() => {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
       setListFilter([
         ...listFilter,
         {
-          key: "supId",
+          key: "supplier",
           applied: "Nhà cung cấp",
           value: nhaCungCapSelected?.name,
           id: nhaCungCapSelected?.id,
@@ -135,7 +131,7 @@ function ManageGoods({ ...props }) {
       setListFilter([
         ...listFilter,
         {
-          key: "catId",
+          key: "type",
           applied: "Loại",
           value: typeSelected?.name,
           id: typeSelected?.id,
@@ -160,28 +156,6 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-    useQueries([
-      {
-        queryKey: [
-          "getListProduct",
-          debouncedSearchValue,
-          currentPage,
-          pageSize,
-          queryParams,
-        ],
-        queryFn: async () => {
-          const response = await getListProduct({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListProduct(response?.data)
-          return response?.data
-        },
-      },
-    ])
-  console.log("List: ", listProduct)
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -247,7 +221,7 @@ function ManageGoods({ ...props }) {
           <Table
             pageSizePagination={pageSize}
             columns={columns}
-            data={listProduct?.data}
+            data={dataTest}
           />
           {/* )} */}
         </div>
@@ -256,7 +230,7 @@ function ManageGoods({ ...props }) {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={listProduct?.total}
+          totalItems={dataTest?.length}
         />
       </div>
     </div>

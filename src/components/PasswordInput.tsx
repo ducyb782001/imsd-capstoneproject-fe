@@ -4,14 +4,14 @@ import ShowPasswordIcon from "./icons/ShowPasswordIcon"
 
 function PasswordInput({
   className = "",
-  title = null,
-  placeholder = "Nhập mật khẩu vào đây",
+  title = "Password",
+  placeholder = "Enter your password",
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false)
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <h5 className="mb-2 text-sm text-black font-bold">{title}</h5>
+      <p className="mb-2 text-sm text-black font-bold">{title}</p>
       <div className="relative w-full">
         <input
           placeholder={placeholder}

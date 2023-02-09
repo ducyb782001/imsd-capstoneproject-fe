@@ -14,6 +14,10 @@ function ResetSuccessful(props) {
 
   const router = useRouter()
 
+
+  const handleContinue = (event) => {
+  
+  }
   const handleLogin = (event) => {
     router.push("/login")
     }
@@ -32,21 +36,25 @@ function ResetSuccessful(props) {
              <div className="">
              <CheckedIcon/>
              </div>
-             <Title>Đặt lại mật khẩu</Title>
-            <TextDescription className="mt-4">Mật khẩu của bạn đã được đặt lại thành công. Nhấn vào dưới để đăng nhập lại.</TextDescription>
+             <Title>Password reset</Title>
+            <TextDescription className="mt-4">Your password has been successfully reset. Click below to login magically.</TextDescription>
            </div>
            <div className="mt-7 bg-white rounded-md w-8/12 h-1/4 flex flex-col items-center justify-center" >
            <PrimaryBtn
-              onClick={handleLogin}
+              onClick={handleContinue}
               disabled={disabled}
               className="w-4/6 "
             >
-                Đăng nhập
+                Continue
             </PrimaryBtn>
+            <div className="mt-8" onClick={handleLogin}>
+                <ArrowLeftIcon accessoriesRight={<UnderlineText className="font-medium" > Back to login</UnderlineText>}/>
+                </div>
                </div>
            </div>
          </div>
        </div>
+      
     </div>
   )
 }
