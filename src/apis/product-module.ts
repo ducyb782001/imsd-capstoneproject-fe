@@ -1,4 +1,8 @@
-import { allProductUrl, postProductUrl } from "../constants/APIConfig"
+import {
+  allProductUrl,
+  detailProductUrl,
+  postProductUrl,
+} from "../constants/APIConfig"
 import { convertObjectToQueryString, postAPI, requestAPI } from "../lib/api"
 
 export const getListProduct = (searchObj) => {
@@ -13,3 +17,9 @@ export const addNewProduct = (newProduct) =>
     url: postProductUrl,
     data: newProduct,
   })
+
+export const getProductDetail = (productId) => {
+  return requestAPI({
+    url: `${detailProductUrl}?prodId=${productId}`,
+  })
+}

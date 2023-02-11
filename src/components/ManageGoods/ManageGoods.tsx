@@ -16,6 +16,7 @@ import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListProduct } from "../../apis/product-module"
 import XLSX from "xlsx/xlsx"
+import EditIcon from "../icons/EditIcon"
 
 const columns = [
   {
@@ -67,11 +68,18 @@ const columns = [
         Header: " ",
         accessor: (data: any) => {
           return (
-            <Link href={`/product-detail/${data?.id}`}>
-              <a className="w-full">
-                <ShowDetailIcon />
-              </a>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href={`/edit-product/${data?.productId}`}>
+                <a>
+                  <EditIcon />
+                </a>
+              </Link>
+              <Link href={`/product-detail/${data?.productId}`}>
+                <a className="w-full">
+                  <ShowDetailIcon />
+                </a>
+              </Link>
+            </div>
           )
         },
       },
@@ -146,49 +154,50 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-  
-
-    useQueries([
-      {
-        queryKey: [
-          "getListProduct",
-          debouncedSearchValue,
-          currentPage,
-          pageSize,
-          queryParams,
-        ],
-        queryFn: async () => {
-          if(debouncedSearchValue) {
-            const response = await getListProduct({
-              search: debouncedSearchValue,
-              offset: (currentPage - 1) * pageSize,
-              limit: pageSize,
-              ...queryParams,
-            })
-            setListProduct(response?.data)
-            return response?.data
-          } else {
-            const response = await getListProduct({
-              offset: (currentPage - 1) * pageSize,
-              limit: pageSize,
-              ...queryParams,
-            })
-            setListProduct(response?.data)
-            return response?.data
-          }  
-        },
+  useQueries([
+    {
+      queryKey: [
+        "getListProduct",
+        debouncedSearchValue,
+        currentPage,
+        pageSize,
+        queryParams,
+      ],
+      queryFn: async () => {
+        if (debouncedSearchValue) {
+          const response = await getListProduct({
+            search: debouncedSearchValue,
+            offset: (currentPage - 1) * pageSize,
+            limit: pageSize,
+            ...queryParams,
+          })
+          setListProduct(response?.data)
+          return response?.data
+        } else {
+          const response = await getListProduct({
+            offset: (currentPage - 1) * pageSize,
+            limit: pageSize,
+            ...queryParams,
+          })
+          setListProduct(response?.data)
+          return response?.data
+        }
       },
-    ])
+    },
+  ])
 
-    const handleExportProduct = () => {
-      console.log(listProduct)
-    }
+  const handleExportProduct = () => {
+    console.log(listProduct)
+  }
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          <ImportExportButton onClick={handleExportProduct} accessoriesLeft={<DownloadIcon />}>
+          <ImportExportButton
+            onClick={handleExportProduct}
+            accessoriesLeft={<DownloadIcon />}
+          >
             Xuất file
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>

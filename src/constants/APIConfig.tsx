@@ -1,7 +1,7 @@
 // export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Dev baseUrl
-export const baseUrl = `https://localhost:7265/api`
+export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
 //auth url
 
@@ -24,7 +24,5 @@ export const changePasswordUrl = `${baseUrl}/partner/change-password`
 //Product url
 
 export const allProductUrl = `${baseUrl}/Products/Get`
-
 export const postProductUrl = `${baseUrl}/Products/PostProduct`
-
-
+export const detailProductUrl = `${baseUrl}/Products/GetDetail`
