@@ -23,3 +23,9 @@ export const getProductDetail = (productId) => {
     url: `${detailProductUrl}?prodId=${productId}`,
   })
 }
+
+export const getListExportProduct = (searchObj) => {
+  return requestAPI({
+    url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=0`,
+  })
+}

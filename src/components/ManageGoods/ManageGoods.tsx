@@ -14,15 +14,9 @@ import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListProduct } from "../../apis/product-module"
+import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import XLSX from "xlsx/xlsx"
-<<<<<<< HEAD
-import { requestAPI } from "../../lib/api"
-import { allProductUrl } from "../../constants/APIConfig"
-import axios from "axios"
-=======
 import EditIcon from "../icons/EditIcon"
->>>>>>> ducndt_code
 
 const columns = [
   {
@@ -161,18 +155,6 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const paramURL = "?offset=0&limit=1000&catId=0&supId=0"
-    axios
-      .get(
-        "https://localhost:7265/api/Products/Get?offset=0&limit=1000&catId=0&supId=0",
-      )
-      .then((r) => setListProductExport(r.data))
-  }, [])
-
-=======
->>>>>>> ducndt_code
   useQueries([
     {
       queryKey: [
@@ -191,7 +173,6 @@ function ManageGoods({ ...props }) {
             ...queryParams,
           })
           setListProduct(response?.data)
-<<<<<<< HEAD
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListProduct({
@@ -200,13 +181,9 @@ function ManageGoods({ ...props }) {
             limit: 1000,
             ...queryParams,
           })
-          console.log("list useEffect: 1")
-
           setListProductExport(exportFile?.data)
           //-----------
 
-=======
->>>>>>> ducndt_code
           return response?.data
         } else {
           const response = await getListProduct({
@@ -215,20 +192,14 @@ function ManageGoods({ ...props }) {
             ...queryParams,
           })
           setListProduct(response?.data)
-<<<<<<< HEAD
+          console.log(listProduct)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListProduct({
-            search: "",
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
+          const exportFile = await getListExportProduct({})
           setListProductExport(exportFile?.data)
+
           //-----------
 
-=======
->>>>>>> ducndt_code
           return response?.data
         }
       },
@@ -236,13 +207,7 @@ function ManageGoods({ ...props }) {
   ])
 
   const handleExportProduct = () => {
-<<<<<<< HEAD
-    if (listProductExport?.total == 0) {
-    }
-    console.log(listProductExport?.data)
-=======
-    console.log(listProduct)
->>>>>>> ducndt_code
+    const wb = XLSX.
   }
 
   return (
