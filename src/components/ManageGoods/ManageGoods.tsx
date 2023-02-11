@@ -16,9 +16,13 @@ import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListProduct } from "../../apis/product-module"
 import XLSX from "xlsx/xlsx"
+<<<<<<< HEAD
 import { requestAPI } from "../../lib/api"
 import { allProductUrl } from "../../constants/APIConfig"
 import axios from "axios"
+=======
+import EditIcon from "../icons/EditIcon"
+>>>>>>> ducndt_code
 
 const columns = [
   {
@@ -70,11 +74,18 @@ const columns = [
         Header: " ",
         accessor: (data: any) => {
           return (
-            <Link href={`/product-detail/${data?.id}`}>
-              <a className="w-full">
-                <ShowDetailIcon />
-              </a>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href={`/edit-product/${data?.productId}`}>
+                <a>
+                  <EditIcon />
+                </a>
+              </Link>
+              <Link href={`/product-detail/${data?.productId}`}>
+                <a className="w-full">
+                  <ShowDetailIcon />
+                </a>
+              </Link>
+            </div>
           )
         },
       },
@@ -150,6 +161,7 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
+<<<<<<< HEAD
   useEffect(() => {
     const paramURL = "?offset=0&limit=1000&catId=0&supId=0"
     axios
@@ -159,6 +171,8 @@ function ManageGoods({ ...props }) {
       .then((r) => setListProductExport(r.data))
   }, [])
 
+=======
+>>>>>>> ducndt_code
   useQueries([
     {
       queryKey: [
@@ -177,6 +191,7 @@ function ManageGoods({ ...props }) {
             ...queryParams,
           })
           setListProduct(response?.data)
+<<<<<<< HEAD
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListProduct({
@@ -190,6 +205,8 @@ function ManageGoods({ ...props }) {
           setListProductExport(exportFile?.data)
           //-----------
 
+=======
+>>>>>>> ducndt_code
           return response?.data
         } else {
           const response = await getListProduct({
@@ -198,6 +215,7 @@ function ManageGoods({ ...props }) {
             ...queryParams,
           })
           setListProduct(response?.data)
+<<<<<<< HEAD
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListProduct({
@@ -209,6 +227,8 @@ function ManageGoods({ ...props }) {
           setListProductExport(exportFile?.data)
           //-----------
 
+=======
+>>>>>>> ducndt_code
           return response?.data
         }
       },
@@ -216,9 +236,13 @@ function ManageGoods({ ...props }) {
   ])
 
   const handleExportProduct = () => {
+<<<<<<< HEAD
     if (listProductExport?.total == 0) {
     }
     console.log(listProductExport?.data)
+=======
+    console.log(listProduct)
+>>>>>>> ducndt_code
   }
 
   return (

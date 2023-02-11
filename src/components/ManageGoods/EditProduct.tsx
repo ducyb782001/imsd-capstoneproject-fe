@@ -19,6 +19,7 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
+import ConfirmPopup from "../ConfirmPopup"
 
 function EditProduct(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
@@ -226,7 +227,7 @@ const lisLoaiSanPhamDemo = [
   { id: "2", name: "Hoa quả" },
 ]
 
-function RightSideProductDetail(props) {
+function RightSideProductDetail({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
@@ -246,37 +247,33 @@ function RightSideProductDetail(props) {
     setLoadingImage(false)
   }
 
+  const handleClickSaveBtn = () => {
+    console.log("Save btn success")
+  }
+
   return (
     <div className="">
       <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
-        {/* Detail thi su dung img nay luon */}
-        <img
-          className="object-cover w-[200px] h-[200px] rounded-md"
-          src="/images/image-product-demo.jpeg"
-          alt="image-product"
-        />
-
-        {/* upload moi hoac edit thi phai su dung cai nay  */}
-        {/* <div className="flex justify-center md:justify-start">
+        <div className="flex justify-center md:justify-start">
           <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5">
-          <AddImage
-            onError={onErrorUpload}
-            onSuccess={onSuccessUpload}
-            imageUploaded={imageUploaded}
-            setLoadingImage={setLoadingImage}
-          >
-            {loadingImage ? (
-              <div className="w-full h-[176px] flex items-center justify-center">
-                <Loading />
-              </div>
-            ) : imageUploaded ? (
-              <IKImage src={imageUploaded} />
-            ) : (
-              ""
-            )}
-          </AddImage>
+            <AddImage
+              onError={onErrorUpload}
+              onSuccess={onSuccessUpload}
+              imageUploaded={imageUploaded}
+              setLoadingImage={setLoadingImage}
+            >
+              {loadingImage ? (
+                <div className="w-full h-[176px] flex items-center justify-center">
+                  <Loading />
+                </div>
+              ) : imageUploaded ? (
+                <IKImage src={imageUploaded} />
+              ) : (
+                ""
+              )}
+            </AddImage>
           </div>
-        </div> */}
+        </div>
 
         <p className="text-xl font-semibold">Ảnh sản phẩm</p>
       </div>
@@ -322,9 +319,13 @@ function RightSideProductDetail(props) {
         <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
           Thêm sản phẩm
         </PrimaryBtn> */}
-        <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-          Chỉnh sửa sản phẩm
-        </PrimaryBtn>
+        <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
+          title="Bạn có chắc chắn muốn chỉnh sửa sản phẩm không?"
+          handleClickSaveBtn={handleClickSaveBtn}
+        >
+          Lưu sản phẩm
+        </ConfirmPopup>
       </div>
     </div>
   )

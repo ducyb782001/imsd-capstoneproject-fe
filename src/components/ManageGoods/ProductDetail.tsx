@@ -1,28 +1,10 @@
 import React, { useState } from "react"
-import InfoIcon from "../icons/InfoIcon"
-import PrimaryInput from "../PrimaryInput"
-import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
-import Switch from "react-switch"
-import { AnimatePresence, motion } from "framer-motion"
-import { variants } from "../../lib/constants"
-import Tooltip from "../ToolTip"
-import DemoDropDown from "../DemoDropDown"
-import PrimaryBtn from "../PrimaryBtn"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
-import SecondaryBtn from "../SecondaryBtn"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import GarbageIcon from "../icons/GarbageIcon"
-import AddUnitIcon from "../icons/AddUnitIcon"
-import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
-import AddImage from "../AddImage"
-import Loading from "../Loading"
-import { useRouter } from "next/router"
-import Link from "next/link"
 import BigNumber from "bignumber.js"
 import format from "date-fns/format"
+import { useQueries } from "react-query"
+import { getProductDetail } from "../../apis/product-module"
+import { useRouter } from "next/router"
 
 function ProductDetail(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
@@ -31,7 +13,7 @@ function ProductDetail(props) {
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
   const [detailProduct, setDetailProduct] = useState<any>()
-
+  const router = useRouter()
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
       setListUnits([
@@ -45,40 +27,67 @@ function ProductDetail(props) {
       setNewDetail("")
     }
   }
+  const { productId } = router.query
+  useQueries([
+    {
+      queryKey: ["getProductDetail", productId],
+      queryFn: async () => {
+        if (productId) {
+          const response = await getProductDetail(productId)
+          setDetailProduct(response?.data)
+          return response?.data
+        }
+      },
+    },
+  ])
+
   const dateNow = new Date()
+
   return (
     <div>
-      <h1 className="text-3xl font-medium">Quà tết con mèo</h1>
+      <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
       <div className="mt-4 bg-white block-border">
         <SmallTitle>Thông tin sản phẩm</SmallTitle>
         <div className="grid mt-4 md:grid-cols-433">
           <div className="grid grid-cols-2 gap-y-1">
-            <ProductInfo title="Mã sản phẩm" data={"SP01"} />
-            <ProductInfo title="Nhà cung cấp" data={"Hạ Long"} />
-            <ProductInfo title="Loại sản phẩm" data={"Bánh"} />
-            <ProductInfo title="Tồn kho" data={new BigNumber(200).toFormat()} />
+            <ProductInfo
+              title="Mã sản phẩm"
+              data={detailProduct?.productCode}
+            />
+            <ProductInfo
+              title="Nhà cung cấp"
+              data={detailProduct?.supplier?.supplierName}
+            />
+            <ProductInfo
+              title="Loại sản phẩm"
+              data={detailProduct?.category?.categoryName}
+            />
+            <ProductInfo
+              title="Tồn kho"
+              data={new BigNumber(detailProduct?.inStock).toFormat()}
+            />
             <ProductInfo title="Đơn vị tính" data={"Hộp"} />
             <ProductInfo
               title="Giá nhập"
-              data={new BigNumber(1000).toFormat()}
+              data={`${new BigNumber(
+                detailProduct?.costPrice,
+              ).toFormat()} đồng`}
             />
             <ProductInfo
               title="Giá bán"
-              data={new BigNumber(2000).toFormat()}
+              data={`${new BigNumber(
+                detailProduct?.sellingPrice,
+              ).toFormat()} đồng`}
             />
             <ProductInfo
               title="Ngày tạo"
-              data={format(dateNow, "MMM dd, yyyy")}
+              data={useFormatTimeDuration(detailProduct?.created)}
+              // data={format(dateNow, "MMM dd, yyyy")}
             />
           </div>
           <div>
             <div className="text-gray">Mô tả sản phẩm</div>
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Architecto obcaecati provident rem! Accusantium dolores enim
-              ducimus magni dolor error, minus iure placeat soluta dolore, nam
-              odit sequi. Possimus, similique illo.
-            </p>
+            <p>{detailProduct?.description}</p>
           </div>
           <div className="flex flex-col items-center justify-center">
             {/* <img
@@ -86,12 +95,24 @@ function ProductDetail(props) {
                 alt="product-image"
                 src="/images/image-product-demo.jpeg"
               /> */}
-            <img
-              className="object-cover w-[100px] h-[100px] rounded-md"
-              alt="product-image"
-              src="/images/no-image.svg"
-            />
-            <p>Sản phẩm chưa có ảnh</p>
+            {detailProduct?.image ? (
+              <>
+                <img
+                  className="object-cover w-[150px] h-[150px] rounded-md"
+                  alt="product-image"
+                  src={detailProduct?.image || `/images/no-image.svg`}
+                />
+              </>
+            ) : (
+              <>
+                <img
+                  className="object-cover w-[100px] h-[100px] rounded-md"
+                  alt="product-image"
+                  src="/images/no-image.svg"
+                />
+                <p>Sản phẩm chưa có ảnh</p>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -111,4 +132,11 @@ function ProductInfo({ title = "", data = "" }) {
       <div className="text-black">{data}</div>
     </>
   )
+}
+
+function useFormatTimeDuration(saleAt: any) {
+  if (saleAt) {
+    // console.log("Sale at: ", saleAt)
+    return saleAt
+  }
 }
