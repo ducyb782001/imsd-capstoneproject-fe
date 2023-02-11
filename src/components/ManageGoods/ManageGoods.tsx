@@ -16,6 +16,9 @@ import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListProduct } from "../../apis/product-module"
 import XLSX from "xlsx/xlsx"
+import { requestAPI } from "../../lib/api"
+import { allProductUrl } from "../../constants/APIConfig"
+import axios from "axios"
 
 const columns = [
   {
@@ -99,6 +102,7 @@ function ManageGoods({ ...props }) {
   const [listFilter, setListFilter] = useState([])
 
   const [listProduct, setListProduct] = useState<any>()
+
   const [listProductExport, setListProductExport] = useState<any>()
 
   useEffect(() => {
@@ -146,49 +150,85 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-  
+  useEffect(() => {
+    const paramURL = "?offset=0&limit=1000&catId=0&supId=0"
+    axios
+      .get(
+        "https://localhost:7265/api/Products/Get?offset=0&limit=1000&catId=0&supId=0",
+      )
+      .then((r) => setListProductExport(r.data))
+  }, [])
 
-    useQueries([
-      {
-        queryKey: [
-          "getListProduct",
-          debouncedSearchValue,
-          currentPage,
-          pageSize,
-          queryParams,
-        ],
-        queryFn: async () => {
-          if(debouncedSearchValue) {
-            const response = await getListProduct({
-              search: debouncedSearchValue,
-              offset: (currentPage - 1) * pageSize,
-              limit: pageSize,
-              ...queryParams,
-            })
-            setListProduct(response?.data)
-            return response?.data
-          } else {
-            const response = await getListProduct({
-              offset: (currentPage - 1) * pageSize,
-              limit: pageSize,
-              ...queryParams,
-            })
-            setListProduct(response?.data)
-            return response?.data
-          }  
-        },
+  useQueries([
+    {
+      queryKey: [
+        "getListProduct",
+        debouncedSearchValue,
+        currentPage,
+        pageSize,
+        queryParams,
+      ],
+      queryFn: async () => {
+        if (debouncedSearchValue) {
+          const response = await getListProduct({
+            search: debouncedSearchValue,
+            offset: (currentPage - 1) * pageSize,
+            limit: pageSize,
+            ...queryParams,
+          })
+          setListProduct(response?.data)
+
+          //fix cứng, sẽ sửa lại sau khi BE sửa api
+          const exportFile = await getListProduct({
+            search: debouncedSearchValue,
+            offset: 0,
+            limit: 1000,
+            ...queryParams,
+          })
+          console.log("list useEffect: 1")
+
+          setListProductExport(exportFile?.data)
+          //-----------
+
+          return response?.data
+        } else {
+          const response = await getListProduct({
+            offset: (currentPage - 1) * pageSize,
+            limit: pageSize,
+            ...queryParams,
+          })
+          setListProduct(response?.data)
+
+          //fix cứng, sẽ sửa lại sau khi BE sửa api
+          const exportFile = await getListProduct({
+            search: "",
+            offset: 0,
+            limit: 1000,
+            ...queryParams,
+          })
+          setListProductExport(exportFile?.data)
+          //-----------
+
+          return response?.data
+        }
       },
-    ])
+    },
+  ])
 
-    const handleExportProduct = () => {
-      console.log(listProduct)
+  const handleExportProduct = () => {
+    if (listProductExport?.total == 0) {
     }
+    console.log(listProductExport?.data)
+  }
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          <ImportExportButton onClick={handleExportProduct} accessoriesLeft={<DownloadIcon />}>
+          <ImportExportButton
+            onClick={handleExportProduct}
+            accessoriesLeft={<DownloadIcon />}
+          >
             Xuất file
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>
