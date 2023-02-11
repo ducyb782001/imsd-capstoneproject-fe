@@ -15,6 +15,7 @@ import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListProduct } from "../../apis/product-module"
+import XLSX from "xlsx/xlsx"
 
 const columns = [
   {
@@ -98,6 +99,7 @@ function ManageGoods({ ...props }) {
   const [listFilter, setListFilter] = useState([])
 
   const [listProduct, setListProduct] = useState<any>()
+  const [listProductExport, setListProductExport] = useState<any>()
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -144,6 +146,8 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
+  
+
     useQueries([
       {
         queryKey: [
@@ -171,17 +175,20 @@ function ManageGoods({ ...props }) {
             })
             setListProduct(response?.data)
             return response?.data
-          }
-         
+          }  
         },
       },
     ])
-  console.log("List: ", listProduct)
+
+    const handleExportProduct = () => {
+      console.log(listProduct)
+    }
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          <ImportExportButton accessoriesLeft={<DownloadIcon />}>
+          <ImportExportButton onClick={handleExportProduct} accessoriesLeft={<DownloadIcon />}>
             Xuất file
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>

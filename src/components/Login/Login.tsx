@@ -133,10 +133,10 @@ export function LeftBlock() {
   return (
     <div className="relative hidden w-full h-full md:block">
       <div className="pt-20 pl-16 cursor-pointer">
-        <img src="logo.svg" alt="logo" />
+        <h1 className="text-white">IMSD</h1>
       </div>
       <div className="absolute bottom-0 left-0 right-0 pr-40 mx-auto w-max">
-        <img src="/images/menu-demo.png" alt="menu" className="" />
+        <img src="/images/AuthenticationLeftBar.png" alt="menu" className="w-2/5" />
       </div>
     </div>
   )
