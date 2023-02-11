@@ -23,5 +23,8 @@ export const changePasswordUrl = `${baseUrl}/partner/change-password`
 
 //Product url
 
-export const AllProductUrl = `${baseUrl}/Products/Get`
+export const allProductUrl = `${baseUrl}/Products/Get`
+
+export const postProductUrl = `${baseUrl}/Products/PostProduct`
+
 

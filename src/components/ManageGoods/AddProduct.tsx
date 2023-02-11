@@ -23,7 +23,6 @@ import { useMutation } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
-
 interface Product {
   productId: number
   productName: string
@@ -33,11 +32,12 @@ interface Product {
   supplierId: number
   costPrice: number
   sellingPrice: number
-  unit: string
+  defaultMeasuredUnit: string
   inStock: number
   stockPrice: number
   image: string
   measuredUnits: any
+  status: boolean
 }
 
 function AddProduct(props) {
@@ -50,6 +50,7 @@ function AddProduct(props) {
   const [imageUploaded, setImageUploaded] = useState("")
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
+  const [isEnabled, setIsEnabled] = useState(true)
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
@@ -81,6 +82,26 @@ function AddProduct(props) {
       })
     }
   }, [listUnits])
+
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      setProduct({
+        ...product,
+        supplierId: nhaCungCapSelected.id,
+      })
+    }
+  }, [nhaCungCapSelected])
+
+
+  useEffect(() => {
+    if (typeProduct) {
+      setProduct({
+        ...product,
+        categoryId : typeProduct.id,
+      })
+    }
+  }, [typeProduct])
+
   const router = useRouter()
   const addNewProductMutation = useMutation(
     async (newProduct) => {
@@ -107,6 +128,14 @@ function AddProduct(props) {
     },
   )
 
+  useEffect(() => {
+      setProduct({
+        ...product,
+        status: true,
+
+      })
+  }, [isEnabled])
+
   const handleAddNewProduct = (event) => {
     event.preventDefault()
     // @ts-ignore
@@ -121,7 +150,9 @@ function AddProduct(props) {
     "Image url: ",
     imageUploaded,
     "Nha cung cap: ",
-    nhaCungCapSelected?.name,
+    product?.supplierId,
+    "Loai: ",
+    product?.measuredUnits,
   )
   return (
     <div className="grid gap-4 md:grid-cols-73">
@@ -163,7 +194,7 @@ function AddProduct(props) {
             <PrimaryInput
               title="Đơn vị tính"
               onChange={(e) => {
-                setProduct({ ...product, unit: e.target.value })
+                setProduct({ ...product, defaultMeasuredUnit: e.target.value })
               }}
             />
             <PrimaryInput
@@ -318,7 +349,7 @@ function AddProduct(props) {
         setNhaCungCapSelected={setNhaCungCapSelected}
         typeProduct={typeProduct}
         setTypeProduct={setTypeProduct}
-        handleAddProduct={handleAddNewProduct}
+        handleAddProduct={handleAddNewProduct} isEnabled={isEnabled} setIsEnabled={setIsEnabled}        
       />
     </div>
   )
@@ -345,8 +376,9 @@ function RightSideProductDetail({
   typeProduct,
   setTypeProduct,
   handleAddProduct,
+  isEnabled,
+  setIsEnabled
 }) {
-  const [isEnabled, setIsEnabled] = useState(true)
 
   const [loadingImage, setLoadingImage] = useState(false)
 
@@ -361,6 +393,7 @@ function RightSideProductDetail({
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
+
 
   return (
     <div className="">

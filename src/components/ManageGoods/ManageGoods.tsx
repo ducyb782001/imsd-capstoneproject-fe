@@ -15,6 +15,7 @@ import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListProduct } from "../../apis/product-module"
+import XLSX from "xlsx/xlsx"
 
 const columns = [
   {
@@ -22,7 +23,7 @@ const columns = [
     columns: [
       {
         Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productId}</p>,
+        accessor: (data: any) => <p>{data?.productCode}</p>,
       },
       {
         Header: "Ảnh",
@@ -78,19 +79,13 @@ const columns = [
   },
 ]
 
-const dataTest = [
-  { id: 1, firstName: "Test 1", lastName: "Test last2" },
-  { id: 2, firstName: "Test 1", lastName: "Test last2" },
-  { id: 3, name: "Chinh Bac" },
-  { id: 4, name: "Chinh Bac" },
-  { id: 5, name: "ABCD" },
-  { id: 6, name: "Chinh Bac" },
-  { id: 7, name: "Chinh Bac" },
-]
-
 const listNhaCungCapDemo = [
-  { id: "1", name: "Chinh Bac" },
-  { id: "2", name: "ABCD" },
+  { id: "1", name: "Hacom" },
+  { id: "3", name: "Kinh Do" },
+]
+const listCategoryDemo = [
+  { id: "1", name: "Laptop" },
+  { id: "2", name: "Phone" },
 ]
 
 function ManageGoods({ ...props }) {
@@ -104,6 +99,7 @@ function ManageGoods({ ...props }) {
   const [listFilter, setListFilter] = useState([])
 
   const [listProduct, setListProduct] = useState<any>()
+  const [listProductExport, setListProductExport] = useState<any>()
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -150,33 +146,49 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-  useQueries([
-    {
-      queryKey: [
-        "getListProduct",
-        debouncedSearchValue,
-        currentPage,
-        pageSize,
-        queryParams,
-      ],
-      queryFn: async () => {
-        const response = await getListProduct({
-          search: debouncedSearchValue,
-          offset: (currentPage - 1) * pageSize,
-          limit: pageSize,
-          ...queryParams,
-        })
-        setListProduct(response?.data)
-        return response?.data
+  
+
+    useQueries([
+      {
+        queryKey: [
+          "getListProduct",
+          debouncedSearchValue,
+          currentPage,
+          pageSize,
+          queryParams,
+        ],
+        queryFn: async () => {
+          if(debouncedSearchValue) {
+            const response = await getListProduct({
+              search: debouncedSearchValue,
+              offset: (currentPage - 1) * pageSize,
+              limit: pageSize,
+              ...queryParams,
+            })
+            setListProduct(response?.data)
+            return response?.data
+          } else {
+            const response = await getListProduct({
+              offset: (currentPage - 1) * pageSize,
+              limit: pageSize,
+              ...queryParams,
+            })
+            setListProduct(response?.data)
+            return response?.data
+          }  
+        },
       },
-    },
-  ])
-  console.log("List: ", listProduct)
+    ])
+
+    const handleExportProduct = () => {
+      console.log(listProduct)
+    }
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          <ImportExportButton accessoriesLeft={<DownloadIcon />}>
+          <ImportExportButton onClick={handleExportProduct} accessoriesLeft={<DownloadIcon />}>
             Xuất file
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>
@@ -209,7 +221,7 @@ function ManageGoods({ ...props }) {
               setShowing={setNhaCungCapSelected}
             />
             <DemoDropDown
-              listDropdown={listNhaCungCapDemo}
+              listDropdown={listCategoryDemo}
               textDefault={"Loại sản phẩm"}
               showing={typeSelected}
               setShowing={setTypeSelected}

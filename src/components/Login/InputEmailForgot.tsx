@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react"
 import axios from "axios"
 import { useMutation } from "react-query"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
 import PrimaryBtn from "../PrimaryBtn"
 import TextDescription from "../TextDescription"
 import UnderlineText from "../UnderlineText"
@@ -13,6 +13,7 @@ import { sendEmailUrl } from "../../constants/APIConfig"
 import { toast } from "react-toastify"
 import { LeftBlock } from "./Login"
 import KeyIcon from "../icons/KeyIcon"
+import { emailRegex } from "../../constants/constants"
 
 function InputEmailForgot(props) {
   const [userEmail, setUserEmail] = useState("")
@@ -52,6 +53,14 @@ function InputEmailForgot(props) {
     })
   }
 
+  useEffect(() => {
+    if (emailRegex.test(userEmail)) {
+      setDisabled(false);
+    }else{
+      setDisabled(true)
+    }
+    })
+
   return (
     <div className="relative">
     <div className="absolute z-[2]">
@@ -78,7 +87,8 @@ function InputEmailForgot(props) {
                 placeholder="Nhập email của bạn"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
-                <PrimaryBtn className="mt-3" onClick={handleSendEmail}>Gửi</PrimaryBtn>
+                <PrimaryBtn 
+                className="mt-3" disabled={disabled} onClick={handleSendEmail}>Gửi</PrimaryBtn>
                 <div className="flex flex-col items-center justify-center" onClick={handleLogin}>
                 <ArrowLeftIcon className="mt-4" accessoriesRight={<UnderlineText className="font-medium" > Quay lại đăng nhập</UnderlineText>}/>
                 </div>

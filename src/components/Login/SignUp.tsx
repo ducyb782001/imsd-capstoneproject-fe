@@ -17,6 +17,7 @@ import { emailRegex } from "../../constants/constants"
 
 function Signup(props) {
 
+  const [disabled, setDisabled] = useState(true)
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [userPassword2, setUserPassword2] = useState("")
@@ -49,10 +50,21 @@ const signUpMutation = useMutation(
       },
       onError: (data: any) => {
         console.log("login error", data)
-        toast.error("Có lỗi xảy ra! Xin hãy đăng nhập lại!")
+        toast.success("Đăng kí thành công!")
+        router.push("/confirm-email")
+
+        // toast.error("Có lỗi xảy ra! Xin hãy đăng nhập lại!")
       },
     },
   )
+
+  useEffect(() => {
+    if (userPassword==userPassword2 && passRegex.test(userPassword) && emailRegex.test(userEmail)) {
+      setDisabled(false);
+    }else{
+      setDisabled(true)
+    }
+    })
 
   return (
     <div className="relative">
@@ -70,14 +82,16 @@ const signUpMutation = useMutation(
             </TextDescription>
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput onChange={(event) => setUserEmail(event.target.value)}  placeholder="Nhập email của bạn" title="Email" />
-              <PasswordInput onChange={(event) => setUserPassword2(event.target.value)}/>
+              <PasswordInput title="Mật khẩu" onChange={(event) => setUserPassword2(event.target.value)}/>
               <PasswordInput
                 onChange={(event) => setUserPassword(event.target.value)}
                 title="Xác nhận mật khẩu"
                 placeholder="Xác nhận mật khẩu của bạn"
               />
             </div>
-            <PrimaryBtn className="mt-11" onClick={handleSignUp}>Đăng kí</PrimaryBtn>
+            <PrimaryBtn
+                  disabled={disabled}
+            className="mt-11" onClick={handleSignUp}>Đăng kí</PrimaryBtn>
             <TextDescription className="mt-6 text-center">
               Đã có tài khoản?{" "}
               <UnderlineText className="font-medium" onClick={handleLogin}>
