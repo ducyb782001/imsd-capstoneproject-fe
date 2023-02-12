@@ -15,6 +15,7 @@ import "../styles/table.css"
 import "../styles/loading.css"
 import "../styles/tooltip.css"
 import "../styles/add-image.css"
+import "../styles/skeleton-loading.css"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs

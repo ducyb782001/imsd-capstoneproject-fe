@@ -1,0 +1,51 @@
+.skeleton-loading {
+  direction: ltr;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.skeleton-loading:before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 1;
+  width: 500%;
+  margin-left: -250%;
+  -webkit-animation: skeletonAnimation 1.4s linear infinite;
+  animation: skeletonAnimation 1.4s linear infinite;
+  background: linear-gradient(
+      90deg,
+      var(--skeleton-gradient-from) 46%,
+      var(--skeleton-gradient-to) 50%,
+      var(--skeleton-gradient-from) 54%
+    )
+    50% 50%;
+}
+
+@-webkit-keyframes skeletonAnimation {
+  0% {
+    transform: translate3d(-30%, 0, 0);
+  }
+  to {
+    transform: translate3d(30%, 0, 0);
+  }
+}
+
+@keyframes skeletonAnimation {
+  0% {
+    transform: translate3d(-30%, 0, 0);
+  }
+  to {
+    transform: translate3d(30%, 0, 0);
+  }
+}
+
+.skeleton-loading {
+  background-color: var(--skeleton-background);
+}
