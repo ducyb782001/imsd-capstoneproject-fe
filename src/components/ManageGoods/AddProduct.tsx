@@ -402,7 +402,8 @@ function RightSideProductDetail({
     if (
       nhaCungCapSelected == null ||
       typeProduct == null ||
-      product.productName.trim() == ""
+      product.productName?.trim() == "" ||
+      product.productName == null
     ) {
       setDisabled(true)
     } else {

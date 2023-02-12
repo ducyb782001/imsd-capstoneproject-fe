@@ -25,6 +25,7 @@ import { useMutation, useQueries } from "react-query"
 import { getProductDetail, updateProduct } from "../../apis/product-module"
 import BigNumber from "bignumber.js"
 import { toast } from "react-toastify"
+import ProductDetail from "./ProductDetail"
 
 interface Product {
   productId: number
@@ -41,6 +42,8 @@ interface Product {
   image: string
   measuredUnits: any
   status: boolean
+  supplier: any
+  category: any
 }
 
 function EditProduct(props) {
@@ -123,6 +126,11 @@ function EditProduct(props) {
       status: isEnabled,
     })
   }, [isEnabled])
+
+  useEffect(() => {
+    setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
+    setTypeProduct(detailProduct?.category?.categoryName)
+  })
 
   const updateProductMutation = useMutation(
     async (newProduct) => {
