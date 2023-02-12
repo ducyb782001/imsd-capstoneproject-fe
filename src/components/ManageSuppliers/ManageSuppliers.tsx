@@ -78,7 +78,7 @@ const columns = [
                   <EditIcon />
                 </a>
               </Link>
-              <Link href={`/product-detail/${data?.productId}`}>
+              <Link href={`/supplier-detail/${data?.productId}`}>
                 <a className="w-full">
                   <ShowDetailIcon />
                 </a>
@@ -231,7 +231,7 @@ function ManageSuppliers({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/add-product`}>
+        <Link href={`/add-supplier`}>
           <a>
             <PrimaryBtn
               className="max-w-[250px]"

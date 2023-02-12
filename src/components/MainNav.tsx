@@ -37,8 +37,8 @@ function MainNav() {
     {
       id: 2,
       name: "Nhà cung cấp",
-      href: "/suppliers",
-      isActive: router.asPath.includes("/suppliers"),
+      href: "/manage-suppliers",
+      isActive: router.asPath.includes("/manage-suppliers"),
     },
     {
       id: 3,
