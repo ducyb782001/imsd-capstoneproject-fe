@@ -5,6 +5,7 @@ import format from "date-fns/format"
 import { useQueries } from "react-query"
 import { getProductDetail } from "../../apis/product-module"
 import { useRouter } from "next/router"
+import { formatISO } from "date-fns"
 
 function ProductDetail(props) {
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
@@ -81,8 +82,8 @@ function ProductDetail(props) {
             />
             <ProductInfo
               title="Ngày tạo"
-              data={useFormatTimeDuration(detailProduct?.created)}
-              // data={format(dateNow, "MMM dd, yyyy")}
+              data={detailProduct?.created}
+              // data={formatISO(detailProduct?.created)}
             />
           </div>
           <div>

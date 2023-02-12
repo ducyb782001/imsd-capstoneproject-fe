@@ -3,7 +3,12 @@ import {
   detailProductUrl,
   postProductUrl,
 } from "../constants/APIConfig"
-import { convertObjectToQueryString, postAPI, requestAPI } from "../lib/api"
+import {
+  convertObjectToQueryString,
+  patchAPI,
+  postAPI,
+  requestAPI,
+} from "../lib/api"
 
 export const getListProduct = (searchObj) => {
   const queryString = convertObjectToQueryString(searchObj)
@@ -23,3 +28,9 @@ export const getProductDetail = (productId) => {
     url: `${detailProductUrl}?prodId=${productId}`,
   })
 }
+
+export const updateProduct = (newProduct) =>
+  patchAPI({
+    url: `ong thay cai url cua put product vao day nha`,
+    data: newProduct,
+  })

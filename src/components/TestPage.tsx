@@ -11,6 +11,7 @@ import PrimaryInput from "./PrimaryInput"
 import PrimaryInputCheckbox from "./PrimaryInputCheckbox"
 import PrimaryTextArea from "./PrimaryTextArea"
 import SecondaryBtn from "./SecondaryBtn"
+import useScanDetection from "use-scan-detection"
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -20,6 +21,16 @@ const listNhaCungCapDemo = [
 function TestPage(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [isShowBelow, setIsShowBelow] = useState(false)
+  const [searchBarCode, setSearchBarcode] = useState("No barcode scaned")
+  // console.log("searchBarCode: ", searchBarCode)
+
+  // useScanDetection({
+  //   onComplete: (code) => {
+  //     console.log("Test: ", code)
+  //   },
+  //   minLength: 3,
+  // })
+
   return (
     <div className="flex flex-col gap-4 mb-20">
       <PrimaryBtn>ABCD</PrimaryBtn>
@@ -71,6 +82,9 @@ function TestPage(props) {
         </AnimatePresence>
       </div>
       {/* <BarChart /> */}
+      <p> Bar code: </p>
+      {/* <input onChange={(e) => setSearchBarcode(e.target.value)} /> */}
+      {searchBarCode ? <div>No barcode</div> : searchBarCode}
     </div>
   )
 }
