@@ -98,7 +98,7 @@ function Login(props) {
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput
-              title="Password"
+                title="Password"
                 onChange={(event) => setUserPassword(event.target.value)}
               />
             </div>
@@ -132,11 +132,15 @@ export default Login
 export function LeftBlock() {
   return (
     <div className="relative hidden w-full h-full md:block">
-      <div className="pt-20 pl-16 cursor-pointer">
-        <h1 className="text-white">IMSD</h1>
+      <div className="pt-16 pl-16 cursor-pointer">
+        <p className="text-white text-3xl">IMSD</p>
       </div>
       <div className="absolute bottom-0 left-0 right-0 pr-40 mx-auto w-max">
-        <img src="/images/AuthenticationLeftBar.png" alt="menu" className="w-2/5" />
+        <img
+          src="/images/AuthenticationLeftBar.png"
+          alt="menu"
+          className="w-2/5"
+        />
       </div>
     </div>
   )

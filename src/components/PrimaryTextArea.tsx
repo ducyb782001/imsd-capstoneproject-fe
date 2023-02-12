@@ -11,7 +11,7 @@ function PrimaryTextArea({
 }) {
   return (
     <div className={`form-group ${className}`}>
-      {title && <p className="mb-2 text-sm text-white">{title}</p>}
+      {title && <p className="mb-2 text-sm text-black font-bold">{title}</p>}
       {note && <div className="mb-2 text-sm font-light text-gray">{note}</div>}
       <textarea
         {...props}
