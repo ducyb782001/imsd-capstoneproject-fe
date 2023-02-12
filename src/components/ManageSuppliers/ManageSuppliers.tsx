@@ -100,7 +100,7 @@ const listCategoryDemo = [
   { id: "2", name: "Phone" },
 ]
 
-function ManageGoods({ ...props }) {
+function ManageSuppliers({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -234,33 +234,27 @@ function ManageGoods({ ...props }) {
         <Link href={`/add-product`}>
           <a>
             <PrimaryBtn
-              className="max-w-[200px]"
+              className="max-w-[250px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Thêm sản phẩm
+              Thêm nhà cung cấp
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder="Tìm kiếm theo tên/ mã sản phẩm"
+              placeholder="Tìm kiếm bằng tên nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full"
+              className="w-full col-span-2"
             />
             <DemoDropDown
               listDropdown={listNhaCungCapDemo}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
-            />
-            <DemoDropDown
-              listDropdown={listCategoryDemo}
-              textDefault={"Loại sản phẩm"}
-              showing={typeSelected}
-              setShowing={setTypeSelected}
             />
           </div>
           <ShowLabelBar
@@ -295,7 +289,7 @@ function ManageGoods({ ...props }) {
   )
 }
 
-export default ManageGoods
+export default ManageSuppliers
 
 function ImportExportButton({
   accessoriesLeft,

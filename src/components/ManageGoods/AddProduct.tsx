@@ -92,12 +92,11 @@ function AddProduct(props) {
     }
   }, [nhaCungCapSelected])
 
-
   useEffect(() => {
     if (typeProduct) {
       setProduct({
         ...product,
-        categoryId : typeProduct.id,
+        categoryId: typeProduct.id,
       })
     }
   }, [typeProduct])
@@ -129,11 +128,10 @@ function AddProduct(props) {
   )
 
   useEffect(() => {
-      setProduct({
-        ...product,
-        status: true,
-
-      })
+    setProduct({
+      ...product,
+      status: true,
+    })
   }, [isEnabled])
 
   const handleAddNewProduct = (event) => {
@@ -343,13 +341,17 @@ function AddProduct(props) {
         </div>
       </div>
       <RightSideProductDetail
+        product={product}
+        setProduct={setProduct}
         imageUploaded={imageUploaded}
         setImageUploaded={setImageUploaded}
         nhaCungCapSelected={nhaCungCapSelected}
         setNhaCungCapSelected={setNhaCungCapSelected}
         typeProduct={typeProduct}
         setTypeProduct={setTypeProduct}
-        handleAddProduct={handleAddNewProduct} isEnabled={isEnabled} setIsEnabled={setIsEnabled}        
+        handleAddProduct={handleAddNewProduct}
+        isEnabled={isEnabled}
+        setIsEnabled={setIsEnabled}
       />
     </div>
   )
@@ -369,6 +371,8 @@ const lisLoaiSanPhamDemo = [
 ]
 
 function RightSideProductDetail({
+  product,
+  setProduct,
   imageUploaded,
   setImageUploaded,
   nhaCungCapSelected,
@@ -377,10 +381,10 @@ function RightSideProductDetail({
   setTypeProduct,
   handleAddProduct,
   isEnabled,
-  setIsEnabled
+  setIsEnabled,
 }) {
-
   const [loadingImage, setLoadingImage] = useState(false)
+  const [disabled, setDisabled] = useState(true)
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
@@ -394,6 +398,18 @@ function RightSideProductDetail({
     setLoadingImage(false)
   }
 
+  useEffect(() => {
+    if (
+      nhaCungCapSelected == null ||
+      typeProduct == null ||
+      product.productName?.trim() == "" ||
+      product.productName == null
+    ) {
+      setDisabled(true)
+    } else {
+      setDisabled(false)
+    }
+  })
 
   return (
     <div className="">
@@ -428,7 +444,9 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>Thông tin bổ sung</SmallTitle>
+        <SmallTitle>
+          Thông tin bổ sung <span className="text-red-500">*</span>
+        </SmallTitle>
 
         <p className="mt-4">Nhà cung cấp</p>
         <ChooseSupplierDropdown
@@ -472,6 +490,7 @@ function RightSideProductDetail({
         <PrimaryBtn
           className="bg-successBtn border-successBtn active:bg-greenDark"
           onClick={handleAddProduct}
+          disabled={disabled}
         >
           Thêm sản phẩm
         </PrimaryBtn>

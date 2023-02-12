@@ -29,6 +29,11 @@ export const getProductDetail = (productId) => {
   })
 }
 
+export const getListExportProduct = (searchObj) => {
+  return requestAPI({
+    url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=0`,
+  })
+}
 export const updateProduct = (newProduct) =>
   patchAPI({
     url: `ong thay cai url cua put product vao day nha`,
