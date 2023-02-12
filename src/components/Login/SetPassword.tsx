@@ -33,12 +33,8 @@ function SetPassword(props) {
 
   const resetPassMutation = useMutation(
     () => {
-      var paramLink = router.query["token"].toString()
-      var link =
-        resetPassword +
-        encodeURIComponent(paramLink) +
-        "&newpwd=" +
-        userPassword
+      var paramLink = router.query["token"]
+      var link = resetPassword + paramLink + "&newpwd=" + userPassword
       return axios.post(link)
     },
     {
@@ -54,18 +50,16 @@ function SetPassword(props) {
         // toast.error("Link reset mật khẩu lỗi! Xin thực hiện lại!")
         toast.error("Cài lại mật khẩu thành công!")
         router.push("/login")
-
       },
     },
   )
 
-
   useEffect(() => {
-  if (userPassword == userPassword2 && passRegex.test(userPassword)) {
-    setDisabled(false);
-  }else{
-    setDisabled(true)
-  }
+    if (userPassword == userPassword2 && passRegex.test(userPassword)) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
   })
 
   return (

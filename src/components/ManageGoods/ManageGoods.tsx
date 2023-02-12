@@ -15,8 +15,10 @@ import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import { getListExportProduct, getListProduct } from "../../apis/product-module"
-import XLSX from "xlsx/xlsx"
+import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
+import { da } from "date-fns/locale"
+import { format, parseISO } from "date-fns"
 
 const columns = [
   {
@@ -32,7 +34,7 @@ const columns = [
           <div className="w-[35px] h-[35px] rounded-xl">
             <img
               className="object-cover rounded-xl"
-              src="/images/image-default.png"
+              src={data?.image}
               alt="image-product"
             />
           </div>
@@ -62,7 +64,9 @@ const columns = [
       },
       {
         Header: "Ngày khởi tạo",
-        accessor: (data: any) => <p>12/08/2022 15:30</p>,
+        accessor: (data: any) => (
+          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+        ),
       },
       {
         Header: " ",
@@ -192,7 +196,6 @@ function ManageGoods({ ...props }) {
             ...queryParams,
           })
           setListProduct(response?.data)
-          console.log(listProduct)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportProduct({})
@@ -207,7 +210,11 @@ function ManageGoods({ ...props }) {
   ])
 
   const handleExportProduct = () => {
-    const wb = XLSX.
+    const dateTime = Date().toLocaleString() + ""
+    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
+    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
   }
 
   return (
