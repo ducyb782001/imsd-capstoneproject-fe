@@ -44,8 +44,8 @@ function MainNav() {
       id: 3,
       name: "Loại sản phẩm",
       // Chua tao page
-      href: "/type-goods",
-      isActive: router.asPath.includes("/type-goods"),
+      href: "//manage-type-goods",
+      isActive: router.asPath.includes("/manage-type-goods"),
     },
   ]
   const subMenuImportGoods = [
@@ -119,8 +119,10 @@ function MainNav() {
       icon: <ManageGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-goods") ||
-        router.asPath.includes("/suppliers") ||
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/add-suppliers") ||
         router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
         router.asPath.includes("/edit-product") ||
         router.asPath.includes("/create-product"),
     },

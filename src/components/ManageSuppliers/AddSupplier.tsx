@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from "react"
-import InfoIcon from "../icons/InfoIcon"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
-import Switch from "react-switch"
-import { AnimatePresence, motion } from "framer-motion"
-import { variants } from "../../lib/constants"
-import Tooltip from "../ToolTip"
-import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
-import SecondaryBtn from "../SecondaryBtn"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import GarbageIcon from "../icons/GarbageIcon"
-import AddUnitIcon from "../icons/AddUnitIcon"
-import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
-import AddImage from "../AddImage"
-import Loading from "../Loading"
 import { useMutation } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
@@ -39,13 +25,9 @@ interface Product {
   status: boolean
 }
 
-function AddProduct(props) {
+function AddSupplier(props) {
   const [product, setProduct] = useState<Product>()
-  const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
-  const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
   const [listUnits, setListUnits] = useState([])
-  const [newType, setNewType] = useState<string>("")
-  const [newDetail, setNewDetail] = useState<string>("")
   const [imageUploaded, setImageUploaded] = useState("")
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
@@ -55,20 +37,6 @@ function AddProduct(props) {
     { id: "1", name: "Chinh Bac" },
     { id: "2", name: "ABCD" },
   ]
-
-  const handleAddNewUnit = () => {
-    if (newType && newDetail) {
-      setListUnits([
-        ...listUnits,
-        {
-          measuredUnitName: newType,
-          measuredUnitValue: newDetail,
-        },
-      ])
-      setNewType("")
-      setNewDetail("")
-    }
-  }
   useEffect(() => {
     if (imageUploaded) {
       setProduct({
@@ -113,8 +81,8 @@ function AddProduct(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Add new product success")
-          router.push("/coupon")
+          toast.success("Thêm nhà cung cấp thành công!")
+          router.push("/manage-suppliers")
         } else {
           console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
@@ -123,7 +91,7 @@ function AddProduct(props) {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                "Đã có lỗi xảy ra! Xin kiểm tra lại",
             )
           }
         }
@@ -159,7 +127,7 @@ function AddProduct(props) {
   return (
     <div className="">
       <div>
-        <div className="bg-white block-border">
+        <div className="bg-white block-border w-full">
           <SmallTitle>Thông tin chung</SmallTitle>
           <PrimaryInput
             className="mt-6"
@@ -231,10 +199,7 @@ function AddProduct(props) {
               setProduct({ ...product, description: e.target.value })
             }}
           />
-        </div>
-
-        <div className="mt-4 h-24 bg-white block-border ">
-          <div className="flex items-center float-right">
+          <div className="flex items-center absolute-right">
             <div className="flex flex-col gap-4">
               <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
                 <PrimaryBtn className="bg-cancelBtn border-cancelBtn active:bg-cancelDark">
@@ -252,4 +217,4 @@ function AddProduct(props) {
   )
 }
 
-export default AddProduct
+export default AddSupplier

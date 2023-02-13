@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from "react"
-import InfoIcon from "../icons/InfoIcon"
-import PrimaryInput from "../PrimaryInput"
-import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
-import Switch from "react-switch"
-import { AnimatePresence, motion } from "framer-motion"
-import { variants } from "../../lib/constants"
-import Tooltip from "../ToolTip"
 import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
-import SecondaryBtn from "../SecondaryBtn"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import GarbageIcon from "../icons/GarbageIcon"
-import AddUnitIcon from "../icons/AddUnitIcon"
-import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
-import AddImage from "../AddImage"
-import Loading from "../Loading"
 import { useMutation } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import detailProduct from "../../pages/product-detail/[productId]"
 import SearchInput from "../SearchInput"
-import ShowLabelBar from "../Filter/ShowLabelBar"
 import Table from "../Table"
-import Pagination from "../Pagination"
 import { format, parseISO } from "date-fns"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
@@ -115,8 +96,6 @@ const columns = [
 ]
 function SupplierDetail(props) {
   const [product, setProduct] = useState<Product>()
-  const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
-  const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
   const [listUnits, setListUnits] = useState([])
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
@@ -130,19 +109,6 @@ function SupplierDetail(props) {
     { id: "2", name: "ABCD" },
   ]
 
-  const handleAddNewUnit = () => {
-    if (newType && newDetail) {
-      setListUnits([
-        ...listUnits,
-        {
-          measuredUnitName: newType,
-          measuredUnitValue: newDetail,
-        },
-      ])
-      setNewType("")
-      setNewDetail("")
-    }
-  }
   useEffect(() => {
     if (imageUploaded) {
       setProduct({

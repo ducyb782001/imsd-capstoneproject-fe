@@ -26,15 +26,15 @@ function MobileNav() {
     {
       id: 2,
       name: "Nhà cung cấp",
-      href: "/suppliers",
-      isActive: router.asPath.includes("/suppliers"),
+      href: "/manage-suppliers",
+      isActive: router.asPath.includes("/manage-suppliers"),
     },
     {
       id: 3,
       name: "Loại sản phẩm",
       // Chua tao page
-      href: "/type-goods",
-      isActive: router.asPath.includes("/type-goods"),
+      href: "/manage-type-goods",
+      isActive: router.asPath.includes("/manage-type-goods"),
     },
   ]
   const subMenuImportGoods = [

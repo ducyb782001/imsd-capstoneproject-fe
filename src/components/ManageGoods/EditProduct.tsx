@@ -112,7 +112,14 @@ function EditProduct(props) {
       },
     },
   ])
-
+  useEffect(() => {
+    if (imageUploaded) {
+      setDetailProduct({
+        ...detailProduct,
+        image: imageUploaded,
+      })
+    }
+  }, [imageUploaded])
   useEffect(() => {
     if (detailProduct) {
       setImageUploaded(detailProduct?.image)
@@ -133,16 +140,15 @@ function EditProduct(props) {
   })
 
   const updateProductMutation = useMutation(
-    async (newProduct) => {
-      return await updateProduct(newProduct)
+    async (editProduct) => {
+      return await updateProduct(editProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.success("Cập nhập sản phẩm thành công")
-          router.push("/coupon")
+          router.push("/manage-goods")
         } else {
-          console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
           } else {
@@ -158,8 +164,8 @@ function EditProduct(props) {
   )
 
   const handleClickSaveBtn = (event) => {
+    event?.preventDefault()
     console.log("Save btn success")
-    event.preventDefault()
     // @ts-ignore
     updateProductMutation.mutate({
       ...detailProduct,
