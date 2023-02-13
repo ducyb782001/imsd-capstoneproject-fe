@@ -172,7 +172,7 @@ export const patchAPI = ({ ...options }) => {
     return error
   }
 
-  return client({ method: "patch", ...options })
+  return client({ method: "put", ...options })
     .then(onSuccess)
     .catch(onError)
 }

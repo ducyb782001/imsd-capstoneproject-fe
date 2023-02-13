@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import DatePicker from "../DatePicker"
 import DemoDropDown from "../DemoDropDown"
 import DownloadIcon from "../icons/DownloadIcon"
 import PlusIcon from "../icons/PlusIcon"
@@ -17,7 +16,6 @@ import { useQueries } from "react-query"
 import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
 
 const columns = [
