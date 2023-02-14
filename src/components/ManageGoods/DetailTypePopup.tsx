@@ -43,7 +43,7 @@ function DetailTypePopup({ className = "", id }) {
       },
     },
   ])
-  console.log("description:" + description)
+  console.log("description:" + id)
 
   return (
     <div className={`${className}`}>
@@ -76,7 +76,7 @@ function DetailTypePopup({ className = "", id }) {
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <TextDescription>{description}</TextDescription>
+                  <TextDescription>{id}</TextDescription>
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">

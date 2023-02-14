@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react"
-import DatePicker from "../DatePicker"
-import DemoDropDown from "../DemoDropDown"
 import DownloadIcon from "../icons/DownloadIcon"
 import PlusIcon from "../icons/PlusIcon"
 import UploadIcon from "../icons/UploadIcon"
@@ -93,15 +91,6 @@ const columns = [
       },
     ],
   },
-]
-
-const listNhaCungCapDemo = [
-  { id: "1", name: "Hacom" },
-  { id: "3", name: "Kinh Do" },
-]
-const listCategoryDemo = [
-  { id: "1", name: "Laptop" },
-  { id: "2", name: "Phone" },
 ]
 
 function ManageGoods({ ...props }) {

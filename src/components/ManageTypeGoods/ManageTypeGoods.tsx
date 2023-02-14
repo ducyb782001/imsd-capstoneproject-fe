@@ -6,8 +6,6 @@ import PrimaryBtn from "../PrimaryBtn"
 import SearchInput from "../SearchInput"
 import Table from "../Table"
 import Pagination from "../Pagination"
-import Link from "next/link"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import {
@@ -15,7 +13,6 @@ import {
   getListTypeGood,
 } from "../../apis/type-good-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
 import AddTypePopup from "../ManageGoods/AddTypePopup"
 import EditTypePopup from "../ManageGoods/EditTypePopup"
 import DetailTypePopup from "../ManageGoods/DetailTypePopup"
@@ -34,7 +31,7 @@ const columns = [
           return (
             <div className="flex items-center gap-2">
               <EditTypePopup id={data?.categoryId} />
-              <DetailTypePopup id={data?.categoryId} />
+              <DetailTypePopup id={data?.description} />
             </div>
           )
         },
