@@ -5,6 +5,9 @@
 
 export const baseUrl = `https://localhost:7265/api`
 
+// City, district, ward
+export const countryUrl = `https://provinces.open-api.vn/api`
+
 //auth url
 
 export const loginUrl = `${baseUrl}/Authentication/Login`
