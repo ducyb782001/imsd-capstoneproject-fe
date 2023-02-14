@@ -11,14 +11,13 @@ import PrimaryInput from "./PrimaryInput"
 import PrimaryInputCheckbox from "./PrimaryInputCheckbox"
 import PrimaryTextArea from "./PrimaryTextArea"
 import SecondaryBtn from "./SecondaryBtn"
-import useScanDetection from "use-scan-detection"
 import { useQueries } from "react-query"
 import {
   getListCity,
   getListDistrictByCode,
   getListWardByCode,
 } from "../apis/search-country-module"
-import CountryDropDown from "./CountryDropDown"
+import CountryDropDown from "./CityDropDown"
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },

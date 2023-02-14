@@ -4,7 +4,7 @@ import { search } from "../lib/search"
 import ArrowDownIcon from "./icons/ArrowDownIcon"
 import SearchIcon from "./icons/SearchIcon"
 
-function CityDropDown({
+function WardDropDown({
   title = "",
   listDropdown,
   showing,
@@ -74,7 +74,7 @@ function CityDropDown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">{showing?.name || textDefault}</p>
+            <p className="text-black">{showing?.name || textDefault}</p>
           </div>
           <ArrowDownIcon color="#373737" />
         </div>
@@ -114,7 +114,7 @@ function CityDropDown({
   )
 }
 
-export default CityDropDown
+export default WardDropDown
 
 function DropDownItem({ data, setShowing }) {
   return (

@@ -1,8 +1,8 @@
 import {
-  allTypeGoodUrl,
-  // detailTypeGoodUrl,
-  // postTypeGoodtUrl,
-  // editTypeGoodUrl,
+  addSupplierUrl,
+  allSupplierUrl,
+  editSupplierUrl,
+  getSupplierDetailUrl,
 } from "../constants/APIConfig"
 import {
   convertObjectToQueryString,
@@ -10,33 +10,35 @@ import {
   postAPI,
   requestAPI,
 } from "../lib/api"
+import addSupplier from "../pages/add-supplier"
 
-export const getListTypeGood = (searchObj) => {
+export const getListSupplier = (searchObj) => {
   const queryString = convertObjectToQueryString(searchObj)
   return requestAPI({
-    url: `${allTypeGoodUrl}${queryString}`,
+    url: `${allSupplierUrl}${queryString}`,
   })
 }
 
-//   export const addNewProduct = (newProduct) =>
-//     postAPI({
-//       url: postProductUrl,
-//       data: newProduct,
-//     })
+export const addNewSupplier = (newSupplier) =>
+  postAPI({
+    url: addSupplierUrl,
+    data: newSupplier,
+  })
 
-//   export const getProductDetail = (productId) => {
-//     return requestAPI({
-//       url: `${detailProductUrl}?prodId=${productId}`,
-//     })
-//   }
-
-export const getListExportTypeGood = (searchObj) => {
+export const getSupplierDetail = (supplierId) => {
   return requestAPI({
-    url: `${allTypeGoodUrl}?offset=0&limit=1000&catId=0&supId=0`,
+    url: `${getSupplierDetailUrl}?supId=${supplierId}`,
   })
 }
-//   export const updateProduct = (editedProduct) =>
-//     patchAPI({
-//       url: editProductUrl,
-//       data: editedProduct,
-//     })
+
+export const getListExportSupplier = (searchObj) => {
+  return requestAPI({
+    url: `${allSupplierUrl}?offset=0&limit=1000`,
+  })
+}
+
+export const updateSupplier = (editedSupplier) =>
+  patchAPI({
+    url: editSupplierUrl,
+    data: editedSupplier,
+  })

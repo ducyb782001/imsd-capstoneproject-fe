@@ -26,6 +26,8 @@ import { getProductDetail, updateProduct } from "../../apis/product-module"
 import BigNumber from "bignumber.js"
 import { toast } from "react-toastify"
 import ProductDetail from "./ProductDetail"
+import { getListExportTypeGood } from "../../apis/type-good-module"
+import { getListExportSupplier } from "../../apis/supplier-module"
 
 interface Product {
   productId: number
@@ -63,6 +65,9 @@ function EditProduct(props) {
   const [imageUploaded, setImageUploaded] = useState("")
   const [loadingImage, setLoadingImage] = useState(false)
 
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [listTypeProduct, setListTypeProduct] = useState([])
+
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
       setListUnits([
@@ -76,7 +81,12 @@ function EditProduct(props) {
       setNewDetail("")
     }
   }
-
+  useEffect(() => {
+    if (nhaCungCapSelected == undefined || typeProduct == undefined) {
+      setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
+      setTypeProduct(detailProduct?.category?.categoryName)
+    }
+  })
   useEffect(() => {
     if (listUnits) {
       setDetailProduct({
@@ -99,6 +109,24 @@ function EditProduct(props) {
 
   const router = useRouter()
   const { productId } = router.query
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      setDetailProduct({
+        ...detailProduct,
+        supplierId: nhaCungCapSelected.supplierId,
+      })
+    }
+  }, [nhaCungCapSelected])
+
+  useEffect(() => {
+    if (typeProduct) {
+      console.log("typeProduct: " + typeProduct)
+      setDetailProduct({
+        ...detailProduct,
+        categoryId: typeProduct.categoryId,
+      })
+    }
+  }, [typeProduct])
 
   useQueries([
     {
@@ -109,6 +137,22 @@ function EditProduct(props) {
           setDetailProduct(response?.data)
           return response?.data
         }
+      },
+    },
+    {
+      queryKey: ["getListTypeGood"],
+      queryFn: async () => {
+        const response = await getListExportTypeGood({})
+        await setListTypeProduct(response?.data?.data)
+        return response?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const response = await getListExportSupplier({})
+        await setListNhaCungCap(response?.data?.data)
+        return response?.data
       },
     },
   ])
@@ -133,11 +177,6 @@ function EditProduct(props) {
       status: isEnabled,
     })
   }, [isEnabled])
-
-  useEffect(() => {
-    setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
-    setTypeProduct(detailProduct?.category?.categoryName)
-  })
 
   const updateProductMutation = useMutation(
     async (editProduct) => {
@@ -387,23 +426,14 @@ function EditProduct(props) {
         setIsEnabled={setIsEnabled}
         isEnabled={isEnabled}
         handleClickSaveBtn={handleClickSaveBtn}
+        listNhaCungCap={listNhaCungCap}
+        listTypeProduct={listTypeProduct}
       />
     </div>
   )
 }
 
 export default EditProduct
-
-const listNhaCungCapDemo = [
-  { id: "1", name: "Chinh Bac" },
-  { id: "2", name: "ABCD" },
-]
-
-const lisLoaiSanPhamDemo = [
-  { id: "1", name: "Bánh" },
-  { id: "2", name: "Trái" },
-  { id: "2", name: "Hoa quả" },
-]
 
 function RightSideProductDetail({
   imageUploaded,
@@ -418,6 +448,8 @@ function RightSideProductDetail({
   setIsEnabled,
   isEnabled,
   handleClickSaveBtn,
+  listNhaCungCap,
+  listTypeProduct,
   ...props
 }) {
   return (
@@ -457,14 +489,14 @@ function RightSideProductDetail({
 
         <p className="mt-4">Nhà cung cấp</p>
         <ChooseSupplierDropdown
-          listDropdown={listNhaCungCapDemo}
+          listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
         <ChooseTypeDropdown
-          listDropdown={lisLoaiSanPhamDemo}
+          listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
           setShowing={setTypeProduct}

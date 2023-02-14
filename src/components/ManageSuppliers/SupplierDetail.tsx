@@ -2,39 +2,84 @@ import React, { useEffect, useState } from "react"
 import SmallTitle from "../SmallTitle"
 import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
-import { useMutation } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import { addNewProduct } from "../../apis/product-module"
+import { addNewProduct, getListProduct } from "../../apis/product-module"
 import SearchInput from "../SearchInput"
 import Table from "../Table"
 import { format, parseISO } from "date-fns"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
-interface Product {
-  productId: number
-  productName: string
-  productCode: string
-  categoryId: number
-  description: string
-  supplierId: number
-  costPrice: number
-  sellingPrice: number
-  defaultMeasuredUnit: string
-  inStock: number
-  stockPrice: number
-  image: string
-  measuredUnits: any
-  status: boolean
-}
+import { getSupplierDetail } from "../../apis/supplier-module"
+import Pagination from "../Pagination"
+
+// const columns = [
+//   {
+//     Header: " ",
+//     columns: [
+//       {
+//         Header: "Mã SP",
+//         accessor: (data: any) => <p>{data?.productCode}</p>,
+//       },
+//       {
+//         Header: "Ảnh",
+//         accessor: (data: any) => (
+//           <div className="w-[35px] h-[35px] rounded-xl">
+//             <img
+//               className="object-cover rounded-xl"
+//               src={data?.image}
+//               alt="image-product"
+//             />
+//           </div>
+//         ),
+//       },
+//       {
+//         Header: "Tên sản phẩm",
+//         accessor: (data: any) => <p>{data?.productName}</p>,
+//       },
+//       {
+//         Header: "Loại",
+//         // accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+//         accessor: (data: any) => <p>{data?.categoryName}</p>,
+//       },
+//       {
+//         Header: "Đơn vị",
+//         accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+//       },
+//       {
+//         Header: "Ngày khởi tạo",
+//         accessor: (data: any) => (
+//           <p>{data?.created}</p>
+//           // <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+//         ),
+//       },
+//       {
+//         Header: " ",
+//         accessor: (data: any) => {
+//           return (
+//             <div className="flex items-center gap-2">
+//               <Link href={`/edit-product/${data?.productId}`}></Link>
+//               <Link href={`/product-detail/${data?.productId}`}>
+//                 <a className="w-full">
+//                   <ShowDetailIcon />
+//                 </a>
+//               </Link>
+//             </div>
+//           )
+//         },
+//       },
+//     ],
+//   },
+// ]
 const columns = [
   {
     Header: " ",
     columns: [
       {
         Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        accessor: (data: any) => <p>SP01</p>,
       },
       {
         Header: "Ảnh",
@@ -42,7 +87,7 @@ const columns = [
           <div className="w-[35px] h-[35px] rounded-xl">
             <img
               className="object-cover rounded-xl"
-              src={data?.image}
+              src="/images/image-default.png"
               alt="image-product"
             />
           </div>
@@ -50,102 +95,79 @@ const columns = [
       },
       {
         Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
+        accessor: (data: any) => <p>Giỏ quà Tết 2023 TET200</p>,
       },
       {
         Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+        accessor: (data: any) => <p>Chính Bắc</p>,
       },
       {
         Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+        accessor: (data: any) => <p>Giỏ quà</p>,
       },
       {
         Header: "Tồn kho",
-        accessor: (data: any) => (
-          <p>{new BigNumber(data?.inStock).toFormat()}</p>
-        ),
+        accessor: (data: any) => <p>{new BigNumber(100).toFormat()}</p>,
       },
       {
         Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+        accessor: (data: any) => <p>Giỏ</p>,
       },
       {
         Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
+        accessor: (data: any) => <p>12/08/2022 15:30</p>,
       },
       {
         Header: " ",
         accessor: (data: any) => {
           return (
-            <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.productId}`}></Link>
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
+            <Link href={`/product-detail/${data?.id}`}>
+              <a className="w-full">
+                <ShowDetailIcon />
+              </a>
+            </Link>
           )
         },
       },
     ],
   },
 ]
+interface Supplier {
+  supplierId: number
+  supplierName: string
+  supplierPhone: string
+  city: string
+  district: string
+  ward: string
+  address: string
+  note: string
+  supplierEmail: string
+  status: boolean
+}
 function SupplierDetail(props) {
-  const [product, setProduct] = useState<Product>()
-  const [listUnits, setListUnits] = useState([])
+  const [supplier, setSupplier] = useState<Supplier>()
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
   const [imageUploaded, setImageUploaded] = useState("")
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [listProductSupplier, setListProductSupplier] = useState<any>()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
 
-  const listNhaCungCapDemo = [
-    { id: "1", name: "Chinh Bac" },
-    { id: "2", name: "ABCD" },
+  const dataTest = [
+    { id: 1, firstName: "Test 1", lastName: "Test last2" },
+    { id: 2, firstName: "Test 1", lastName: "Test last2" },
+    { id: 3, name: "Chinh Bac" },
+    { id: 4, name: "Chinh Bac" },
+    { id: 5, name: "ABCD" },
+    { id: 6, name: "Chinh Bac" },
+    { id: 7, name: "Chinh Bac" },
   ]
 
-  useEffect(() => {
-    if (imageUploaded) {
-      setProduct({
-        ...product,
-        image: imageUploaded,
-      })
-    }
-  }, [imageUploaded])
-
-  useEffect(() => {
-    if (listUnits) {
-      setProduct({
-        ...product,
-        measuredUnits: listUnits,
-      })
-    }
-  }, [listUnits])
-
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProduct({
-        ...product,
-        supplierId: nhaCungCapSelected.id,
-      })
-    }
-  }, [nhaCungCapSelected])
-
-  useEffect(() => {
-    if (typeProduct) {
-      setProduct({
-        ...product,
-        categoryId: typeProduct.id,
-      })
-    }
-  }, [typeProduct])
-
   const router = useRouter()
+
   const addNewProductMutation = useMutation(
     async (newProduct) => {
       return await addNewProduct(newProduct)
@@ -171,61 +193,83 @@ function SupplierDetail(props) {
     },
   )
 
+  useQueries([
+    {
+      queryKey: ["getSupplierDetail", router.query.supplierid],
+      queryFn: async () => {
+        const response = await getSupplierDetail(router.query.supplierid)
+        setSupplier(response?.data)
+        console.log("supplier" + supplier)
+
+        const listProduct = await getListProduct({
+          offset: 0,
+          limit: 1000,
+          supId: router.query.supplierid,
+        })
+        setListProductSupplier(listProduct)
+
+        return response?.data
+      },
+    },
+  ])
+
   useEffect(() => {
-    setProduct({
-      ...product,
+    setSupplier({
+      ...supplier,
       status: true,
     })
   }, [isEnabled])
 
-  const handleAddNewProduct = (event) => {
-    event.preventDefault()
-    // @ts-ignore
-    addNewProductMutation.mutate({
-      ...product,
-    })
+  const handleEditSupplier = (event) => {
+    router.push("/edit-supplier/" + supplier?.supplierId)
   }
 
-  console.log(
-    "Product: ",
-    product,
-    "Image url: ",
-    imageUploaded,
-    "Nha cung cap: ",
-    product?.supplierId,
-    "Loai: ",
-    product?.measuredUnits,
-  )
+  // console.log("Supplier: ", supplier)
+  const listNhaCungCapDemo = [
+    { id: "1", name: "Chinh Bac" },
+    { id: "2", name: "ABCD" },
+  ]
   return (
     <div className="">
       <div>
         <div className="bg-white block-border">
           <SmallTitle>Thông tin chung</SmallTitle>
-          <div className="grid grid-cols-3 gap-y-1">
+          <div className="flex items-center float-right">
+            <div className="flex flex-col gap-4">
+              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
+                <PrimaryBtn
+                  href={`/edit-supplier/${supplier?.supplierId}`}
+                  onClick={handleEditSupplier}
+                  className="bg-successBtn border-successBtn active:bg-greenDark"
+                >
+                  Chỉnh sửa nhà cung cấp
+                </PrimaryBtn>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-y-1 mt-5">
             <SupplierInfo
               title="Tên nhà cung cấp: "
-              //   data={detailProduct?.productCode}
-              data={"Công ty trách nhiệm ABC"}
+              data={supplier?.supplierName}
             />
             <SupplierInfo
               title="Số điện thoại"
-              //   data={detailProduct?.supplier?.supplierName}
-              data={"0942346666"}
+              data={supplier?.supplierPhone}
             />
-            <SupplierInfo
-              title="Email"
-              //   data={detailProduct?.category?.categoryName}
-              data={"abc@gmail.com"}
-            />
+            <SupplierInfo title="Email" data={supplier?.supplierEmail} />
             <SupplierInfo
               title="Địa chỉ"
-              //   data={new BigNumber(detailProduct?.inStock).toFormat()}
-              data={"Sn 9, Giồng Riềng, thành phố Rạch Giá, Kiên Giang"}
+              data={
+                supplier?.address +
+                ", " +
+                supplier?.ward +
+                ", " +
+                supplier?.district +
+                ", " +
+                supplier?.city
+              }
             />
-            <SupplierInfo
-              title="Ghi chú"
-              //   data={new BigNumber(detailProduct?.inStock).toFormat()}
-            />
+            <SupplierInfo title="Ghi chú" data={supplier?.note} />
           </div>
         </div>
 
@@ -238,50 +282,36 @@ function SupplierDetail(props) {
                 // onChange={(e) => setSearchParam(e.target.value)}
                 className="w-full col-span-2"
               />
-              <DemoDropDown
-                listDropdown={listNhaCungCapDemo}
+              {/* <DemoDropDown
+                listDropdown={listProductSupplier}
                 textDefault={"Nhà cung cấp"}
                 showing={nhaCungCapSelected}
                 setShowing={setNhaCungCapSelected}
-              />
+              /> */}
             </div>
             {/* Table */}
             <div className="mt-4 table-style">
               {/* {data && ( */}
-              <Table
-                // pageSizePagination={pageSize}
-                // columns={columns}
-                // data={listProduct?.data}
+              {/* <Table
                 pageSizePagination={1}
                 columns={columns}
+                data={listProductSupplier}
                 // data={listProduct?.data}
-              />
+              /> */}
               {/* )} */}
             </div>
-            {/* <Pagination
+            <Pagination
               //   pageSize={pageSize}
               //   setPageSize={setPageSize}
               //   currentPage={currentPage}
               //   setCurrentPage={setCurrentPage}
               //   totalItems={listProduct?.total}
-              pageSize={5}
-              setPageSize={5}
-              currentPage={1}
-              setCurrentPage={}
-              totalItems={5}
-            /> */}
-          </div>
-        </div>
-
-        <div className="mt-4 h-24 bg-white block-border ">
-          <div className="flex items-center float-right">
-            <div className="flex flex-col gap-4">
-              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
-                <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-                  Chỉnh sửa nhà cung cấp
-                </PrimaryBtn>
-              </div>
-            </div>
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listProductSupplier?.total}
+            />
           </div>
         </div>
       </div>

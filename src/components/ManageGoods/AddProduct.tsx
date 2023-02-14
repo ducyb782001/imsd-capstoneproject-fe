@@ -27,7 +27,8 @@ import {
   getListExportTypeGood,
   getListTypeGood,
 } from "../../apis/type-good-module"
-import { allTypeGoodUrl } from "../../constants/APIConfig"
+import { getListExportSupplier } from "../../apis/supplier-module"
+
 interface Product {
   productId: number
   productName: string
@@ -95,7 +96,7 @@ function AddProduct(props) {
     if (nhaCungCapSelected) {
       setProduct({
         ...product,
-        supplierId: nhaCungCapSelected.id,
+        supplierId: nhaCungCapSelected.supplierId,
       })
     }
   }, [nhaCungCapSelected])
@@ -114,8 +115,15 @@ function AddProduct(props) {
       queryKey: ["getListTypeGood"],
       queryFn: async () => {
         const response = await getListExportTypeGood({})
-        await setListTypeProduct(response?.data)
-        console.log("List type: " + response?.data)
+        await setListTypeProduct(response?.data?.data)
+        return response?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const response = await getListExportSupplier({})
+        await setListNhaCungCap(response?.data?.data)
         return response?.data
       },
     },
@@ -129,8 +137,8 @@ function AddProduct(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Add new product success")
-          router.push("/coupon")
+          toast.success("Thêm mới sản phẩm thành công")
+          router.push("/manage-goods")
         } else {
           console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
@@ -139,7 +147,7 @@ function AddProduct(props) {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                "Đã có lỗi xảy ra! Xin hãy thử lại.",
             )
           }
         }
@@ -162,16 +170,7 @@ function AddProduct(props) {
     })
   }
 
-  console.log(
-    "Product: ",
-    product,
-    "Image url: ",
-    imageUploaded,
-    "Nha cung cap: ",
-    product?.supplierId,
-    "Loai: ",
-    product?.measuredUnits,
-  )
+  console.log("Product: ", product)
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>
@@ -380,12 +379,6 @@ function AddProduct(props) {
 }
 
 export default AddProduct
-
-const lisLoaiSanPhamDemo = [
-  { id: "1", name: "Bánh" },
-  { id: "2", name: "Trái" },
-  { id: "2", name: "Hoa quả" },
-]
 
 function RightSideProductDetail({
   product,

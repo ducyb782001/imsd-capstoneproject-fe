@@ -1,5 +1,7 @@
 import {
   allTypeGoodUrl,
+  editTypeGoodUrl,
+  getTypeGoodDetailUrl,
   // detailTypeGoodUrl,
   // postTypeGoodtUrl,
   // editTypeGoodUrl,
@@ -24,19 +26,19 @@ export const getListTypeGood = (searchObj) => {
 //       data: newProduct,
 //     })
 
-//   export const getProductDetail = (productId) => {
-//     return requestAPI({
-//       url: `${detailProductUrl}?prodId=${productId}`,
-//     })
-//   }
+export const getTypeGoodDetail = (typeId) => {
+  return requestAPI({
+    url: `${getTypeGoodDetailUrl}?catId=${typeId}`,
+  })
+}
 
 export const getListExportTypeGood = (searchObj) => {
   return requestAPI({
-    url: `${allTypeGoodUrl}?offset=0&limit=1000&catId=0&supId=0`,
+    url: `${allTypeGoodUrl}?offset=0&limit=1000`,
   })
 }
-//   export const updateProduct = (editedProduct) =>
-//     patchAPI({
-//       url: editProductUrl,
-//       data: editedProduct,
-//     })
+export const updateTypeGood = (editedTypeGood) =>
+  patchAPI({
+    url: editTypeGoodUrl,
+    data: editedTypeGood,
+  })

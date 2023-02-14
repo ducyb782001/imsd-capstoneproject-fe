@@ -16,6 +16,9 @@ import {
 } from "../../apis/type-good-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
+import AddTypePopup from "../ManageGoods/AddTypePopup"
+import EditTypePopup from "../ManageGoods/EditTypePopup"
+import DetailTypePopup from "../ManageGoods/DetailTypePopup"
 
 const columns = [
   {
@@ -30,16 +33,8 @@ const columns = [
         accessor: (data: any) => {
           return (
             <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.id}`}>
-                <a>
-                  <EditIcon />
-                </a>
-              </Link>
-              <Link href={`/supplier-detail/${data?.id}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
+              <EditTypePopup id={data?.categoryId} />
+              <DetailTypePopup id={data?.categoryId} />
             </div>
           )
         },
@@ -142,16 +137,7 @@ function ManageTypeGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/add-supplier`}>
-          <a>
-            <PrimaryBtn
-              className="max-w-[250px]"
-              accessoriesLeft={<PlusIcon />}
-            >
-              Thêm loại sản phẩm
-            </PrimaryBtn>
-          </a>
-        </Link>
+        <AddTypePopup className="max-w-[250px]" />
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">

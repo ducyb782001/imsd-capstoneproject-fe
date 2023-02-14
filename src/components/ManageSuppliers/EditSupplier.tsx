@@ -15,7 +15,11 @@ import {
   getListDistrictByCode,
   getListWardByCode,
 } from "../../apis/search-country-module"
-import { addNewSupplier } from "../../apis/supplier-module"
+import {
+  addNewSupplier,
+  getSupplierDetail,
+  updateSupplier,
+} from "../../apis/supplier-module"
 import ConfirmPopup from "../ConfirmPopup"
 
 interface Supplier {
@@ -26,16 +30,13 @@ interface Supplier {
   district: string
   ward: string
   address: string
-  note: number
-  supplierEmail: number
+  note: string
+  supplierEmail: string
   status: boolean
 }
 
-function AddSupplier(props) {
+function EditSupplier(props) {
   const [supplier, setSupplier] = useState<Supplier>()
-  const [listUnits, setListUnits] = useState([])
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
 
   const [citySelected, setCitySelected] = useState<any>()
@@ -45,8 +46,22 @@ function AddSupplier(props) {
   const [listCity, setListCity] = useState([])
   const [listDistrict, setListDistrict] = useState([])
   const [listWard, setListWard] = useState([])
+  const [isAddressChanged, setIsAddressChanged] = useState(false)
+
+  const router = useRouter()
+  const { supplierId } = router.query
 
   useQueries([
+    {
+      queryKey: ["getSupplierDetail", supplierId],
+      queryFn: async () => {
+        if (supplierId) {
+          const response = await getSupplierDetail(supplierId)
+          setSupplier(response?.data)
+          return response?.data
+        }
+      },
+    },
     {
       queryKey: ["getListCity"],
       queryFn: async () => {
@@ -58,21 +73,17 @@ function AddSupplier(props) {
     {
       queryKey: ["getListDistrict", citySelected],
       queryFn: async () => {
-        if (citySelected) {
-          const response = await getListDistrictByCode(citySelected?.code)
-          setListDistrict(response?.data?.districts)
-          return response?.data
-        }
+        const response = await getListDistrictByCode(citySelected?.code)
+        setListDistrict(response?.data?.districts)
+        return response?.data
       },
     },
     {
       queryKey: ["getListWards", districtSelected],
       queryFn: async () => {
-        if (districtSelected) {
-          const response = await getListWardByCode(districtSelected?.code)
-          setListWard(response?.data?.wards)
-          return response?.data
-        }
+        const response = await getListWardByCode(districtSelected?.code)
+        setListWard(response?.data?.wards)
+        return response?.data
       },
     },
   ])
@@ -99,15 +110,14 @@ function AddSupplier(props) {
     })
   }, [wardSelected])
 
-  const router = useRouter()
-  const addNewSupplierMutation = useMutation(
-    async (newProduct) => {
-      return await addNewSupplier(newProduct)
+  const editSupplierMutation = useMutation(
+    async (edittedSupplier) => {
+      return await updateSupplier(edittedSupplier)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm nhà cung cấp thành công!")
+          toast.success("Cập nhật nhà cung cấp thành công!")
           router.push("/manage-suppliers")
         } else {
           console.log(data)
@@ -132,17 +142,18 @@ function AddSupplier(props) {
     })
   }, [isEnabled])
 
-  const handleAddNewSupplier = () => {
+  const handleEditSupplier = () => {
     // @ts-ignore
-    addNewSupplierMutation.mutate({
+    editSupplierMutation.mutate({
       ...supplier,
     })
   }
-  const handleCancelAddNewSupplier = (event) => {
+  const handleCancelEditSupplier = (event) => {
     router.push("/manage-suppliers")
   }
 
   console.log("Supplier: ", supplier)
+
   return (
     <div className="">
       <div>
@@ -156,6 +167,7 @@ function AddSupplier(props) {
                 Tên nhà cung cấp <span className="text-red-500">*</span>
               </p>
             }
+            value={supplier?.supplierName}
             onChange={(e) => {
               setSupplier({ ...supplier, supplierName: e.target.value })
             }}
@@ -169,12 +181,14 @@ function AddSupplier(props) {
                   </p>
                 </div>
               }
+              value={supplier?.supplierPhone}
               onChange={(e) => {
                 setSupplier({ ...supplier, supplierPhone: e.target.value })
               }}
             />
             <PrimaryInput
               title="Email"
+              value={supplier?.supplierEmail}
               onChange={(e) => {
                 setSupplier({ ...supplier, supplierEmail: e.target.value })
               }}
@@ -185,21 +199,21 @@ function AddSupplier(props) {
             <CityDropDown
               title={"Tỉnh/Thành phố"}
               listDropdown={listCity}
-              textDefault={"Chọn Tỉnh/Thành phố"}
+              textDefault={supplier?.city}
               showing={citySelected}
               setShowing={setCitySelected}
             />
             <DistrictDropDown
               title={"Quận/Huyện"}
               listDropdown={listDistrict}
-              textDefault={"Chọn Quận/Huyện"}
+              textDefault={supplier?.district}
               showing={districtSelected}
               setShowing={setDistrictSelected}
             />
             <WardDropDown
               title={"Phường/Xã"}
               listDropdown={listWard}
-              textDefault={"Chọn Phường/Xã"}
+              textDefault={supplier?.ward}
               showing={wardSelected}
               setShowing={setWardSelected}
             />
@@ -207,6 +221,7 @@ function AddSupplier(props) {
           <PrimaryInput
             className="mt-4"
             title="Địa chỉ chi tiết"
+            value={supplier?.address}
             onChange={(e) => {
               setSupplier({ ...supplier, address: e.target.value })
             }}
@@ -214,27 +229,28 @@ function AddSupplier(props) {
           <PrimaryTextArea
             className="mt-4"
             title="Ghi chú nhà cung cấp"
+            value={supplier?.note}
             onChange={(e) => {
               setSupplier({ ...supplier, note: e.target.value })
             }}
           />
-          <div className="flex items-center absolute-right">
+          <div className="flex items-center absolute-right mt-6">
             <div className="flex flex-col gap-4">
-              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
+              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-4 ">
                 <ConfirmPopup
                   classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title="Bạn có chắc chắn muốn hủy thêm nhà cung cấp không?"
-                  handleClickSaveBtn={handleCancelAddNewSupplier}
+                  title="Bạn có chắc chắn muốn hủy chỉnh sửa nhà cung cấp không?"
+                  handleClickSaveBtn={handleCancelEditSupplier}
                 >
                   Hủy
                 </ConfirmPopup>
 
                 <ConfirmPopup
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title="Bạn có chắc chắn muốn thêm nhà cung cấp không?"
-                  handleClickSaveBtn={handleAddNewSupplier}
+                  title="Bạn có chắc chắn muốn chỉnh sửa nhà cung cấp không?"
+                  handleClickSaveBtn={handleEditSupplier}
                 >
-                  Thêm nhà cung cấp
+                  Chỉnh sửa
                 </ConfirmPopup>
               </div>
             </div>
@@ -245,4 +261,4 @@ function AddSupplier(props) {
   )
 }
 
-export default AddSupplier
+export default EditSupplier
