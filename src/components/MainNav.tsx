@@ -44,7 +44,7 @@ function MainNav() {
       id: 3,
       name: "Loại sản phẩm",
       // Chua tao page
-      href: "//manage-type-goods",
+      href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
     },
   ]
@@ -120,6 +120,7 @@ function MainNav() {
       isActive:
         router.asPath.includes("/manage-goods") ||
         router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
         router.asPath.includes("/add-suppliers") ||
         router.asPath.includes("/product-detail") ||
         router.asPath.includes("/supplier-detail") ||

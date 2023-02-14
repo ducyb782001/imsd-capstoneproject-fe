@@ -33,7 +33,7 @@ const columns = [
         accessor: (data: any) => (
           <div className="w-[35px] h-[35px] rounded-xl">
             <img
-              className="object-cover rounded-xl"
+              className="object-cover rounded-xl w-full h-full"
               src={data?.image}
               alt="image-product"
             />

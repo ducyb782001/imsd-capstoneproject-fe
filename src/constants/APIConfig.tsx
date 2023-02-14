@@ -31,3 +31,11 @@ export const allProductUrl = `${baseUrl}/Products/Get`
 export const postProductUrl = `${baseUrl}/Products/PostProduct`
 export const detailProductUrl = `${baseUrl}/Products/GetDetail`
 export const editProductUrl = `${baseUrl}/Products/PutProduct`
+
+//Supplier url
+
+export const allSupplierUrl = `${baseUrl}/Categories/Get`
+
+//Type good
+
+export const allTypeGoodUrl = `${baseUrl}/Categories/Get`

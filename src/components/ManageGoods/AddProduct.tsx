@@ -19,10 +19,15 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
-import { useMutation } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
+import {
+  getListExportTypeGood,
+  getListTypeGood,
+} from "../../apis/type-good-module"
+import { allTypeGoodUrl } from "../../constants/APIConfig"
 interface Product {
   productId: number
   productName: string
@@ -41,6 +46,7 @@ interface Product {
 }
 
 function AddProduct(props) {
+  const [queryParams, setQueryParams] = useState<any>({})
   const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
@@ -51,6 +57,8 @@ function AddProduct(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [listTypeProduct, setListTypeProduct] = useState([])
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
@@ -96,10 +104,22 @@ function AddProduct(props) {
     if (typeProduct) {
       setProduct({
         ...product,
-        categoryId: typeProduct.id,
+        categoryId: typeProduct.categoryId,
       })
     }
   }, [typeProduct])
+
+  useQueries([
+    {
+      queryKey: ["getListTypeGood"],
+      queryFn: async () => {
+        const response = await getListExportTypeGood({})
+        await setListTypeProduct(response?.data)
+        console.log("List type: " + response?.data)
+        return response?.data
+      },
+    },
+  ])
 
   const router = useRouter()
   const addNewProductMutation = useMutation(
@@ -352,17 +372,14 @@ function AddProduct(props) {
         handleAddProduct={handleAddNewProduct}
         isEnabled={isEnabled}
         setIsEnabled={setIsEnabled}
+        listNhaCungCap={listNhaCungCap}
+        listTypeProduct={listTypeProduct}
       />
     </div>
   )
 }
 
 export default AddProduct
-
-const listNhaCungCapDemo = [
-  { id: "1", name: "Chinh Bac" },
-  { id: "2", name: "ABCD" },
-]
 
 const lisLoaiSanPhamDemo = [
   { id: "1", name: "Bánh" },
@@ -382,6 +399,8 @@ function RightSideProductDetail({
   handleAddProduct,
   isEnabled,
   setIsEnabled,
+  listNhaCungCap,
+  listTypeProduct,
 }) {
   const [loadingImage, setLoadingImage] = useState(false)
   const [disabled, setDisabled] = useState(true)
@@ -450,14 +469,14 @@ function RightSideProductDetail({
 
         <p className="mt-4">Nhà cung cấp</p>
         <ChooseSupplierDropdown
-          listDropdown={listNhaCungCapDemo}
+          listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
         <ChooseTypeDropdown
-          listDropdown={lisLoaiSanPhamDemo}
+          listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
           setShowing={setTypeProduct}
