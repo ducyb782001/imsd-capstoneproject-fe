@@ -13,7 +13,10 @@ import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
+import {
+  getListSupplier,
+  getListExportSupplier,
+} from "../../apis/supplier-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
 import { format, parseISO } from "date-fns"
@@ -23,60 +26,32 @@ const columns = [
     Header: " ",
     columns: [
       {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        Header: "Tên nhà cung cấp",
+        accessor: (data: any) => <p>{data?.supplierName}</p>,
       },
       {
-        Header: "Ảnh",
-        accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover rounded-xl"
-              src={data?.image}
-              alt="image-product"
-            />
-          </div>
-        ),
+        Header: "Số điện thoại",
+        accessor: (data: any) => <p>{data?.supplierPhone}</p>,
       },
       {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
+        Header: "Email",
+        accessor: (data: any) => <p>{data?.supplierEmail}</p>,
       },
       {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-      },
-      {
-        Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-      },
-      {
-        Header: "Tồn kho",
-        accessor: (data: any) => (
-          <p>{new BigNumber(data?.inStock).toFormat()}</p>
-        ),
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
+        Header: "Địa chỉ",
+        accessor: (data: any) => <p>{data?.province}</p>,
       },
       {
         Header: " ",
         accessor: (data: any) => {
           return (
             <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.productId}`}>
+              <Link href={`/edit-supplier/${data?.supplierId}`}>
                 <a>
                   <EditIcon />
                 </a>
               </Link>
-              <Link href={`/supplier-detail/${data?.productId}`}>
+              <Link href={`/supplier-detail/${data?.supplierId}`}>
                 <a className="w-full">
                   <ShowDetailIcon />
                 </a>
@@ -89,15 +64,6 @@ const columns = [
   },
 ]
 
-const listNhaCungCapDemo = [
-  { id: "1", name: "Hacom" },
-  { id: "3", name: "Kinh Do" },
-]
-const listCategoryDemo = [
-  { id: "1", name: "Laptop" },
-  { id: "2", name: "Phone" },
-]
-
 function ManageSuppliers({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
@@ -108,38 +74,9 @@ function ManageSuppliers({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listProduct, setListProduct] = useState<any>()
+  const [listSupplier, setListSupplier] = useState<any>()
 
-  const [listProductExport, setListProductExport] = useState<any>()
-
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "supId",
-          applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.name,
-          id: nhaCungCapSelected?.id,
-        },
-      ])
-    }
-  }, [nhaCungCapSelected])
-  useEffect(() => {
-    if (typeSelected) {
-      // Them logic check id cua type phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "catId",
-          applied: "Loại",
-          value: typeSelected?.name,
-          id: typeSelected?.id,
-        },
-      ])
-    }
-  }, [typeSelected])
+  const [listSupplierExport, setListSupplierExport] = useState<any>()
 
   //change queryParamsObj when change listFilter in one useEffect
   useEffect(() => {
@@ -160,7 +97,7 @@ function ManageSuppliers({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListProduct",
+        "getListSupplier",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -168,36 +105,36 @@ function ManageSuppliers({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListProduct({
+          const response = await getListSupplier({
             search: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
+          setListSupplier(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListProduct({
+          const exportFile = await getListExportSupplier({
             search: debouncedSearchValue,
             offset: 0,
             limit: 1000,
             ...queryParams,
           })
-          setListProductExport(exportFile?.data)
+          setListSupplierExport(exportFile?.data)
           //-----------
 
           return response?.data
         } else {
-          const response = await getListProduct({
+          const response = await getListSupplier({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
-
+          setListSupplier(response?.data)
+          console.log("List supplier 1 : " + response?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct({})
-          setListProductExport(exportFile?.data)
+          const exportFile = await getListExportSupplier({})
+          setListSupplierExport(exportFile?.data)
 
           //-----------
 
@@ -206,10 +143,11 @@ function ManageSuppliers({ ...props }) {
       },
     },
   ])
+  console.log("List supplier: " + listSupplier)
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
+    const worksheet = XLSX.utils.json_to_sheet(listSupplierExport?.data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
@@ -246,13 +184,7 @@ function ManageSuppliers({ ...props }) {
             <SearchInput
               placeholder="Tìm kiếm bằng tên nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full col-span-2"
-            />
-            <DemoDropDown
-              listDropdown={listNhaCungCapDemo}
-              textDefault={"Nhà cung cấp"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
+              className="w-full col-span-3"
             />
           </div>
           <ShowLabelBar
@@ -271,7 +203,7 @@ function ManageSuppliers({ ...props }) {
           <Table
             pageSizePagination={pageSize}
             columns={columns}
-            data={listProduct?.data}
+            data={listSupplier?.data}
           />
           {/* )} */}
         </div>
@@ -280,7 +212,7 @@ function ManageSuppliers({ ...props }) {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={listProduct?.total}
+          totalItems={listSupplier?.total}
         />
       </div>
     </div>

@@ -2,7 +2,7 @@ import { DialogOverlay } from "@reach/dialog"
 import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import { useMutation } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { addTypeGoodUrl } from "../../constants/APIConfig"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
@@ -14,8 +14,10 @@ import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
+import EditIcon from "../icons/EditIcon"
+import { getTypeGoodDetail, updateTypeGood } from "../../apis/type-good-module"
 
-function AddTypePopup({ className = "" }) {
+function EditTypePopup({ className = "", id }) {
   const router = useRouter()
 
   const [showDialog, setShowDialog] = useState(false)
@@ -24,24 +26,39 @@ function AddTypePopup({ className = "" }) {
 
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
-
   const handleSaveBtn = () => {
     // @ts-ignore
-    addTypeMutation.mutate({
+    editTypeMutation.mutate({
+      categoryId: id,
       categoryName: typeName,
       description: description,
     })
-    router.reload()
-    close()
+    console.log("id: " + id)
+    console.log("categoryName: " + typeName)
+    console.log("description: " + description)
+    // router.reload()
+    // close()
   }
 
-  const addTypeMutation = useMutation(
-    (type) => {
-      return axios.post(addTypeGoodUrl, type)
+  useQueries([
+    {
+      queryKey: ["getTypeGoodDetail", id],
+      queryFn: async () => {
+        const response = await getTypeGoodDetail(id)
+        setTypeName(response?.data?.categoryName)
+        setDescription(response?.data?.description)
+        return response?.data
+      },
+    },
+  ])
+
+  const editTypeMutation = useMutation(
+    async (type) => {
+      return await updateTypeGood(type)
     },
     {
       onSuccess: (data, error, variables) => {
-        toast.success("Thêm loại sản phẩm mới thành công!")
+        toast.success("Chỉnh sửa thành công!")
       },
       onError: (data: any) => {
         console.log("login error", data)
@@ -52,9 +69,9 @@ function AddTypePopup({ className = "" }) {
 
   return (
     <div className={`${className}`}>
-      <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm mới loại sản phẩm
-      </PrimaryBtn>
+      <a>
+        <EditIcon onClick={open} className="cursor-pointer" />
+      </a>
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay
@@ -83,12 +100,14 @@ function AddTypePopup({ className = "" }) {
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Tên loại sản phẩm"
+                    value={typeName}
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Mô tả loại sản phẩm"
+                    value={description}
                     onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
@@ -108,4 +127,4 @@ function AddTypePopup({ className = "" }) {
   )
 }
 
-export default AddTypePopup
+export default EditTypePopup

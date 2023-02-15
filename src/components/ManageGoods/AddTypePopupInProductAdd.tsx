@@ -15,7 +15,7 @@ import SmallTitle from "../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 
-function AddTypePopup({ className = "" }) {
+function AddTypePopupInProductAdd({ className = "" }) {
   const router = useRouter()
 
   const [showDialog, setShowDialog] = useState(false)
@@ -52,9 +52,13 @@ function AddTypePopup({ className = "" }) {
 
   return (
     <div className={`${className}`}>
-      <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm mới loại sản phẩm
-      </PrimaryBtn>
+      <button
+        className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
+        onClick={open}
+      >
+        <AddPlusIcon />
+        <p className="text-[#4794F8] text-base">Thêm mới loại sản phẩm</p>
+      </button>
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay
@@ -108,4 +112,4 @@ function AddTypePopup({ className = "" }) {
   )
 }
 
-export default AddTypePopup
+export default AddTypePopupInProductAdd

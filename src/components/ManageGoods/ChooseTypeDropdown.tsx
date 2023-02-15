@@ -7,6 +7,7 @@ import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddSupplierPopup from "./AddSupplierPopup"
 import AddTypePopup from "./AddTypePopup"
+import AddTypePopupInProductAdd from "./AddTypePopupInProductAdd"
 
 function ChooseTypeDropdown({
   title = "",
@@ -79,7 +80,7 @@ function ChooseTypeDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.name || showing || textDefault}
+              {showing?.categoryName || showing || textDefault}
             </p>
           </div>
           <ArrowDownIcon color="#373737" />
@@ -107,7 +108,7 @@ function ChooseTypeDropdown({
           className=""
           placeholder="Tìm kiếm hoặc nhập mới"
         />
-        <AddTypePopup />
+        <AddTypePopupInProductAdd />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
@@ -129,7 +130,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.name || data}
+      {data?.categoryName || data}
     </div>
   )
 }

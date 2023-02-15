@@ -34,3 +34,23 @@ export const allProductUrl = `${baseUrl}/Products/Get`
 export const postProductUrl = `${baseUrl}/Products/PostProduct`
 export const detailProductUrl = `${baseUrl}/Products/GetDetail`
 export const editProductUrl = `${baseUrl}/Products/PutProduct`
+
+//Supplier url
+
+export const allSupplierUrl = `${baseUrl}/Suppliers/Get`
+
+export const addSupplierUrl = `${baseUrl}/Suppliers/PostSupplier`
+
+export const getSupplierDetailUrl = `${baseUrl}/Suppliers/GetDetail`
+
+export const editSupplierUrl = `${baseUrl}/Suppliers/PutSupplier`
+
+//Type good
+
+export const allTypeGoodUrl = `${baseUrl}/Categories/Get`
+
+export const addTypeGoodUrl = `${baseUrl}/Categories/PostCategory`
+
+export const getTypeGoodDetailUrl = `${baseUrl}/Categories/GetDetail`
+
+export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`

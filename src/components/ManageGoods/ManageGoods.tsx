@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react"
-import DatePicker from "../DatePicker"
-import DemoDropDown from "../DemoDropDown"
 import DownloadIcon from "../icons/DownloadIcon"
 import PlusIcon from "../icons/PlusIcon"
 import UploadIcon from "../icons/UploadIcon"
@@ -19,6 +17,10 @@ import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
 import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
+import { getListExportTypeGood } from "../../apis/type-good-module"
+import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
+import ChooseTypeDropdown from "./ChooseTypeDropdown"
+import { getListExportSupplier } from "../../apis/supplier-module"
 
 const columns = [
   {
@@ -33,7 +35,7 @@ const columns = [
         accessor: (data: any) => (
           <div className="w-[35px] h-[35px] rounded-xl">
             <img
-              className="object-cover rounded-xl"
+              className="object-cover rounded-xl w-full h-full"
               src={data?.image}
               alt="image-product"
             />
@@ -91,15 +93,6 @@ const columns = [
   },
 ]
 
-const listNhaCungCapDemo = [
-  { id: "1", name: "Hacom" },
-  { id: "3", name: "Kinh Do" },
-]
-const listCategoryDemo = [
-  { id: "1", name: "Laptop" },
-  { id: "2", name: "Phone" },
-]
-
 function ManageGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
@@ -113,6 +106,8 @@ function ManageGoods({ ...props }) {
   const [listProduct, setListProduct] = useState<any>()
 
   const [listProductExport, setListProductExport] = useState<any>()
+  const [listSupplier, setListSupplier] = useState<any>()
+  const [listCategory, setListCategory] = useState<any>()
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -122,8 +117,8 @@ function ManageGoods({ ...props }) {
         {
           key: "supId",
           applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.name,
-          id: nhaCungCapSelected?.id,
+          value: nhaCungCapSelected?.supplierName,
+          id: nhaCungCapSelected?.supplierId,
         },
       ])
     }
@@ -136,8 +131,8 @@ function ManageGoods({ ...props }) {
         {
           key: "catId",
           applied: "Loại",
-          value: typeSelected?.name,
-          id: typeSelected?.id,
+          value: typeSelected?.categoryName,
+          id: typeSelected?.categoryId,
         },
       ])
     }
@@ -197,6 +192,18 @@ function ManageGoods({ ...props }) {
           })
           setListProduct(response?.data)
 
+          const category = await getListExportTypeGood({
+            search: debouncedSearchValue,
+            offset: (currentPage - 1) * pageSize,
+            limit: pageSize,
+            ...queryParams,
+          })
+          setListCategory(category?.data?.data)
+
+          const typeGood = await getListExportSupplier({})
+          setListSupplier(typeGood?.data?.data)
+
+          console.log(category?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportProduct({})
           setListProductExport(exportFile?.data)
@@ -250,14 +257,14 @@ function ManageGoods({ ...props }) {
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
-            <DemoDropDown
-              listDropdown={listNhaCungCapDemo}
+            <ChooseSupplierDropdown
+              listDropdown={listSupplier}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
             />
-            <DemoDropDown
-              listDropdown={listCategoryDemo}
+            <ChooseTypeDropdown
+              listDropdown={listCategory}
               textDefault={"Loại sản phẩm"}
               showing={typeSelected}
               setShowing={setTypeSelected}
