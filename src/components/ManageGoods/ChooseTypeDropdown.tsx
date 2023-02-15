@@ -7,6 +7,7 @@ import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddSupplierPopup from "./AddSupplierPopup"
 import AddTypePopup from "./AddTypePopup"
+import AddTypePopupInProductAdd from "./AddTypePopupInProductAdd"
 
 function ChooseTypeDropdown({
   title = "",
@@ -107,7 +108,7 @@ function ChooseTypeDropdown({
           className=""
           placeholder="Tìm kiếm hoặc nhập mới"
         />
-        <AddTypePopup />
+        <AddTypePopupInProductAdd />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
