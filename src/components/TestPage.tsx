@@ -11,7 +11,6 @@ import PrimaryInput from "./PrimaryInput"
 import PrimaryInputCheckbox from "./PrimaryInputCheckbox"
 import PrimaryTextArea from "./PrimaryTextArea"
 import SecondaryBtn from "./SecondaryBtn"
-import useScanDetection from "use-scan-detection"
 import { useQueries } from "react-query"
 import {
   getListCity,
@@ -83,12 +82,12 @@ function TestPage(props) {
 
   // console.log("searchBarCode: ", searchBarCode)
 
-  useScanDetection({
-    onComplete: (code) => {
-      console.log("Test: ", code)
-    },
-    minLength: 3,
-  })
+  // useScanDetection({
+  //   onComplete: (code) => {
+  //     console.log("Test: ", code)
+  //   },
+  //   minLength: 3,
+  // })
 
   console.log("City Selected: ", citySelected)
 

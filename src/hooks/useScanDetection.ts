@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 
 interface bufferCharacter {
   time: number
-  char: String
+  char: string
 }
 
 interface buffer {
@@ -19,17 +19,17 @@ interface config {
   /** Character that barcode scanner suffixes input with. Defaults to line return.*/
   endCharacter?: Array<number>
   /** Callback to use on complete scan input.*/
-  onComplete: (code: String) => void
+  onComplete: (code: string) => void
   /** Callback to use on error. */
-  onError?: (error: String) => void
+  onError?: (error: string) => void
   /** Minimum length a scanned code should be. Defaults to 0.*/
   minLength?: number
   /** Ignore scan input if this node is focused.*/
   ignoreIfFocusOn?: Node
   /** Stop propagation on keydown event. Defaults to false.*/
-  stopPropagation?: Boolean
+  stopPropagation?: boolean
   /** Prevent default on keydown event. Defaults to false.*/
-  preventDefault?: Boolean
+  preventDefault?: boolean
   /** Bind keydown event to this node. Defaults to document.*/
   //   container?: Node
 }
