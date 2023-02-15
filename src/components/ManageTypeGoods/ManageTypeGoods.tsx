@@ -29,7 +29,29 @@ function ManageTypeGoods({ ...props }) {
 
   const [listTypeGoodExport, setListTypeGoodExport] = useState<any>()
   const [listFilter, setListFilter] = useState([])
-  const [isEnabled, setIsEnabled] = useState(true)
+
+  const column = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: "Tên loại sản phẩm",
+          accessor: (data: any) => <p>{data?.categoryName}</p>,
+        },
+        {
+          Header: "Hành động",
+          accessor: (data: any) => {
+            return (
+              <div className="flex items-center gap-2">
+                <EditTypePopup id={data?.categoryId} />
+                <DetailTypePopup id={data?.description} />
+              </div>
+            )
+          },
+        },
+      ],
+    },
+  ]
 
   useEffect(() => {
     if (listFilter) {
@@ -131,41 +153,7 @@ function ManageTypeGoods({ ...props }) {
           {/* {data && ( */}
           <Table
             pageSizePagination={pageSize}
-            columns={[
-              {
-                Header: " ",
-                columns: [
-                  {
-                    Header: "Tên loại sản phẩm",
-                    accessor: (data: any) => <p>{data?.categoryName}</p>,
-                  },
-                  {
-                    Header: "Hành động",
-                    accessor: (data: any) => {
-                      return (
-                        <div className="flex items-center gap-2">
-                          <EditTypePopup id={data?.categoryId} />
-                          <Switch
-                            onChange={() => {
-                              setIsEnabled(!true)
-                            }}
-                            checked={true}
-                            width={44}
-                            height={24}
-                            className="ml-2 !opacity-100"
-                            uncheckedIcon={null}
-                            checkedIcon={null}
-                            offColor="#CBCBCB"
-                            onColor="#6A44D2"
-                          />
-                          <DetailTypePopup id={data?.description} />
-                        </div>
-                      )
-                    },
-                  },
-                ],
-              },
-            ]}
+            columns={column}
             data={listTypeGood?.data}
           />
           {/* )} */}
