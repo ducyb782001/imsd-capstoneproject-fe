@@ -18,6 +18,7 @@ import {
   getListWardByCode,
 } from "../apis/search-country-module"
 import CountryDropDown from "./CountryDropDown"
+import useScanDetection from "../hooks/useScanDetection"
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -82,18 +83,21 @@ function TestPage(props) {
 
   // console.log("searchBarCode: ", searchBarCode)
 
-  // useScanDetection({
-  //   onComplete: (code) => {
-  //     console.log("Test: ", code)
-  //   },
-  //   minLength: 3,
-  // })
+  useScanDetection({
+    onComplete: (code) => {
+      setSearchBarcode(code)
+    },
+    minLength: 3,
+  })
 
-  console.log("City Selected: ", citySelected)
+  useEffect(() => {
+    setSearchBarcode(searchBarCode.replace("Shift", ""))
+  }, [searchBarCode])
 
   return (
     <div className="flex flex-col gap-4 mb-20">
-      <div className="w-full h-[500px] skeleton-loading" />
+      {searchBarCode}
+      {/* <div className="w-full h-[500px] skeleton-loading" /> */}
       <PrimaryBtn>ABCD</PrimaryBtn>
       <SecondaryBtn className="border-transparent hover:bg-transparent">
         XYZ
