@@ -16,6 +16,7 @@ import "../styles/loading.css"
 import "../styles/tooltip.css"
 import "../styles/add-image.css"
 import "../styles/skeleton-loading.css"
+import { ThemeProvier } from "../context/ThemeContext"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs
@@ -70,7 +71,9 @@ function App({ Component, pageProps }) {
           pauseOnHover
         />
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <ThemeProvier>
+            <Component {...pageProps} />
+          </ThemeProvier>
         </QueryClientProvider>
       </IKContext>
     </>
