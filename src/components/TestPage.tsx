@@ -83,16 +83,18 @@ function TestPage(props) {
 
   // console.log("searchBarCode: ", searchBarCode)
 
-  // useScanDetection({
-  //   onComplete: (code) => {
-  //     console.log("Test: ", code)
-  //   },
-  //   minLength: 3,
-  // })
+  useScanDetection({
+    onComplete: (code) => {
+      console.log("Test: ", code)
+    },
+    minLength: 3,
+  })
+
   console.log("City Selected: ", citySelected)
 
   return (
     <div className="flex flex-col gap-4 mb-20">
+      <div className="w-full h-[500px] skeleton-loading" />
       <PrimaryBtn>ABCD</PrimaryBtn>
       <SecondaryBtn className="border-transparent hover:bg-transparent">
         XYZ
