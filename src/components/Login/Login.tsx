@@ -133,7 +133,7 @@ export function LeftBlock() {
   return (
     <div className="relative hidden w-full h-full md:block">
       <div className="pt-16 pl-16 cursor-pointer">
-        <p className="text-white text-3xl">IMSD</p>
+        <p className="text-3xl text-white">IMSD</p>
       </div>
       <div className="absolute bottom-0 left-0 right-0 pr-40 mx-auto w-max">
         <img

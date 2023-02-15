@@ -81,8 +81,8 @@ function SetPassword(props) {
                 Mật khẩu của bạn phải khác với những mật khẩu đã dùng trước đây.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-7/12 h-3/6">
-              <div className="flex flex-col ml-16 w-4/5 gap-6 mt-16 ">
+            <div className="w-7/12 bg-white rounded-md mt-7 h-3/6">
+              <div className="flex flex-col w-4/5 gap-6 mt-16 ml-16 ">
                 <PasswordInput
                   title={
                     <div className="flex gap-1">

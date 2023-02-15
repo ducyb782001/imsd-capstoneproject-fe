@@ -37,8 +37,8 @@ function CheckPasswordAlert(props) {
                 Chúng tôi đã gửi tin nhắn cài lại mật khẩu đến hòm thư của bạn.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-96 h-40">
-              <TextDescription className="mt-9 text-center">
+            <div className="h-40 bg-white rounded-md mt-7 w-96">
+              <TextDescription className="text-center mt-9">
                 Chưa nhận được tin nhắn?{" "}
                 <UnderlineText className="font-medium" onClick={handleResend}>
                   Nhấn để quay lại

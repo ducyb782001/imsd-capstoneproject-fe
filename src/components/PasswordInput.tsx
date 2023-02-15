@@ -11,7 +11,7 @@ function PasswordInput({
   const [showPassword, setShowPassword] = useState(false)
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <h5 className="mb-2 text-sm text-black font-bold">{title}</h5>
+      <h5 className="mb-2 text-sm font-bold text-black">{title}</h5>
       <div className="relative w-full">
         <input
           placeholder={placeholder}

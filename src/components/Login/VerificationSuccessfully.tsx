@@ -54,7 +54,7 @@ function VerifySuccessful(props) {
                 Bạn đã xác minh tài khoản thành công. Xin mời đăng nhập.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-8/12 h-40 flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center w-8/12 h-40 bg-white rounded-md mt-7">
               <PrimaryBtn
                 onClick={handleLogin}
                 disabled={false}
