@@ -1,21 +1,12 @@
 import { DialogOverlay } from "@reach/dialog"
-import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { addTypeGoodUrl } from "../../constants/APIConfig"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
-import PlusIcon from "../icons/PlusIcon"
 import MotionDialogContent from "../MotionDialogContent"
 import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInput from "../PrimaryInput"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
-import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import EditIcon from "../icons/EditIcon"
-import { getTypeGoodDetail, updateTypeGood } from "../../apis/type-good-module"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
 import TextDescription from "../TextDescription"
 
@@ -25,25 +16,9 @@ function DetailTypePopup({ className = "", id }) {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-
-  const [typeName, setTypeName] = useState("")
-  const [description, setDescription] = useState("")
   const handleSaveBtn = () => {
     close()
   }
-
-  useQueries([
-    {
-      queryKey: ["getTypeGoodDetail", id],
-      queryFn: async () => {
-        const response = await getTypeGoodDetail(id)
-        setTypeName(response?.data?.categoryName)
-        setDescription(response?.data?.description)
-        return response?.data
-      },
-    },
-  ])
-  console.log("description:" + id)
 
   return (
     <div className={`${className}`}>

@@ -117,8 +117,8 @@ function ManageGoods({ ...props }) {
         {
           key: "supId",
           applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.name,
-          id: nhaCungCapSelected?.id,
+          value: nhaCungCapSelected?.supplierName,
+          id: nhaCungCapSelected?.supplierId,
         },
       ])
     }
@@ -131,8 +131,8 @@ function ManageGoods({ ...props }) {
         {
           key: "catId",
           applied: "Loại",
-          value: typeSelected?.name,
-          id: typeSelected?.id,
+          value: typeSelected?.categoryName,
+          id: typeSelected?.categoryId,
         },
       ])
     }

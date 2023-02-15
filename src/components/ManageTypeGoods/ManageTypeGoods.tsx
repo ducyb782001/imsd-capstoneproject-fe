@@ -16,29 +16,7 @@ import * as XLSX from "xlsx/xlsx"
 import AddTypePopup from "../ManageGoods/AddTypePopup"
 import EditTypePopup from "../ManageGoods/EditTypePopup"
 import DetailTypePopup from "../ManageGoods/DetailTypePopup"
-
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Tên loại sản phẩm",
-        accessor: (data: any) => <p>{data?.categoryName}</p>,
-      },
-      {
-        Header: "Hành động",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <EditTypePopup id={data?.categoryId} />
-              <DetailTypePopup id={data?.description} />
-            </div>
-          )
-        },
-      },
-    ],
-  },
-]
+import Switch from "react-switch"
 
 function ManageTypeGoods({ ...props }) {
   const [searchParam, setSearchParam] = useState<string>("")
@@ -51,6 +29,7 @@ function ManageTypeGoods({ ...props }) {
 
   const [listTypeGoodExport, setListTypeGoodExport] = useState<any>()
   const [listFilter, setListFilter] = useState([])
+  const [isEnabled, setIsEnabled] = useState(true)
 
   useEffect(() => {
     if (listFilter) {
@@ -152,7 +131,41 @@ function ManageTypeGoods({ ...props }) {
           {/* {data && ( */}
           <Table
             pageSizePagination={pageSize}
-            columns={columns}
+            columns={[
+              {
+                Header: " ",
+                columns: [
+                  {
+                    Header: "Tên loại sản phẩm",
+                    accessor: (data: any) => <p>{data?.categoryName}</p>,
+                  },
+                  {
+                    Header: "Hành động",
+                    accessor: (data: any) => {
+                      return (
+                        <div className="flex items-center gap-2">
+                          <EditTypePopup id={data?.categoryId} />
+                          <Switch
+                            onChange={() => {
+                              setIsEnabled(!true)
+                            }}
+                            checked={true}
+                            width={44}
+                            height={24}
+                            className="ml-2 !opacity-100"
+                            uncheckedIcon={null}
+                            checkedIcon={null}
+                            offColor="#CBCBCB"
+                            onColor="#6A44D2"
+                          />
+                          <DetailTypePopup id={data?.description} />
+                        </div>
+                      )
+                    },
+                  },
+                ],
+              },
+            ]}
             data={listTypeGood?.data}
           />
           {/* )} */}

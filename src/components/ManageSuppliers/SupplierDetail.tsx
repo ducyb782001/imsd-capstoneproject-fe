@@ -217,6 +217,7 @@ function SupplierDetail(props) {
       <div>
         <div className="bg-white block-border">
           <SmallTitle>Thông tin chung</SmallTitle>
+          <SupplierStatus status={supplier?.status} />
           <div className="flex items-center float-right">
             <div className="flex flex-col gap-4">
               <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
@@ -304,4 +305,19 @@ function SupplierInfo({ title = "", data = "" }) {
       <div className="text-black col-span-2">{data}</div>
     </>
   )
+}
+function SupplierStatus({ status = false }) {
+  if (status) {
+    return (
+      <div className="bg-green-500 text-white font-bold mt-4 w-1/12 rounded-md">
+        <h1 className="m-2 ml-3">Đang giao dịch</h1>
+      </div>
+    )
+  } else {
+    return (
+      <div className="bg-gray text-white font-bold mt-4 w-1/12 rounded-md">
+        <h1 className=" ml-3">Dừng giao dịch</h1>
+      </div>
+    )
+  }
 }
