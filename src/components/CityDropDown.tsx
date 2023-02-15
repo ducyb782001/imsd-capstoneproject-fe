@@ -1,15 +1,10 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
-import DemoPopup from "../DemoPopup"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import ArrowDownIcon from "../icons/ArrowDownIcon"
-import SearchIcon from "../icons/SearchIcon"
-import AddSupplierPopup from "./AddSupplierPopup"
-import AddTypePopup from "./AddTypePopup"
-import AddTypePopupInProductAdd from "./AddTypePopupInProductAdd"
+import { search } from "../lib/search"
+import ArrowDownIcon from "./icons/ArrowDownIcon"
+import SearchIcon from "./icons/SearchIcon"
 
-function ChooseTypeDropdown({
+function CityDropDown({
   title = "",
   listDropdown,
   showing,
@@ -72,16 +67,14 @@ function ChooseTypeDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm text-gray">{title}</p>}
+        {title && <p className="mb-1 text-sm text-black font-bold">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">
-              {showing?.categoryName || showing || textDefault}
-            </p>
+            <p className="text-black">{showing?.name || textDefault}</p>
           </div>
           <ArrowDownIcon color="#373737" />
         </div>
@@ -106,12 +99,11 @@ function ChooseTypeDropdown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Tìm kiếm hoặc nhập mới"
+          placeholder="Search"
         />
-        <AddTypePopupInProductAdd />
         <div
           id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
+          className="smooth-transform z-50 flex w-full flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto"
         >
           {listResult?.map((i, index) => (
             <DropDownItem key={index} data={i} setShowing={setShowing} />
@@ -122,7 +114,7 @@ function ChooseTypeDropdown({
   )
 }
 
-export default ChooseTypeDropdown
+export default CityDropDown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -130,7 +122,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.categoryName || data}
+      {data?.name || data}
     </div>
   )
 }

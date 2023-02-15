@@ -17,7 +17,8 @@
     "react/no-unescaped-entities": "off",
     "prefer-const": "off",
     "no-var": "off",
-    "no-useless-escape": "off"
+    "no-useless-escape": "off",
+    "@typescript-eslint/ban-types": "off"
   },
   "plugins": ["@typescript-eslint"]
 }

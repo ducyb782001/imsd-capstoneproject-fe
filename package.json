@@ -16,6 +16,7 @@
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.1",
+    "chart.js": "^4.2.0",
     "cookie": "^0.4.2",
     "date-fns": "^2.29.3",
     "framer-motion": "^7.6.1",
@@ -26,6 +27,7 @@
     "next": "12.3.1",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-date-range": "^1.4.0",
     "react-dom": "^18.2.0",
@@ -37,8 +39,8 @@
     "react-toastify": "^9.0.3",
     "react-tsparticles": "^2.1.4",
     "tsparticles": "^2.1.4",
-    "react-chartjs-2": "^5.2.0",
-    "chart.js": "^4.2.0"
+    "xlsx": "^0.18.5",
+    "use-scan-detection": "^0.2.3"
   },
   "devDependencies": {
     "@types/node": "^16.9.6",

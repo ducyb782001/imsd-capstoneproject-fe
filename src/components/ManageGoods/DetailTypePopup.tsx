@@ -1,60 +1,30 @@
 import { DialogOverlay } from "@reach/dialog"
-import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import { useMutation } from "react-query"
-import { addTypeGoodUrl } from "../../constants/APIConfig"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
-import PlusIcon from "../icons/PlusIcon"
 import MotionDialogContent from "../MotionDialogContent"
 import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInput from "../PrimaryInput"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
-import { toast } from "react-toastify"
 import { useRouter } from "next/router"
+import ShowDetailIcon from "../icons/ShowDetailIcon"
+import TextDescription from "../TextDescription"
 
-function AddTypePopup({ className = "" }) {
+function DetailTypePopup({ className = "", id }) {
   const router = useRouter()
 
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-
-  const [typeName, setTypeName] = useState("")
-  const [description, setDescription] = useState("")
-
   const handleSaveBtn = () => {
-    // @ts-ignore
-    addTypeMutation.mutate({
-      categoryName: typeName,
-      description: description,
-    })
-    router.reload()
     close()
   }
 
-  const addTypeMutation = useMutation(
-    (type) => {
-      return axios.post(addTypeGoodUrl, type)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        toast.success("Thêm loại sản phẩm mới thành công!")
-      },
-      onError: (data: any) => {
-        console.log("login error", data)
-        toast.error("Có lỗi xảy ra! Xin kiểm tra lại!")
-      },
-    },
-  )
-
   return (
     <div className={`${className}`}>
-      <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm mới loại sản phẩm
-      </PrimaryBtn>
+      <a>
+        <ShowDetailIcon onClick={open} className="cursor-pointer" />
+      </a>
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay
@@ -76,21 +46,12 @@ function AddTypePopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm loại sản phẩm</SmallTitle>
+                  <SmallTitle>Mô tả loại sản phẩm</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    title="Tên loại sản phẩm"
-                    onChange={(event) => setTypeName(event.target.value)}
-                  />
-                </div>
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    title="Mô tả loại sản phẩm"
-                    onChange={(event) => setDescription(event.target.value)}
-                  />
+                  <TextDescription>{id}</TextDescription>
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
@@ -108,4 +69,4 @@ function AddTypePopup({ className = "" }) {
   )
 }
 
-export default AddTypePopup
+export default DetailTypePopup

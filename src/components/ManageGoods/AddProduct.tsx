@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import InfoIcon from "../icons/InfoIcon"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
@@ -19,6 +19,15 @@ import ReadOnlyField from "../ReadOnlyField"
 import { IKImage, IKUpload } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
+import { useMutation, useQueries } from "react-query"
+import { toast } from "react-toastify"
+import { useRouter } from "next/router"
+import { addNewProduct } from "../../apis/product-module"
+import {
+  getListExportTypeGood,
+  getListTypeGood,
+} from "../../apis/type-good-module"
+import { getListExportSupplier } from "../../apis/supplier-module"
 
 interface Product {
   productId: number
@@ -29,12 +38,16 @@ interface Product {
   supplierId: number
   costPrice: number
   sellingPrice: number
-  unit: string
+  defaultMeasuredUnit: string
   inStock: number
   stockPrice: number
+  image: string
+  measuredUnits: any
+  status: boolean
 }
 
 function AddProduct(props) {
+  const [queryParams, setQueryParams] = useState<any>({})
   const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
@@ -44,28 +57,120 @@ function AddProduct(props) {
   const [imageUploaded, setImageUploaded] = useState("")
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
+  const [isEnabled, setIsEnabled] = useState(true)
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [listTypeProduct, setListTypeProduct] = useState([])
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
       setListUnits([
         ...listUnits,
         {
-          type: newType,
-          detail: newDetail,
+          measuredUnitName: newType,
+          measuredUnitValue: newDetail,
         },
       ])
       setNewType("")
       setNewDetail("")
     }
   }
-  console.log(
-    "Product: ",
-    product,
-    "Image url: ",
-    imageUploaded,
-    "Nha cung cap: ",
-    nhaCungCapSelected?.name,
+  useEffect(() => {
+    if (imageUploaded) {
+      setProduct({
+        ...product,
+        image: imageUploaded,
+      })
+    }
+  }, [imageUploaded])
+
+  useEffect(() => {
+    if (listUnits) {
+      setProduct({
+        ...product,
+        measuredUnits: listUnits,
+      })
+    }
+  }, [listUnits])
+
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      setProduct({
+        ...product,
+        supplierId: nhaCungCapSelected.supplierId,
+      })
+    }
+  }, [nhaCungCapSelected])
+
+  useEffect(() => {
+    if (typeProduct) {
+      setProduct({
+        ...product,
+        categoryId: typeProduct.categoryId,
+      })
+    }
+  }, [typeProduct])
+
+  useQueries([
+    {
+      queryKey: ["getListTypeGood"],
+      queryFn: async () => {
+        const response = await getListExportTypeGood({})
+        await setListTypeProduct(response?.data?.data)
+        return response?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const response = await getListExportSupplier({})
+        await setListNhaCungCap(response?.data?.data)
+        return response?.data
+      },
+    },
+  ])
+
+  const router = useRouter()
+  const addNewProductMutation = useMutation(
+    async (newProduct) => {
+      return await addNewProduct(newProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Thêm mới sản phẩm thành công")
+          router.push("/manage-goods")
+        } else {
+          console.log(data)
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Đã có lỗi xảy ra! Xin hãy thử lại.",
+            )
+          }
+        }
+      },
+    },
   )
+
+  useEffect(() => {
+    setProduct({
+      ...product,
+      status: true,
+    })
+  }, [isEnabled])
+
+  const handleAddNewProduct = (event) => {
+    event.preventDefault()
+    // @ts-ignore
+    addNewProductMutation.mutate({
+      ...product,
+    })
+  }
+
+  console.log("Product: ", product)
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>
@@ -106,7 +211,7 @@ function AddProduct(props) {
             <PrimaryInput
               title="Đơn vị tính"
               onChange={(e) => {
-                setProduct({ ...product, unit: e.target.value })
+                setProduct({ ...product, defaultMeasuredUnit: e.target.value })
               }}
             />
             <PrimaryInput
@@ -255,13 +360,19 @@ function AddProduct(props) {
         </div>
       </div>
       <RightSideProductDetail
+        product={product}
+        setProduct={setProduct}
         imageUploaded={imageUploaded}
         setImageUploaded={setImageUploaded}
         nhaCungCapSelected={nhaCungCapSelected}
         setNhaCungCapSelected={setNhaCungCapSelected}
         typeProduct={typeProduct}
         setTypeProduct={setTypeProduct}
-        handleAddProduct={undefined}
+        handleAddProduct={handleAddNewProduct}
+        isEnabled={isEnabled}
+        setIsEnabled={setIsEnabled}
+        listNhaCungCap={listNhaCungCap}
+        listTypeProduct={listTypeProduct}
       />
     </div>
   )
@@ -269,18 +380,9 @@ function AddProduct(props) {
 
 export default AddProduct
 
-const listNhaCungCapDemo = [
-  { id: "1", name: "Chinh Bac" },
-  { id: "2", name: "ABCD" },
-]
-
-const lisLoaiSanPhamDemo = [
-  { id: "1", name: "Bánh" },
-  { id: "2", name: "Trái" },
-  { id: "2", name: "Hoa quả" },
-]
-
 function RightSideProductDetail({
+  product,
+  setProduct,
   imageUploaded,
   setImageUploaded,
   nhaCungCapSelected,
@@ -288,22 +390,38 @@ function RightSideProductDetail({
   typeProduct,
   setTypeProduct,
   handleAddProduct,
+  isEnabled,
+  setIsEnabled,
+  listNhaCungCap,
+  listTypeProduct,
 }) {
-  const [isEnabled, setIsEnabled] = useState(true)
-
   const [loadingImage, setLoadingImage] = useState(false)
+  const [disabled, setDisabled] = useState(true)
 
   const onErrorUpload = (error: any) => {
-    console.log("upload error", error)
+    console.log("Run upload error", error)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
-    // console.log("Res image: ", res)
     // setImages([...images, res.filePath])
+    console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
+
+  useEffect(() => {
+    if (
+      nhaCungCapSelected == null ||
+      typeProduct == null ||
+      product.productName?.trim() == "" ||
+      product.productName == null
+    ) {
+      setDisabled(true)
+    } else {
+      setDisabled(false)
+    }
+  })
 
   return (
     <div className="">
@@ -332,18 +450,20 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>Thông tin bổ sung</SmallTitle>
+        <SmallTitle>
+          Thông tin bổ sung <span className="text-red-500">*</span>
+        </SmallTitle>
 
         <p className="mt-4">Nhà cung cấp</p>
         <ChooseSupplierDropdown
-          listDropdown={listNhaCungCapDemo}
+          listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
         <ChooseTypeDropdown
-          listDropdown={lisLoaiSanPhamDemo}
+          listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
           setShowing={setTypeProduct}
@@ -376,6 +496,7 @@ function RightSideProductDetail({
         <PrimaryBtn
           className="bg-successBtn border-successBtn active:bg-greenDark"
           onClick={handleAddProduct}
+          disabled={disabled}
         >
           Thêm sản phẩm
         </PrimaryBtn>
@@ -435,14 +556,14 @@ function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="Thùng"
         title="Đơn vị quy đổi"
-        value={data?.type}
+        value={data?.measuredUnitName}
         readOnly
       />
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
         title="Số lượng trong đơn vị tương ứng"
-        value={data?.detail}
+        value={data?.measuredUnitValue}
         type="number"
         readOnly
       />

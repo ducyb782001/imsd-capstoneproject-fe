@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import DemoDropDown from "../DemoDropDown"
 import DownloadIcon from "../icons/DownloadIcon"
 import PlusIcon from "../icons/PlusIcon"
 import UploadIcon from "../icons/UploadIcon"
@@ -12,75 +13,45 @@ import ShowDetailIcon from "../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
+import {
+  getListSupplier,
+  getListExportSupplier,
+} from "../../apis/supplier-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 
 const columns = [
   {
     Header: " ",
     columns: [
       {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        Header: "Tên nhà cung cấp",
+        accessor: (data: any) => <p>{data?.supplierName}</p>,
       },
       {
-        Header: "Ảnh",
-        accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover w-full h-full rounded-xl"
-              src={data?.image}
-              alt="image-product"
-            />
-          </div>
-        ),
+        Header: "Số điện thoại",
+        accessor: (data: any) => <p>{data?.supplierPhone}</p>,
       },
       {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
+        Header: "Email",
+        accessor: (data: any) => <p>{data?.supplierEmail}</p>,
       },
       {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-      },
-      {
-        Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-      },
-      {
-        Header: "Tồn kho",
-        accessor: (data: any) => (
-          <p>{new BigNumber(data?.inStock).toFormat()}</p>
-        ),
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
+        Header: "Địa chỉ",
+        accessor: (data: any) => <p>{data?.province}</p>,
       },
       {
         Header: " ",
         accessor: (data: any) => {
           return (
             <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.productId}`}>
+              <Link href={`/edit-supplier/${data?.supplierId}`}>
                 <a>
                   <EditIcon />
                 </a>
               </Link>
-              <Link href={`/product-detail/${data?.productId}`}>
+              <Link href={`/supplier-detail/${data?.supplierId}`}>
                 <a className="w-full">
                   <ShowDetailIcon />
                 </a>
@@ -93,7 +64,7 @@ const columns = [
   },
 ]
 
-function ManageGoods({ ...props }) {
+function ManageSuppliers({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -103,40 +74,9 @@ function ManageGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listProduct, setListProduct] = useState<any>()
-
-  const [listProductExport, setListProductExport] = useState<any>()
   const [listSupplier, setListSupplier] = useState<any>()
-  const [listCategory, setListCategory] = useState<any>()
 
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "supId",
-          applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.supplierName,
-          id: nhaCungCapSelected?.supplierId,
-        },
-      ])
-    }
-  }, [nhaCungCapSelected])
-  useEffect(() => {
-    if (typeSelected) {
-      // Them logic check id cua type phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "catId",
-          applied: "Loại",
-          value: typeSelected?.categoryName,
-          id: typeSelected?.categoryId,
-        },
-      ])
-    }
-  }, [typeSelected])
+  const [listSupplierExport, setListSupplierExport] = useState<any>()
 
   //change queryParamsObj when change listFilter in one useEffect
   useEffect(() => {
@@ -157,7 +97,7 @@ function ManageGoods({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListProduct",
+        "getListSupplier",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -165,48 +105,36 @@ function ManageGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListProduct({
+          const response = await getListSupplier({
             search: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
+          setListSupplier(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListProduct({
+          const exportFile = await getListExportSupplier({
             search: debouncedSearchValue,
             offset: 0,
             limit: 1000,
             ...queryParams,
           })
-          setListProductExport(exportFile?.data)
+          setListSupplierExport(exportFile?.data)
           //-----------
 
           return response?.data
         } else {
-          const response = await getListProduct({
+          const response = await getListSupplier({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
-
-          const category = await getListExportTypeGood({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListCategory(category?.data?.data)
-
-          const typeGood = await getListExportSupplier({})
-          setListSupplier(typeGood?.data?.data)
-
-          console.log(category?.data)
+          setListSupplier(response?.data)
+          console.log("List supplier 1 : " + response?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct({})
-          setListProductExport(exportFile?.data)
+          const exportFile = await getListExportSupplier({})
+          setListSupplierExport(exportFile?.data)
 
           //-----------
 
@@ -215,10 +143,11 @@ function ManageGoods({ ...props }) {
       },
     },
   ])
+  console.log("List supplier: " + listSupplier)
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
+    const worksheet = XLSX.utils.json_to_sheet(listSupplierExport?.data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
@@ -238,36 +167,24 @@ function ManageGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/add-product`}>
+        <Link href={`/add-supplier`}>
           <a>
             <PrimaryBtn
-              className="max-w-[200px]"
+              className="max-w-[250px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Thêm sản phẩm
+              Thêm nhà cung cấp
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder="Tìm kiếm theo tên/ mã sản phẩm"
+              placeholder="Tìm kiếm bằng tên nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full"
-            />
-            <ChooseSupplierDropdown
-              listDropdown={listSupplier}
-              textDefault={"Nhà cung cấp"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
-            />
-            <ChooseTypeDropdown
-              listDropdown={listCategory}
-              textDefault={"Loại sản phẩm"}
-              showing={typeSelected}
-              setShowing={setTypeSelected}
+              className="w-full col-span-3"
             />
           </div>
           <ShowLabelBar
@@ -286,7 +203,7 @@ function ManageGoods({ ...props }) {
           <Table
             pageSizePagination={pageSize}
             columns={columns}
-            data={listProduct?.data}
+            data={listSupplier?.data}
           />
           {/* )} */}
         </div>
@@ -295,14 +212,14 @@ function ManageGoods({ ...props }) {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={listProduct?.total}
+          totalItems={listSupplier?.total}
         />
       </div>
     </div>
   )
 }
 
-export default ManageGoods
+export default ManageSuppliers
 
 function ImportExportButton({
   accessoriesLeft,
