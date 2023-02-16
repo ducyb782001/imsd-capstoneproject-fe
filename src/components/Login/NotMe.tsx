@@ -21,22 +21,11 @@ function VerifySuccessful(props) {
   useEffect(() => {
     resetPassMutation.mutate()
   }, [])
-
-  const resetPassMutation = useMutation(
-    () => {
-      var paramLink = router.query["token"] + ""
-      var link = notMeUrl + paramLink
-      return axios.post(link)
-    },
-    {
-      onError: (data: any) => {
-        console.log("login error", data)
-        toast.error(
-          "Có lỗi xảy ra! Xin thử lại hoặc liên hệ admin để được hỗ trợ thêm!",
-        )
-      },
-    },
-  )
+  const resetPassMutation = useMutation(() => {
+    var paramLink = router.query["token"] + ""
+    var link = notMeUrl + paramLink
+    return axios.post(link)
+  })
 
   return (
     <div className="relative">

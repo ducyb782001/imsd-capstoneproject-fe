@@ -426,7 +426,7 @@ function EditProduct(props) {
 }
 
 export default EditProduct
-
+import defaultProductImage from "../images/default-product-image.jpg"
 function RightSideProductDetail({
   imageUploaded,
   onErrorUpload,
@@ -462,7 +462,10 @@ function RightSideProductDetail({
             >
               {loadingImage ? (
                 <div className="w-full h-[176px] flex items-center justify-center">
-                  <Loading />
+                  <IKImage
+                    src={`https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`}
+                    className="!w-[170px] !h-[170px] rounded-md"
+                  />
                 </div>
               ) : imageUploaded ? (
                 <IKImage

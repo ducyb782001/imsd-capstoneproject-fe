@@ -58,6 +58,7 @@ function AddProduct(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [isImageNull, setIsImageNull] = useState(true)
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
 
@@ -80,6 +81,7 @@ function AddProduct(props) {
         ...product,
         image: imageUploaded,
       })
+      setIsImageNull(false)
     }
   }, [imageUploaded])
 
@@ -160,6 +162,13 @@ function AddProduct(props) {
       status: true,
     })
   }, [isEnabled])
+
+  useEffect(() => {
+    setProduct({
+      ...product,
+      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
+    })
+  }, [])
 
   const handleAddNewProduct = (event) => {
     event.preventDefault()

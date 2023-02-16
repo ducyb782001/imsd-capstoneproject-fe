@@ -33,8 +33,8 @@ function EditTypePopup({ className = "", id }) {
       categoryName: typeName,
       description: description,
     })
-    // router.reload()
-    // close()
+    router.reload()
+    close()
   }
 
   useQueries([

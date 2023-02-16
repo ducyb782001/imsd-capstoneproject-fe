@@ -4,7 +4,7 @@ import Layout from "../components/Layout"
 
 function manageImportGoods(props) {
   return (
-    <Layout>
+    <Layout headTitle="Danh sách phiếu nhập hàng">
       <ManageImportGoods />
     </Layout>
   )
