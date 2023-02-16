@@ -42,7 +42,7 @@ const columns = [
         accessor: (data: any) => <p>{data?.province}</p>,
       },
       {
-        Header: " ",
+        Header: "Hành động",
         accessor: (data: any) => {
           return (
             <div className="flex items-center gap-2">
@@ -131,7 +131,6 @@ function ManageSuppliers({ ...props }) {
             ...queryParams,
           })
           setListSupplier(response?.data)
-          console.log("List supplier 1 : " + response?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportSupplier({})
           setListSupplierExport(exportFile?.data)
@@ -143,7 +142,6 @@ function ManageSuppliers({ ...props }) {
       },
     },
   ])
-  console.log("List supplier: " + listSupplier)
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""

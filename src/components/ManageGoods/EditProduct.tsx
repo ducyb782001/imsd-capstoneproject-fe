@@ -115,7 +115,6 @@ function EditProduct(props) {
 
   useEffect(() => {
     if (typeProduct) {
-      console.log("typeProduct: " + typeProduct)
       setDetailProduct({
         ...detailProduct,
         categoryId: typeProduct.categoryId,
@@ -199,13 +198,11 @@ function EditProduct(props) {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    console.log("Save btn success")
     // @ts-ignore
     updateProductMutation.mutate({
       ...detailProduct,
     })
   }
-  console.log("Detail product: ", detailProduct)
 
   return (
     <div className="grid gap-4 md:grid-cols-73">

@@ -200,7 +200,7 @@ function SupplierDetail(props) {
       },
     },
   ])
-  console.log(listProductSupplier)
+
   useEffect(() => {
     setSupplier({
       ...supplier,
@@ -213,25 +213,29 @@ function SupplierDetail(props) {
   }
 
   return (
-    <div className="">
+    <div>
       <div>
         <div className="bg-white block-border">
-          <SmallTitle>Thông tin chung</SmallTitle>
-          <SupplierStatus status={supplier?.status} />
-          <div className="flex items-center float-right">
-            <div className="flex flex-col gap-4">
-              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
-                <PrimaryBtn
-                  href={`/edit-supplier/${supplier?.supplierId}`}
-                  onClick={handleEditSupplier}
-                  className="bg-successBtn border-successBtn active:bg-greenDark"
-                >
-                  Chỉnh sửa nhà cung cấp
-                </PrimaryBtn>
-              </div>
+          <div>
+            <div className="float-left">
+              <SmallTitle>Thông tin chung</SmallTitle>
+            </div>
+            <div className="float-right">
+              <PrimaryBtn
+                href={`/edit-supplier/${supplier?.supplierId}`}
+                onClick={handleEditSupplier}
+                className="bg-successBtn border-successBtn active:bg-greenDark"
+              >
+                Chỉnh sửa nhà cung cấp
+              </PrimaryBtn>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-y-1 mt-5">
+
+          <div className=" grid-cols-3 gap-y-1 mt-10">
+            <div className="text-gray ">
+              <SupplierStatus status={supplier?.status} />
+            </div>
+            <div className="text-black col-span-2"></div>
             <SupplierInfo
               title="Tên nhà cung cấp: "
               data={supplier?.supplierName}
@@ -309,13 +313,13 @@ function SupplierInfo({ title = "", data = "" }) {
 function SupplierStatus({ status = false }) {
   if (status) {
     return (
-      <div className="bg-green-500 text-white font-bold mt-4 w-1/12 rounded-md">
+      <div className="bg-green-500 text-white font-bold mt-4 w-36 rounded-md">
         <h1 className="m-2 ml-3">Đang giao dịch</h1>
       </div>
     )
   } else {
     return (
-      <div className="bg-gray text-white font-bold mt-4 w-1/12 rounded-md">
+      <div className="bg-gray text-white font-bold mt-4 w-36 rounded-md">
         <h1 className=" ml-3">Dừng giao dịch</h1>
       </div>
     )

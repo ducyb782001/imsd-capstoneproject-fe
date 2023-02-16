@@ -140,7 +140,6 @@ function AddProduct(props) {
           toast.success("Thêm mới sản phẩm thành công")
           router.push("/manage-goods")
         } else {
-          console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
           } else {
@@ -170,7 +169,6 @@ function AddProduct(props) {
     })
   }
 
-  console.log("Product: ", product)
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>

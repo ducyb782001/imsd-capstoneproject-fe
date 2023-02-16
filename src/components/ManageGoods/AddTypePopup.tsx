@@ -53,7 +53,7 @@ function AddTypePopup({ className = "" }) {
   return (
     <div className={`${className}`}>
       <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm mới loại sản phẩm
+        <PlusIcon /> Thêm loại sản phẩm
       </PrimaryBtn>
       <AnimatePresence>
         {showDialog && (
@@ -80,13 +80,13 @@ function AddTypePopup({ className = "" }) {
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6  text-base text-[#4F4F4F] pt-5">
                   <PrimaryInput
                     title="Tên loại sản phẩm"
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Mô tả loại sản phẩm"
                     onChange={(event) => setDescription(event.target.value)}

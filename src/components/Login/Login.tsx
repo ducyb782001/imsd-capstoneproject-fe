@@ -51,7 +51,6 @@ function Login(props) {
         }, 300)
       },
       onError: (data: any) => {
-        console.log("login error", data)
         toast.error("Email hoặc mật khẩu sai!")
       },
     },

@@ -33,9 +33,6 @@ function EditTypePopup({ className = "", id }) {
       categoryName: typeName,
       description: description,
     })
-    console.log("id: " + id)
-    console.log("categoryName: " + typeName)
-    console.log("description: " + description)
     // router.reload()
     // close()
   }

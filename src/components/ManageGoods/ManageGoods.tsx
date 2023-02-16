@@ -203,7 +203,6 @@ function ManageGoods({ ...props }) {
           const typeGood = await getListExportSupplier({})
           setListSupplier(typeGood?.data?.data)
 
-          console.log(category?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportProduct({})
           setListProductExport(exportFile?.data)
