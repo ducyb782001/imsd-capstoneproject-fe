@@ -110,7 +110,6 @@ function AddSupplier(props) {
           toast.success("Thêm nhà cung cấp thành công!")
           router.push("/manage-suppliers")
         } else {
-          console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
           } else {
@@ -142,7 +141,6 @@ function AddSupplier(props) {
     router.push("/manage-suppliers")
   }
 
-  console.log("Supplier: ", supplier)
   return (
     <div className="">
       <div>

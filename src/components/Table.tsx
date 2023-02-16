@@ -15,6 +15,7 @@ function Table({
   borderColor = "#202B38",
   textColor = "#ffffff",
   fontSize = 14,
+  columnSize = "",
   pageSizePagination,
 }) {
   const {
@@ -109,7 +110,7 @@ function Table({
                           headerTextAlightRight.includes(cell.column.Header)
                             ? "text-right"
                             : ""
-                        }`}
+                        } ${columnSize}`}
                         data-label={cell.column.Header}
                         {...cell.getCellProps()}
                       >
