@@ -241,8 +241,8 @@ function ManageImportGoods({ ...props }) {
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
-        <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+        <div className="flex flex-col">
+          <div className="grid items-center justify-between w-full md:grid-cols-[32%_17%_17%_17%_17%]">
             <SearchInput
               placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
@@ -257,7 +257,13 @@ function ManageImportGoods({ ...props }) {
             />
             <ChooseImportStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={"Trạng thái nhập"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
+            />
+            <ChooseImportStatusDropdown
+              listDropdown={status}
+              textDefault={"Ngày nhập"}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
