@@ -20,7 +20,9 @@ import { format, parseISO } from "date-fns"
 import { getListExportTypeGood } from "../../apis/type-good-module"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
-import ChooseStatusDropdown from "../ManageGoods/ChooseStatusDropdown"
+import ChooseStatusDropdown from "./ChooseStatusDropdown"
+import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
+import ChooseImportStatusDropdown from "./ChooseImportStatusDropdown"
 
 const columns = [
   {
@@ -253,7 +255,14 @@ function ManageImportGoods({ ...props }) {
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
-            <ChooseSupplierDropdown
+            <ChooseImportStatusDropdown
+              listDropdown={status}
+              textDefault={"Trạng thái"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
+            />
+
+            <ChooseSupplierImportGoodDropdown
               listDropdown={listSupplier}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}

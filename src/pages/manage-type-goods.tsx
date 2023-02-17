@@ -1,6 +1,6 @@
 import React from "react"
 import Layout from "../components/Layout"
-import ManageTypeGoods from "../components/ManageTypeGoods/ManageTypeGoods"
+import ManageTypeGoods from "../components/ManageGoods/ManageTypeGoods/ManageTypeGoods"
 
 function manageTypeGoods(props) {
   return (

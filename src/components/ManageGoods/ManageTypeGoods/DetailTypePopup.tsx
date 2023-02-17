@@ -1,14 +1,14 @@
 import { DialogOverlay } from "@reach/dialog"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import CloseDialogIcon from "../icons/CloseDialogIcon"
-import MotionDialogContent from "../MotionDialogContent"
-import PrimaryBtn from "../PrimaryBtn"
-import SecondaryBtn from "../SecondaryBtn"
-import SmallTitle from "../SmallTitle"
+import CloseDialogIcon from "../../icons/CloseDialogIcon"
+import MotionDialogContent from "../../MotionDialogContent"
+import PrimaryBtn from "../../PrimaryBtn"
+import SecondaryBtn from "../../SecondaryBtn"
+import SmallTitle from "../../SmallTitle"
 import { useRouter } from "next/router"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
-import TextDescription from "../TextDescription"
+import ShowDetailIcon from "../../icons/ShowDetailIcon"
+import TextDescription from "../../TextDescription"
 
 function DetailTypePopup({ className = "", id }) {
   const router = useRouter()

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react"
-import DownloadIcon from "../icons/DownloadIcon"
-import PlusIcon from "../icons/PlusIcon"
-import UploadIcon from "../icons/UploadIcon"
-import PrimaryBtn from "../PrimaryBtn"
-import SearchInput from "../SearchInput"
-import Table from "../Table"
-import Pagination from "../Pagination"
-import useDebounce from "../../hooks/useDebounce"
+import DownloadIcon from "../../icons/DownloadIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import UploadIcon from "../../icons/UploadIcon"
+import PrimaryBtn from "../../PrimaryBtn"
+import SearchInput from "../../SearchInput"
+import Table from "../../Table"
+import Pagination from "../../Pagination"
+import useDebounce from "../../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import {
   getListExportTypeGood,
   getListTypeGood,
-} from "../../apis/type-good-module"
+} from "../../../apis/type-good-module"
 import * as XLSX from "xlsx/xlsx"
-import AddTypePopup from "../ManageGoods/AddTypePopup"
-import EditTypePopup from "../ManageGoods/EditTypePopup"
-import DetailTypePopup from "../ManageGoods/DetailTypePopup"
+import AddTypePopup from "./AddTypePopup"
+import EditTypePopup from "./EditTypePopup"
+import DetailTypePopup from "./DetailTypePopup"
 import Switch from "react-switch"
 
 function ManageTypeGoods({ ...props }) {
