@@ -3,9 +3,8 @@ import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
-import AddSupplierPopup from "./AddSupplierPopup"
 
-function ChooseImportStatusDropdown({
+function ChooseSupplierImportGoodDropdown({
   title = "",
   listDropdown,
   showing,
@@ -76,7 +75,7 @@ function ChooseImportStatusDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.status || showing || textDefault}
+              {showing?.supplierName || showing || textDefault}
             </p>
           </div>
           <ArrowDownIcon color="#373737" />
@@ -102,9 +101,8 @@ function ChooseImportStatusDropdown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Tìm kiếm trạng thái nhập"
+          placeholder="Tìm kiếm nhà cung cấp"
         />
-        <AddSupplierPopup />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
@@ -118,7 +116,7 @@ function ChooseImportStatusDropdown({
   )
 }
 
-export default ChooseImportStatusDropdown
+export default ChooseSupplierImportGoodDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -126,7 +124,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.status || data}
+      {data?.supplierName || data}
     </div>
   )
 }

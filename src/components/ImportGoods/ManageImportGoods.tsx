@@ -20,7 +20,9 @@ import { format, parseISO } from "date-fns"
 import { getListExportTypeGood } from "../../apis/type-good-module"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
-import ChooseStatusDropdown from "../ManageGoods/ChooseStatusDropdown"
+import ChooseStatusDropdown from "./ChooseStatusDropdown"
+import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
+import ChooseImportStatusDropdown from "./ChooseImportStatusDropdown"
 
 const columns = [
   {
@@ -239,8 +241,8 @@ function ManageImportGoods({ ...props }) {
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
-        <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+        <div className="flex flex-col">
+          <div className="grid items-center justify-between w-full md:grid-cols-[32%_17%_17%_17%_17%]">
             <SearchInput
               placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
@@ -253,7 +255,20 @@ function ManageImportGoods({ ...props }) {
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
-            <ChooseSupplierDropdown
+            <ChooseImportStatusDropdown
+              listDropdown={status}
+              textDefault={"Trạng thái nhập"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
+            />
+            <ChooseImportStatusDropdown
+              listDropdown={status}
+              textDefault={"Ngày nhập"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
+            />
+
+            <ChooseSupplierImportGoodDropdown
               listDropdown={listSupplier}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}

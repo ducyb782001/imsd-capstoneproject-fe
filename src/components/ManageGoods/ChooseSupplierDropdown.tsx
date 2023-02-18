@@ -106,7 +106,6 @@ function ChooseSupplierDropdown({
           className=""
           placeholder="Tìm kiếm hoặc nhập mới"
         />
-        <AddSupplierPopup />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"

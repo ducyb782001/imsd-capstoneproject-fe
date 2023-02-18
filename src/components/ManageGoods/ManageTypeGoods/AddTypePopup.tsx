@@ -2,22 +2,20 @@ import { DialogOverlay } from "@reach/dialog"
 import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { addTypeGoodUrl } from "../../constants/APIConfig"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import CloseDialogIcon from "../icons/CloseDialogIcon"
-import PlusIcon from "../icons/PlusIcon"
-import MotionDialogContent from "../MotionDialogContent"
-import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInput from "../PrimaryInput"
-import SecondaryBtn from "../SecondaryBtn"
-import SmallTitle from "../SmallTitle"
+import { useMutation } from "react-query"
+import { addTypeGoodUrl } from "../../../constants/APIConfig"
+import AddPlusIcon from "../../icons/AddPlusIcon"
+import CloseDialogIcon from "../../icons/CloseDialogIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import MotionDialogContent from "../../MotionDialogContent"
+import PrimaryBtn from "../../PrimaryBtn"
+import PrimaryInput from "../../PrimaryInput"
+import SecondaryBtn from "../../SecondaryBtn"
+import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import EditIcon from "../icons/EditIcon"
-import { getTypeGoodDetail, updateTypeGood } from "../../apis/type-good-module"
 
-function EditTypePopup({ className = "", id }) {
+function AddTypePopup({ className = "" }) {
   const router = useRouter()
 
   const [showDialog, setShowDialog] = useState(false)
@@ -26,10 +24,10 @@ function EditTypePopup({ className = "", id }) {
 
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
+
   const handleSaveBtn = () => {
     // @ts-ignore
-    editTypeMutation.mutate({
-      categoryId: id,
+    addTypeMutation.mutate({
       categoryName: typeName,
       description: description,
     })
@@ -37,25 +35,13 @@ function EditTypePopup({ className = "", id }) {
     close()
   }
 
-  useQueries([
-    {
-      queryKey: ["getTypeGoodDetail", id],
-      queryFn: async () => {
-        const response = await getTypeGoodDetail(id)
-        setTypeName(response?.data?.categoryName)
-        setDescription(response?.data?.description)
-        return response?.data
-      },
-    },
-  ])
-
-  const editTypeMutation = useMutation(
-    async (type) => {
-      return await updateTypeGood(type)
+  const addTypeMutation = useMutation(
+    (type) => {
+      return axios.post(addTypeGoodUrl, type)
     },
     {
       onSuccess: (data, error, variables) => {
-        toast.success("Chỉnh sửa thành công!")
+        toast.success("Thêm loại sản phẩm mới thành công!")
       },
       onError: (data: any) => {
         console.log("login error", data)
@@ -66,9 +52,9 @@ function EditTypePopup({ className = "", id }) {
 
   return (
     <div className={`${className}`}>
-      <a>
-        <EditIcon onClick={open} className="cursor-pointer" />
-      </a>
+      <PrimaryBtn onClick={open}>
+        <PlusIcon /> Thêm loại sản phẩm
+      </PrimaryBtn>
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay
@@ -94,17 +80,15 @@ function EditTypePopup({ className = "", id }) {
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6  text-base text-[#4F4F4F] pt-5">
                   <PrimaryInput
                     title="Tên loại sản phẩm"
-                    value={typeName}
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Mô tả loại sản phẩm"
-                    value={description}
                     onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
@@ -124,4 +108,4 @@ function EditTypePopup({ className = "", id }) {
   )
 }
 
-export default EditTypePopup
+export default AddTypePopup

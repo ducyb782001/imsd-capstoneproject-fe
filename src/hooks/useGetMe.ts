@@ -5,9 +5,9 @@ function useGetMe() {
   const getMeQuery = useQuery(
     "getMeQuery",
     async () => {
-      const response = await getUserData()
-      localStorage.setItem("userData", JSON.stringify(response?.data))
-      return response?.data
+      // const response = await getUserData()
+      // localStorage.setItem("userData", JSON.stringify(response?.data))
+      // return response?.data
     },
     // {
     //   cacheTime: Infinity,

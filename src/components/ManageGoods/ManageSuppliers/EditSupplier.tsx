@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react"
-import PrimaryInput from "../PrimaryInput"
-import PrimaryTextArea from "../PrimaryTextArea"
-import SmallTitle from "../SmallTitle"
-import PrimaryBtn from "../PrimaryBtn"
+import PrimaryInput from "../../PrimaryInput"
+import PrimaryTextArea from "../../PrimaryTextArea"
+import SmallTitle from "../../SmallTitle"
+import PrimaryBtn from "../../PrimaryBtn"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import { addNewProduct } from "../../apis/product-module"
-import CityDropDown from "../CityDropDown"
-import WardDropDown from "../WardDropDown"
-import DistrictDropDown from "../DistrictDropDown"
+import { addNewProduct } from "../../../apis/product-module"
+import CityDropDown from "../../CityDropDown"
+import WardDropDown from "../../WardDropDown"
+import DistrictDropDown from "../../DistrictDropDown"
 import {
   getListCity,
   getListDistrictByCode,
   getListWardByCode,
-} from "../../apis/search-country-module"
+} from "../../../apis/search-country-module"
 import {
   addNewSupplier,
   getSupplierDetail,
   updateSupplier,
-} from "../../apis/supplier-module"
-import ConfirmPopup from "../ConfirmPopup"
+} from "../../../apis/supplier-module"
+import ConfirmPopup from "../../ConfirmPopup"
 
 interface Supplier {
   supplierId: number

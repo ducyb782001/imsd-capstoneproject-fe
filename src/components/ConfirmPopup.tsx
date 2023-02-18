@@ -22,6 +22,10 @@ function ConfirmPopup({
     handleClickSaveBtn()
   }
 
+  const handleCloseBtn = () => {
+    close()
+  }
+
   return (
     <div className={`${className} w-full`}>
       <PrimaryBtn className={classNameBtn} onClick={open}>
@@ -60,7 +64,9 @@ function ConfirmPopup({
                   <PrimaryBtn className="w-[164px]" onClick={handleSaveBtn}>
                     Xác nhận
                   </PrimaryBtn>
-                  <SecondaryBtn className="w-[70px]">Hủy</SecondaryBtn>
+                  <SecondaryBtn className="w-[70px]" onClick={handleCloseBtn}>
+                    Hủy
+                  </SecondaryBtn>
                 </div>
               </motion.div>
             </MotionDialogContent>

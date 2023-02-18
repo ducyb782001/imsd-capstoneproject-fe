@@ -1,6 +1,6 @@
 import React from "react"
 import Layout from "../../components/Layout"
-import EditSupplier from "../../components/ManageSuppliers/EditSupplier"
+import EditSupplier from "../../components/ManageGoods/ManageSuppliers/EditSupplier"
 
 function editSupplier(props) {
   return (

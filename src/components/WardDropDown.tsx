@@ -67,7 +67,7 @@ function WardDropDown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm text-black font-bold">{title}</p>}
+        {title && <p className="mb-1 text-sm text-gray font-bold">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}

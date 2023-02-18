@@ -125,7 +125,9 @@ function MainNav() {
         router.asPath.includes("/product-detail") ||
         router.asPath.includes("/supplier-detail") ||
         router.asPath.includes("/edit-product") ||
-        router.asPath.includes("/create-product"),
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/add-product"),
     },
     {
       id: 3,
@@ -245,7 +247,7 @@ function MenuItem({
       >
         <div className="flex items-center gap-2">
           {icon}
-          <p className="text-sm text-black">{name}</p>
+          <p className="text-sm">{name}</p>
         </div>
         {subMenuItem && (
           <div className={`${isOpenMenu && "rotate-90"} smooth-transform`}>
