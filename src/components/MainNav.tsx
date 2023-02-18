@@ -57,7 +57,7 @@ function MainNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu nhập hàng",
+      name: "Tạo đơn nhập hàng",
       href: "/create-import-report",
       isActive: router.asPath.includes("/create-import-report"),
     },
@@ -71,7 +71,7 @@ function MainNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu xuất hàng",
+      name: "Tạo đơn xuất hàng",
       href: "/create-export-report",
       isActive: router.asPath.includes("/create-export-report"),
     },
@@ -247,7 +247,7 @@ function MenuItem({
       >
         <div className="flex items-center gap-2">
           {icon}
-          <p className="text-sm">{name}</p>
+          <p>{name}</p>
         </div>
         {subMenuItem && (
           <div className={`${isOpenMenu && "rotate-90"} smooth-transform`}>

@@ -1,9 +1,9 @@
 // export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Dev baseUrl
-// export const baseUrl = `https://imsdservice.azurewebsites.net/api`
+export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
-export const baseUrl = `https://localhost:7265/api`
+// export const baseUrl = `https://localhost:7265/api`
 
 // City, district, ward
 export const countryUrl = `https://provinces.open-api.vn/api`
@@ -54,3 +54,6 @@ export const addTypeGoodUrl = `${baseUrl}/Categories/PostCategory`
 export const getTypeGoodDetailUrl = `${baseUrl}/Categories/GetDetail`
 
 export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`
+
+// User
+export const listStaffUrl = "/fake-response/list-staff.json"

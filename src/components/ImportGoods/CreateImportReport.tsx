@@ -1,201 +1,119 @@
-import React, { useEffect, useState } from "react"
-import SmallTitle from "../SmallTitle"
-import DemoDropDown from "../DemoDropDown"
-import PrimaryBtn from "../PrimaryBtn"
-import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import { useRouter } from "next/router"
-import { addNewProduct, getListProduct } from "../../apis/product-module"
-import SearchInput from "../SearchInput"
+import React, { useState } from "react"
+import { useQueries } from "react-query"
+import { getListExportSupplier } from "../../apis/supplier-module"
+import { getListStaff } from "../../apis/user-module"
+import ConfirmPopup from "../ConfirmPopup"
+import InfoIcon from "../icons/InfoIcon"
+import XIcons from "../icons/XIcons"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
+import PrimaryInput from "../PrimaryInput"
+import PrimaryTextArea from "../PrimaryTextArea"
+import SecondaryBtn from "../SecondaryBtn"
+import StepBar from "../StepBar"
 import Table from "../Table"
-import { format, parseISO } from "date-fns"
-import Link from "next/link"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
-import { getSupplierDetail } from "../../apis/supplier-module"
-import Pagination from "../Pagination"
-import useDebounce from "../../hooks/useDebounce"
+import Tooltip from "../ToolTip"
+import AddProductPopup from "./AddProductPopup"
+import ChooseStaffDropdown from "./ChooseStaffDropdown"
+import ChooseUnitImport from "./ChooseUnitImport"
+import SearchProductImportDropdown from "./SearchProductImportDropdown"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
-      },
-      {
-        Header: "Ảnh",
-        accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover rounded-xl w-full h-full"
-              src={data?.image}
-              alt="image-product"
-            />
-          </div>
-        ),
-      },
-      {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
-      },
-      {
-        Header: "Loại",
-        // accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-        accessor: (data: any) => <p>{data?.categoryName}</p>,
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
-      },
-    ],
-  },
-]
-
-interface Supplier {
-  supplierId: number
-  supplierName: string
-  supplierPhone: string
-  city: string
-  district: string
-  ward: string
-  address: string
-  note: string
-  supplierEmail: string
-  status: boolean
-}
-function CreateImportReport(props) {
-  const [supplier, setSupplier] = useState<Supplier>()
-  const [newType, setNewType] = useState<string>("")
-  const [newDetail, setNewDetail] = useState<string>("")
-  const [imageUploaded, setImageUploaded] = useState("")
+function CreateImportReport() {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [typeProduct, setTypeProduct] = useState<any>()
-  const [isEnabled, setIsEnabled] = useState(true)
-  const [listProductSupplier, setListProductSupplier] = useState<any>()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [listSupplier, setListSupplier] = useState<any>()
+  const [staffSelected, setStaffSelected] = useState<any>()
+  const [listStaff, setListStaff] = useState<any>()
+  const [listChosenProduct, setListChosenProduct] = useState([1, 2, 3, 4, 5])
 
-  const [searchParam, setSearchParam] = useState<string>("")
-  const [queryParams, setQueryParams] = useState<any>({})
-  const debouncedSearchValue = useDebounce(searchParam, 500)
-
-  const router = useRouter()
-
-  const queryId = router.query.supplierid
   useQueries([
     {
-      queryKey: ["getSupplierDetail", router.query.supplierid],
+      queryKey: ["getListSupplier"],
       queryFn: async () => {
-        const response = await getSupplierDetail(router.query.supplierid)
-        await setSupplier(response?.data)
+        const response = await getListExportSupplier({})
+        setListSupplier(response?.data)
         return response?.data
       },
     },
     {
-      queryKey: [
-        "getListProduct",
-        debouncedSearchValue,
-        currentPage,
-        pageSize,
-        queryId,
-      ],
+      queryKey: ["getListStaff"],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const listProduct = await getListProduct({
-            search: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            supId: queryId,
-            ...queryParams,
-          })
-          await setListProductSupplier(listProduct?.data)
-        } else {
-          const listProduct = await getListProduct({
-            offset: 0,
-            limit: 1000,
-            supId: queryId,
-          })
-          await setListProductSupplier(listProduct?.data)
-        }
+        const response = await getListStaff({})
+        setListStaff(response?.data)
+        return response?.data
       },
     },
   ])
 
-  useEffect(() => {
-    setSupplier({
-      ...supplier,
-      status: true,
-    })
-  }, [isEnabled])
-
-  const handleEditSupplier = (event) => {
-    router.push("/edit-supplier/" + supplier?.supplierId)
-  }
-
   return (
     <div>
-      <div>
-        <div className="md:grid-cols-4">
-          <div className="bg-white  col-span-3"></div>
-          <div className="bg-white col-span-1"></div>
-        </div>
-
-        <div className="bg-white block-border mt-4">
-          <h1 className="font-bold text-2xl">Mặt hàng cung cấp</h1>
-          <div className="flex flex-col gap-4 mt-4">
-            <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
-              <SearchInput
-                placeholder="Tìm kiếm bằng tên sản phẩm"
-                onChange={(e) => setSearchParam(e.target.value)}
-                className="w-full col-span-3"
-              />
+      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+        <div>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
+            <SecondaryBtn className="max-w-[120px]">Thoát</SecondaryBtn>
+          </div>
+          <div className="flex justify-center mt-6">
+            <StepBar />
+          </div>
+          <div className="w-full p-6 mt-6 bg-white block-border">
+            <div className="flex items-center gap-2 mb-4">
+              <h1 className="text-xl font-semibold">Chọn nhà cung cấp</h1>
+              <Tooltip content="Chọn nhà cung cấp để hiển thị mặt hàng tương ứng">
+                <InfoIcon />
+              </Tooltip>
             </div>
-            {/* Table */}
-            <div className="mt-4 table-style">
-              {/* {data && ( */}
-              <Table
-                pageSizePagination={10}
-                columns={columns}
-                data={listProductSupplier?.data}
-              />
-              {/* )} */}
-            </div>
-            <Pagination
-              //   pageSize={pageSize}
-              //   setPageSize={setPageSize}
-              //   currentPage={currentPage}
-              //   setCurrentPage={setCurrentPage}
-              //   totalItems={listProduct?.total}
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listProductSupplier?.total}
+            <ChooseSupplierDropdown
+              listDropdown={listSupplier}
+              textDefault={"Nhà cung cấp"}
+              showing={nhaCungCapSelected}
+              setShowing={setNhaCungCapSelected}
             />
           </div>
         </div>
+        <div className="bg-white block-border">
+          <h1 className="text-xl font-semibold text-center">
+            Thông tin bổ sung
+          </h1>
+          <div className="text-sm font-medium text-center text-gray">
+            Ngày nhập hàng: 26/01/2023
+          </div>
+          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <ChooseStaffDropdown
+            listDropdown={listStaff?.data}
+            textDefault={"Chọn nhân viên"}
+            showing={staffSelected}
+            setShowing={setStaffSelected}
+          />
+          <PrimaryTextArea rows={4} className="mt-2" title="Ghi chú hóa đơn" />
+        </div>
+      </div>
+      <div className="mt-4 bg-white block-border">
+        <h1 className="mb-4 text-xl font-semibold">
+          Thông tin sản phẩm nhập vào
+        </h1>
+        <SearchProductImportDropdown
+          listDropdown={listStaff?.data}
+          textDefault={"Nhà cung cấp"}
+          showing={nhaCungCapSelected}
+          setShowing={setNhaCungCapSelected}
+        />
+        <AddProductPopup className="mt-4" />
+        <div className="mt-4 table-style">
+          <Table
+            pageSizePagination={10}
+            columns={columns}
+            data={listChosenProduct}
+          />
+        </div>
+      </div>
+      <div className="mt-4 bg-white block-border">
+        <SummaryCreateImportOrder />
+        <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-4"
+          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
+          // handleClickSaveBtn={handleClickSaveBtn}
+        >
+          Tạo hóa đơn nhập hàng
+        </ConfirmPopup>
       </div>
     </div>
   )
@@ -203,26 +121,127 @@ function CreateImportReport(props) {
 
 export default CreateImportReport
 
-function SupplierInfo({ title = "", data = "" }) {
+const columns = [
+  {
+    Header: " ",
+    columns: [
+      {
+        Header: "STT",
+        accessor: (index) => <p>{index}</p>,
+      },
+      {
+        Header: "Ảnh",
+        accessor: (data: any) => <p>ảnh</p>,
+      },
+      {
+        Header: "Tên sản phẩm",
+        accessor: (data: any) => (
+          <p className="truncate-2-line max-w-[100px]">
+            Giỏ quà tết 2023 lalallala oh my god
+          </p>
+        ),
+      },
+      {
+        Header: "SL nhập",
+        accessor: (data: any) => <ListQuantitiveImport />,
+      },
+      {
+        Header: "Đơn vị",
+        accessor: (data: any) => <ListUnitImport />,
+      },
+      {
+        Header: "Đơn giá",
+        accessor: (data: any) => (
+          <div className="flex items-center gap-2">
+            <ListPriceImport />
+            <p>đ</p>
+          </div>
+        ),
+      },
+      {
+        Header: "Chiết khấu",
+        accessor: (data: any) => (
+          <div className="flex items-center gap-1">
+            <ListDiscountImport />
+            <p>%</p>
+          </div>
+        ),
+      },
+      {
+        Header: "Thành tiền",
+        accessor: (data: any) => <p>2000000000</p>,
+      },
+      {
+        Header: " ",
+        accessor: (data: any) => (
+          <div className="cursor-pointer">
+            <XIcons />
+          </div>
+        ),
+      },
+    ],
+  },
+]
+
+function SummaryCreateImportOrder() {
   return (
-    <>
-      <div className="text-gray ">{title}</div>
-      <div className="text-black col-span-2">{data}</div>
-    </>
+    <div className="grid grid-cols-2 p-6 border rounded border-grayBorder gap-y-1">
+      <h1 className="text-xl font-semibold">Tổng kết</h1>
+      <div />
+      <div>Số lượng</div>
+      <div>0</div>
+      <div>Tổng tiền</div>
+      <div>0</div>
+      <div>Chiết khấu</div>
+      <div>0</div>
+      <div>Chi phí nhập hàng</div>
+      <input
+        type="text"
+        defaultValue={0}
+        className="w-[100px] border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
+        // onChange={(e) => {
+        //   setSearchInput(e.target.value)
+        // }}
+      />
+      <div>Tiền cần trả</div>
+      <div>0</div>
+      <div>Đã thanh toán cho NCC</div>
+      <input
+        type="text"
+        defaultValue={0}
+        className="w-[100px] border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
+        // onChange={(e) => {
+        //   setSearchInput(e.target.value)
+        // }}
+      />
+      <div>Còn phải trả</div>
+      <div>0</div>
+    </div>
   )
 }
-function SupplierStatus({ status = false }) {
-  if (status) {
-    return (
-      <div className="bg-green-500 text-white font-bold mt-4 w-36 rounded-md">
-        <h1 className="m-2 ml-3">Đang giao dịch</h1>
-      </div>
-    )
-  } else {
-    return (
-      <div className="bg-gray text-white font-bold mt-4 w-36 rounded-md">
-        <h1 className=" ml-3">Dừng giao dịch</h1>
-      </div>
-    )
-  }
+
+function ListQuantitiveImport() {
+  return <PrimaryInput className="w-[60px]" type="number" placeholder="0" />
+}
+
+function ListPriceImport() {
+  return <PrimaryInput className="w-[80px]" type="number" placeholder="---" />
+}
+
+function ListDiscountImport() {
+  return <PrimaryInput className="w-[50px]" type="number" placeholder="0" />
+}
+
+function ListUnitImport() {
+  return (
+    <ChooseUnitImport
+      listDropdown={[
+        { id: 1, categoryName: "Loc" },
+        { id: 2, categoryName: "Goi" },
+      ]}
+      showing={undefined}
+      setShowing={undefined}
+      textDefault={""}
+    />
+  )
 }

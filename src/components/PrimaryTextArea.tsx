@@ -7,11 +7,12 @@ function PrimaryTextArea({
   onChange = null,
   value = "",
   id = "",
+  rows = 10,
   ...props
 }) {
   return (
     <div className={`form-group ${className}`}>
-      {title && <p className="mb-2 text-sm text-gray font-bold">{title}</p>}
+      {title && <p className="mb-2 text-sm font-bold text-gray">{title}</p>}
       {note && <div className="mb-2 text-sm font-light text-gray">{note}</div>}
       <textarea
         {...props}
@@ -20,7 +21,7 @@ function PrimaryTextArea({
         // name="input-requirement"
         id={id}
         cols={30}
-        rows={10}
+        rows={rows}
         placeholder={placeholder}
         defaultValue={value}
       ></textarea>
