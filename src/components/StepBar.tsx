@@ -1,7 +1,12 @@
 import React from "react"
 import VIcon from "./icons/VIcon"
 
-function StepBar({ status = "new" }) {
+function StepBar({
+  status = "new",
+  createdDate = null,
+  approvedDate = null,
+  succeededDate = null,
+}) {
   return (
     <div className="max-w-[668px] w-full mx-auto">
       <div className="grid w-full grid-cols-3">
@@ -45,20 +50,20 @@ function StepBar({ status = "new" }) {
         ></div>
       </div>
       <div className="grid grid-cols-3 mt-3">
-        <p className={`text-center text-sm text-grayDark`}>26/01/2023 09:05</p>
+        <p className={`text-center text-sm text-grayDark`}>{createdDate}</p>
         <p
           className={`text-center text-sm ${
             status == "new" ? "text-gray" : "text-grayDark"
           }`}
         >
-          Thay ngày vào
+          {approvedDate}
         </p>
         <p
           className={`text-center text-sm ${
             status == "approved" ? "text-grayDark" : "text-gray"
           }`}
         >
-          Thay ngày vào
+          {succeededDate}
         </p>
       </div>
     </div>
