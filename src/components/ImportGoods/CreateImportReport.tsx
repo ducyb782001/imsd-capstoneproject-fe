@@ -18,6 +18,8 @@ import AddProductPopup from "./AddProductPopup"
 import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
+import { format } from "date-fns"
+import { useRouter } from "next/router"
 
 const LIST_PRODUCT_DEMO = {
   data: [
@@ -362,19 +364,29 @@ function CreateImportReport() {
       return <div>0 đ</div>
     }
   }
-
+  const router = useRouter()
   console.log("List product import: ", listProductImport)
 
   return (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <SecondaryBtn className="max-w-[120px]">Thoát</SecondaryBtn>
+            <ConfirmPopup
+              className="!w-fit"
+              classNameBtn="w-[120px]"
+              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
+              handleClickSaveBtn={() => {
+                router.push("/manage-import-goods")
+              }}
+            >
+              Thoát
+            </ConfirmPopup>
+            {/* <SecondaryBtn onClick={} className="max-w-[120px]">Thoát</SecondaryBtn> */}
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar />
+            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -396,7 +408,7 @@ function CreateImportReport() {
             Thông tin bổ sung
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: 26/01/2023
+            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <ChooseStaffDropdown
