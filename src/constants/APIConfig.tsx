@@ -60,4 +60,6 @@ export const listStaffUrl = "/fake-response/list-staff.json"
 
 // Import product
 
+export const allImportProductUrl = `${baseUrl}/Import/GetImportOrder`
+
 export const importProductUrl = `${baseUrl}/Import/CreateImportOrder`

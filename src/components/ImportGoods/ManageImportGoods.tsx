@@ -22,6 +22,7 @@ import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "./ChooseStatusDropdown"
 import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
+import { getListImportProduct } from "../../apis/import-product-module"
 
 const columns = [
   {
@@ -29,23 +30,45 @@ const columns = [
     columns: [
       {
         Header: "Mã đơn nhập",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        accessor: (data: any) => <p>{data?.importCode}</p>,
       },
       {
         Header: "Ghi chú",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        accessor: (data: any) => <p>{data?.note}</p>,
       },
       {
         Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.productName}</p>,
-      },
-      {
-        Header: "Trạng thái",
         accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
       },
       {
-        Header: "Trạng thái nhập",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+        Header: "Trạng thái",
+        accessor: (data: any) => {
+          if (data?.state == 0) {
+            return (
+              <div className="bg-orange-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+                <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+              </div>
+            )
+          } else if (data?.state == 1) {
+            return (
+              <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+                <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
+              </div>
+            )
+          } else if (data?.state == 2) {
+            return (
+              <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+                <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+              </div>
+            )
+          } else {
+            return (
+              <div className="bg-red-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+                <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+              </div>
+            )
+          }
+        },
       },
       {
         Header: "Ngày nhập",
@@ -72,14 +95,18 @@ const columns = [
 ]
 
 const status = [
-  { id: 1, status: "Hoàn thành" },
+  { id: 0, status: "Đang xử lý" },
   {
-    id: 0,
+    id: 3,
     status: "Đã hủy",
   },
   {
     id: 2,
-    status: "Chờ duyệt đơn",
+    status: "Hoàn thành",
+  },
+  {
+    id: 1,
+    status: "Đang nhập hàng",
   },
 ]
 
@@ -94,11 +121,10 @@ function ManageImportGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listProduct, setListProduct] = useState<any>()
+  const [listImportProduct, setListImportProduct] = useState<any>()
 
-  const [listProductExport, setListProductExport] = useState<any>()
+  const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [listSupplier, setListSupplier] = useState<any>()
-  const [listCategory, setListCategory] = useState<any>()
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -115,19 +141,19 @@ function ManageImportGoods({ ...props }) {
     }
   }, [nhaCungCapSelected])
   useEffect(() => {
-    if (typeSelected) {
+    if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
       setListFilter([
         ...listFilter,
         {
-          key: "catId",
-          applied: "Loại",
-          value: typeSelected?.categoryName,
-          id: typeSelected?.categoryId,
+          key: "status",
+          applied: "Trạng thái",
+          value: statusSelected?.status,
+          id: statusSelected?.id,
         },
       ])
     }
-  }, [typeSelected])
+  }, [statusSelected])
 
   //change queryParamsObj when change listFilter in one useEffect
   useEffect(() => {
@@ -148,7 +174,7 @@ function ManageImportGoods({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListProduct",
+        "getListImportProduct",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -156,59 +182,51 @@ function ManageImportGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListProduct({
+          const response = await getListImportProduct({
             search: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
+          setListImportProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListProduct({
+          const exportFile = await getListImportProduct({
             search: debouncedSearchValue,
             offset: 0,
             limit: 1000,
             ...queryParams,
           })
-          setListProductExport(exportFile?.data)
+          setListImportProductExport(exportFile?.data)
           //-----------
 
           return response?.data
         } else {
-          const response = await getListProduct({
+          const response = await getListImportProduct({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
-
-          const category = await getListExportTypeGood({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListCategory(category?.data?.data)
-
-          const typeGood = await getListExportSupplier({})
-          setListSupplier(typeGood?.data?.data)
-
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct({})
-          setListProductExport(exportFile?.data)
-
+          setListImportProduct(response?.data)
           //-----------
 
           return response?.data
         }
       },
     },
+    {
+      queryKey: ["getListFilter"],
+      queryFn: async () => {
+        const supplierList = await getListExportSupplier({})
+        setListSupplier(supplierList?.data?.data)
+        return supplierList?.data
+      },
+    },
   ])
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
+    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
@@ -278,7 +296,7 @@ function ManageImportGoods({ ...props }) {
           <Table
             pageSizePagination={pageSize}
             columns={columns}
-            data={listProduct?.data}
+            data={listImportProduct?.data}
           />
           {/* )} */}
         </div>
@@ -287,7 +305,7 @@ function ManageImportGoods({ ...props }) {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={listProduct?.total}
+          totalItems={listImportProduct?.total}
         />
       </div>
     </div>

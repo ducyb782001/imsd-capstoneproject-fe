@@ -22,7 +22,6 @@ import AddProductPopup from "./AddProductPopup"
 import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
-import { format } from "date-fns"
 import { useRouter } from "next/router"
 
 function CreateImportReport() {
