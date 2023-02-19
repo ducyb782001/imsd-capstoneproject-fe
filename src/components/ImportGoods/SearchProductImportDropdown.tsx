@@ -1,6 +1,8 @@
+import BigNumber from "bignumber.js"
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
+import useScanDetection from "../../hooks/useScanDetection"
+import { searchProduct } from "../../lib/search"
 import SearchIcon from "../icons/SearchIcon"
 
 function SearchProductImportDropdown({
@@ -13,7 +15,19 @@ function SearchProductImportDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+
+  useScanDetection({
+    onComplete: (code) => {
+      setSearchInput(code)
+    },
+    minLength: 3,
+  })
+
+  useEffect(() => {
+    setSearchInput(searchInput.replace("Shift", ""))
+  }, [searchInput])
+
+  const listResult = searchProduct(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {
@@ -76,6 +90,7 @@ function SearchProductImportDropdown({
             type="text"
             className="w-full py-3 pl-10 pr-3 border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
             placeholder="Tìm kiếm theo tên sản phẩm hoặc quét mã barcode"
+            value={searchInput ? searchInput : ""}
             onChange={(e) => {
               setSearchInput(e.target.value)
             }}
@@ -117,9 +132,23 @@ function DropDownItem({ data, setShowing }) {
   return (
     <div
       onClick={() => setShowing(data)}
-      className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
+      className="w-full flex justify-between px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.name || data}
+      <div className="flex gap-2">
+        <img
+          src={data?.image || "/images/default-product-image.jpg"}
+          alt="product-image"
+          className="object-cover w-[40px] h-[40px] rounded-md"
+        />
+        <div>
+          <p>{data?.productName}</p>
+          <p className="text-gray">{data?.productCode}</p>
+        </div>
+      </div>
+      <div>
+        Giá nhập:{" "}
+        {data?.costPrice ? new BigNumber(data?.costPrice).toFormat() : "0"} đ
+      </div>
     </div>
   )
 }

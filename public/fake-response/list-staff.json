@@ -4,15 +4,15 @@
   "limit": 10,
   "data": [
     {
-      "id": 1,
+      "userId": 1,
       "name": "Trung Đức"
     },
     {
-      "id": 2,
+      "userId": 2,
       "name": "Trung Kiên"
     },
     {
-      "id": 3,
+      "userId": 3,
       "name": "Nam Phương"
     }
   ]

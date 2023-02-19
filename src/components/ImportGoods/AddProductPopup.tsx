@@ -13,6 +13,17 @@ import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import Tooltip from "../ToolTip"
 
+interface Product {
+  productName: string
+  productCode: string
+  barcode: string
+  categoryId: number
+  supplierId: number
+  costPrice: number
+  sellingPrice: number
+  defaultMeasuredUnit: string
+}
+
 function AddProductPopup({ className = "" }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
