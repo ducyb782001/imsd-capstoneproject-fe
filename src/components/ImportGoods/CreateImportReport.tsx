@@ -38,7 +38,18 @@ const LIST_PRODUCT_DEMO = {
         "https://dailyhcm.congtytanhuevien.vn/wp-content/uploads/2022/11/banh-keo-ngon-ngay-tet-2.jpg",
       created: "0001-01-01T00:00:00",
       status: true,
-      measuredUnits: null,
+      measuredUnits: [
+        {
+          measuredUnitId: 0,
+          measuredUnitName: "Lốc",
+          measuredUnitValue: 8,
+        },
+        {
+          measuredUnitId: 1,
+          measuredUnitName: "Gói",
+          measuredUnitValue: 8,
+        },
+      ],
       category: {
         categoryId: 1004,
         categoryName: "Bánh hộp giấy",
@@ -173,7 +184,13 @@ function CreateImportReport() {
         },
         {
           Header: "Đơn vị",
-          accessor: (data: any) => <ListUnitImport />,
+          accessor: (data: any) => (
+            <ListUnitImport
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+            />
+          ),
         },
         {
           Header: "Đơn giá",
@@ -315,11 +332,23 @@ function CreateImportReport() {
           costPrice: costPrice,
           discount: discount,
           price: price,
+          measuredUnitId: listProductImport.find(
+            (i) => i.productId == item.productId,
+          )?.measuredUnitId,
         }
       })
       setListProductImport(list)
     }
   }, [listChosenProduct])
+
+  useEffect(() => {
+    if (listProductImport) {
+      setProductImportObject({
+        ...productImportObject,
+        importDetailDTOs: listProductImport,
+      })
+    }
+  }, [listProductImport])
 
   const totalPrice = () => {
     if (listProductImport?.length > 0) {
@@ -333,6 +362,8 @@ function CreateImportReport() {
       return <div>0 đ</div>
     }
   }
+
+  console.log("List product import: ", listProductImport)
 
   return (
     <div>
@@ -578,15 +609,34 @@ function CountTotalPrice({
   )
 }
 
-function ListUnitImport() {
+function ListUnitImport({ data, listProductImport, setListProductImport }) {
+  const [listDropdown, setListDropdown] = useState([])
+  const [unitChosen, setUnitChosen] = useState<any>()
+
+  useEffect(() => {
+    if (data) {
+      setListDropdown(data?.measuredUnits)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (unitChosen) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [unitChosen])
+
   return (
     <ChooseUnitImport
-      listDropdown={[
-        { id: 1, categoryName: "Lốc" },
-        { id: 2, categoryName: "Gói" },
-      ]}
-      showing={undefined}
-      setShowing={undefined}
+      listDropdown={listDropdown}
+      showing={unitChosen}
+      setShowing={setUnitChosen}
       textDefault={""}
     />
   )
