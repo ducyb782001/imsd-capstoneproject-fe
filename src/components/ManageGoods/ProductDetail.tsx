@@ -1,33 +1,16 @@
 import React, { useState } from "react"
 import SmallTitle from "../SmallTitle"
 import BigNumber from "bignumber.js"
-import format from "date-fns/format"
 import { useQueries } from "react-query"
 import { getProductDetail } from "../../apis/product-module"
 import { useRouter } from "next/router"
-import { formatISO } from "date-fns"
+import Table from "../Table"
+import Pagination from "../Pagination"
 
-function ProductDetail(props) {
-  const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
-  const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
-  const [listUnits, setListUnits] = useState([])
-  const [newType, setNewType] = useState<string>("")
-  const [newDetail, setNewDetail] = useState<string>("")
+function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
   const router = useRouter()
-  const handleAddNewUnit = () => {
-    if (newType && newDetail) {
-      setListUnits([
-        ...listUnits,
-        {
-          type: newType,
-          detail: newDetail,
-        },
-      ])
-      setNewType("")
-      setNewDetail("")
-    }
-  }
+
   const { productId } = router.query
   useQueries([
     {
@@ -41,8 +24,6 @@ function ProductDetail(props) {
       },
     },
   ])
-
-  const dateNow = new Date()
 
   return (
     <div>
@@ -117,9 +98,7 @@ function ProductDetail(props) {
           </div>
         </div>
       </div>
-      <div className="mt-4 bg-white block-border">
-        <SmallTitle>Lịch sử</SmallTitle>
-      </div>
+      <HistoryProduct />
     </div>
   )
 }
@@ -135,9 +114,85 @@ function ProductInfo({ title = "", data = "" }) {
   )
 }
 
-function useFormatTimeDuration(saleAt: any) {
-  if (saleAt) {
-    // console.log("Sale at: ", saleAt)
-    return saleAt
-  }
+function HistoryProduct() {
+  const [pageSize, setPageSize] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1)
+  return (
+    <div className="mt-4 bg-white block-border">
+      <SmallTitle>Lịch sử</SmallTitle>
+      <div className="mt-4 table-style">
+        <Table
+          pageSizePagination={10}
+          columns={columns}
+          data={FAKE_DATA_TEST?.data}
+        />
+      </div>
+      <Pagination
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalItems={FAKE_DATA_TEST?.total}
+      />
+    </div>
+  )
 }
+
+const FAKE_DATA_TEST = {
+  total: 4,
+  data: [
+    {
+      type: "import",
+      created: "18/02/2023",
+      user: "Trung Đức",
+      action: "Khởi tạo hàng hóa",
+      number: 5,
+      inWarehouse: 5,
+      code: "test",
+    },
+    {
+      type: "import",
+      created: "20/02/2023",
+      user: "Trung Đức",
+      action: "Nhập hàng vào kho",
+      number: 6,
+      inWarehouse: 11,
+      code: "IMPORT123",
+    },
+  ],
+}
+const columns = [
+  {
+    Header: " ",
+    columns: [
+      {
+        Header: "Ngày ghi nhận",
+        accessor: (data: any) => <p>{data?.created}</p>,
+      },
+      {
+        Header: "Nhân viên",
+        accessor: (data: any) => <p>{data?.user}</p>,
+      },
+      {
+        Header: "Hành động",
+        accessor: (data: any) => <p>{data?.action}</p>,
+      },
+      {
+        Header: "Số lượng thay đổi",
+        // In dev later change + or - by type
+        accessor: (data: any) => (
+          <p className="text-center">
+            {data?.type == "import" ? "+" : "-"}
+            {data?.number}
+          </p>
+        ),
+      },
+      {
+        Header: "Số lượng tồn kho",
+        accessor: (data: any) => (
+          <p className="text-center">{data?.inWarehouse}</p>
+        ),
+      },
+    ],
+  },
+]

@@ -55,7 +55,11 @@ function Table({
 
   const headerTextAlightRight = []
 
-  const headerTextAlignCenter = ["Trạng thái"]
+  const headerTextAlignCenter = [
+    "Trạng thái",
+    "Số lượng thay đổi",
+    "Số lượng tồn kho",
+  ]
 
   return (
     <div className="w-full overflow-hidden">
