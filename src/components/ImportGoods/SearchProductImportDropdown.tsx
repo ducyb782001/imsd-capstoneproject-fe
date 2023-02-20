@@ -20,7 +20,7 @@ function SearchProductImportDropdown({
     onComplete: (code) => {
       setSearchInput(code)
     },
-    minLength: 3,
+    minLength: 13,
   })
 
   useEffect(() => {

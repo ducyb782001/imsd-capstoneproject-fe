@@ -27,13 +27,16 @@ export function searchProduct(searchInput: string, list: []) {
     return list
   }
   if (searchInput) {
-    result = list.filter(
-      (i) =>
-        // @ts-ignore
-        i?.productName.toLowerCase().includes(searchInput.toLowerCase()) ||
-        // @ts-ignore
-        i?.barcode.includes(searchInput.toLowerCase()),
-    )
+    result = list?.filter(function (item) {
+      // @ts-ignore
+      if (item.productName.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+      // @ts-ignore
+      if (item.barcode.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+    })
   } else {
     result = []
   }
