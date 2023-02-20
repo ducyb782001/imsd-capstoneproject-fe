@@ -35,6 +35,11 @@ export const getListExportProduct = (searchObj) => {
     url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=0`,
   })
 }
+export const getListExportProductBySupplier = (supId) => {
+  return requestAPI({
+    url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=${supId}`,
+  })
+}
 export const updateProduct = (editedProduct) =>
   patchAPI({
     url: editProductUrl,

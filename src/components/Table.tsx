@@ -53,19 +53,9 @@ function Table({
 
   const firstPageRows = rows.slice(0, pageSize)
 
-  const headerTextAlightRight = [
-    "Amount",
-    "Fee",
-    "Discount amount",
-    "Active point",
-    "Mint rate",
-    "Value",
-    "Total spending",
-    "Orders",
-    "Earned",
-  ]
+  const headerTextAlightRight = []
 
-  const headerTextAlignCenter = ["Status", "Type", "In | Out"]
+  const headerTextAlignCenter = ["Trạng thái"]
 
   return (
     <div className="w-full overflow-hidden">

@@ -192,17 +192,6 @@ function ManageGoods({ ...props }) {
           })
           setListProduct(response?.data)
 
-          const category = await getListExportTypeGood({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListCategory(category?.data?.data)
-
-          const typeGood = await getListExportSupplier({})
-          setListSupplier(typeGood?.data?.data)
-
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportProduct({})
           setListProductExport(exportFile?.data)
@@ -211,6 +200,21 @@ function ManageGoods({ ...props }) {
 
           return response?.data
         }
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const category = await getListExportTypeGood({
+          search: debouncedSearchValue,
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParams,
+        })
+        setListCategory(category?.data?.data)
+        console.log("abc")
+        const typeGood = await getListExportSupplier({})
+        setListSupplier(typeGood?.data?.data)
       },
     },
   ])

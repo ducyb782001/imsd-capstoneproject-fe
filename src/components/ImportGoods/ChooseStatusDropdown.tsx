@@ -78,7 +78,9 @@ function ChooseStatusDropdown({
               {showing?.status || showing || textDefault}
             </p>
           </div>
-          <ArrowDownIcon color="#373737" />
+          <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+            <ArrowDownIcon color="#373737" />
+          </div>
         </div>
       </div>
 
@@ -97,12 +99,6 @@ function ChooseStatusDropdown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder="Tìm kiếm trạng thái"
-        />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"

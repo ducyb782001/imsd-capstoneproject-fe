@@ -83,7 +83,9 @@ function ChooseTypeDropdown({
               {showing?.categoryName || showing || textDefault}
             </p>
           </div>
-          <ArrowDownIcon color="#373737" />
+          <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+            <ArrowDownIcon color="#373737" />
+          </div>
         </div>
       </div>
 
