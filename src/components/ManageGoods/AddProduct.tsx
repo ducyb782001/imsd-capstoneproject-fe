@@ -47,7 +47,6 @@ interface Product {
 }
 
 function AddProduct(props) {
-  const [queryParams, setQueryParams] = useState<any>({})
   const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)

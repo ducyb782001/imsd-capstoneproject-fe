@@ -146,7 +146,7 @@ function ManageImportGoods({ ...props }) {
       setListFilter([
         ...listFilter,
         {
-          key: "status",
+          key: "state",
           applied: "Trạng thái",
           value: statusSelected?.status,
           id: statusSelected?.id,
@@ -183,7 +183,7 @@ function ManageImportGoods({ ...props }) {
       queryFn: async () => {
         if (debouncedSearchValue) {
           const response = await getListImportProduct({
-            search: debouncedSearchValue,
+            code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
@@ -192,7 +192,7 @@ function ManageImportGoods({ ...props }) {
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListImportProduct({
-            search: debouncedSearchValue,
+            code: debouncedSearchValue,
             offset: 0,
             limit: 1000,
             ...queryParams,

@@ -1,6 +1,7 @@
 import { DialogOverlay } from "@reach/dialog"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { useMutation, useQueries } from "react-query"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
 import InfoIcon from "../icons/InfoIcon"
@@ -12,6 +13,10 @@ import PrimaryInput from "../PrimaryInput"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import Tooltip from "../ToolTip"
+import { getListExportTypeGood } from "../../apis/type-good-module"
+import { getListExportSupplier } from "../../apis/supplier-module"
+import { toast } from "react-toastify"
+import { addNewProduct } from "../../apis/product-module"
 
 interface Product {
   productName: string
@@ -27,12 +32,82 @@ interface Product {
 function AddProductPopup({ className = "" }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
+  const [product, setProduct] = useState<Product>()
   const [showDialog, setShowDialog] = useState(false)
+  const [listTypeProduct, setListTypeProduct] = useState([])
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-  const handleSaveBtn = () => {
+
+  const addNewProductMutation = useMutation(
+    async (newProduct) => {
+      return await addNewProduct(newProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Thêm mới sản phẩm thành công!")
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Đã có lỗi xảy ra! Xin hãy thử lại.",
+            )
+          }
+        }
+      },
+    },
+  )
+
+  const handleSaveBtn = (event) => {
+    event.preventDefault()
+    // @ts-ignore
+    addNewProductMutation.mutate({
+      ...product,
+    })
     close()
   }
+
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      setProduct({
+        ...product,
+        supplierId: nhaCungCapSelected.supplierId,
+      })
+    }
+  }, [nhaCungCapSelected])
+
+  useEffect(() => {
+    if (typeProduct) {
+      setProduct({
+        ...product,
+        categoryId: typeProduct.categoryId,
+      })
+    }
+  }, [typeProduct])
+
+  useQueries([
+    {
+      queryKey: ["getListTypeGood"],
+      queryFn: async () => {
+        const response = await getListExportTypeGood({})
+        await setListTypeProduct(response?.data?.data)
+        return response?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const response = await getListExportSupplier({})
+        await setListNhaCungCap(response?.data?.data)
+        return response?.data
+      },
+    },
+  ])
 
   return (
     <div className={`${className}`}>
@@ -76,9 +151,9 @@ function AddProductPopup({ className = "" }) {
                         Tên sản phẩm <span className="text-red-500">*</span>
                       </p>
                     }
-                    // onChange={(e) => {
-                    //   setProduct({ ...product, productName: e.target.value })
-                    // }}
+                    onChange={(e) => {
+                      setProduct({ ...product, productName: e.target.value })
+                    }}
                   />
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <PrimaryInput
@@ -99,9 +174,9 @@ function AddProductPopup({ className = "" }) {
                           </Tooltip>
                         </div>
                       }
-                      // onChange={(e) => {
-                      //   setProduct({ ...product, productCode: e.target.value })
-                      // }}
+                      onChange={(e) => {
+                        setProduct({ ...product, productCode: e.target.value })
+                      }}
                       placeholder="Nhập mã sản phẩm"
                     />
                     <PrimaryInput
@@ -120,34 +195,33 @@ function AddProductPopup({ className = "" }) {
                         </div>
                       }
                       placeholder="Nhập tay hoặc dùng máy quét"
-                      // onChange={(e) => {
-                      //   setProduct({ ...product, productCode: e.target.value })
-                      // }}
+                      onChange={(e) => {
+                        setProduct({ ...product, productCode: e.target.value })
+                      }}
                     />
                     <PrimaryInput
                       title="Đơn vị tính"
                       placeholder="Nhập đơn vị tính"
-                      // onChange={(e) => {
-                      //   setProduct({ ...product, defaultMeasuredUnit: e.target.value })
-                      // }}
+                      onChange={(e) => {
+                        setProduct({
+                          ...product,
+                          defaultMeasuredUnit: e.target.value,
+                        })
+                      }}
                     />
                     <PrimaryInput
                       title="Giá nhập"
                       type="number"
-                      value={0}
-                      onChange={() => {}}
-                      // onChange={(e) => {
-                      //   setProduct({ ...product, costPrice: e.target.value })
-                      // }}
+                      onChange={(e) => {
+                        setProduct({ ...product, costPrice: e.target.value })
+                      }}
                     />
                     <PrimaryInput
                       title="Giá bán"
                       type="number"
-                      value={0}
-                      onChange={() => {}}
-                      // onChange={(e) => {
-                      //   setProduct({ ...product, sellingPrice: e.target.value })
-                      // }}
+                      onChange={(e) => {
+                        setProduct({ ...product, sellingPrice: e.target.value })
+                      }}
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-4">
@@ -156,7 +230,7 @@ function AddProductPopup({ className = "" }) {
                         Nhà cung cấp
                       </p>
                       <ChooseSupplierDropdown
-                        listDropdown={[]}
+                        listDropdown={listNhaCungCap}
                         textDefault={"Chọn nhà cung cấp"}
                         showing={nhaCungCapSelected}
                         setShowing={setNhaCungCapSelected}
@@ -167,7 +241,7 @@ function AddProductPopup({ className = "" }) {
                         Loại sản phẩm
                       </p>
                       <ChooseTypeDropdown
-                        listDropdown={[]}
+                        listDropdown={listTypeProduct}
                         textDefault={"Chọn loại sản phẩm"}
                         showing={typeProduct}
                         setShowing={setTypeProduct}

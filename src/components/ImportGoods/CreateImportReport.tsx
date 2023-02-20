@@ -136,7 +136,7 @@ function CreateImportReport() {
     },
   ]
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listSupplier, setListSupplier] = useState<any>()
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
@@ -146,38 +146,6 @@ function CreateImportReport() {
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
-
-  useQueries([
-    {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
-        const response = await getListExportSupplier({})
-        setListSupplier(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListStaff"],
-      queryFn: async () => {
-        const response = await getListStaff({})
-        setListStaff(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
-      queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        }
-      },
-    },
-  ])
 
   useEffect(() => {
     if (staffSelected) {
@@ -286,9 +254,39 @@ function CreateImportReport() {
   }
 
   const now = new Date()
-  console.log("List product import: ", productImportObject)
   const router = useRouter()
-  console.log("List product import: ", listProductImport)
+
+  useQueries([
+    {
+      queryKey: ["getListStaff"],
+      queryFn: async () => {
+        const staff = await getListStaff({})
+        setListStaff(staff?.data)
+        return staff?.data?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const supplier = await getListExportSupplier({})
+        setListNhaCungCap(supplier?.data)
+        return supplier?.data?.data
+      },
+    },
+    {
+      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
+      queryFn: async () => {
+        if (nhaCungCapSelected) {
+          const response = await getListExportProductBySupplier(
+            nhaCungCapSelected.supplierId,
+          )
+          setListProductBySupplierImport(response?.data)
+
+          return response?.data
+        }
+      },
+    },
+  ])
 
   return (
     <div>
@@ -319,7 +317,7 @@ function CreateImportReport() {
               </Tooltip>
             </div>
             <ChooseSupplierDropdown
-              listDropdown={listSupplier?.data}
+              listDropdown={listNhaCungCap?.data}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
