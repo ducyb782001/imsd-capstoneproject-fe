@@ -212,7 +212,7 @@ function ManageGoods({ ...props }) {
           ...queryParams,
         })
         setListCategory(category?.data?.data)
-
+        console.log("abc")
         const typeGood = await getListExportSupplier({})
         setListSupplier(typeGood?.data?.data)
       },

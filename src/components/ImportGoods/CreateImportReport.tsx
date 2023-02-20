@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 import { createImportProduct } from "../../apis/import-product-module"
 import { getListExportProductBySupplier } from "../../apis/product-module"
@@ -11,10 +11,8 @@ import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
-import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
 import Tooltip from "../ToolTip"
@@ -161,6 +159,10 @@ function CreateImportReport() {
         ...productImportObject,
         supplierId: nhaCungCapSelected?.supplierId,
       })
+      setProductImportObject({
+        ...productImportObject,
+        state: 0,
+      })
     }
   }, [nhaCungCapSelected])
 
@@ -179,6 +181,8 @@ function CreateImportReport() {
         const discount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.discount
+          ? undefined
+          : 0
         const amount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.amount
@@ -188,6 +192,7 @@ function CreateImportReport() {
         const price = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.price
+
         return {
           productId: item.productId,
           amount: amount,
@@ -196,7 +201,9 @@ function CreateImportReport() {
           price: price,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
-          )?.measuredUnitId,
+          )?.measuredUnitId
+            ? undefined
+            : 0,
         }
       })
       setListProductImport(list)
@@ -233,6 +240,7 @@ function CreateImportReport() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.success("Thêm đơn nhập hàng thành công")
+          router.push("/manage-import-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -261,16 +269,10 @@ function CreateImportReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff({})
-        setListStaff(staff?.data)
-        return staff?.data?.data
-      },
-    },
-    {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
+        setListStaff(staff?.data?.data)
         const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data)
-        return supplier?.data?.data
+        setListNhaCungCap(supplier?.data?.data)
+        return staff?.data?.data
       },
     },
     {
@@ -280,6 +282,12 @@ function CreateImportReport() {
           const response = await getListExportProductBySupplier(
             nhaCungCapSelected.supplierId,
           )
+          setProductImportObject({
+            ...productImportObject,
+            supplierId: nhaCungCapSelected.supplierId,
+            importId: 0,
+            state: 0,
+          })
           setListProductBySupplierImport(response?.data)
 
           return response?.data
@@ -287,6 +295,7 @@ function CreateImportReport() {
       },
     },
   ])
+  console.log(productImportObject)
 
   return (
     <div>
@@ -317,7 +326,7 @@ function CreateImportReport() {
               </Tooltip>
             </div>
             <ChooseSupplierDropdown
-              listDropdown={listNhaCungCap?.data}
+              listDropdown={listNhaCungCap}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
@@ -333,7 +342,7 @@ function CreateImportReport() {
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <ChooseStaffDropdown
-            listDropdown={listStaff?.data}
+            listDropdown={listStaff}
             textDefault={"Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}

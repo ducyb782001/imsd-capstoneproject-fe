@@ -1,7 +1,7 @@
 import { DialogOverlay } from "@reach/dialog"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
 import InfoIcon from "../icons/InfoIcon"
@@ -39,6 +39,7 @@ function AddProductPopup({ className = "" }) {
 
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
+  const queryClient = useQueryClient()
 
   const addNewProductMutation = useMutation(
     async (newProduct) => {
@@ -48,6 +49,8 @@ function AddProductPopup({ className = "" }) {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.success("Thêm mới sản phẩm thành công!")
+          queryClient.refetchQueries("getListProductBySupplier")
+          close()
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])

@@ -42,34 +42,13 @@ const columns = [
       },
       {
         Header: "Trạng thái",
-        accessor: (data: any) => {
-          if (data?.state == 0) {
-            return (
-              <div className="bg-orange-50 text-white font-medium mt-4 w-32 text-center rounded-md">
-                <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
-              </div>
-            )
-          } else if (data?.state == 1) {
-            return (
-              <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
-                <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
-              </div>
-            )
-          } else if (data?.state == 2) {
-            return (
-              <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
-                <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
-              </div>
-            )
-          } else {
-            return (
-              <div className="bg-red-50 text-white font-medium mt-4 w-32 text-center rounded-md">
-                <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
-              </div>
-            )
-          }
-        },
+        accessor: (data: any) => (
+          <div className="flex justify-center">
+            <StatusDisplay data={data} />
+          </div>
+        ),
       },
+
       {
         Header: "Ngày nhập",
         accessor: (data: any) => (
@@ -78,17 +57,7 @@ const columns = [
       },
       {
         Header: " ",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
+        accessor: (data: any) => <DetailImportProduct data={data} />,
       },
     ],
   },
@@ -331,4 +300,76 @@ function ImportExportButton({
       {children}
     </button>
   )
+}
+
+function StatusDisplay({ data }) {
+  if (data?.state == 0) {
+    return (
+      <div className="bg-orange-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+        <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+      </div>
+    )
+  } else if (data?.state == 1) {
+    return (
+      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+        <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
+      </div>
+    )
+  } else if (data?.state == 2) {
+    return (
+      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+      </div>
+    )
+  } else {
+    return (
+      <div className="bg-red-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+      </div>
+    )
+  }
+}
+
+function DetailImportProduct({ data }) {
+  if (data?.state == 0) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/import-report-draff/${data?.importId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else if (data?.state == 1) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/import-report-detail/${data?.importId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else if (data?.state == 2) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/import-report-succeed/${data?.importId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/import-report-draff/${data?.importId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  }
 }
