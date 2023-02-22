@@ -65,17 +65,18 @@ const columns = [
 
 const status = [
   { id: 0, status: "Đang xử lý" },
+
   {
-    id: 3,
-    status: "Đã hủy",
+    id: 1,
+    status: "Đang nhập hàng",
   },
   {
     id: 2,
     status: "Hoàn thành",
   },
   {
-    id: 1,
-    status: "Đang nhập hàng",
+    id: 3,
+    status: "Đã hủy",
   },
 ]
 
@@ -232,7 +233,7 @@ function ManageImportGoods({ ...props }) {
             <SearchInput
               placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full"
+              className="w-full mb-4"
             />
 
             <ChooseStatusDropdown
@@ -364,7 +365,7 @@ function DetailImportProduct({ data }) {
   } else {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/import-report-draff/${data?.importId}`}>
+        <Link href={`/import-report-canceled/${data?.importId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

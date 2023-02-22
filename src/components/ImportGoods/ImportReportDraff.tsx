@@ -2,6 +2,13 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
+import { useMutation, useQueries } from "react-query"
+import { toast } from "react-toastify"
+import {
+  approveImportProduct,
+  denyImportProduct,
+  getDetailImportProduct,
+} from "../../apis/import-product-module"
 import ConfirmPopup from "../ConfirmPopup"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
@@ -152,7 +159,7 @@ function ImportReportDraff(props) {
           Header: "Ảnh",
           accessor: (data: any) => (
             <img
-              src={data?.image || "/images/default-product-image.jpg"}
+              src={data?.product?.image || "/images/default-product-image.jpg"}
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
@@ -161,38 +168,22 @@ function ImportReportDraff(props) {
         {
           Header: "Tên sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productName}
+            </p>
           ),
         },
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <ListQuantitiveImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-            />
-          ),
-        },
-        {
-          Header: "Đơn vị",
-          accessor: (data: any) => (
-            <ListUnitImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-            />
+            <PrimaryInput value={data?.amount} className="w-16" />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <ListPriceImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-              />
+              <PrimaryInput value={data?.price} className="w-24" />
               <p>đ</p>
             </div>
           ),
@@ -201,38 +192,8 @@ function ImportReportDraff(props) {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <ListDiscountImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-              />
+              <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
-            </div>
-          ),
-        },
-        {
-          Header: "Thành tiền",
-          accessor: (data: any) => (
-            <CountTotalPrice
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-            />
-          ),
-        },
-        {
-          Header: " ",
-          accessor: (data: any, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
-                )
-                setListChosenProduct(result)
-              }}
-            >
-              <XIcons />
             </div>
           ),
         },
@@ -243,6 +204,26 @@ function ImportReportDraff(props) {
   const [productChosen, setProductChosen] = useState([])
   const [listProductImport, setListProductImport] = useState<any>([])
   const [listChosenProduct, setListChosenProduct] = useState([])
+  const [productImport, setProductImport] = useState<any>()
+
+  useQueries([
+    {
+      queryKey: ["getDetailProductImport", router.query],
+      queryFn: async () => {
+        const detail = await getDetailImportProduct(router.query.importId)
+        setProductImport(detail?.data)
+        return detail?.data
+      },
+    },
+  ])
+
+  useEffect(() => {
+    if (productImport) {
+      if (productImport?.state != 0) {
+        router.push("/manage-import-goods")
+      }
+    }
+  }, [productImport])
 
   const totalPrice = () => {
     if (listProductImport?.length > 0) {
@@ -256,13 +237,77 @@ function ImportReportDraff(props) {
       return <div>0 đ</div>
     }
   }
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-import-goods")
+  }
+
+  const approveImportMutation = useMutation(
+    async (importProduct) => {
+      return await approveImportProduct(importProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Duyệt đơn nhập hàng thành công")
+          router.push("/import-report-detail/" + productImport?.importId)
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+  const cancelImportMutation = useMutation(
+    async (importProduct) => {
+      return await denyImportProduct(importProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Hủy đơn nhập hàng thành công")
+          router.push("/manage-import-goods")
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+
+  const handleClickApproveBtn = (event) => {
+    event?.preventDefault()
+    console.log("abc")
+    approveImportMutation.mutate(productImport?.importId)
+  }
+  const handleClickCancelBtn = (event) => {
+    event?.preventDefault()
+    console.log("abc")
+    cancelImportMutation.mutate(productImport?.importId)
+  }
+
   return (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold">#NAHA123</h1>
+              <h1 className="text-2xl font-semibold">
+                #{productImport?.importCode}
+              </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
                 Chờ duyệt đơn
               </div>
@@ -288,15 +333,22 @@ function ImportReportDraff(props) {
               >
                 Hủy đơn
               </ConfirmPopup> */}
-              <SecondaryBtn className="w-[120px]">Thoát</SecondaryBtn>
-              <SecondaryBtn className="w-[120px]">Hủy đơn</SecondaryBtn>
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+                Thoát
+              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-                handleClickSaveBtn={() => {
-                  // Action post to accept import report
-                }}
+                title="Bạn chắc chắn muốn hủy đơn?"
+                handleClickSaveBtn={handleClickCancelBtn}
+              >
+                Hủy đơn
+              </ConfirmPopup>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Bạn chắc chắn muốn duyệt đơn?"
+                handleClickSaveBtn={handleClickApproveBtn}
               >
                 Duyệt đơn
               </ConfirmPopup>
@@ -305,7 +357,13 @@ function ImportReportDraff(props) {
           <div className="flex justify-center mt-6">
             <StepBar
               status="pending"
-              createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")}
+              createdDate={
+                new Date(productImport?.created).getDate() +
+                "/" +
+                (new Date(productImport?.created).getMonth() + 1) +
+                "/" +
+                new Date(productImport?.created).getFullYear()
+              }
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
@@ -313,7 +371,7 @@ function ImportReportDraff(props) {
               <h1 className="text-xl font-semibold">Nhà cung cấp</h1>
             </div>
             <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
-              Điền tên nhà cung cấp vào đây nhé
+              {productImport?.supplier?.supplierName}
             </div>
           </div>
         </div>
@@ -322,25 +380,25 @@ function ImportReportDraff(props) {
             Thông tin bổ sung
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: thêm ngày từ be vào nha
+            Ngày tạo đơn:{" "}
+            {new Date(productImport?.created).getDate() +
+              "/" +
+              (new Date(productImport?.created).getMonth() + 1) +
+              "/" +
+              new Date(productImport?.created).getFullYear()}
             {/* {format(Date.now(), "dd/MM/yyyy")} */}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
             <div className="flex items-center gap-1">
-              <p className="text-gray">Điền tên nhân viên vào đây</p>
+              <p className="text-gray">{productImport?.user?.email}</p>
             </div>
           </div>
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title="Ghi chú hóa đơn"
-            // onChange={(e) => {
-            //   setProductImportObject({
-            //     ...productImportObject,
-            //     note: e.target.value,
-            //   })
-            // }}
+            value={productImport?.note}
           />
         </div>
       </div>
@@ -359,7 +417,7 @@ function ImportReportDraff(props) {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={listChosenProduct}
+            data={productImport?.importOrderDetails}
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
@@ -396,11 +454,11 @@ function ListQuantitiveImport({
       type="number"
       placeholder="0"
       value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
+      // onChange={(e) => {
+      //   e.stopPropagation()
+      //   setQuantity(e.target.value)
+      //   handleOnChangeAmount(e.target.value, data)
+      // }}
     />
   )
 }

@@ -3,7 +3,12 @@ import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { createImportProduct } from "../../apis/import-product-module"
+import {
+  approveImportProduct,
+  createImportProduct,
+  getDetailImportProduct,
+  importImportProduct,
+} from "../../apis/import-product-module"
 import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
@@ -37,7 +42,7 @@ function ImportReportDetail() {
           Header: "Ảnh",
           accessor: (data: any) => (
             <img
-              src={data?.image || "/images/default-product-image.jpg"}
+              src={data?.product?.image || "/images/default-product-image.jpg"}
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
@@ -46,42 +51,22 @@ function ImportReportDetail() {
         {
           Header: "Tên sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productName}
+            </p>
           ),
         },
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <ListQuantitiveImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-              setAutoUpdatePrice={setAutoUpdatePrice}
-            />
-          ),
-        },
-        {
-          Header: "Đơn vị",
-          accessor: (data: any) => (
-            <ListUnitImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-            />
+            <PrimaryInput value={data?.amount} className="w-16" />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <ListPriceImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
-              />
+              <PrimaryInput value={data?.price} className="w-24" />
               <p>đ</p>
             </div>
           ),
@@ -90,45 +75,8 @@ function ImportReportDetail() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <ListDiscountImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
-              />
+              <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
-            </div>
-          ),
-        },
-        {
-          Header: "Thành tiền",
-          accessor: (data: any) => (
-            <CountTotalPrice
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-            />
-          ),
-        },
-        {
-          Header: " ",
-          accessor: (data: any, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
-                )
-                setListChosenProduct(result)
-                // let listProduct = listProductImport?.filter(
-                //   (i, ind) => ind !== index,
-                // )
-                // setListProductImport(listProduct)
-              }}
-            >
-              <XIcons />
             </div>
           ),
         },
@@ -146,6 +94,16 @@ function ImportReportDetail() {
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
+  const [productImport, setProductImport] = useState<any>()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (productImport) {
+      if (productImport?.state != 1) {
+        router.push("/manage-import-goods")
+      }
+    }
+  }, [productImport])
 
   useQueries([
     {
@@ -175,6 +133,17 @@ function ImportReportDetail() {
 
           return response?.data
         }
+      },
+    },
+  ])
+
+  useQueries([
+    {
+      queryKey: ["getDetailProductImport", router.query],
+      queryFn: async () => {
+        const detail = await getDetailImportProduct(router.query.importId)
+        setProductImport(detail?.data)
+        return detail?.data
       },
     },
   ])
@@ -257,14 +226,15 @@ function ImportReportDetail() {
     }
   }
 
-  const createImportMutation = useMutation(
+  const importImportMutation = useMutation(
     async (importProduct) => {
-      return await createImportProduct(importProduct)
+      return await importImportProduct(importProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm đơn nhập hàng thành công")
+          toast.success("Nhập hàng đơn nhập hàng thành công")
+          router.push("/import-report-succeed/" + productImport?.importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -282,12 +252,44 @@ function ImportReportDetail() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    createImportMutation.mutate(productImportObject)
+    importImportMutation.mutate(productImport?.importId)
+  }
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-import-goods")
+  }
+
+  const approveImportMutation = useMutation(
+    async (importProduct) => {
+      return await importImportProduct(importProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Hoàn thành đơn nhập hàng thành công")
+          router.push("/import-report-succeed/" + productImport?.importId)
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+
+  const handleClickApproveBtn = (event) => {
+    event?.preventDefault()
+    console.log("abc")
+    approveImportMutation.mutate(productImport?.importId)
   }
 
   const now = new Date()
   console.log("List product import: ", productImportObject)
-  const router = useRouter()
   console.log("List product import: ", listProductImport)
 
   return (
@@ -295,35 +297,60 @@ function ImportReportDetail() {
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-import-goods")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
-            {/* <SecondaryBtn onClick={} className="max-w-[120px]">Thoát</SecondaryBtn> */}
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-semibold">
+                #{productImport?.importCode}
+              </h1>
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+                Chờ nhận hàng
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+                Thoát
+              </SecondaryBtn>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Bạn chắc chắn muốn duyệt đơn?"
+                handleClickSaveBtn={handleClickApproveBtn}
+              >
+                Nhận hàng
+              </ConfirmPopup>
+            </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
+            <StepBar
+              status="pending"
+              createdDate={
+                new Date(productImport?.created).getDate() +
+                "/" +
+                (new Date(productImport?.created).getMonth() + 1) +
+                "/" +
+                new Date(productImport?.created).getFullYear()
+              }
+              approvedDate={
+                new Date(productImport?.approved).getDate() +
+                "/" +
+                (new Date(productImport?.approved).getMonth() + 1) +
+                "/" +
+                new Date(productImport?.approved).getFullYear()
+              }
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Chọn nhà cung cấp</h1>
-              <Tooltip content="Chọn nhà cung cấp để hiển thị mặt hàng tương ứng">
-                <InfoIcon />
-              </Tooltip>
             </div>
-            <ChooseSupplierDropdown
+            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
+              {productImport?.supplier?.supplierName}
+            </div>
+            {/* <ChooseSupplierDropdown
               listDropdown={listSupplier?.data}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
-            />
+            /> */}
           </div>
         </div>
         <div className="bg-white block-border">
@@ -331,19 +358,30 @@ function ImportReportDetail() {
             Thông tin bổ sung
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
+            Ngày tạo đơn:{" "}
+            {new Date(productImport?.approved).getDate() +
+              "/" +
+              (new Date(productImport?.approved).getMonth() + 1) +
+              "/" +
+              new Date(productImport?.approved).getFullYear()}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <ChooseStaffDropdown
+          {/* <ChooseStaffDropdown
             listDropdown={listStaff?.data}
             textDefault={"Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
-          />
+          /> */}
+          <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
+            <div className="flex items-center gap-1">
+              <p className="text-gray">{productImport?.user?.email}</p>
+            </div>
+          </div>
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title="Ghi chú hóa đơn"
+            value={productImport?.note}
             onChange={(e) => {
               setProductImportObject({
                 ...productImportObject,
@@ -368,20 +406,20 @@ function ImportReportDetail() {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={listChosenProduct}
+            data={productImport?.importOrderDetails}
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
           {totalPrice()}
         </div>
-        <ConfirmPopup
+        {/* <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
           handleClickSaveBtn={handleClickSaveBtn}
         >
           Tạo hóa đơn nhập hàng
-        </ConfirmPopup>
+        </ConfirmPopup> */}
       </div>
     </div>
   )
