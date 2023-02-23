@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react"
 import DownloadIcon from "../../icons/DownloadIcon"
-import PlusIcon from "../../icons/PlusIcon"
 import UploadIcon from "../../icons/UploadIcon"
-import PrimaryBtn from "../../PrimaryBtn"
 import SearchInput from "../../SearchInput"
 import Table from "../../Table"
 import Pagination from "../../Pagination"
@@ -46,7 +44,7 @@ function ManageTypeGoods({ ...props }) {
           Header: "Hành động",
           accessor: (data: any) => {
             return (
-              <div className="flex items-center gap-2 col-span-2">
+              <div className="flex items-center col-span-2 gap-2">
                 <EditTypePopup id={data?.categoryId} />
                 <DetailTypePopup id={data?.description} />
               </div>

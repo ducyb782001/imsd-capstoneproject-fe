@@ -10,7 +10,6 @@ import Table from "../../Table"
 import Pagination from "../../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import {
@@ -19,7 +18,7 @@ import {
 } from "../../../apis/supplier-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../../icons/EditIcon"
-import { format, parseISO } from "date-fns"
+import TableSkeleton from "../../Skeleton/TableSkeleton"
 
 const columns = [
   {
@@ -65,8 +64,6 @@ const columns = [
 ]
 
 function ManageSuppliers({ ...props }) {
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -77,7 +74,7 @@ function ManageSuppliers({ ...props }) {
   const [listSupplier, setListSupplier] = useState<any>()
 
   const [listSupplierExport, setListSupplierExport] = useState<any>()
-
+  const [isLoadingListSupplier, setIsLoadingListSupplier] = useState(true)
   //change queryParamsObj when change listFilter in one useEffect
   useEffect(() => {
     if (listFilter) {
@@ -131,6 +128,8 @@ function ManageSuppliers({ ...props }) {
             ...queryParams,
           })
           setListSupplier(response?.data)
+          setIsLoadingListSupplier(response?.data?.isLoading)
+
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportSupplier({})
           setListSupplierExport(exportFile?.data)
@@ -195,23 +194,26 @@ function ManageSuppliers({ ...props }) {
           />
         </div>
 
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={listSupplier?.data}
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listSupplier?.total}
-        />
+        {isLoadingListSupplier ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={columns}
+                data={listSupplier?.data}
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listSupplier?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )
