@@ -136,6 +136,10 @@ function MainNav() {
       icon: <ImportGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
         router.asPath.includes("/create-import-report"),
     },
     {

@@ -1,4 +1,11 @@
-import { allImportProductUrl, importProductUrl } from "../constants/APIConfig"
+import {
+  allImportProductUrl,
+  approveImportDetailUrl,
+  denyImportDetailUrl,
+  importImportDetailUrl,
+  importProductDetailUrl,
+  importProductUrl,
+} from "../constants/APIConfig"
 import {
   convertObjectToQueryString,
   patchAPI,
@@ -8,7 +15,7 @@ import {
 
 export const getListImportProduct = (searchObj) => {
   const queryString = convertObjectToQueryString(searchObj)
-  return postAPI({
+  return requestAPI({
     url: `${allImportProductUrl}${queryString}`,
   })
 }
@@ -18,3 +25,27 @@ export const createImportProduct = (newImportProduct) =>
     url: importProductUrl,
     data: newImportProduct,
   })
+
+export const getDetailImportProduct = (importProductId) => {
+  return requestAPI({
+    url: `${importProductDetailUrl}?importid=${importProductId}`,
+  })
+}
+
+export const approveImportProduct = (importProductId) => {
+  return postAPI({
+    url: `${approveImportDetailUrl}?importid=${importProductId}`,
+  })
+}
+
+export const importImportProduct = (importProductId) => {
+  return postAPI({
+    url: `${importImportDetailUrl}?importid=${importProductId}`,
+  })
+}
+
+export const denyImportProduct = (importProductId) => {
+  return postAPI({
+    url: `${denyImportDetailUrl}?importid=${importProductId}`,
+  })
+}
