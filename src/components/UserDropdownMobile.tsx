@@ -48,7 +48,7 @@ function UserDropdownMobile(props) {
       <div onClick={open} className="flex items-center">
         <AvatarIcon />
         <p className="text-grayDark">
-          {data?.firstName} {data?.lastName}{" "}
+          {/* {data?.firstName} {data?.lastName}{" "} */}
         </p>
         <ArrowDownIcon color="#373737" />
       </div>

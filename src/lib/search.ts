@@ -20,3 +20,25 @@ export function search(searchInput: string, list: []) {
   }
   return result
 }
+
+export function searchProduct(searchInput: string, list: []) {
+  let result
+  if (!searchInput) {
+    return list
+  }
+  if (searchInput) {
+    result = list?.filter(function (item) {
+      // @ts-ignore
+      if (item.productName.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+      // @ts-ignore
+      if (item.barcode.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+    })
+  } else {
+    result = []
+  }
+  return result
+}

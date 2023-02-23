@@ -47,7 +47,6 @@ interface Product {
 }
 
 function AddProduct(props) {
-  const [queryParams, setQueryParams] = useState<any>({})
   const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
@@ -58,6 +57,7 @@ function AddProduct(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [isImageNull, setIsImageNull] = useState(true)
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
 
@@ -80,6 +80,7 @@ function AddProduct(props) {
         ...product,
         image: imageUploaded,
       })
+      setIsImageNull(false)
     }
   }, [imageUploaded])
 
@@ -140,7 +141,6 @@ function AddProduct(props) {
           toast.success("Thêm mới sản phẩm thành công")
           router.push("/manage-goods")
         } else {
-          console.log(data)
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
           } else {
@@ -162,6 +162,13 @@ function AddProduct(props) {
     })
   }, [isEnabled])
 
+  useEffect(() => {
+    setProduct({
+      ...product,
+      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
+    })
+  }, [])
+
   const handleAddNewProduct = (event) => {
     event.preventDefault()
     // @ts-ignore
@@ -170,7 +177,6 @@ function AddProduct(props) {
     })
   }
 
-  console.log("Product: ", product)
   return (
     <div className="grid gap-4 md:grid-cols-73">
       <div>

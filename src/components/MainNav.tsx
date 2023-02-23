@@ -57,7 +57,7 @@ function MainNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu nhập hàng",
+      name: "Tạo đơn nhập hàng",
       href: "/create-import-report",
       isActive: router.asPath.includes("/create-import-report"),
     },
@@ -71,7 +71,7 @@ function MainNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu xuất hàng",
+      name: "Tạo đơn xuất hàng",
       href: "/create-export-report",
       isActive: router.asPath.includes("/create-export-report"),
     },
@@ -125,7 +125,9 @@ function MainNav() {
         router.asPath.includes("/product-detail") ||
         router.asPath.includes("/supplier-detail") ||
         router.asPath.includes("/edit-product") ||
-        router.asPath.includes("/create-product"),
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/add-product"),
     },
     {
       id: 3,
@@ -134,6 +136,10 @@ function MainNav() {
       icon: <ImportGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
         router.asPath.includes("/create-import-report"),
     },
     {
@@ -245,7 +251,7 @@ function MenuItem({
       >
         <div className="flex items-center gap-2">
           {icon}
-          <p className="text-sm text-black">{name}</p>
+          <p>{name}</p>
         </div>
         {subMenuItem && (
           <div className={`${isOpenMenu && "rotate-90"} smooth-transform`}>

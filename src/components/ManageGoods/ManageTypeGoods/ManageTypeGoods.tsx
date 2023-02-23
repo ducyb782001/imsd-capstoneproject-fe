@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react"
-import DownloadIcon from "../icons/DownloadIcon"
-import PlusIcon from "../icons/PlusIcon"
-import UploadIcon from "../icons/UploadIcon"
-import PrimaryBtn from "../PrimaryBtn"
-import SearchInput from "../SearchInput"
-import Table from "../Table"
-import Pagination from "../Pagination"
-import useDebounce from "../../hooks/useDebounce"
+import DownloadIcon from "../../icons/DownloadIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import UploadIcon from "../../icons/UploadIcon"
+import PrimaryBtn from "../../PrimaryBtn"
+import SearchInput from "../../SearchInput"
+import Table from "../../Table"
+import Pagination from "../../Pagination"
+import useDebounce from "../../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import {
   getListExportTypeGood,
   getListTypeGood,
-} from "../../apis/type-good-module"
+} from "../../../apis/type-good-module"
 import * as XLSX from "xlsx/xlsx"
-import AddTypePopup from "../ManageGoods/AddTypePopup"
-import EditTypePopup from "../ManageGoods/EditTypePopup"
-import DetailTypePopup from "../ManageGoods/DetailTypePopup"
+import AddTypePopup from "./AddTypePopup"
+import EditTypePopup from "./EditTypePopup"
+import DetailTypePopup from "./DetailTypePopup"
 import Switch from "react-switch"
 
 function ManageTypeGoods({ ...props }) {
@@ -36,13 +36,17 @@ function ManageTypeGoods({ ...props }) {
       columns: [
         {
           Header: "Tên loại sản phẩm",
-          accessor: (data: any) => <p>{data?.categoryName}</p>,
+          accessor: (data: any) => (
+            <div>
+              <p>{data?.categoryName}</p>
+            </div>
+          ),
         },
         {
           Header: "Hành động",
           accessor: (data: any) => {
             return (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 col-span-2">
                 <EditTypePopup id={data?.categoryId} />
                 <DetailTypePopup id={data?.description} />
               </div>
@@ -81,7 +85,6 @@ function ManageTypeGoods({ ...props }) {
             ...queryParams,
           })
           setListTypeGood(response?.data)
-          console.log(response?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportTypeGood({
             search: debouncedSearchValue,
@@ -155,6 +158,7 @@ function ManageTypeGoods({ ...props }) {
             pageSizePagination={pageSize}
             columns={column}
             data={listTypeGood?.data}
+            columnSize="w-1"
           />
           {/* )} */}
         </div>

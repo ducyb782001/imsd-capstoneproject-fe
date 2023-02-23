@@ -15,6 +15,7 @@ function Table({
   borderColor = "#202B38",
   textColor = "#ffffff",
   fontSize = 14,
+  columnSize = "",
   pageSizePagination,
 }) {
   const {
@@ -52,19 +53,13 @@ function Table({
 
   const firstPageRows = rows.slice(0, pageSize)
 
-  const headerTextAlightRight = [
-    "Amount",
-    "Fee",
-    "Discount amount",
-    "Active point",
-    "Mint rate",
-    "Value",
-    "Total spending",
-    "Orders",
-    "Earned",
-  ]
+  const headerTextAlightRight = []
 
-  const headerTextAlignCenter = ["Status", "Type", "In | Out"]
+  const headerTextAlignCenter = [
+    "Trạng thái",
+    "Số lượng thay đổi",
+    "Số lượng tồn kho",
+  ]
 
   return (
     <div className="w-full overflow-hidden">
@@ -109,7 +104,7 @@ function Table({
                           headerTextAlightRight.includes(cell.column.Header)
                             ? "text-right"
                             : ""
-                        }`}
+                        } ${columnSize}`}
                         data-label={cell.column.Header}
                         {...cell.getCellProps()}
                       >
@@ -124,7 +119,7 @@ function Table({
 
           {page.length < 1 && (
             <tr className="odd">
-              <td colSpan={100}>No data</td>
+              <td colSpan={100}>Không dữ liệu</td>
             </tr>
           )}
         </tbody>

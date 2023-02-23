@@ -10,7 +10,6 @@ import {
   postAPI,
   requestAPI,
 } from "../lib/api"
-import addSupplier from "../pages/add-supplier"
 
 export const getListSupplier = (searchObj) => {
   const queryString = convertObjectToQueryString(searchObj)

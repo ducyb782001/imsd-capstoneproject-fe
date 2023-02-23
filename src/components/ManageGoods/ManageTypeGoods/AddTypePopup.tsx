@@ -1,17 +1,17 @@
 import { DialogOverlay } from "@reach/dialog"
 import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useState } from "react"
-import { useMutation } from "react-query"
-import { addTypeGoodUrl } from "../../constants/APIConfig"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import CloseDialogIcon from "../icons/CloseDialogIcon"
-import PlusIcon from "../icons/PlusIcon"
-import MotionDialogContent from "../MotionDialogContent"
-import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInput from "../PrimaryInput"
-import SecondaryBtn from "../SecondaryBtn"
-import SmallTitle from "../SmallTitle"
+import React, { useEffect, useState } from "react"
+import { useMutation, useQueryClient } from "react-query"
+import { addTypeGoodUrl } from "../../../constants/APIConfig"
+import AddPlusIcon from "../../icons/AddPlusIcon"
+import CloseDialogIcon from "../../icons/CloseDialogIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import MotionDialogContent from "../../MotionDialogContent"
+import PrimaryBtn from "../../PrimaryBtn"
+import PrimaryInput from "../../PrimaryInput"
+import SecondaryBtn from "../../SecondaryBtn"
+import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 
@@ -21,9 +21,11 @@ function AddTypePopup({ className = "" }) {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
+  const [disabled, setDisabled] = useState(true)
 
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
+  const queryClient = useQueryClient()
 
   const handleSaveBtn = () => {
     // @ts-ignore
@@ -31,9 +33,16 @@ function AddTypePopup({ className = "" }) {
       categoryName: typeName,
       description: description,
     })
-    router.reload()
     close()
   }
+
+  useEffect(() => {
+    if (typeName.trim() !== "" && description.trim() !== "") {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  })
 
   const addTypeMutation = useMutation(
     (type) => {
@@ -42,6 +51,7 @@ function AddTypePopup({ className = "" }) {
     {
       onSuccess: (data, error, variables) => {
         toast.success("Thêm loại sản phẩm mới thành công!")
+        queryClient.refetchQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)
@@ -53,7 +63,7 @@ function AddTypePopup({ className = "" }) {
   return (
     <div className={`${className}`}>
       <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm mới loại sản phẩm
+        <PlusIcon /> Thêm loại sản phẩm
       </PrimaryBtn>
       <AnimatePresence>
         {showDialog && (
@@ -80,13 +90,13 @@ function AddTypePopup({ className = "" }) {
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6  text-base text-[#4F4F4F] pt-5">
                   <PrimaryInput
                     title="Tên loại sản phẩm"
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
+                <div className="px-6 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Mô tả loại sản phẩm"
                     onChange={(event) => setDescription(event.target.value)}
@@ -94,7 +104,11 @@ function AddTypePopup({ className = "" }) {
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
-                  <PrimaryBtn className="w-[200px]" onClick={handleSaveBtn}>
+                  <PrimaryBtn
+                    className="w-[200px]"
+                    onClick={handleSaveBtn}
+                    disabled={disabled}
+                  >
                     Lưu
                   </PrimaryBtn>
                   <SecondaryBtn className="w-[70px]">Thoát</SecondaryBtn>

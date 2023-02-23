@@ -46,7 +46,7 @@ function MobileNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu nhập hàng",
+      name: "Tạo đơn nhập hàng",
       href: "/create-import-report",
       isActive: router.asPath.includes("/create-import-report"),
     },
@@ -60,7 +60,7 @@ function MobileNav() {
     },
     {
       id: 2,
-      name: "Tạo phiếu xuất hàng",
+      name: "Tạo đơn xuất hàng",
       href: "/create-export-report",
       isActive: router.asPath.includes("/create-export-report"),
     },

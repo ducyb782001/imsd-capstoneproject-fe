@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react"
-import DemoDropDown from "../DemoDropDown"
-import DownloadIcon from "../icons/DownloadIcon"
-import PlusIcon from "../icons/PlusIcon"
-import UploadIcon from "../icons/UploadIcon"
-import PrimaryBtn from "../PrimaryBtn"
-import SearchInput from "../SearchInput"
-import ShowLabelBar from "../Filter/ShowLabelBar"
-import Table from "../Table"
-import Pagination from "../Pagination"
+import DemoDropDown from "../../DemoDropDown"
+import DownloadIcon from "../../icons/DownloadIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import UploadIcon from "../../icons/UploadIcon"
+import PrimaryBtn from "../../PrimaryBtn"
+import SearchInput from "../../SearchInput"
+import ShowLabelBar from "../../Filter/ShowLabelBar"
+import Table from "../../Table"
+import Pagination from "../../Pagination"
 import Link from "next/link"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
+import ShowDetailIcon from "../../icons/ShowDetailIcon"
 import BigNumber from "bignumber.js"
-import useDebounce from "../../hooks/useDebounce"
+import useDebounce from "../../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import {
   getListSupplier,
   getListExportSupplier,
-} from "../../apis/supplier-module"
+} from "../../../apis/supplier-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
+import EditIcon from "../../icons/EditIcon"
 import { format, parseISO } from "date-fns"
 
 const columns = [
@@ -42,7 +42,7 @@ const columns = [
         accessor: (data: any) => <p>{data?.province}</p>,
       },
       {
-        Header: " ",
+        Header: "Hành động",
         accessor: (data: any) => {
           return (
             <div className="flex items-center gap-2">
@@ -131,7 +131,6 @@ function ManageSuppliers({ ...props }) {
             ...queryParams,
           })
           setListSupplier(response?.data)
-          console.log("List supplier 1 : " + response?.data)
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportSupplier({})
           setListSupplierExport(exportFile?.data)
@@ -143,7 +142,6 @@ function ManageSuppliers({ ...props }) {
       },
     },
   ])
-  console.log("List supplier: " + listSupplier)
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""

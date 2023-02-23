@@ -54,3 +54,20 @@ export const addTypeGoodUrl = `${baseUrl}/Categories/PostCategory`
 export const getTypeGoodDetailUrl = `${baseUrl}/Categories/GetDetail`
 
 export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`
+
+// User
+export const listStaffUrl = "/fake-response/list-staff.json"
+
+// Import product
+
+export const allImportProductUrl = `${baseUrl}/Import/GetImportOrder`
+
+export const importProductUrl = `${baseUrl}/Import/CreateImportOrder`
+
+export const importProductDetailUrl = `${baseUrl}/Import/GetImportDetail`
+
+export const approveImportDetailUrl = `${baseUrl}/Import/ApproveImport`
+
+export const importImportDetailUrl = `${baseUrl}/Import/Import`
+
+export const denyImportDetailUrl = `${baseUrl}/Import/DenyImport`

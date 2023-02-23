@@ -1,24 +1,29 @@
 import { DialogOverlay } from "@reach/dialog"
 import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { addTypeGoodUrl } from "../../constants/APIConfig"
-import AddPlusIcon from "../icons/AddPlusIcon"
-import CloseDialogIcon from "../icons/CloseDialogIcon"
-import PlusIcon from "../icons/PlusIcon"
-import MotionDialogContent from "../MotionDialogContent"
-import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInput from "../PrimaryInput"
-import SecondaryBtn from "../SecondaryBtn"
-import SmallTitle from "../SmallTitle"
+import React, { useEffect, useState } from "react"
+import { useMutation, useQueries, useQueryClient } from "react-query"
+import { addTypeGoodUrl } from "../../../constants/APIConfig"
+import AddPlusIcon from "../../icons/AddPlusIcon"
+import CloseDialogIcon from "../../icons/CloseDialogIcon"
+import PlusIcon from "../../icons/PlusIcon"
+import MotionDialogContent from "../../MotionDialogContent"
+import PrimaryBtn from "../../PrimaryBtn"
+import PrimaryInput from "../../PrimaryInput"
+import SecondaryBtn from "../../SecondaryBtn"
+import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import EditIcon from "../icons/EditIcon"
-import { getTypeGoodDetail, updateTypeGood } from "../../apis/type-good-module"
+import EditIcon from "../../icons/EditIcon"
+import {
+  getTypeGoodDetail,
+  updateTypeGood,
+} from "../../../apis/type-good-module"
 
 function EditTypePopup({ className = "", id }) {
   const router = useRouter()
+  const [disabled, setDisabled] = useState(true)
+  const queryClient = useQueryClient()
 
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
@@ -33,11 +38,7 @@ function EditTypePopup({ className = "", id }) {
       categoryName: typeName,
       description: description,
     })
-    console.log("id: " + id)
-    console.log("categoryName: " + typeName)
-    console.log("description: " + description)
-    // router.reload()
-    // close()
+    close()
   }
 
   useQueries([
@@ -59,6 +60,7 @@ function EditTypePopup({ className = "", id }) {
     {
       onSuccess: (data, error, variables) => {
         toast.success("Chỉnh sửa thành công!")
+        queryClient.refetchQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)
@@ -66,6 +68,14 @@ function EditTypePopup({ className = "", id }) {
       },
     },
   )
+
+  useEffect(() => {
+    if (typeName.trim() !== "" && description.trim() !== "") {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  })
 
   return (
     <div className={`${className}`}>
@@ -113,7 +123,11 @@ function EditTypePopup({ className = "", id }) {
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
-                  <PrimaryBtn className="w-[200px]" onClick={handleSaveBtn}>
+                  <PrimaryBtn
+                    className="w-[200px]"
+                    onClick={handleSaveBtn}
+                    disabled={disabled}
+                  >
                     Lưu
                   </PrimaryBtn>
                   <SecondaryBtn className="w-[70px]">Thoát</SecondaryBtn>
