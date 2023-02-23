@@ -5,7 +5,7 @@ import ArrowDownIcon from "./icons/ArrowDownIcon"
 import SearchIcon from "./icons/SearchIcon"
 
 function CityDropDown({
-  title = "",
+  title = null,
   listDropdown,
   showing,
   setShowing,
@@ -67,14 +67,14 @@ function CityDropDown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm text-gray font-bold">{title}</p>}
+        {title && <h1 className="mb-1 text-sm text-gray font-bold">{title}</h1>}
 
         <div
           onClick={toggleOpenMenu}
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-gray hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-black">{showing?.name || textDefault}</p>
+            <h1 className="text-black">{showing?.name || textDefault}</h1>
           </div>
           <ArrowDownIcon color="#373737" />
         </div>

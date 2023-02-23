@@ -21,6 +21,7 @@ import {
   updateSupplier,
 } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
+import { emailRegex, phoneRegex } from "../../../constants/constants"
 
 interface Supplier {
   supplierId: number
@@ -38,6 +39,7 @@ interface Supplier {
 function EditSupplier(props) {
   const [supplier, setSupplier] = useState<Supplier>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [disabled, setDisabled] = useState(true)
 
   const [citySelected, setCitySelected] = useState<any>()
   const [districtSelected, setDistrictSelected] = useState<any>()
@@ -151,6 +153,21 @@ function EditSupplier(props) {
     router.push("/manage-suppliers")
   }
 
+  useEffect(() => {
+    if (
+      emailRegex.test(supplier?.supplierEmail) &&
+      supplier.supplierName.trim() !== "" &&
+      phoneRegex.test(supplier.supplierPhone.toString()) &&
+      districtSelected != undefined &&
+      citySelected != undefined &&
+      wardSelected != undefined
+    ) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  })
+
   return (
     <div className="">
       <div>
@@ -160,9 +177,9 @@ function EditSupplier(props) {
             className="mt-6"
             placeholder="Nhập tên nhà cung cấp"
             title={
-              <p>
+              <h1>
                 Tên nhà cung cấp <span className="text-red-500">*</span>
-              </p>
+              </h1>
             }
             value={supplier?.supplierName}
             onChange={(e) => {
@@ -173,9 +190,9 @@ function EditSupplier(props) {
             <PrimaryInput
               title={
                 <div className="flex gap-1">
-                  <p>
+                  <h1>
                     Số điện thoại <span className="text-red-500">*</span>
-                  </p>
+                  </h1>
                 </div>
               }
               value={supplier?.supplierPhone}
@@ -246,6 +263,7 @@ function EditSupplier(props) {
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
                   title="Bạn có chắc chắn muốn chỉnh sửa nhà cung cấp không?"
                   handleClickSaveBtn={handleEditSupplier}
+                  disabled={disabled}
                 >
                   Chỉnh sửa
                 </ConfirmPopup>

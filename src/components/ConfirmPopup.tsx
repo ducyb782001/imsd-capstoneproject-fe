@@ -8,6 +8,7 @@ import SecondaryBtn from "./SecondaryBtn"
 import SmallTitle from "./SmallTitle"
 
 function ConfirmPopup({
+  disabled = false,
   children,
   handleClickSaveBtn = null,
   className = "",
@@ -28,7 +29,7 @@ function ConfirmPopup({
 
   return (
     <div className={`${className} w-full`}>
-      <PrimaryBtn className={classNameBtn} onClick={open}>
+      <PrimaryBtn className={classNameBtn} onClick={open} disabled={disabled}>
         {children}
       </PrimaryBtn>
       <AnimatePresence>

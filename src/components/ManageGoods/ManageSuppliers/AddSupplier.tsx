@@ -17,6 +17,7 @@ import {
 } from "../../../apis/search-country-module"
 import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
+import { emailRegex, phoneRegex } from "../../../constants/constants"
 
 interface Supplier {
   supplierId: number
@@ -27,7 +28,7 @@ interface Supplier {
   ward: string
   address: string
   note: number
-  supplierEmail: number
+  supplierEmail: string
   status: boolean
 }
 
@@ -37,6 +38,7 @@ function AddSupplier(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
+  const [disabled, setDisabled] = useState(true)
 
   const [citySelected, setCitySelected] = useState<any>()
   const [districtSelected, setDistrictSelected] = useState<any>()
@@ -141,6 +143,21 @@ function AddSupplier(props) {
     router.push("/manage-suppliers")
   }
 
+  useEffect(() => {
+    if (
+      emailRegex.test(supplier?.supplierEmail) &&
+      supplier.supplierName.trim() !== "" &&
+      phoneRegex.test(supplier.supplierPhone.toString()) &&
+      districtSelected != undefined &&
+      citySelected != undefined &&
+      wardSelected != undefined
+    ) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  })
+
   return (
     <div className="">
       <div>
@@ -150,9 +167,9 @@ function AddSupplier(props) {
             className="mt-6"
             placeholder="Nhập tên nhà cung cấp"
             title={
-              <p>
+              <h1>
                 Tên nhà cung cấp <span className="text-red-500">*</span>
-              </p>
+              </h1>
             }
             onChange={(e) => {
               setSupplier({ ...supplier, supplierName: e.target.value })
@@ -160,11 +177,12 @@ function AddSupplier(props) {
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
             <PrimaryInput
+              placeholder="Nhập số điện thoại"
               title={
                 <div className="flex gap-1">
-                  <p>
+                  <h1>
                     Số điện thoại <span className="text-red-500">*</span>
-                  </p>
+                  </h1>
                 </div>
               }
               onChange={(e) => {
@@ -173,6 +191,7 @@ function AddSupplier(props) {
             />
             <PrimaryInput
               title="Email"
+              placeholder="Nhập tên tài khoản gmail"
               onChange={(e) => {
                 setSupplier({ ...supplier, supplierEmail: e.target.value })
               }}
@@ -181,21 +200,39 @@ function AddSupplier(props) {
 
           <div className="grid grid-cols-3 mt-4 gap-7">
             <CityDropDown
-              title={"Tỉnh/Thành phố"}
+              title={
+                <div className="flex gap-1">
+                  <h1>
+                    Tỉnh/Thành phố <span className="text-red-500">*</span>
+                  </h1>
+                </div>
+              }
               listDropdown={listCity}
               textDefault={"Chọn Tỉnh/Thành phố"}
               showing={citySelected}
               setShowing={setCitySelected}
             />
             <DistrictDropDown
-              title={"Quận/Huyện"}
+              title={
+                <div className="flex gap-1">
+                  <h1>
+                    Quận/Huyện <span className="text-red-500">*</span>
+                  </h1>
+                </div>
+              }
               listDropdown={listDistrict}
               textDefault={"Chọn Quận/Huyện"}
               showing={districtSelected}
               setShowing={setDistrictSelected}
             />
             <WardDropDown
-              title={"Phường/Xã"}
+              title={
+                <div className="flex gap-1">
+                  <h1>
+                    Phường/Xã <span className="text-red-500">*</span>
+                  </h1>
+                </div>
+              }
               listDropdown={listWard}
               textDefault={"Chọn Phường/Xã"}
               showing={wardSelected}
@@ -205,6 +242,7 @@ function AddSupplier(props) {
           <PrimaryInput
             className="mt-4"
             title="Địa chỉ chi tiết"
+            placeholder="Địa chỉ chi tiếp như số nhà, ngõ, đường"
             onChange={(e) => {
               setSupplier({ ...supplier, address: e.target.value })
             }}
@@ -231,6 +269,7 @@ function AddSupplier(props) {
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
                   title="Bạn có chắc chắn muốn thêm nhà cung cấp không?"
                   handleClickSaveBtn={handleAddNewSupplier}
+                  disabled={disabled}
                 >
                   Thêm nhà cung cấp
                 </ConfirmPopup>
