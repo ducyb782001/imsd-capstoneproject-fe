@@ -23,9 +23,9 @@ interface Supplier {
   supplierId: number
   supplierName: string
   supplierPhone: number
-  city: string
-  district: string
-  ward: string
+  city: any
+  district: any
+  ward: any
   address: string
   note: number
   supplierEmail: string
@@ -84,20 +84,29 @@ function AddSupplier(props) {
     setWardSelected(undefined)
     setSupplier({
       ...supplier,
-      city: citySelected?.name,
+      city: {
+        id: citySelected?.code,
+        name: citySelected?.name,
+      },
     })
   }, [citySelected])
   useEffect(() => {
     setWardSelected(undefined)
     setSupplier({
       ...supplier,
-      district: districtSelected?.name,
+      district: {
+        id: districtSelected?.code,
+        name: districtSelected?.name,
+      },
     })
   }, [districtSelected])
   useEffect(() => {
     setSupplier({
       ...supplier,
-      ward: wardSelected?.name,
+      ward: {
+        id: wardSelected?.code,
+        name: wardSelected?.name,
+      },
     })
   }, [wardSelected])
 
@@ -146,18 +155,15 @@ function AddSupplier(props) {
   useEffect(() => {
     if (
       emailRegex.test(supplier?.supplierEmail) &&
-      supplier.supplierName.trim() !== "" &&
-      phoneRegex.test(supplier.supplierPhone.toString()) &&
-      districtSelected != undefined &&
-      citySelected != undefined &&
-      wardSelected != undefined
+      supplier?.supplierName.trim() !== "" &&
+      phoneRegex.test(supplier?.supplierPhone.toString())
     ) {
       setDisabled(false)
     } else {
       setDisabled(true)
     }
   })
-
+  console.log(supplier)
   return (
     <div className="">
       <div>
