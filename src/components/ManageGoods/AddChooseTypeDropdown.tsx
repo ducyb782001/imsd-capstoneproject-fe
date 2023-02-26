@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
+import AddTypePopup from "./ManageTypeGoods/AddTypePopup"
 
-function ChooseSupplierDropdown({
+function AddChooseTypeDropdown({
   title = "",
   listDropdown,
   showing,
@@ -17,9 +18,7 @@ function ChooseSupplierDropdown({
   const listResult = search(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
-    if (listDropdown?.length > 0) {
-      toggleOpen(!isOpen)
-    }
+    toggleOpen(!isOpen)
   }
 
   const handleClickOutside = (e) => {
@@ -67,7 +66,7 @@ function ChooseSupplierDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
+        {title && <p className="mb-1 text-sm text-gray">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -75,7 +74,7 @@ function ChooseSupplierDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.supplierName || showing || textDefault}
+              {showing?.categoryName || showing || textDefault}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -113,12 +112,13 @@ function ChooseSupplierDropdown({
             <DropDownItem key={index} data={i} setShowing={setShowing} />
           ))}
         </div>
+        <AddTypePopup />
       </motion.div>
     </motion.div>
   )
 }
 
-export default ChooseSupplierDropdown
+export default AddChooseTypeDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -126,7 +126,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.supplierName || data}
+      {data?.categoryName || data}
     </div>
   )
 }

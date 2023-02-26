@@ -21,6 +21,7 @@ import { getListExportTypeGood } from "../../apis/type-good-module"
 import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
 import ChooseTypeDropdown from "./ChooseTypeDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
+import TableSkeleton from "../Skeleton/TableSkeleton"
 
 const columns = [
   {
@@ -108,6 +109,7 @@ function ManageGoods({ ...props }) {
   const [listProductExport, setListProductExport] = useState<any>()
   const [listSupplier, setListSupplier] = useState<any>()
   const [listCategory, setListCategory] = useState<any>()
+  const [isLoadingListProducts, setIsLoadingListProducts] = useState(true)
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -195,7 +197,7 @@ function ManageGoods({ ...props }) {
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportProduct({})
           setListProductExport(exportFile?.data)
-
+          setIsLoadingListProducts(response?.data?.isLoading)
           //-----------
 
           return response?.data
@@ -283,23 +285,26 @@ function ManageGoods({ ...props }) {
           />
         </div>
 
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={listProduct?.data}
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listProduct?.total}
-        />
+        {isLoadingListProducts ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={columns}
+                data={listProduct?.data}
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listProduct?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )

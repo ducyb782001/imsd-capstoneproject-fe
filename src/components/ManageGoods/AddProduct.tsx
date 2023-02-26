@@ -7,27 +7,20 @@ import Switch from "react-switch"
 import { AnimatePresence, motion } from "framer-motion"
 import { variants } from "../../lib/constants"
 import Tooltip from "../ToolTip"
-import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
-import SecondaryBtn from "../SecondaryBtn"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
-import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
+import { IKImage } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
-import {
-  getListExportTypeGood,
-  getListTypeGood,
-} from "../../apis/type-good-module"
+import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
+import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 
 interface Product {
   productId: number
@@ -461,14 +454,14 @@ function RightSideProductDetail({
         </SmallTitle>
 
         <p className="mt-4">Nhà cung cấp</p>
-        <ChooseSupplierDropdown
+        <AddChooseSupplierDropdown
           listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
-        <ChooseTypeDropdown
+        <AddChooseTypeDropdown
           listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
@@ -493,12 +486,6 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="flex gap-4 mt-4 bg-white block-border">
-        {/* <PrimaryBtn className="bg-cancelBtn border-cancelBtn active:bg-cancelDark">
-          Hủy
-        </PrimaryBtn>
-        <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-          Thêm sản phẩm
-        </PrimaryBtn> */}
         <PrimaryBtn
           className="bg-successBtn border-successBtn active:bg-greenDark"
           onClick={handleAddProduct}

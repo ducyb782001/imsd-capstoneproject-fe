@@ -229,11 +229,11 @@ function ManageImportGoods({ ...props }) {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[51%_23%_23%]">
+          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
               placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full mb-4"
+              className="w-full"
             />
 
             <ChooseStatusDropdown
@@ -306,25 +306,25 @@ function ImportExportButton({
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="bg-orange-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-md bg-orange-50">
         <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 rounded-3xl">
         <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 rounded-3xl">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )
   } else {
     return (
-      <div className="bg-red-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-md bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
       </div>
     )

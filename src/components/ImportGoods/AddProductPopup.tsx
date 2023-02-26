@@ -5,8 +5,6 @@ import { useMutation, useQueries, useQueryClient } from "react-query"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
 import InfoIcon from "../icons/InfoIcon"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import ChooseTypeDropdown from "../ManageGoods/ChooseTypeDropdown"
 import MotionDialogContent from "../MotionDialogContent"
 import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
@@ -17,6 +15,8 @@ import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { toast } from "react-toastify"
 import { addNewProduct } from "../../apis/product-module"
+import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
 
 interface Product {
   productName: string
@@ -232,7 +232,7 @@ function AddProductPopup({ className = "" }) {
                       <p className="mb-2 text-sm font-bold text-gray">
                         Nhà cung cấp
                       </p>
-                      <ChooseSupplierDropdown
+                      <AddChooseSupplierDropdown
                         listDropdown={listNhaCungCap}
                         textDefault={"Chọn nhà cung cấp"}
                         showing={nhaCungCapSelected}
@@ -243,7 +243,7 @@ function AddProductPopup({ className = "" }) {
                       <p className="mb-2 text-sm font-bold text-gray">
                         Loại sản phẩm
                       </p>
-                      <ChooseTypeDropdown
+                      <AddChooseTypeDropdown
                         listDropdown={listTypeProduct}
                         textDefault={"Chọn loại sản phẩm"}
                         showing={typeProduct}

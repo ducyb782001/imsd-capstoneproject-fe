@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
-  approveImportProduct,
-  createImportProduct,
   getDetailImportProduct,
   importImportProduct,
 } from "../../apis/import-product-module"
@@ -13,18 +11,12 @@ import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
-import XIcons from "../icons/XIcons"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
 import AddProductPopup from "./AddProductPopup"
-import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"

@@ -7,14 +7,11 @@ import Switch from "react-switch"
 import { AnimatePresence, motion } from "framer-motion"
 import { variants } from "../../lib/constants"
 import Tooltip from "../ToolTip"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
 import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
+import { IKImage } from "imagekitio-react"
 import AddImage from "../AddImage"
-import Loading from "../Loading"
 import ConfirmPopup from "../ConfirmPopup"
 import { useRouter } from "next/router"
 import { useMutation, useQueries } from "react-query"
@@ -427,6 +424,8 @@ function EditProduct(props) {
 
 export default EditProduct
 import defaultProductImage from "../images/default-product-image.jpg"
+import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 function RightSideProductDetail({
   imageUploaded,
   onErrorUpload,
@@ -483,14 +482,14 @@ function RightSideProductDetail({
         <SmallTitle>Thông tin bổ sung</SmallTitle>
 
         <p className="mt-4">Nhà cung cấp</p>
-        <ChooseSupplierDropdown
+        <AddChooseSupplierDropdown
           listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
-        <ChooseTypeDropdown
+        <AddChooseTypeDropdown
           listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
