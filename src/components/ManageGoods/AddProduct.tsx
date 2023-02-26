@@ -22,6 +22,8 @@ import { getListExportSupplier } from "../../apis/supplier-module"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+
 interface Product {
   productId: number
   productName: string
@@ -124,6 +126,20 @@ function AddProduct(props) {
   ])
 
   const router = useRouter()
+  useEffect(() => {
+    setProduct({
+      ...product,
+      status: true,
+    })
+  }, [isEnabled])
+
+  useEffect(() => {
+    setProduct({
+      ...product,
+      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
+    })
+  }, [])
+
   const addNewProductMutation = useMutation(
     async (newProduct) => {
       return await addNewProduct(newProduct)
@@ -131,6 +147,7 @@ function AddProduct(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm mới sản phẩm thành công")
           router.push("/manage-goods")
         } else {
@@ -148,22 +165,11 @@ function AddProduct(props) {
     },
   )
 
-  useEffect(() => {
-    setProduct({
-      ...product,
-      status: true,
-    })
-  }, [isEnabled])
-
-  useEffect(() => {
-    setProduct({
-      ...product,
-      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
-    })
-  }, [])
-
   const handleAddNewProduct = (event) => {
     event.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     addNewProductMutation.mutate({
       ...product,

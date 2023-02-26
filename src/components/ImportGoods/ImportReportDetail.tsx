@@ -20,6 +20,7 @@ import AddProductPopup from "./AddProductPopup"
 import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 function ImportReportDetail() {
   const columns = [
@@ -88,7 +89,7 @@ function ImportReportDetail() {
   const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
-
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
   useEffect(() => {
     if (productImport) {
       if (productImport?.state != 1) {
@@ -135,6 +136,7 @@ function ImportReportDetail() {
       queryFn: async () => {
         const detail = await getDetailImportProduct(router.query.importId)
         setProductImport(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
         return detail?.data
       },
     },
@@ -284,7 +286,9 @@ function ImportReportDetail() {
   console.log("List product import: ", productImportObject)
   console.log("List product import: ", listProductImport)
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>

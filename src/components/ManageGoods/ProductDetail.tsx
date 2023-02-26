@@ -6,12 +6,13 @@ import { getProductDetail } from "../../apis/product-module"
 import { useRouter } from "next/router"
 import Table from "../Table"
 import Pagination from "../Pagination"
+import ProductDetailSkeleton from "../Skeleton/ProductDetailSkeleton"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
   const router = useRouter()
-
   const { productId } = router.query
+  const [isLoadingProduct, setIsLoadingProduct] = useState(true)
   useQueries([
     {
       queryKey: ["getProductDetail", productId],
@@ -19,13 +20,16 @@ function ProductDetail() {
         if (productId) {
           const response = await getProductDetail(productId)
           setDetailProduct(response?.data)
+          setIsLoadingProduct(response?.data?.isLoading)
           return response?.data
         }
       },
     },
   ])
 
-  return (
+  return isLoadingProduct ? (
+    <ProductDetailSkeleton />
+  ) : (
     <div>
       <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
       <div className="mt-4 bg-white block-border">
@@ -72,11 +76,6 @@ function ProductDetail() {
             <p>{detailProduct?.description}</p>
           </div>
           <div className="flex flex-col items-center justify-center">
-            {/* <img
-                className="object-cover w-[200] h-[200px] rounded-md"
-                alt="product-image"
-                src="/images/image-product-demo.jpeg"
-              /> */}
             {detailProduct?.image ? (
               <>
                 <img

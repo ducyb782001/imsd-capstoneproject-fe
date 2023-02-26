@@ -18,6 +18,7 @@ import { addNewProduct } from "../../apis/product-module"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
 
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 interface Product {
   productName: string
   productCode: string
@@ -48,6 +49,7 @@ function AddProductPopup({ className = "" }) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm mới sản phẩm thành công!")
           queryClient.refetchQueries("getListProductBySupplier")
           close()
@@ -68,6 +70,9 @@ function AddProductPopup({ className = "" }) {
 
   const handleSaveBtn = (event) => {
     event.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     addNewProductMutation.mutate({
       ...product,
