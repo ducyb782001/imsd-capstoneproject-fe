@@ -9,20 +9,15 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "./ChooseStatusDropdown"
 import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
+import TableSkeleton from "../Skeleton/TableSkeleton"
 
 const columns = [
   {
@@ -83,7 +78,6 @@ const status = [
 function ManageImportGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
-  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -96,6 +90,7 @@ function ManageImportGoods({ ...props }) {
   const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [listSupplier, setListSupplier] = useState<any>()
 
+  const [isLoadingListImport, setIsLoadingListImport] = useState(true)
   useEffect(() => {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
@@ -178,6 +173,7 @@ function ManageImportGoods({ ...props }) {
             ...queryParams,
           })
           setListImportProduct(response?.data)
+          setIsLoadingListImport(response?.data?.isLoading)
           //-----------
 
           return response?.data
@@ -259,24 +255,26 @@ function ManageImportGoods({ ...props }) {
             handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
-
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={listImportProduct?.data}
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listImportProduct?.total}
-        />
+        {isLoadingListImport ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={columns}
+                data={listImportProduct?.data}
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listImportProduct?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )

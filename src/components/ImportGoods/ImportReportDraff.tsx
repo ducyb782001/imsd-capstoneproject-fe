@@ -10,7 +10,6 @@ import {
   getDetailImportProduct,
 } from "../../apis/import-product-module"
 import ConfirmPopup from "../ConfirmPopup"
-import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SecondaryBtn from "../SecondaryBtn"
