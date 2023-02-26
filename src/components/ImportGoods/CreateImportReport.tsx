@@ -263,13 +263,12 @@ function CreateImportReport() {
 
   const now = new Date()
   const router = useRouter()
-
   useQueries([
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
-        const staff = await getListStaff({})
-        setListStaff(staff?.data?.data)
+        const staff = await getListStaff()
+        setListStaff(staff?.data)
         const supplier = await getListExportSupplier({})
         setListNhaCungCap(supplier?.data?.data)
         return staff?.data?.data

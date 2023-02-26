@@ -9,8 +9,10 @@ import { LeftBlock } from "./Login"
 import { useMutation } from "react-query"
 import axios from "axios"
 import { confirmEmailUrl } from "../../constants/APIConfig"
-
 function VerifySuccessful(props) {
+  const [current, setCurrent] = useState(props.current)
+  const [param, setParam] = useState("")
+
   const router = useRouter()
 
   const handleLogin = (event) => {
@@ -18,22 +20,17 @@ function VerifySuccessful(props) {
   }
 
   useEffect(() => {
-    resetPassMutation.mutate()
-  }, [])
+    var parameter = router.query["token"] + ""
+    setParam(confirmEmailUrl + parameter)
+  })
 
-  const resetPassMutation = useMutation(
-    () => {
-      var paramLink = router.query["token"] + ""
-      var link = confirmEmailUrl + paramLink
-      return axios.post(link)
-    },
-    {
-      // onError: (data: any) => {
-      //   console.log("login error", data)
-      //   toast.error("Something wrong! Please contact admin for support!")
-      // },
-    },
-  )
+  useEffect(() => {
+    resetPassMutation.mutate()
+  }, [param])
+
+  const resetPassMutation = useMutation(() => {
+    return axios.post(param)
+  })
 
   return (
     <div className="relative">

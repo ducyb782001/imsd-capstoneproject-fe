@@ -56,7 +56,7 @@ export const getTypeGoodDetailUrl = `${baseUrl}/Categories/GetDetail`
 export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`
 
 // User
-export const listStaffUrl = "/fake-response/list-staff.json"
+export const listStaffUrl = `${baseUrl}/Users/GetUsers`
 
 // Import product
 
