@@ -1,14 +1,8 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
-import DemoPopup from "../DemoPopup"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
-import AddSupplierPopup from "./AddSupplierPopup"
-import AddTypePopup from "./ManageTypeGoods/AddTypePopup"
-import AddTypePopupInProductAdd from "./AddTypePopupInProductAdd"
-
 function ChooseTypeDropdown({
   title = "",
   listDropdown,

@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
+import AddSupplierPopup from "./AddSupplierPopup"
 
-function ChooseSupplierDropdown({
+function AddChooseSupplierDropdown({
   title = "",
   listDropdown,
   showing,
@@ -17,9 +18,7 @@ function ChooseSupplierDropdown({
   const listResult = search(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
-    if (listDropdown?.length > 0) {
-      toggleOpen(!isOpen)
-    }
+    toggleOpen(!isOpen)
   }
 
   const handleClickOutside = (e) => {
@@ -113,12 +112,13 @@ function ChooseSupplierDropdown({
             <DropDownItem key={index} data={i} setShowing={setShowing} />
           ))}
         </div>
+        <AddSupplierPopup />
       </motion.div>
     </motion.div>
   )
 }
 
-export default ChooseSupplierDropdown
+export default AddChooseSupplierDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (

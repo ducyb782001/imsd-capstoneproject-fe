@@ -10,7 +10,6 @@ import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
@@ -21,6 +20,7 @@ import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
+import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 
 function CreateImportReport() {
   const columns = [
@@ -325,7 +325,7 @@ function CreateImportReport() {
                 <InfoIcon />
               </Tooltip>
             </div>
-            <ChooseSupplierDropdown
+            <AddChooseSupplierDropdown
               listDropdown={listNhaCungCap}
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}

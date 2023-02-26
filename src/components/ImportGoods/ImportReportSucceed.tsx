@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries, useQueryClient } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
   createImportProduct,
@@ -10,19 +10,11 @@ import {
 import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
-import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
-import XIcons from "../icons/XIcons"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
-import AddProductPopup from "./AddProductPopup"
-import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
-import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 
