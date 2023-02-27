@@ -3,7 +3,7 @@
 // Dev baseUrl
 // export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
-export const baseUrl = `https://localhost:7265/api`
+export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
 
 // City, district, ward
 export const countryUrl = `https://provinces.open-api.vn/api`

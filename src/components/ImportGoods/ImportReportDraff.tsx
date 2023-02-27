@@ -97,7 +97,7 @@ function CreateImportReport() {
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
               <ListDiscountImport
-                data={data?.product}
+                data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
                 autoUpdatePrice={autoUpdatePrice}
@@ -346,7 +346,6 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(productImportObject)
 
   return (
     <div>
@@ -489,13 +488,14 @@ function ListQuantitiveImport({
     })
     setListProductImport(newList)
   }
+  console.log("490: ", data)
 
   return (
     <PrimaryInput
       className="w-[60px]"
       type="number"
       placeholder="0"
-      value={quantity ? quantity : ""}
+      value={data?.amount ? data?.amount : quantity}
       onChange={(e) => {
         e.stopPropagation()
         setQuantity(e.target.value)
@@ -573,7 +573,7 @@ function ListDiscountImport({
       className="w-[50px]"
       type="number"
       placeholder="0"
-      value={discount ? discount : ""}
+      value={data?.discount ? data?.discount : discount}
       onChange={(e) => {
         e.stopPropagation()
         setDiscount(e.target.value)
