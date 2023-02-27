@@ -1,24 +1,154 @@
 import BigNumber from "bignumber.js"
-import { format, parseISO } from "date-fns"
+import { format } from "date-fns"
+import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
-  createImportProduct,
+  approveImportProduct,
+  denyImportProduct,
   getDetailImportProduct,
 } from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
+import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
+import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitImport"
-import { useRouter } from "next/router"
-import PrimaryBtn from "../PrimaryBtn"
+import ChooseUnitImport from "./ChooseUnitExport"
+import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
+import {
+  approveExportProduct,
+  getDetailExportProduct,
+} from "../../apis/export-product-module"
 
-function ImportReportSucceed() {
+const LIST_PRODUCT_DEMO = {
+  data: [
+    {
+      productId: 24,
+      productName: "Bánh bơ trứng chảy Richy",
+      productCode: "BBT123",
+      categoryId: 1004,
+      description:
+        "Bánh bơ trứng Richy là thương hiệu được ưa thích hàng đầu hiện nay. Bánh có hương vị bơ trứng thơm ngon, béo ngậy, mang đến cảm giác hấp dẫn cho người tiêu dùng. Đặc biệt, bánh Richy đảm bảo an toàn sức khỏe khách hàng với các nguyên liệu tự nhiên, không chứa chất bảo quản và độc hại. Hiện nay, bánh được đóng thành nhiều gói nhỏ tiện lợi, phù hợp để mang đi học, đi chơi, cắm trại,…",
+      supplierId: 1,
+      costPrice: 150000,
+      sellingPrice: 200000,
+      defaultMeasuredUnit: "Thùng",
+      inStock: 10,
+      stockPrice: 2400000,
+      image:
+        "https://dailyhcm.congtytanhuevien.vn/wp-content/uploads/2022/11/banh-keo-ngon-ngay-tet-2.jpg",
+      created: "0001-01-01T00:00:00",
+      status: true,
+      measuredUnits: [
+        {
+          measuredUnitId: 0,
+          measuredUnitName: "Lốc",
+          measuredUnitValue: 8,
+        },
+        {
+          measuredUnitId: 1,
+          measuredUnitName: "Gói",
+          measuredUnitValue: 8,
+        },
+      ],
+      category: {
+        categoryId: 1004,
+        categoryName: "Bánh hộp giấy",
+        description: "",
+      },
+      supplier: {
+        supplierId: 1,
+        supplierName: "Hải Hà Bakery",
+        supplierPhone: "0912345678",
+        status: true,
+        city: "Thành phố Hà Nội",
+        district: "Quận Ba Đình",
+        ward: "Phường Phúc Xá",
+        address: "Đại lộ Thăng Long",
+        note: null,
+        supplierEmail: "Hacom@gmail.com",
+      },
+      barcode: "123456",
+    },
+    {
+      productId: 29,
+      productName: "Bánh sữa chocolate",
+      productCode: "chocolate",
+      categoryId: 1,
+      description: "string",
+      supplierId: 1,
+      costPrice: 0,
+      sellingPrice: 0,
+      defaultMeasuredUnit: "string",
+      inStock: 0,
+      stockPrice: 0,
+      image: null,
+      created: "2023-02-12T03:44:02.8710209",
+      status: true,
+      measuredUnits: null,
+      category: {
+        categoryId: 1,
+        categoryName: "Kẹo dẻo",
+        description: "Kẹo dẻo có đường bao xung quanh",
+      },
+      supplier: {
+        supplierId: 1,
+        supplierName: "Hải Hà Bakery",
+        supplierPhone: "0912345678",
+        status: true,
+        city: "Thành phố Hà Nội",
+        district: "Quận Ba Đình",
+        ward: "Phường Phúc Xá",
+        address: "Đại lộ Thăng Long",
+        note: null,
+        supplierEmail: "Hacom@gmail.com",
+      },
+      barcode: "",
+    },
+    {
+      productId: 31,
+      productName: "Sản phẩm mới",
+      productCode: "SP8",
+      categoryId: 1004,
+      description: null,
+      supplierId: 1,
+      costPrice: null,
+      sellingPrice: null,
+      defaultMeasuredUnit: null,
+      inStock: null,
+      stockPrice: null,
+      image: "https://ik.imagekit.io/imsd/cat-2083492__340_KNEo0hQ_U.jpg",
+      created: "2023-02-14T05:35:51.9784545",
+      status: true,
+      measuredUnits: null,
+      category: {
+        categoryId: 1004,
+        categoryName: "Bánh hộp giấy",
+        description: "",
+      },
+      supplier: {
+        supplierId: 1,
+        supplierName: "Hải Hà Bakery",
+        supplierPhone: "0912345678",
+        status: true,
+        city: "Thành phố Hà Nội",
+        district: "Quận Ba Đình",
+        ward: "Phường Phúc Xá",
+        address: "Đại lộ Thăng Long",
+        note: null,
+        supplierEmail: "Hacom@gmail.com",
+      },
+      barcode: "abcxyz",
+    },
+  ],
+  offset: 0,
+  limit: 100000,
+  total: 13,
+}
+
+function ExportReportDraff(props) {
   const columns = [
     {
       Header: " ",
@@ -72,106 +202,35 @@ function ImportReportSucceed() {
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
-  const [staffSelected, setStaffSelected] = useState<any>()
-  const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
+  const router = useRouter()
+  const [productChosen, setProductChosen] = useState([])
+  const [listProductExport, setListProductExport] = useState<any>([])
   const [listChosenProduct, setListChosenProduct] = useState([])
-  const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductBySupplierImport, setListProductBySupplierImport] =
-    useState<any>([])
-  const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
+  const { exportId } = router.query
 
-  useEffect(() => {
-    if (staffSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        userId: staffSelected?.userId,
-      })
-    }
-  }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        importId: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
+  useQueries([
+    {
+      queryKey: ["getDetailProductExport", exportId],
+      queryFn: async () => {
+        const response = await getDetailExportProduct(exportId)
+        setProductImport(response?.data)
+        return response?.data
+      },
+    },
+  ])
 
   useEffect(() => {
     if (productImport) {
-      if (productImport?.state != 2) {
-        router.push("/manage-import-goods")
+      if (productImport?.state != 0) {
+        router.push("/manage-export-goods")
       }
     }
   }, [productImport])
 
-  useEffect(() => {
-    if (productChosen) {
-      if (listChosenProduct.includes(productChosen)) {
-        return
-      }
-      setListChosenProduct([...listChosenProduct, productChosen])
-    }
-  }, [productChosen])
-
-  useEffect(() => {
-    if (listChosenProduct.length > 0) {
-      const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.discount
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = 0
-        if (discount != undefined) {
-          const price = listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.price
-        }
-        return {
-          productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: price,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId,
-        }
-      })
-      setListProductImport(list)
-    }
-  }, [listChosenProduct])
-
-  useEffect(() => {
-    if (listProductImport) {
-      setProductImportObject({
-        ...productImportObject,
-        importDetailDTOs: listProductImport,
-      })
-    }
-  }, [listProductImport])
-
   const totalPrice = () => {
-    if (listProductImport?.length > 0) {
-      const price = listProductImport.reduce(
+    if (listProductExport?.length > 0) {
+      const price = listProductExport.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
         0,
@@ -181,15 +240,41 @@ function ImportReportSucceed() {
       return <div>0 đ</div>
     }
   }
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-import-goods")
+  }
 
-  const createImportMutation = useMutation(
-    async (importProduct) => {
-      return await createImportProduct(importProduct)
+  const approveExportMutation = useMutation(
+    async (exportProduct) => {
+      return await approveExportProduct(exportProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm đơn nhập hàng thành công")
+          toast.success("Duyệt đơn xuất hàng thành công")
+          router.push("/export-report-detail/" + productImport?.importId)
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+  const cancelExportMutation = useMutation(
+    async (importProduct) => {
+      return await denyImportProduct(importProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Hủy đơn nhập hàng thành công")
           router.push("/manage-import-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -206,70 +291,13 @@ function ImportReportSucceed() {
     },
   )
 
-  const handleClickSaveBtn = (event) => {
+  const handleClickApproveBtn = (event) => {
     event?.preventDefault()
-    createImportMutation.mutate(productImportObject)
+    approveExportMutation.mutate(productImport?.exportId)
   }
-
-  const now = new Date()
-  const router = useRouter()
-  const { importId } = router.query
-
-  useQueries([
-    {
-      queryKey: ["getListStaff"],
-      queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
-        return staff?.data?.data
-      },
-    },
-    {
-      queryKey: ["getDetailProductImport", importId],
-      queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
-      queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        } else {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        }
-      },
-    },
-  ])
-  // const a = format(new Date(productImport?.created), "dd/MM/yyyy")
-  console.log(productImport)
-
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
+  const handleClickCancelBtn = (event) => {
+    event?.preventDefault()
+    cancelExportMutation.mutate(productImport?.importId)
   }
 
   return (
@@ -281,18 +309,35 @@ function ImportReportSucceed() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-full">
-                Hoàn thành
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+                Chờ duyệt đơn
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
                 Thoát
-              </PrimaryBtn>
+              </SecondaryBtn>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Bạn chắc chắn muốn hủy đơn?"
+                handleClickSaveBtn={handleClickCancelBtn}
+              >
+                Hủy đơn
+              </ConfirmPopup>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Bạn chắc chắn muốn duyệt đơn?"
+                handleClickSaveBtn={handleClickApproveBtn}
+              >
+                Duyệt đơn
+              </ConfirmPopup>
             </div>
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
+              status="pending"
               createdDate={
                 new Date(productImport?.created).getDate() +
                 "/" +
@@ -300,14 +345,15 @@ function ImportReportSucceed() {
                 "/" +
                 new Date(productImport?.created).getFullYear()
               }
-              status="approved"
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
-            <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
+            <div className="mb-4">
+              <h1 className="text-xl font-semibold">Nhân viên</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
+              {productImport?.user?.userName}
+            </div>
           </div>
         </div>
         <div className="bg-white block-border">
@@ -321,42 +367,48 @@ function ImportReportSucceed() {
               (new Date(productImport?.created).getMonth() + 1) +
               "/" +
               new Date(productImport?.created).getFullYear()}
+            {/* {format(Date.now(), "dd/MM/yyyy")} */}
           </div>
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
-            rows={4}
-            className="mt-2"
+            rows={7}
+            className="mt-4"
             title="Ghi chú hóa đơn"
-            placeholder={productImport?.note}
             value={productImport?.note}
           />
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          Thông tin sản phẩm xuất đi
         </h1>
+        <SearchProductImportDropdown
+          listDropdown={LIST_PRODUCT_DEMO?.data}
+          textDefault={""}
+          showing={productChosen}
+          setShowing={setProductChosen}
+        />
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productImport?.importOrderDetails}
+            data={productImport?.exportOrderDetails}
           />
+        </div>
+        <div className="flex items-center justify-end gap-5 mt-6">
+          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          {totalPrice()}
         </div>
       </div>
     </div>
   )
 }
 
-export default ImportReportSucceed
+export default ExportReportDraff
 
 function ListQuantitiveImport({
   data,
   listProductImport,
   setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
 }) {
   const [quantity, setQuantity] = useState()
   const handleOnChangeAmount = (value, data) => {
@@ -376,23 +428,16 @@ function ListQuantitiveImport({
       type="number"
       placeholder="0"
       value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
+      // onChange={(e) => {
+      //   e.stopPropagation()
+      //   setQuantity(e.target.value)
+      //   handleOnChangeAmount(e.target.value, data)
+      // }}
     />
   )
 }
 
-function ListPriceImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
+function ListPriceImport({ data, listProductImport, setListProductImport }) {
   const [costPrice, setCostPrice] = useState()
 
   useEffect(() => {
@@ -423,19 +468,12 @@ function ListPriceImport({
         e.stopPropagation()
         setCostPrice(e.target.value)
         handleOnChangePrice(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function ListDiscountImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
+function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   const [discount, setDiscount] = useState()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
@@ -458,18 +496,12 @@ function ListDiscountImport({
         e.stopPropagation()
         setDiscount(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function CountTotalPrice({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-}) {
+function CountTotalPrice({ data, listProductImport, setListProductImport }) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
     const list = listProductImport
@@ -509,12 +541,10 @@ function CountTotalPrice({
 function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
-  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
 
   useEffect(() => {
     if (data) {
       setListDropdown(data?.measuredUnits)
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
     }
   }, [data])
 
@@ -536,7 +566,7 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       listDropdown={listDropdown}
       showing={unitChosen}
       setShowing={setUnitChosen}
-      textDefault={defaultMeasuredUnit}
+      textDefault={""}
     />
   )
 }

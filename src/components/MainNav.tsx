@@ -149,6 +149,10 @@ function MainNav() {
       icon: <ExportGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-success") ||
         router.asPath.includes("/create-export-report"),
     },
     // indev

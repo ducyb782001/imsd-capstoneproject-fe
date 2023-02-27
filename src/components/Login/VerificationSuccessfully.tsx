@@ -18,9 +18,10 @@ function VerifySuccessful(props) {
   const handleLogin = (event) => {
     router.push("/login")
   }
+  const { token } = router.query
 
   useEffect(() => {
-    var parameter = router.query["token"] + ""
+    var parameter = token + ""
     setParam(confirmEmailUrl + parameter)
   })
 

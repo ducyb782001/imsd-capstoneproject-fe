@@ -4,21 +4,27 @@ import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
-  createImportProduct,
   getDetailImportProduct,
+  importImportProduct,
 } from "../../apis/import-product-module"
 import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
+import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
+import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitImport"
+import ChooseUnitImport from "./ChooseUnitExport"
 import { useRouter } from "next/router"
-import PrimaryBtn from "../PrimaryBtn"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import {
+  exportExportProduct,
+  getDetailExportProduct,
+} from "../../apis/export-product-module"
 
-function ImportReportSucceed() {
+function ImportReportDetail() {
   const columns = [
     {
       Header: " ",
@@ -73,7 +79,7 @@ function ImportReportSucceed() {
     },
   ]
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [listSupplier, setListSupplier] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
@@ -84,90 +90,28 @@ function ImportReportSucceed() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
-
-  useEffect(() => {
-    if (staffSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        userId: staffSelected?.userId,
-      })
-    }
-  }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        importId: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
-
+  const router = useRouter()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
   useEffect(() => {
     if (productImport) {
-      if (productImport?.state != 2) {
-        router.push("/manage-import-goods")
+      if (productImport?.state != 1) {
+        router.push("/manage-export-goods")
       }
     }
   }, [productImport])
+  const { exportId } = router.query
 
-  useEffect(() => {
-    if (productChosen) {
-      if (listChosenProduct.includes(productChosen)) {
-        return
-      }
-      setListChosenProduct([...listChosenProduct, productChosen])
-    }
-  }, [productChosen])
-
-  useEffect(() => {
-    if (listChosenProduct.length > 0) {
-      const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.discount
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = 0
-        if (discount != undefined) {
-          const price = listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.price
-        }
-        return {
-          productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: price,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId,
-        }
-      })
-      setListProductImport(list)
-    }
-  }, [listChosenProduct])
-
-  useEffect(() => {
-    if (listProductImport) {
-      setProductImportObject({
-        ...productImportObject,
-        importDetailDTOs: listProductImport,
-      })
-    }
-  }, [listProductImport])
+  useQueries([
+    {
+      queryKey: ["getDetailProductExport", exportId],
+      queryFn: async () => {
+        const response = await getDetailExportProduct(exportId)
+        setProductImport(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
+        return response?.data
+      },
+    },
+  ])
 
   const totalPrice = () => {
     if (listProductImport?.length > 0) {
@@ -182,15 +126,15 @@ function ImportReportSucceed() {
     }
   }
 
-  const createImportMutation = useMutation(
+  const importImportMutation = useMutation(
     async (importProduct) => {
-      return await createImportProduct(importProduct)
+      return await importImportProduct(importProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm đơn nhập hàng thành công")
-          router.push("/manage-import-goods")
+          toast.success("Nhập hàng đơn nhập hàng thành công")
+          router.push("/import-report-succeed/" + productImport?.importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -206,93 +150,75 @@ function ImportReportSucceed() {
     },
   )
 
-  const handleClickSaveBtn = (event) => {
-    event?.preventDefault()
-    createImportMutation.mutate(productImportObject)
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-export-goods")
   }
 
-  const now = new Date()
-  const router = useRouter()
-  const { importId } = router.query
-
-  useQueries([
-    {
-      queryKey: ["getListStaff"],
-      queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
-        return staff?.data?.data
-      },
+  const exportExportMutation = useMutation(
+    async (importProduct) => {
+      return await exportExportProduct(importProduct)
     },
     {
-      queryKey: ["getDetailProductImport", importId],
-      queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
-      queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Hoàn thành đơn nhập hàng thành công")
+          router.push("/export-report-succeed/" + productImport?.importId)
         } else {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
         }
       },
     },
-  ])
-  // const a = format(new Date(productImport?.created), "dd/MM/yyyy")
-  console.log(productImport)
+  )
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
+  const handleClickApproveBtn = (event) => {
+    event?.preventDefault()
+    exportExportMutation.mutate(productImport?.exportId)
   }
 
-  return (
+  const now = new Date()
+  console.log("List product import: ", productImportObject)
+  console.log("List product import: ", listProductImport)
+
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
-                #{productImport?.importCode}
+                #{productImport?.exportCode}
               </h1>
-              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-full">
-                Hoàn thành
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+                Chờ xuất hàng
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
                 Thoát
-              </PrimaryBtn>
+              </SecondaryBtn>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Bạn chắc chắn muốn duyệt đơn?"
+                handleClickSaveBtn={handleClickApproveBtn}
+              >
+                Xuẩt hàng
+              </ConfirmPopup>
             </div>
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
+              status="pending"
               createdDate={
                 new Date(productImport?.created).getDate() +
                 "/" +
@@ -300,14 +226,22 @@ function ImportReportSucceed() {
                 "/" +
                 new Date(productImport?.created).getFullYear()
               }
-              status="approved"
+              approvedDate={
+                new Date(productImport?.approved).getDate() +
+                "/" +
+                (new Date(productImport?.approved).getMonth() + 1) +
+                "/" +
+                new Date(productImport?.approved).getFullYear()
+              }
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
+              <h1 className="text-xl font-semibold">Nhân viên</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
+              {productImport?.user?.userName}
+            </div>
           </div>
         </div>
         <div className="bg-white block-border">
@@ -322,14 +256,17 @@ function ImportReportSucceed() {
               "/" +
               new Date(productImport?.created).getFullYear()}
           </div>
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
-            rows={4}
-            className="mt-2"
+            rows={7}
+            className="mt-4"
             title="Ghi chú hóa đơn"
-            placeholder={productImport?.note}
             value={productImport?.note}
+            onChange={(e) => {
+              setProductImportObject({
+                ...productImportObject,
+                note: e.target.value,
+              })
+            }}
           />
         </div>
       </div>
@@ -341,15 +278,26 @@ function ImportReportSucceed() {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productImport?.importOrderDetails}
+            data={productImport?.exportOrderDetails}
           />
         </div>
+        <div className="flex items-center justify-end gap-5 mt-6">
+          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          {totalPrice()}
+        </div>
+        {/* <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
+          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
+          handleClickSaveBtn={handleClickSaveBtn}
+        >
+          Tạo hóa đơn nhập hàng
+        </ConfirmPopup> */}
       </div>
     </div>
   )
 }
 
-export default ImportReportSucceed
+export default ImportReportDetail
 
 function ListQuantitiveImport({
   data,

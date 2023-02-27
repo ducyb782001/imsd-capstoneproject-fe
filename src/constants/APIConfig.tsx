@@ -1,9 +1,9 @@
 // export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Dev baseUrl
-export const baseUrl = `https://imsdservice.azurewebsites.net/api`
+// export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
-// export const baseUrl = `https://localhost:7265/api`
+export const baseUrl = `https://localhost:7265/api`
 
 // City, district, ward
 export const countryUrl = `https://provinces.open-api.vn/api`
@@ -71,3 +71,17 @@ export const approveImportDetailUrl = `${baseUrl}/Import/ApproveImport`
 export const importImportDetailUrl = `${baseUrl}/Import/Import`
 
 export const denyImportDetailUrl = `${baseUrl}/Import/DenyImport`
+
+export const UpdateImportUrl = `${baseUrl}/Import/UpdateImportOrder`
+
+// Export product
+
+export const exportProductUrl = `${baseUrl}/Export/CreateExportOrder`
+
+export const allExportProductUrl = `${baseUrl}/Export/GetExportOrder`
+
+export const detailExportProductUrl = `${baseUrl}/Export/GetExportDetail`
+
+export const approveExportProductUrl = `${baseUrl}/Export/ApproveExport`
+
+export const exportExportProductUrl = `${baseUrl}/Export/Export`

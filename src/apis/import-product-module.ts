@@ -49,3 +49,10 @@ export const denyImportProduct = (importProductId) => {
     url: `${denyImportDetailUrl}?importid=${importProductId}`,
   })
 }
+
+export const updateImportProduct = (importProduct) => {
+  patchAPI({
+    url: `${denyImportDetailUrl}`,
+    data: importProduct,
+  })
+}

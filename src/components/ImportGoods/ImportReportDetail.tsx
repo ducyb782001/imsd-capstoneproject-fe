@@ -97,6 +97,7 @@ function ImportReportDetail() {
       }
     }
   }, [productImport])
+  const { importId } = router.query
 
   useQueries([
     {
@@ -110,7 +111,7 @@ function ImportReportDetail() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
-        const response = await getListStaff({})
+        const response = await getListStaff()
         setListStaff(response?.data)
         return response?.data
       },
@@ -128,16 +129,13 @@ function ImportReportDetail() {
         }
       },
     },
-  ])
-
-  useQueries([
     {
-      queryKey: ["getDetailProductImport", router.query],
+      queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
-        const detail = await getDetailImportProduct(router.query.importId)
-        setProductImport(detail?.data)
-        setIsLoadingReport(detail?.data?.isLoading)
-        return detail?.data
+        const response = await getDetailImportProduct(importId)
+        setProductImport(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
+        return response?.data
       },
     },
   ])
@@ -278,7 +276,6 @@ function ImportReportDetail() {
 
   const handleClickApproveBtn = (event) => {
     event?.preventDefault()
-    console.log("abc")
     approveImportMutation.mutate(productImport?.importId)
   }
 

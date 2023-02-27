@@ -30,10 +30,11 @@ function SetPassword(props) {
   const handleChangePass = (event) => {
     resetPassMutation.mutate()
   }
+  const { token } = router.query
 
   const resetPassMutation = useMutation(
     () => {
-      var paramLink = router.query["token"]
+      var paramLink = token
       var link = resetPassword + paramLink + "&newpwd=" + userPassword
       return axios.post(link)
     },
