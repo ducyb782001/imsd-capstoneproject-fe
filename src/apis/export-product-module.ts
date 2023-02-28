@@ -7,6 +7,7 @@ import {
 import {
   allExportProductUrl,
   approveExportProductUrl,
+  denyExportProductUrl,
   detailExportProductUrl,
   exportExportProductUrl,
   exportProductUrl,
@@ -41,6 +42,12 @@ export const approveExportProduct = (exportProductId) => {
 export const exportExportProduct = (exportProductId) => {
   return postAPI({
     url: `${exportExportProductUrl}?exportid=${exportProductId}`,
+  })
+}
+
+export const denyExportProduct = (exportProductId) => {
+  return postAPI({
+    url: `${denyExportProductUrl}?exportid=${exportProductId}`,
   })
 }
 

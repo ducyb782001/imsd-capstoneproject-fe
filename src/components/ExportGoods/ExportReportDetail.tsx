@@ -116,8 +116,9 @@ function ImportReportDetail() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Hoàn thành đơn nhập hàng thành công")
-          router.push("/export-report-succeed/" + productImport?.importId)
+          router.push("/export-report-succeed/" + productImport?.exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -135,6 +136,9 @@ function ImportReportDetail() {
 
   const handleClickApproveBtn = (event) => {
     event?.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     exportExportMutation.mutate(productImport?.exportId)
   }
 
@@ -149,7 +153,7 @@ function ImportReportDetail() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.exportCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
                 Chờ xuất hàng
               </div>
             </div>

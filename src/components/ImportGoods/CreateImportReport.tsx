@@ -144,6 +144,7 @@ function CreateImportReport() {
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
+  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
@@ -239,6 +240,7 @@ function CreateImportReport() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm đơn nhập hàng thành công")
           router.push("/manage-import-goods")
         } else {
@@ -258,6 +260,9 @@ function CreateImportReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     createImportMutation.mutate(productImportObject)
   }
 

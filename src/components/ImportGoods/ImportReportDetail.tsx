@@ -76,20 +76,12 @@ function ImportReportDetail() {
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listSupplier, setListSupplier] = useState<any>()
-  const [staffSelected, setStaffSelected] = useState<any>()
-  const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
-  const [listChosenProduct, setListChosenProduct] = useState([])
-  const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductBySupplierImport, setListProductBySupplierImport] =
-    useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
+  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+
   useEffect(() => {
     if (productImport) {
       if (productImport?.state != 1) {
@@ -101,35 +93,6 @@ function ImportReportDetail() {
 
   useQueries([
     {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
-        const response = await getListExportSupplier({})
-        setListSupplier(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListStaff"],
-      queryFn: async () => {
-        const response = await getListStaff()
-        setListStaff(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
-      queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        }
-      },
-    },
-    {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
         const response = await getDetailImportProduct(importId)
@@ -140,84 +103,6 @@ function ImportReportDetail() {
     },
   ])
 
-  useEffect(() => {
-    if (staffSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        userId: staffSelected?.userId,
-      })
-    }
-  }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-    }
-  }, [nhaCungCapSelected])
-
-  useEffect(() => {
-    if (productChosen) {
-      if (listChosenProduct.includes(productChosen)) {
-        return
-      }
-      setListChosenProduct([...listChosenProduct, productChosen])
-    }
-  }, [productChosen])
-
-  useEffect(() => {
-    if (listChosenProduct.length > 0) {
-      const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.discount
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.price
-        return {
-          productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: price,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId,
-        }
-      })
-      setListProductImport(list)
-    }
-  }, [listChosenProduct])
-
-  useEffect(() => {
-    if (listProductImport) {
-      setProductImportObject({
-        ...productImportObject,
-        importDetailDTOs: listProductImport,
-      })
-    }
-  }, [listProductImport])
-
-  const totalPrice = () => {
-    if (listProductImport?.length > 0) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      return <div>{price.toFormat()} đ</div>
-    } else {
-      return <div>0 đ</div>
-    }
-  }
-
   const importImportMutation = useMutation(
     async (importProduct) => {
       return await importImportProduct(importProduct)
@@ -225,39 +110,8 @@ function ImportReportDetail() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Nhập hàng đơn nhập hàng thành công")
-          router.push("/import-report-succeed/" + productImport?.importId)
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                "Opps! Something went wrong...",
-            )
-          }
-        }
-      },
-    },
-  )
-
-  const handleClickSaveBtn = (event) => {
-    event?.preventDefault()
-    importImportMutation.mutate(productImport?.importId)
-  }
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
-
-  const approveImportMutation = useMutation(
-    async (importProduct) => {
-      return await importImportProduct(importProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Hoàn thành đơn nhập hàng thành công")
           router.push("/import-report-succeed/" + productImport?.importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -276,12 +130,17 @@ function ImportReportDetail() {
 
   const handleClickApproveBtn = (event) => {
     event?.preventDefault()
-    approveImportMutation.mutate(productImport?.importId)
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
+    importImportMutation.mutate(productImport?.importId)
+  }
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-import-goods")
   }
 
   const now = new Date()
-  console.log("List product import: ", productImportObject)
-  console.log("List product import: ", listProductImport)
+  console.log(productImport)
 
   return isLoadingReport ? (
     <ImportReportSkeleton />

@@ -28,9 +28,11 @@ import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import {
   approveExportProduct,
+  denyExportProduct,
   getDetailExportProduct,
   updateExportProduct,
 } from "../../apis/export-product-module"
+import SecondaryBtn from "../SecondaryBtn"
 
 function ExportReportDraff() {
   const columns = [
@@ -156,6 +158,7 @@ function ExportReportDraff() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
@@ -257,6 +260,7 @@ function ExportReportDraff() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Duyệt đơn xuất hàng thành công")
           router.push("/manage-export-goods")
         } else {
@@ -280,20 +284,25 @@ function ExportReportDraff() {
   const { exportId } = router.query
 
   const handleClickApproveBtn = (event) => {
-    updateExportMutation.mutate(productImportObject)
     event?.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
+    // updateExportMutation.mutate(productImportObject)
+
     approveImportMutation.mutate(productImportObject?.exportId)
   }
 
   const cancelImportMutation = useMutation(
     async (importProduct) => {
-      return await denyImportProduct(importProduct)
+      return await denyExportProduct(importProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Hủy đơn nhập hàng thành công")
-          router.push("/manage-import-goods")
+          router.push("/manage-export-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -310,7 +319,10 @@ function ExportReportDraff() {
   )
   const handleClickCancelBtn = (event) => {
     event?.preventDefault()
-    cancelImportMutation.mutate(productImportObject?.importId)
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
+    cancelImportMutation.mutate(productImportObject?.exportId)
   }
 
   useQueries([
@@ -333,7 +345,12 @@ function ExportReportDraff() {
       },
     },
   ])
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-export-goods")
+  }
+
   console.log(productImportObject)
+
   return (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
@@ -343,21 +360,14 @@ function ExportReportDraff() {
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.exportCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-lg">
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
                 Chờ duyệt đơn
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="w-[120px]"
-                title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-                handleClickSaveBtn={() => {
-                  router.push("/manage-import-goods")
-                }}
-              >
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
                 Thoát
-              </ConfirmPopup>
+              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"

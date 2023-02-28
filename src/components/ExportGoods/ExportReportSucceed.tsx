@@ -81,6 +81,7 @@ function ImportReportSucceed() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-export-goods")
   }
+  console.log(productImport)
 
   return (
     <div>

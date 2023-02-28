@@ -24,6 +24,7 @@ import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
 import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import { getAllExportProduct } from "../../apis/export-product-module"
+import TableSkeleton from "../Skeleton/TableSkeleton"
 
 const columns = [
   {
@@ -95,7 +96,7 @@ function ManageExportGoods({ ...props }) {
   const [listExportProduct, setListExportProduct] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
-  const [isLoadingListImport, setIsLoadingListImport] = useState(true)
+  const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -179,6 +180,8 @@ function ManageExportGoods({ ...props }) {
             ...queryParams,
           })
           setListExportProduct(response?.data)
+          setIsLoadingListExport(response?.data?.isLoading)
+
           //-----------
 
           return response?.data
@@ -245,24 +248,26 @@ function ManageExportGoods({ ...props }) {
             handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
-
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={listExportProduct?.data}
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listExportProduct?.total}
-        />
+        {isLoadingListExport ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={columns}
+                data={listExportProduct?.data}
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listExportProduct?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )
@@ -292,25 +297,25 @@ function ImportExportButton({
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-md bg-orange-50">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 rounded-3xl">
-        <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
+      <div className="w-32 mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 rounded-3xl">
+      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-md bg-red-50">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
         <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
       </div>
     )

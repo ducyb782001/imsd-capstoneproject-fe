@@ -227,7 +227,7 @@ function ManageImportGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn nhập"
+              placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
@@ -304,7 +304,7 @@ function ImportExportButton({
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
       </div>
     )
@@ -322,7 +322,7 @@ function StatusDisplay({ data }) {
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
         <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
       </div>
     )

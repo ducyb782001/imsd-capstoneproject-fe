@@ -27,6 +27,7 @@ import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import SecondaryBtn from "../SecondaryBtn"
 
 function CreateImportReport() {
   const columns = [
@@ -152,6 +153,7 @@ function CreateImportReport() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
@@ -251,6 +253,7 @@ function CreateImportReport() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Duyệt đơn nhập hàng thành công")
           router.push("/manage-import-goods")
         } else {
@@ -293,6 +296,9 @@ function CreateImportReport() {
   const { importId } = router.query
 
   const handleClickApproveBtn = async (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     event?.preventDefault()
     await updateImportMutation.mutate(productImportObject)
     console.log("Test")
@@ -306,6 +312,7 @@ function CreateImportReport() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Hủy đơn nhập hàng thành công")
           router.push("/manage-import-goods")
         } else {
@@ -323,8 +330,15 @@ function CreateImportReport() {
     },
   )
   const handleClickCancelBtn = (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     event?.preventDefault()
     cancelImportMutation.mutate(productImportObject?.importId)
+  }
+
+  const handleClickOutBtn = (event) => {
+    router.push("/manage-import-goods")
   }
 
   useQueries([
@@ -366,7 +380,7 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(listChosenProduct)
+  console.log(productImportObject)
 
   return (
     <div>
@@ -382,16 +396,9 @@ function CreateImportReport() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="w-[120px]"
-                title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-                handleClickSaveBtn={() => {
-                  router.push("/manage-import-goods")
-                }}
-              >
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
                 Thoát
-              </ConfirmPopup>
+              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"

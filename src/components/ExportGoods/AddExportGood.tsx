@@ -148,6 +148,7 @@ function CreateExportReport() {
   const [listProductImport, setListProductImport] = useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
   const [productExportObject, setProductExportObject] = useState<any>()
+  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
@@ -180,7 +181,7 @@ function CreateExportReport() {
   }, [productChosen])
 
   useEffect(() => {
-    if (listChosenProduct) {
+    if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
         const discount = listProductImport.find(
           (i) => i.productId == item.productId,
@@ -202,7 +203,7 @@ function CreateExportReport() {
           amount: amount,
           costPrice: costPrice,
           discount: discount,
-          price: price,
+          price: costPrice,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
           )?.measuredUnitId
@@ -224,19 +225,18 @@ function CreateExportReport() {
   }, [listProductImport])
 
   const totalPrice = () => {
-    if (listProductImport) {
+    if (listProductImport?.length > 0) {
       const price = listProductImport.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
         0,
       )
-      return <div>{price.toFormat()} đ</div>
+      return <div>{price} đ</div>
     } else {
       return <div>0 đ</div>
     }
   }
 
-  const now = new Date()
   const router = useRouter()
   useQueries([
     {
@@ -264,7 +264,7 @@ function CreateExportReport() {
       },
     },
   ])
-  console.log(productExportObject)
+  console.log(listProductImport)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -275,7 +275,7 @@ function CreateExportReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm đơn xuất hàng thành công!")
-          router.push("/manage-import-goods")
+          router.push("/manage-export-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -370,7 +370,7 @@ function CreateExportReport() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {totalPrice()}
+          {/* {totalPrice()} */}
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
@@ -441,7 +441,7 @@ function ListPriceImport({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
+        return { ...item, costPrice: value, price: value }
       }
       return item
     })
