@@ -25,6 +25,8 @@ import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropd
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+
 function CreateExportReport() {
   const columns = [
     {
@@ -178,7 +180,7 @@ function CreateExportReport() {
   }, [productChosen])
 
   useEffect(() => {
-    if (listChosenProduct.length > 0) {
+    if (listChosenProduct) {
       const list = listChosenProduct.map((item) => {
         const discount = listProductImport.find(
           (i) => i.productId == item.productId,
@@ -222,7 +224,7 @@ function CreateExportReport() {
   }, [listProductImport])
 
   const totalPrice = () => {
-    if (listProductImport?.length > 0) {
+    if (listProductImport) {
       const price = listProductImport.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
@@ -271,6 +273,7 @@ function CreateExportReport() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm đơn xuất hàng thành công!")
           router.push("/manage-import-goods")
         } else {
@@ -290,6 +293,9 @@ function CreateExportReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     createExportMutation.mutate(productExportObject)
   }
 

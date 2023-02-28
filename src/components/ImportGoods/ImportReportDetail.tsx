@@ -59,7 +59,7 @@ function ImportReportDetail() {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.price} className="w-24" />
+              <PrimaryInput value={data?.costPrice} className="w-24" />
               <p>đ</p>
             </div>
           ),
@@ -294,7 +294,7 @@ function ImportReportDetail() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-lg">
                 Chờ nhận hàng
               </div>
             </div>
@@ -333,7 +333,7 @@ function ImportReportDetail() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Chọn nhà cung cấp</h1>
+              <h1 className="text-xl font-semibold">Nhà cung cấp</h1>
             </div>
             <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
               {productImport?.supplier?.supplierName}
@@ -359,15 +359,9 @@ function ImportReportDetail() {
               new Date(productImport?.approved).getFullYear()}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          {/* <ChooseStaffDropdown
-            listDropdown={listStaff?.data}
-            textDefault={"Chọn nhân viên"}
-            showing={staffSelected}
-            setShowing={setStaffSelected}
-          /> */}
           <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
             <div className="flex items-center gap-1">
-              <p className="text-gray">{productImport?.user?.email}</p>
+              <p className="text-gray">{productImport?.user?.userName}</p>
             </div>
           </div>
           <PrimaryTextArea
@@ -388,13 +382,6 @@ function ImportReportDetail() {
         <h1 className="mb-4 text-xl font-semibold">
           Thông tin sản phẩm nhập vào
         </h1>
-        <SearchProductImportDropdown
-          listDropdown={listProductBySupplierImport?.data}
-          textDefault={"Nhà cung cấp"}
-          showing={productChosen}
-          setShowing={setProductChosen}
-        />
-        <AddProductPopup className="mt-4" />
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
@@ -404,7 +391,7 @@ function ImportReportDetail() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {totalPrice()}
+          {productImport?.totalCost}
         </div>
         {/* <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"

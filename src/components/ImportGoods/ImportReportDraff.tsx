@@ -82,7 +82,7 @@ function CreateImportReport() {
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <ListPriceImport
-                data={data?.product}
+                data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
                 autoUpdatePrice={autoUpdatePrice}
@@ -141,7 +141,6 @@ function CreateImportReport() {
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
@@ -152,6 +151,7 @@ function CreateImportReport() {
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
+  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
 
   useEffect(() => {
     if (staffSelected) {
@@ -161,6 +161,10 @@ function CreateImportReport() {
       })
     }
   }, [staffSelected])
+
+  useEffect(() => {
+    setNhaCungCapSelected(productImportObject?.supplier)
+  }, [productImportObject])
   useEffect(() => {
     if (nhaCungCapSelected) {
       setProductImportObject({
@@ -247,7 +251,7 @@ function CreateImportReport() {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm đơn nhập hàng thành công")
+          toast.success("Duyệt đơn nhập hàng thành công")
           router.push("/manage-import-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -263,14 +267,36 @@ function CreateImportReport() {
       },
     },
   )
-  const updateImportMutation = useMutation(async (importProduct) => {
-    return await updateImportProduct(importProduct)
-  })
+  const updateImportMutation = useMutation(
+    async (importProduct) => {
+      return await updateImportProduct(importProduct)
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Cập nhật đơn nhập hàng thành công")
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Opps! Something went wrong...",
+            )
+          }
+        }
+      },
+    },
+  )
+  const router = useRouter()
+  const { importId } = router.query
 
-  const handleClickApproveBtn = (event) => {
+  const handleClickApproveBtn = async (event) => {
     event?.preventDefault()
-    updateImportMutation.mutate(productImportObject)
-    // approveImportMutation.mutate(productImportObject?.importId)
+    await updateImportMutation.mutate(productImportObject)
+    console.log("Test")
+    await approveImportMutation.mutate(productImportObject?.importId)
   }
 
   const cancelImportMutation = useMutation(
@@ -301,17 +327,12 @@ function CreateImportReport() {
     cancelImportMutation.mutate(productImportObject?.importId)
   }
 
-  const now = new Date()
-  const router = useRouter()
-  const { importId } = router.query
-
   useQueries([
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
         const response = await getDetailImportProduct(importId)
         setListChosenProduct(response?.data?.importOrderDetails)
-        setListProductImport(response?.data?.importOrderDetails)
         setProductImportObject(response?.data)
         return response?.data
       },
@@ -336,7 +357,6 @@ function CreateImportReport() {
           setProductImportObject({
             ...productImportObject,
             supplierId: nhaCungCapSelected.supplierId,
-            importId: 0,
             state: 0,
           })
           setListProductBySupplierImport(response?.data)
@@ -346,6 +366,7 @@ function CreateImportReport() {
       },
     },
   ])
+  console.log(listChosenProduct)
 
   return (
     <div>
@@ -456,13 +477,6 @@ function CreateImportReport() {
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
           {totalPrice()}
         </div>
-        <ConfirmPopup
-          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
-          handleClickSaveBtn={handleClickApproveBtn}
-        >
-          Tạo hóa đơn nhập hàng
-        </ConfirmPopup>
       </div>
     </div>
   )
@@ -477,7 +491,7 @@ function ListQuantitiveImport({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [quantity, setQuantity] = useState()
+  const [quantity, setQuantity] = useState(data?.amount)
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -488,14 +502,13 @@ function ListQuantitiveImport({
     })
     setListProductImport(newList)
   }
-  console.log("490: ", data)
 
   return (
     <PrimaryInput
       className="w-[60px]"
       type="number"
       placeholder="0"
-      value={data?.amount ? data?.amount : quantity}
+      value={quantity ? quantity : ""}
       onChange={(e) => {
         e.stopPropagation()
         setQuantity(e.target.value)
@@ -513,7 +526,7 @@ function ListPriceImport({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [costPrice, setCostPrice] = useState()
+  const [costPrice, setCostPrice] = useState(data?.costPrice)
 
   useEffect(() => {
     if (data) {
@@ -556,7 +569,7 @@ function ListDiscountImport({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [discount, setDiscount] = useState()
+  const [discount, setDiscount] = useState(data?.discount)
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -573,7 +586,7 @@ function ListDiscountImport({
       className="w-[50px]"
       type="number"
       placeholder="0"
-      value={data?.discount ? data?.discount : discount}
+      value={discount ? discount : ""}
       onChange={(e) => {
         e.stopPropagation()
         setDiscount(e.target.value)

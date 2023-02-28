@@ -152,7 +152,7 @@ function MainNav() {
         router.asPath.includes("/export-report-canceled") ||
         router.asPath.includes("/export-report-detail") ||
         router.asPath.includes("/export-report-draff") ||
-        router.asPath.includes("/export-report-success") ||
+        router.asPath.includes("/export-report-succeed") ||
         router.asPath.includes("/create-export-report"),
     },
     // indev

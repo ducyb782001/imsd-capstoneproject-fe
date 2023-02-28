@@ -3,7 +3,9 @@
 // Dev baseUrl
 // export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
-export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
+// export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
+
+export const baseUrl = `https://localhost:7265/api`
 
 // City, district, ward
 export const countryUrl = `https://provinces.open-api.vn/api`
@@ -72,7 +74,7 @@ export const importImportDetailUrl = `${baseUrl}/Import/Import`
 
 export const denyImportDetailUrl = `${baseUrl}/Import/DenyImport`
 
-export const UpdateImportUrl = `${baseUrl}/Import/UpdateImportOrder`
+export const updateImportUrl = `${baseUrl}/Import/UpdateImportOrder`
 
 // Export product
 
@@ -85,3 +87,5 @@ export const detailExportProductUrl = `${baseUrl}/Export/GetExportDetail`
 export const approveExportProductUrl = `${baseUrl}/Export/ApproveExport`
 
 export const exportExportProductUrl = `${baseUrl}/Export/Export`
+
+export const updateExportProductUrl = `${baseUrl}/Export/UpdateExportOrder`

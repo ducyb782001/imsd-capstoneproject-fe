@@ -1,154 +1,38 @@
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
-import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
   approveImportProduct,
+  createImportProduct,
   denyImportProduct,
   getDetailImportProduct,
+  updateImportProduct,
 } from "../../apis/import-product-module"
+import { getListExportProductBySupplier } from "../../apis/product-module"
+import { getListExportSupplier } from "../../apis/supplier-module"
+import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
+import InfoIcon from "../icons/InfoIcon"
+import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
-import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitExport"
+import Tooltip from "../ToolTip"
+import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
+import { useRouter } from "next/router"
+import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import {
   approveExportProduct,
   getDetailExportProduct,
+  updateExportProduct,
 } from "../../apis/export-product-module"
 
-const LIST_PRODUCT_DEMO = {
-  data: [
-    {
-      productId: 24,
-      productName: "Bánh bơ trứng chảy Richy",
-      productCode: "BBT123",
-      categoryId: 1004,
-      description:
-        "Bánh bơ trứng Richy là thương hiệu được ưa thích hàng đầu hiện nay. Bánh có hương vị bơ trứng thơm ngon, béo ngậy, mang đến cảm giác hấp dẫn cho người tiêu dùng. Đặc biệt, bánh Richy đảm bảo an toàn sức khỏe khách hàng với các nguyên liệu tự nhiên, không chứa chất bảo quản và độc hại. Hiện nay, bánh được đóng thành nhiều gói nhỏ tiện lợi, phù hợp để mang đi học, đi chơi, cắm trại,…",
-      supplierId: 1,
-      costPrice: 150000,
-      sellingPrice: 200000,
-      defaultMeasuredUnit: "Thùng",
-      inStock: 10,
-      stockPrice: 2400000,
-      image:
-        "https://dailyhcm.congtytanhuevien.vn/wp-content/uploads/2022/11/banh-keo-ngon-ngay-tet-2.jpg",
-      created: "0001-01-01T00:00:00",
-      status: true,
-      measuredUnits: [
-        {
-          measuredUnitId: 0,
-          measuredUnitName: "Lốc",
-          measuredUnitValue: 8,
-        },
-        {
-          measuredUnitId: 1,
-          measuredUnitName: "Gói",
-          measuredUnitValue: 8,
-        },
-      ],
-      category: {
-        categoryId: 1004,
-        categoryName: "Bánh hộp giấy",
-        description: "",
-      },
-      supplier: {
-        supplierId: 1,
-        supplierName: "Hải Hà Bakery",
-        supplierPhone: "0912345678",
-        status: true,
-        city: "Thành phố Hà Nội",
-        district: "Quận Ba Đình",
-        ward: "Phường Phúc Xá",
-        address: "Đại lộ Thăng Long",
-        note: null,
-        supplierEmail: "Hacom@gmail.com",
-      },
-      barcode: "123456",
-    },
-    {
-      productId: 29,
-      productName: "Bánh sữa chocolate",
-      productCode: "chocolate",
-      categoryId: 1,
-      description: "string",
-      supplierId: 1,
-      costPrice: 0,
-      sellingPrice: 0,
-      defaultMeasuredUnit: "string",
-      inStock: 0,
-      stockPrice: 0,
-      image: null,
-      created: "2023-02-12T03:44:02.8710209",
-      status: true,
-      measuredUnits: null,
-      category: {
-        categoryId: 1,
-        categoryName: "Kẹo dẻo",
-        description: "Kẹo dẻo có đường bao xung quanh",
-      },
-      supplier: {
-        supplierId: 1,
-        supplierName: "Hải Hà Bakery",
-        supplierPhone: "0912345678",
-        status: true,
-        city: "Thành phố Hà Nội",
-        district: "Quận Ba Đình",
-        ward: "Phường Phúc Xá",
-        address: "Đại lộ Thăng Long",
-        note: null,
-        supplierEmail: "Hacom@gmail.com",
-      },
-      barcode: "",
-    },
-    {
-      productId: 31,
-      productName: "Sản phẩm mới",
-      productCode: "SP8",
-      categoryId: 1004,
-      description: null,
-      supplierId: 1,
-      costPrice: null,
-      sellingPrice: null,
-      defaultMeasuredUnit: null,
-      inStock: null,
-      stockPrice: null,
-      image: "https://ik.imagekit.io/imsd/cat-2083492__340_KNEo0hQ_U.jpg",
-      created: "2023-02-14T05:35:51.9784545",
-      status: true,
-      measuredUnits: null,
-      category: {
-        categoryId: 1004,
-        categoryName: "Bánh hộp giấy",
-        description: "",
-      },
-      supplier: {
-        supplierId: 1,
-        supplierName: "Hải Hà Bakery",
-        supplierPhone: "0912345678",
-        status: true,
-        city: "Thành phố Hà Nội",
-        district: "Quận Ba Đình",
-        ward: "Phường Phúc Xá",
-        address: "Đại lộ Thăng Long",
-        note: null,
-        supplierEmail: "Hacom@gmail.com",
-      },
-      barcode: "abcxyz",
-    },
-  ],
-  offset: 0,
-  limit: 100000,
-  total: 13,
-}
-
-function ExportReportDraff(props) {
+function ExportReportDraff() {
   const columns = [
     {
       Header: " ",
@@ -178,14 +62,36 @@ function ExportReportDraff(props) {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <ListQuantitiveImport
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+              autoUpdatePrice={autoUpdatePrice}
+              setAutoUpdatePrice={setAutoUpdatePrice}
+            />
+          ),
+        },
+        {
+          Header: "Đơn vị",
+          accessor: (data: any) => (
+            <ListUnitImport
+              data={data?.product}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.price} className="w-24" />
+              <ListPriceImport
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
+              />
               <p>đ</p>
             </div>
           ),
@@ -194,43 +100,146 @@ function ExportReportDraff(props) {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <ListDiscountImport
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
+              />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <CountTotalPrice
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+              autoUpdatePrice={autoUpdatePrice}
+            />
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any, index) => (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                let result = listChosenProduct?.filter(
+                  (i, ind) => ind !== index,
+                )
+                setListChosenProduct(result)
+                // let listProduct = listProductImport?.filter(
+                //   (i, ind) => ind !== index,
+                // )
+                // setListProductImport(listProduct)
+              }}
+            >
+              <XIcons />
             </div>
           ),
         },
       ],
     },
   ]
-  const router = useRouter()
-  const [productChosen, setProductChosen] = useState([])
-  const [listProductExport, setListProductExport] = useState<any>([])
+  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [staffSelected, setStaffSelected] = useState<any>()
+  const [listStaff, setListStaff] = useState<any>()
+  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
-  const [productImport, setProductImport] = useState<any>()
-  const { exportId } = router.query
-
-  useQueries([
-    {
-      queryKey: ["getDetailProductExport", exportId],
-      queryFn: async () => {
-        const response = await getDetailExportProduct(exportId)
-        setProductImport(response?.data)
-        return response?.data
-      },
-    },
-  ])
+  const [productChosen, setProductChosen] = useState<any>()
+  const [listProductImport, setListProductImport] = useState<any>([])
+  const [listProductBySupplierImport, setListProductBySupplierImport] =
+    useState<any>([])
+  const [productImportObject, setProductImportObject] = useState<any>()
+  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
 
   useEffect(() => {
-    if (productImport) {
-      if (productImport?.state != 0) {
-        router.push("/manage-export-goods")
-      }
+    if (staffSelected) {
+      setProductImportObject({
+        ...productImportObject,
+        userId: staffSelected?.userId,
+      })
     }
-  }, [productImport])
+  }, [staffSelected])
+
+  useEffect(() => {
+    setNhaCungCapSelected(productImportObject?.supplier)
+  }, [productImportObject])
+
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      setProductImportObject({
+        ...productImportObject,
+        supplierId: nhaCungCapSelected?.supplierId,
+      })
+      setProductImportObject({
+        ...productImportObject,
+        state: 0,
+      })
+    }
+  }, [nhaCungCapSelected])
+
+  useEffect(() => {
+    if (productChosen) {
+      if (listChosenProduct.includes(productChosen)) {
+        return
+      }
+      setListChosenProduct([...listChosenProduct, productChosen])
+    }
+  }, [productChosen])
+
+  useEffect(() => {
+    if (listChosenProduct) {
+      const list = listChosenProduct.map((item) => {
+        const discount = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.discount
+          ? undefined
+          : 0
+        const amount = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.amount
+        const costPrice = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.costPrice
+        const price = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.price
+
+        return {
+          productId: item.productId,
+          amount: amount,
+          costPrice: costPrice,
+          discount: discount,
+          price: price,
+          measuredUnitId: listProductImport.find(
+            (i) => i.productId == item.productId,
+          )?.measuredUnitId
+            ? undefined
+            : 0,
+          exportId: productImportObject?.exportId,
+        }
+      })
+      setListProductImport(list)
+    }
+  }, [listChosenProduct])
+
+  useEffect(() => {
+    if (listProductImport) {
+      setProductImportObject({
+        ...productImportObject,
+        exportOrderDetails: listProductImport,
+      })
+    }
+  }, [listProductImport])
 
   const totalPrice = () => {
-    if (listProductExport?.length > 0) {
-      const price = listProductExport.reduce(
+    if (listProductImport?.length > 0) {
+      const price = listProductImport.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
         0,
@@ -240,19 +249,16 @@ function ExportReportDraff(props) {
       return <div>0 đ</div>
     }
   }
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
 
-  const approveExportMutation = useMutation(
-    async (exportProduct) => {
-      return await approveExportProduct(exportProduct)
+  const approveImportMutation = useMutation(
+    async (importProduct) => {
+      return await approveExportProduct(importProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.success("Duyệt đơn xuất hàng thành công")
-          router.push("/export-report-detail/" + productImport?.importId)
+          router.push("/manage-export-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -267,7 +273,19 @@ function ExportReportDraff(props) {
       },
     },
   )
-  const cancelExportMutation = useMutation(
+  const updateExportMutation = useMutation(async (importProduct) => {
+    return await updateExportProduct(importProduct)
+  })
+  const router = useRouter()
+  const { exportId } = router.query
+
+  const handleClickApproveBtn = (event) => {
+    updateExportMutation.mutate(productImportObject)
+    event?.preventDefault()
+    approveImportMutation.mutate(productImportObject?.exportId)
+  }
+
+  const cancelImportMutation = useMutation(
     async (importProduct) => {
       return await denyImportProduct(importProduct)
     },
@@ -290,16 +308,32 @@ function ExportReportDraff(props) {
       },
     },
   )
-
-  const handleClickApproveBtn = (event) => {
-    event?.preventDefault()
-    approveExportMutation.mutate(productImport?.exportId)
-  }
   const handleClickCancelBtn = (event) => {
     event?.preventDefault()
-    cancelExportMutation.mutate(productImport?.importId)
+    cancelImportMutation.mutate(productImportObject?.importId)
   }
 
+  useQueries([
+    {
+      queryKey: ["getDetailProductExport", exportId],
+      queryFn: async () => {
+        const response = await getDetailExportProduct(exportId)
+        setListChosenProduct(response?.data?.exportOrderDetails)
+        setListProductImport(response?.data?.exportOrderDetails)
+        setProductImportObject(response?.data)
+        return response?.data
+      },
+    },
+    {
+      queryKey: ["getListStaff"],
+      queryFn: async () => {
+        const staff = await getListStaff()
+        setListStaff(staff?.data)
+        return staff?.data?.data
+      },
+    },
+  ])
+  console.log(productImportObject)
   return (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
@@ -307,16 +341,23 @@ function ExportReportDraff(props) {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
-                #{productImport?.importCode}
+                #{productImportObject?.exportCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-lg">
                 Chờ duyệt đơn
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
+                handleClickSaveBtn={() => {
+                  router.push("/manage-import-goods")
+                }}
+              >
                 Thoát
-              </SecondaryBtn>
+              </ConfirmPopup>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
@@ -336,24 +377,18 @@ function ExportReportDraff(props) {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar
-              status="pending"
-              createdDate={
-                new Date(productImport?.created).getDate() +
-                "/" +
-                (new Date(productImport?.created).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.created).getFullYear()
-              }
-            />
+            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
-            <div className="mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên</h1>
+            <div className="flex items-center gap-2 mb-4">
+              <h1 className="text-xl font-semibold">Chọn nhân viên</h1>
             </div>
-            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
-              {productImport?.user?.userName}
-            </div>
+            <ChooseStaffDropdown
+              listDropdown={listStaff}
+              textDefault={productImportObject?.user?.userName}
+              showing={staffSelected}
+              setShowing={setStaffSelected}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
@@ -361,19 +396,19 @@ function ExportReportDraff(props) {
             Thông tin bổ sung
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              (new Date(productImport?.created).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
-            {/* {format(Date.now(), "dd/MM/yyyy")} */}
+            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <PrimaryTextArea
             rows={7}
             className="mt-4"
             title="Ghi chú hóa đơn"
-            value={productImport?.note}
+            value={productImportObject?.note}
+            onChange={(e) => {
+              setProductImportObject({
+                ...productImportObject,
+                note: e.target.value,
+              })
+            }}
           />
         </div>
       </div>
@@ -382,8 +417,8 @@ function ExportReportDraff(props) {
           Thông tin sản phẩm xuất đi
         </h1>
         <SearchProductImportDropdown
-          listDropdown={LIST_PRODUCT_DEMO?.data}
-          textDefault={""}
+          listDropdown={listProductBySupplierImport?.data}
+          textDefault={"Nhà cung cấp"}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -391,7 +426,7 @@ function ExportReportDraff(props) {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productImport?.exportOrderDetails}
+            data={listChosenProduct}
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
@@ -409,8 +444,10 @@ function ListQuantitiveImport({
   data,
   listProductImport,
   setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
 }) {
-  const [quantity, setQuantity] = useState()
+  const [quantity, setQuantity] = useState(data?.amount)
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -428,22 +465,29 @@ function ListQuantitiveImport({
       type="number"
       placeholder="0"
       value={quantity ? quantity : ""}
-      // onChange={(e) => {
-      //   e.stopPropagation()
-      //   setQuantity(e.target.value)
-      //   handleOnChangeAmount(e.target.value, data)
-      // }}
+      onChange={(e) => {
+        e.stopPropagation()
+        setQuantity(e.target.value)
+        handleOnChangeAmount(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
+      }}
     />
   )
 }
 
-function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState()
+function ListPriceImport({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [costPrice, setCostPrice] = useState(data?.price)
 
   useEffect(() => {
     if (data) {
       // Bug chua su dung duoc gia co san de tinh toan
-      setCostPrice(data?.costPrice)
+      setCostPrice(data?.price)
     }
   }, [data])
 
@@ -468,13 +512,20 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
         e.stopPropagation()
         setCostPrice(e.target.value)
         handleOnChangePrice(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function ListDiscountImport({ data, listProductImport, setListProductImport }) {
-  const [discount, setDiscount] = useState()
+function ListDiscountImport({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [discount, setDiscount] = useState(data?.discount)
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -496,12 +547,18 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
         e.stopPropagation()
         setDiscount(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function CountTotalPrice({ data, listProductImport, setListProductImport }) {
+function CountTotalPrice({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+}) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
     const list = listProductImport
@@ -541,10 +598,12 @@ function CountTotalPrice({ data, listProductImport, setListProductImport }) {
 function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
+  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
 
   useEffect(() => {
     if (data) {
       setListDropdown(data?.measuredUnits)
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
     }
   }, [data])
 
@@ -566,7 +625,7 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       listDropdown={listDropdown}
       showing={unitChosen}
       setShowing={setUnitChosen}
-      textDefault={""}
+      textDefault={defaultMeasuredUnit}
     />
   )
 }

@@ -95,7 +95,7 @@ function ManageExportGoods({ ...props }) {
   const [listExportProduct, setListExportProduct] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
-  const [listSupplier, setListSupplier] = useState<any>()
+  const [isLoadingListImport, setIsLoadingListImport] = useState(true)
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -183,14 +183,6 @@ function ManageExportGoods({ ...props }) {
 
           return response?.data
         }
-      },
-    },
-    {
-      queryKey: ["getListFilter"],
-      queryFn: async () => {
-        const supplierList = await getListExportSupplier({})
-        setListSupplier(supplierList?.data?.data)
-        return supplierList?.data
       },
     },
   ])

@@ -1,10 +1,16 @@
-import { convertObjectToQueryString, postAPI, requestAPI } from "../lib/api"
+import {
+  convertObjectToQueryString,
+  patchAPI,
+  postAPI,
+  requestAPI,
+} from "../lib/api"
 import {
   allExportProductUrl,
   approveExportProductUrl,
   detailExportProductUrl,
   exportExportProductUrl,
   exportProductUrl,
+  updateExportProductUrl,
 } from "../constants/APIConfig"
 
 export const createExportProduct = (newExportProduct) =>
@@ -35,5 +41,12 @@ export const approveExportProduct = (exportProductId) => {
 export const exportExportProduct = (exportProductId) => {
   return postAPI({
     url: `${exportExportProductUrl}?exportid=${exportProductId}`,
+  })
+}
+
+export const updateExportProduct = (importProduct) => {
+  patchAPI({
+    url: `${updateExportProductUrl}`,
+    data: importProduct,
   })
 }
