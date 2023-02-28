@@ -530,21 +530,36 @@ function CountTotalPrice({
         if (item.discount) {
           const afterPrice = totalPrice.minus(discountPrice)
           setPrice(afterPrice.toFormat(0))
-          return { ...item, price: afterPrice.toFixed() }
+          // return { ...item, price: afterPrice.toFixed() }
         } else {
           setPrice(totalPrice.toFormat(0))
-          return { ...item, price: totalPrice.toFixed() }
+          // return { ...item, price: totalPrice.toFixed() }
         }
       }
       return item
     })
-    setListProductImport(newList)
+    // setListProductImport(newList)
   }
+
+  useEffect(() => {
+    handleSetPrice()
+  }, [listProductImport])
+
+  useEffect(() => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, price: price }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }, [price])
 
   return (
     <div
       className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn"
-      onClick={handleSetPrice}
+      // onClick={handleSetPrice}
     >
       {price} đ
     </div>
