@@ -141,6 +141,7 @@ function ImportReportDetail() {
     })
     exportExportMutation.mutate(productImport?.exportId)
   }
+  console.log(productImport)
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
@@ -194,7 +195,10 @@ function ImportReportDetail() {
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Nhân viên</h1>
             </div>
-            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
+            <div
+              className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
+              aria-readonly
+            >
               {productImport?.user?.userName}
             </div>
           </div>
@@ -216,12 +220,7 @@ function ImportReportDetail() {
             className="mt-4"
             title="Ghi chú hóa đơn"
             value={productImport?.note}
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
+            readonly
           />
         </div>
       </div>

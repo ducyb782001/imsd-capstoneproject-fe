@@ -22,6 +22,7 @@ import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
   const columns = [
     {
@@ -144,7 +145,7 @@ function CreateImportReport() {
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+  const [totalPriceSend, setTotalPriceSend] = useState<any>()
 
   useEffect(() => {
     if (staffSelected) {
@@ -213,25 +214,20 @@ function CreateImportReport() {
 
   useEffect(() => {
     if (listProductImport) {
-      setProductImportObject({
-        ...productImportObject,
-        importOrderDetails: listProductImport,
-      })
-    }
-  }, [listProductImport])
-
-  const totalPrice = () => {
-    if (listProductImport?.length > 0) {
       const price = listProductImport.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
         0,
       )
-      return <div>{price.toFormat()} đ</div>
-    } else {
-      return <div>0 đ</div>
+      const priceSet = new BigNumber(price).toFormat()
+      setTotalPriceSend(priceSet)
+      setProductImportObject({
+        ...productImportObject,
+        importOrderDetails: listProductImport,
+        totalCost: new BigNumber(price).toFixed(),
+      })
     }
-  }
+  }, [listProductImport])
 
   const createImportMutation = useMutation(
     async (importProduct) => {
@@ -266,7 +262,6 @@ function CreateImportReport() {
     createImportMutation.mutate(productImportObject)
   }
 
-  const now = new Date()
   const router = useRouter()
   useQueries([
     {
@@ -299,7 +294,6 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(listChosenProduct)
 
   return (
     <div>
@@ -383,8 +377,9 @@ function CreateImportReport() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {totalPrice()}
+          <div className="text-base font-semibold">
+            Tổng giá trị đơn hàng: {totalPriceSend}
+          </div>
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"

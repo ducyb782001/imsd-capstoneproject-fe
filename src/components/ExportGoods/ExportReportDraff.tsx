@@ -262,7 +262,7 @@ function ExportReportDraff() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Duyệt đơn xuất hàng thành công")
-          router.push("/manage-export-goods")
+          router.push("/export-report-detail/" + productImportObject?.exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -349,7 +349,7 @@ function ExportReportDraff() {
     router.push("/manage-export-goods")
   }
 
-  console.log(productImportObject)
+  console.log(listChosenProduct)
 
   return (
     <div>

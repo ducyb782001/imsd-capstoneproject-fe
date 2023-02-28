@@ -148,6 +148,7 @@ function CreateExportReport() {
   const [listProductImport, setListProductImport] = useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
   const [productExportObject, setProductExportObject] = useState<any>()
+  const [totalPriceSend, setTotalPriceSend] = useState<any>()
   const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
@@ -217,9 +218,17 @@ function CreateExportReport() {
 
   useEffect(() => {
     if (listProductImport) {
+      const price = listProductImport.reduce(
+        (total, currentValue) =>
+          new BigNumber(total).plus(currentValue.price || 0),
+        0,
+      )
+      const priceSet = new BigNumber(price).toFormat()
+      setTotalPriceSend(priceSet)
       setProductExportObject({
         ...productExportObject,
         exportOrderDetails: listProductImport,
+        totalPrice: new BigNumber(price).toFixed(),
       })
     }
   }, [listProductImport])
@@ -264,7 +273,7 @@ function CreateExportReport() {
       },
     },
   ])
-  console.log(listProductImport)
+  console.log(listChosenProduct)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -369,8 +378,9 @@ function CreateExportReport() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {/* {totalPrice()} */}
+          <div className="text-base font-semibold">
+            Tổng giá trị đơn hàng: {totalPriceSend}
+          </div>
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
@@ -433,7 +443,7 @@ function ListPriceImport({
   useEffect(() => {
     if (data) {
       // Bug chua su dung duoc gia co san de tinh toan
-      setCostPrice(data?.costPrice)
+      setCostPrice(data?.sellingPrice)
     }
   }, [data])
 
