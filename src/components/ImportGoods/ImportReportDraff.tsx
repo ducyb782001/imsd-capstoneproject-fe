@@ -377,7 +377,7 @@ function CreateImportReport() {
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-full">
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
                 Chờ duyệt đơn
               </div>
             </div>

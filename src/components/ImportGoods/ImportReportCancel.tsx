@@ -100,7 +100,7 @@ function ImportReportCanceled() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-full">
+              <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-2xl">
                 Đã hủy
               </div>
             </div>

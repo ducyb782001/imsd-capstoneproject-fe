@@ -281,7 +281,7 @@ function ImportReportSucceed() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-full">
+              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
                 Hoàn thành
               </div>
             </div>

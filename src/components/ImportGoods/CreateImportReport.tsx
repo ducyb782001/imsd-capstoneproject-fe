@@ -294,7 +294,7 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(productImportObject)
+  console.log(listChosenProduct)
 
   return (
     <div>
