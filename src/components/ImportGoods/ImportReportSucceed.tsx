@@ -17,6 +17,7 @@ import Table from "../Table"
 import ChooseUnitImport from "./ChooseUnitImport"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 function ImportReportSucceed() {
   const columns = [
@@ -84,6 +85,7 @@ function ImportReportSucceed() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
@@ -229,9 +231,10 @@ function ImportReportSucceed() {
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        return response?.data
+        const detail = await getDetailImportProduct(router.query.importId)
+        setProductImport(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
+        return detail?.data
       },
     },
     {
@@ -272,9 +275,11 @@ function ImportReportSucceed() {
     router.push("/manage-import-goods")
   }
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid gap-5 grid-cols md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">

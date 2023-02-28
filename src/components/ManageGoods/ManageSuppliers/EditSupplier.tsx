@@ -19,7 +19,6 @@ import {
 } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
-import EditSupplierSkeleton from "../../Skeleton/EditSupplierSkeleton"
 
 interface Supplier {
   supplierId: number
@@ -50,7 +49,6 @@ function EditSupplier(props) {
 
   const router = useRouter()
   const { supplierId } = router.query
-  const [isLoadingSupplierDetail, setIsLoadingSupplierDetail] = useState(true)
 
   useQueries([
     {
@@ -59,7 +57,6 @@ function EditSupplier(props) {
         if (supplierId) {
           const response = await getSupplierDetail(supplierId)
           setSupplier(response?.data)
-          setIsLoadingSupplierDetail(response?.data?.isLoading)
           return response?.data
         }
       },
@@ -177,9 +174,7 @@ function EditSupplier(props) {
     }
   })
 
-  return isLoadingSupplierDetail ? (
-    <EditSupplierSkeleton />
-  ) : (
+  return (
     <div className="w-full bg-white block-border">
       <SmallTitle>Thông tin chung</SmallTitle>
       <PrimaryInput

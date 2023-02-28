@@ -235,6 +235,7 @@ function AddProduct(props) {
             />
           </div>
           <PrimaryTextArea
+            className="mt-7"
             title="Ghi chú sản phẩm"
             onChange={(e) => {
               setProduct({ ...product, description: e.target.value })

@@ -227,7 +227,7 @@ function ManageImportGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
+              placeholder="Tìm theo mã đơn nhập"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />

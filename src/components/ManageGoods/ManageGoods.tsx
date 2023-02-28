@@ -22,6 +22,7 @@ import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
 import ChooseTypeDropdown from "./ChooseTypeDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
+import useScanDetection from "../../hooks/useScanDetection"
 
 const columns = [
   {
@@ -156,6 +157,17 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
+  useScanDetection({
+    onComplete: (code) => {
+      setSearchParam(code)
+    },
+    minLength: 13,
+  })
+
+  useEffect(() => {
+    setSearchParam(searchParam.replace("Shift", ""))
+  }, [searchParam])
+
   useQueries([
     {
       queryKey: [
@@ -257,7 +269,8 @@ function ManageGoods({ ...props }) {
         <div className="flex flex-col gap-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
             <SearchInput
-              placeholder="Tìm kiếm theo tên/ mã sản phẩm"
+              placeholder="Tìm kiếm theo tên/ mã sản phẩm/ mã vạch"
+              value={searchParam ? searchParam : ""}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />

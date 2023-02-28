@@ -169,7 +169,7 @@ function SupplierDetail() {
           </div>
         </div>
 
-        <div className="grid-cols-3 mt-10 gap-y-1">
+        <div className="grid grid-cols-2 mt-10 gap-y-1">
           <div className="text-gray ">
             <SupplierStatus status={supplier?.status} />
           </div>
@@ -230,10 +230,10 @@ export default SupplierDetail
 
 function SupplierInfo({ title = "", data = "" }) {
   return (
-    <>
+    <div>
       <div className="text-gray ">{title}</div>
       <div className="col-span-2 text-black">{data}</div>
-    </>
+    </div>
   )
 }
 function SupplierStatus({ status = false }) {
