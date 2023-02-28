@@ -95,14 +95,14 @@ function SupplierDetail() {
   const debouncedSearchValue = useDebounce(searchParam, 500)
 
   const router = useRouter()
-  const queryId = router.query.supplierid
+  const { queryId } = router.query
   const [isLoadingSupplierDetail, setIsLoadingSupplierDetail] = useState(true)
 
   useQueries([
     {
-      queryKey: ["getSupplierDetail", router.query.supplierid],
+      queryKey: ["getSupplierDetail", queryId],
       queryFn: async () => {
-        const response = await getSupplierDetail(router.query.supplierid)
+        const response = await getSupplierDetail(queryId)
         await setSupplier(response?.data)
         setIsLoadingSupplierDetail(response?.data?.isLoading)
         return response?.data

@@ -435,7 +435,7 @@ function RightSideProductDetail({
         <p className="mt-4 text-xl font-semibold">Ảnh sản phẩm</p>
 
         <div className="flex justify-center md:justify-start">
-          <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5">
+          <div className="flex items-center justify-center border rounded-2xl border-primary w-[150px] h-[150px] mt-5">
             <AddImage
               onError={onErrorUpload}
               onSuccess={onSuccessUpload}

@@ -207,7 +207,7 @@ function ManageGoods({ ...props }) {
           setListProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct({})
+          const exportFile = await getListExportProduct()
           setListProductExport(exportFile?.data)
           setIsLoadingListProducts(response?.data?.isLoading)
           //-----------
@@ -226,7 +226,6 @@ function ManageGoods({ ...props }) {
           ...queryParams,
         })
         setListCategory(category?.data?.data)
-        console.log("abc")
         const typeGood = await getListExportSupplier({})
         setListSupplier(typeGood?.data?.data)
       },

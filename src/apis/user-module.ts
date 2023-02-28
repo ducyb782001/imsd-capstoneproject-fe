@@ -1,9 +1,8 @@
 import { listStaffUrl } from "../constants/APIConfig"
 import { convertObjectToQueryString, requestAPI } from "../lib/api"
 
-export const getListStaff = (searchObj) => {
-  const queryString = convertObjectToQueryString(searchObj)
+export const getListStaff = () => {
   return requestAPI({
-    url: `${listStaffUrl}${queryString}`,
+    url: `${listStaffUrl}`,
   })
 }

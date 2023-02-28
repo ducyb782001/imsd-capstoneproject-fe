@@ -9,14 +9,21 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
+import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
+import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
+import EditIcon from "../icons/EditIcon"
+import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
+import { getListExportTypeGood } from "../../apis/type-good-module"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
-import ChooseStatusDropdown from "./ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
+import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
+import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
+import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 
 const columns = [
@@ -25,15 +32,15 @@ const columns = [
     columns: [
       {
         Header: "Mã đơn nhập",
-        accessor: (data: any) => <p>{data?.importCode}</p>,
+        accessor: (data: any) => <p>{data?.exportCode}</p>,
       },
       {
         Header: "Ghi chú",
         accessor: (data: any) => <p>{data?.note}</p>,
       },
       {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+        Header: "Tổng tiền",
+        accessor: (data: any) => <p>{data?.totalPrice}</p>,
       },
       {
         Header: "Trạng thái",
@@ -45,7 +52,7 @@ const columns = [
       },
 
       {
-        Header: "Ngày nhập",
+        Header: "Ngày xuất",
         accessor: (data: any) => (
           <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
         ),
@@ -75,9 +82,10 @@ const status = [
   },
 ]
 
-function ManageImportGoods({ ...props }) {
+function ManageExportGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
+  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -85,12 +93,11 @@ function ManageImportGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listImportProduct, setListImportProduct] = useState<any>()
+  const [listExportProduct, setListExportProduct] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
-  const [listSupplier, setListSupplier] = useState<any>()
+  const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
-  const [isLoadingListImport, setIsLoadingListImport] = useState(true)
   useEffect(() => {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
@@ -139,7 +146,7 @@ function ManageImportGoods({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListImportProduct",
+        "getListExportProduct",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -147,13 +154,13 @@ function ManageImportGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListImportProduct({
+          const response = await getAllExportProduct({
             code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListImportProduct(response?.data)
+          setListExportProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListImportProduct({
@@ -167,25 +174,18 @@ function ManageImportGoods({ ...props }) {
 
           return response?.data
         } else {
-          const response = await getListImportProduct({
+          const response = await getAllExportProduct({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListImportProduct(response?.data)
-          setIsLoadingListImport(response?.data?.isLoading)
+          setListExportProduct(response?.data)
+          setIsLoadingListExport(response?.data?.isLoading)
+
           //-----------
 
           return response?.data
         }
-      },
-    },
-    {
-      queryKey: ["getListFilter"],
-      queryFn: async () => {
-        const supplierList = await getListExportSupplier({})
-        setListSupplier(supplierList?.data?.data)
-        return supplierList?.data
       },
     },
   ])
@@ -212,22 +212,22 @@ function ManageImportGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/create-import-report`}>
+        <Link href={`/create-export-report`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn nhập hàng
+              Tạo đơn xuất hàng
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
+          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
+              placeholder="Tìm theo mã đơn xuất, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
@@ -237,13 +237,6 @@ function ManageImportGoods({ ...props }) {
               textDefault={"Trạng thái"}
               showing={statusSelected}
               setShowing={setStatusSelected}
-            />
-
-            <ChooseSupplierImportGoodDropdown
-              listDropdown={listSupplier}
-              textDefault={"Nhà cung cấp"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
             />
           </div>
           <ShowLabelBar
@@ -255,7 +248,7 @@ function ManageImportGoods({ ...props }) {
             handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
-        {isLoadingListImport ? (
+        {isLoadingListExport ? (
           <TableSkeleton />
         ) : (
           <>
@@ -263,7 +256,7 @@ function ManageImportGoods({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listImportProduct?.data}
+                data={listExportProduct?.data}
               />
             </div>
             <Pagination
@@ -271,7 +264,7 @@ function ManageImportGoods({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listImportProduct?.total}
+              totalItems={listExportProduct?.total}
             />
           </>
         )}
@@ -280,7 +273,7 @@ function ManageImportGoods({ ...props }) {
   )
 }
 
-export default ManageImportGoods
+export default ManageExportGoods
 
 function ImportExportButton({
   accessoriesLeft,
@@ -333,7 +326,7 @@ function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/import-report-draff/${data?.importId}`}>
+        <Link href={`/export-report-draff/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -343,7 +336,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/import-report-detail/${data?.importId}`}>
+        <Link href={`/export-report-detail/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -353,7 +346,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 2) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/import-report-succeed/${data?.importId}`}>
+        <Link href={`/export-report-succeed/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -363,7 +356,7 @@ function DetailImportProduct({ data }) {
   } else {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/import-report-canceled/${data?.importId}`}>
+        <Link href={`/export-report-canceled/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

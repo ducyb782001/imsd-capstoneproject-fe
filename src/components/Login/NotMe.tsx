@@ -17,12 +17,13 @@ function VerifySuccessful(props) {
   const handleLogin = (event) => {
     router.push("/login")
   }
+  const { token } = router.query
 
   useEffect(() => {
     resetPassMutation.mutate()
   }, [])
   const resetPassMutation = useMutation(() => {
-    var paramLink = router.query["token"] + ""
+    var paramLink = token + ""
     var link = notMeUrl + paramLink
     return axios.post(link)
   })

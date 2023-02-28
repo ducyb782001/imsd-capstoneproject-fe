@@ -183,7 +183,7 @@ function EditProduct() {
           toast.dismiss(TOAST_EDIT_PRODUCT_TYPE_ID)
           toast.success("Cập nhập sản phẩm thành công")
           queryClient.invalidateQueries("getProductDetail")
-          // router.push("/manage-goods")
+          router.push("/manage-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
