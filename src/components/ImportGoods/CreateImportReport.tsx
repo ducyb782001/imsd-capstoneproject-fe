@@ -441,21 +441,22 @@ function ListPriceImport({
 
   useEffect(() => {
     if (data) {
-      // Bug chua su dung duoc gia co san de tinh toan
       setCostPrice(data?.costPrice)
     }
   }, [data])
 
-  const handleOnChangePrice = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
+  useEffect(() => {
+    if (costPrice) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, costPrice: costPrice }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [costPrice])
 
   return (
     <PrimaryInput
@@ -466,7 +467,6 @@ function ListPriceImport({
       onChange={(e) => {
         e.stopPropagation()
         setCostPrice(e.target.value)
-        handleOnChangePrice(e.target.value, data)
         setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
@@ -508,6 +508,7 @@ function ListDiscountImport({
   )
 }
 
+// hoan
 function CountTotalPrice({
   data,
   listProductImport,
@@ -567,7 +568,11 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
-          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+            costPrice: unitChosen?.suggestedPrice,
+          }
         }
         return item
       })
