@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import Table from "../Table"
 import Pagination from "../Pagination"
 import ProductDetailSkeleton from "../Skeleton/ProductDetailSkeleton"
+import { format } from "date-fns"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
@@ -67,7 +68,10 @@ function ProductDetail() {
             />
             <ProductInfo
               title="Ngày tạo"
-              data={detailProduct?.created}
+              data={format(
+                new Date(detailProduct?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
               // data={formatISO(detailProduct?.created)}
             />
           </div>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import TextDescription from "../TextDescription"
 import UnderlineText from "../UnderlineText"
 import Title from "../Title"
@@ -39,7 +39,6 @@ function CheckPasswordAlert(props) {
             </div>
             <div className="h-40 bg-white rounded-md mt-7 w-96">
               <TextDescription className="text-center mt-9">
-                Chưa nhận được tin nhắn?{" "}
                 <UnderlineText className="font-medium" onClick={handleResend}>
                   Nhấn để quay lại
                 </UnderlineText>

@@ -1,10 +1,7 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
-import PasswordInput from "../PasswordInput"
-import PrimaryBtn from "../PrimaryBtn"
+import React from "react"
 import TextDescription from "../TextDescription"
 import UnderlineText from "../UnderlineText"
-import PrimaryInput from "../PrimaryInput"
 import Title from "../Title"
 import EmailSendingIcon from "../icons/EmailSendingIcon"
 import ArrowLeftIcon from "../icons/ArrowLeftIcon"
@@ -12,20 +9,10 @@ import LeftBlockBackground from "./LeftBlockBackground"
 import { LeftBlock } from "./Login"
 
 function ForgotPassword(props) {
-  const [userEmail, setUserEmail] = useState("")
-  const [userPassword, setUserPassword] = useState("")
-  const [disabled, setDisabled] = useState(false)
-
   const router = useRouter()
 
   const handleLogin = (event) => {
     router.push("/login")
-  }
-  const handleForgot = (event) => {
-    router.push("/login")
-  }
-  const handleSignUp = (event) => {
-    router.push("/signup")
   }
   return (
     <div className="relative">

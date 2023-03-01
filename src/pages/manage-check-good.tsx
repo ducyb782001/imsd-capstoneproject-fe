@@ -4,7 +4,7 @@ import Layout from "../components/Layout"
 
 function manageCheckGood() {
   return (
-    <Layout headTitle="Danh sách phiếu kiểm hàng">
+    <Layout headTitle="Danh sách đơn kiểm hàng">
       <ManageCheckGoods />
     </Layout>
   )

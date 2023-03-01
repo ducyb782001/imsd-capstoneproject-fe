@@ -7,6 +7,7 @@ import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import { getDetailExportProduct } from "../../apis/export-product-module"
+import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 
 function ImportReportSucceed() {
   const columns = [
@@ -63,6 +64,7 @@ function ImportReportSucceed() {
     },
   ]
   const [productImport, setProductImport] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   const router = useRouter()
   const { exportId } = router.query
@@ -73,6 +75,7 @@ function ImportReportSucceed() {
       queryFn: async () => {
         const response = await getDetailExportProduct(exportId)
         setProductImport(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
     },
@@ -83,7 +86,9 @@ function ImportReportSucceed() {
   }
   console.log(productImport)
 
-  return (
+  return isLoadingReport ? (
+    <ExportReportSkeleton />
+  ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
