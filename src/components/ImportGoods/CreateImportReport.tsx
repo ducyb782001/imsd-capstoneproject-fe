@@ -108,6 +108,7 @@ function CreateImportReport() {
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
               autoUpdatePrice={autoUpdatePrice}
+              setNewList={setNewList}
             />
           ),
         },
@@ -142,6 +143,7 @@ function CreateImportReport() {
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
+  const [newList, setNewList] = useState<any>([])
   const [listProductBySupplierImport, setListProductBySupplierImport] =
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
@@ -213,8 +215,8 @@ function CreateImportReport() {
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
-      const price = listProductImport.reduce(
+    if (newList) {
+      const price = newList.reduce(
         (total, currentValue) =>
           new BigNumber(total).plus(currentValue.price || 0),
         0,
@@ -223,11 +225,11 @@ function CreateImportReport() {
       setTotalPriceSend(priceSet)
       setProductImportObject({
         ...productImportObject,
-        importOrderDetails: listProductImport,
+        importOrderDetails: newList,
         totalCost: new BigNumber(price).toFixed(),
       })
     }
-  }, [listProductImport])
+  }, [newList])
 
   const createImportMutation = useMutation(
     async (importProduct) => {
@@ -514,6 +516,7 @@ function CountTotalPrice({
   listProductImport,
   setListProductImport,
   autoUpdatePrice,
+  setNewList,
 }) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
@@ -553,7 +556,7 @@ function CountTotalPrice({
       }
       return item
     })
-    setListProductImport(newList)
+    setNewList(newList)
   }, [price])
 
   return (
