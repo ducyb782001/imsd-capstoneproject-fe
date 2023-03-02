@@ -8,6 +8,7 @@ import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import { BigNumber } from "bignumber.js"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 function ImportReportCanceled() {
   const columns = [
@@ -39,14 +40,22 @@ function ImportReportCanceled() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.costPrice} className="w-24" />
+              <PrimaryInput
+                value={data?.costPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -55,7 +64,11 @@ function ImportReportCanceled() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
             </div>
           ),
@@ -85,6 +98,7 @@ function ImportReportCanceled() {
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const { importId } = router.query
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useQueries([
     {
@@ -92,8 +106,10 @@ function ImportReportCanceled() {
       queryFn: async () => {
         const response = await getDetailImportProduct(importId)
         setProductImport(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!importId,
     },
   ])
 
@@ -101,7 +117,9 @@ function ImportReportCanceled() {
     router.push("/manage-import-goods")
   }
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
@@ -127,7 +145,10 @@ function ImportReportCanceled() {
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <PrimaryInput
+              value={productImport?.supplier?.supplierName}
+              readOnly={true}
+            />
           </div>
         </div>
         <div className="bg-white block-border">

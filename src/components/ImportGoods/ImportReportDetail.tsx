@@ -46,14 +46,22 @@ function ImportReportDetail() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.costPrice} className="w-24" />
+              <PrimaryInput
+                value={data?.costPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -62,7 +70,11 @@ function ImportReportDetail() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
             </div>
           ),
@@ -112,6 +124,7 @@ function ImportReportDetail() {
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!importId,
     },
   ])
 
@@ -226,12 +239,7 @@ function ImportReportDetail() {
             className="mt-2"
             title="Ghi chú hóa đơn"
             value={productImport?.note}
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
+            readOnly={true}
           />
         </div>
       </div>

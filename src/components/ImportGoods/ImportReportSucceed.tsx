@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { format, parseISO } from "date-fns"
+import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
@@ -14,7 +14,6 @@ import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitImport"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
@@ -67,6 +66,24 @@ function ImportReportSucceed() {
             <div className="flex items-center gap-1">
               <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
@@ -213,7 +230,6 @@ function ImportReportSucceed() {
     createImportMutation.mutate(productImportObject)
   }
 
-  const now = new Date()
   const router = useRouter()
   const { importId } = router.query
 
@@ -236,6 +252,7 @@ function ImportReportSucceed() {
         setIsLoadingReport(detail?.data?.isLoading)
         return detail?.data
       },
+      enabled: !!importId,
     },
     {
       queryKey: ["getListProductBySupplier", nhaCungCapSelected],
@@ -268,7 +285,6 @@ function ImportReportSucceed() {
       },
     },
   ])
-  // const a = format(new Date(productImport?.created), "dd/MM/yyyy")
   console.log(productImport)
 
   const handleClickOutBtn = (event) => {
@@ -298,13 +314,18 @@ function ImportReportSucceed() {
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
-              createdDate={
-                new Date(productImport?.created).getDate() +
-                "/" +
-                (new Date(productImport?.created).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.created).getFullYear()
-              }
+              createdDate={format(
+                new Date(productImport?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productImport?.approved),
+                "dd/MM/yyyy HH:mm",
+              )}
+              succeededDate={format(
+                new Date(productImport?.completed),
+                "dd/MM/yyyy HH:mm",
+              )}
               status="approved"
             />
           </div>
