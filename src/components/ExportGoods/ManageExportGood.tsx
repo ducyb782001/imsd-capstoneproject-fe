@@ -18,85 +18,73 @@ import EditIcon from "../icons/EditIcon"
 import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
+import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
+import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
+import { getListImportProduct } from "../../apis/import-product-module"
+import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
-import useScanDetection from "../../hooks/useScanDetection"
 
 const columns = [
   {
     Header: " ",
     columns: [
       {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
+        Header: "Mã đơn nhập",
+        accessor: (data: any) => <p>{data?.exportCode}</p>,
       },
       {
-        Header: "Ảnh",
+        Header: "Ghi chú",
+        accessor: (data: any) => <p>{data?.note}</p>,
+      },
+      {
+        Header: "Tổng tiền",
+        accessor: (data: any) => <p>{data?.totalPrice}</p>,
+      },
+      {
+        Header: "Trạng thái",
         accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover w-full h-full rounded-xl"
-              src={data?.image}
-              alt="image-product"
-            />
+          <div className="flex justify-center">
+            <StatusDisplay data={data} />
           </div>
         ),
       },
+
       {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
-      },
-      {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-      },
-      {
-        Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-      },
-      {
-        Header: "Tồn kho",
-        accessor: (data: any) => (
-          <p>{new BigNumber(data?.inStock).toFormat()}</p>
-        ),
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
+        Header: "Ngày xuất",
         accessor: (data: any) => (
           <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
         ),
       },
       {
         Header: " ",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.productId}`}>
-                <a>
-                  <EditIcon />
-                </a>
-              </Link>
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
+        accessor: (data: any) => <DetailImportProduct data={data} />,
       },
     ],
   },
 ]
 
-function ManageGoods({ ...props }) {
+const status = [
+  { id: 0, status: "Đang xử lý" },
+
+  {
+    id: 1,
+    status: "Đang nhập hàng",
+  },
+  {
+    id: 2,
+    status: "Hoàn thành",
+  },
+  {
+    id: 3,
+    status: "Đã hủy",
+  },
+]
+
+function ManageExportGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const [statusSelected, setStatusSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
@@ -105,12 +93,10 @@ function ManageGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listProduct, setListProduct] = useState<any>()
+  const [listExportProduct, setListExportProduct] = useState<any>()
 
-  const [listProductExport, setListProductExport] = useState<any>()
-  const [listSupplier, setListSupplier] = useState<any>()
-  const [listCategory, setListCategory] = useState<any>()
-  const [isLoadingListProducts, setIsLoadingListProducts] = useState(true)
+  const [listImportProductExport, setListImportProductExport] = useState<any>()
+  const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -127,19 +113,19 @@ function ManageGoods({ ...props }) {
     }
   }, [nhaCungCapSelected])
   useEffect(() => {
-    if (typeSelected) {
+    if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
       setListFilter([
         ...listFilter,
         {
-          key: "catId",
-          applied: "Loại",
-          value: typeSelected?.categoryName,
-          id: typeSelected?.categoryId,
+          key: "state",
+          applied: "Trạng thái",
+          value: statusSelected?.status,
+          id: statusSelected?.id,
         },
       ])
     }
-  }, [typeSelected])
+  }, [statusSelected])
 
   //change queryParamsObj when change listFilter in one useEffect
   useEffect(() => {
@@ -157,21 +143,10 @@ function ManageGoods({ ...props }) {
     setListFilter(listRemove)
   }
 
-  useScanDetection({
-    onComplete: (code) => {
-      setSearchParam(code)
-    },
-    minLength: 13,
-  })
-
-  useEffect(() => {
-    setSearchParam(searchParam.replace("Shift", ""))
-  }, [searchParam])
-
   useQueries([
     {
       queryKey: [
-        "getListProduct",
+        "getListExportProduct",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -179,62 +154,45 @@ function ManageGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListProduct({
-            search: debouncedSearchValue,
+          const response = await getAllExportProduct({
+            code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
+          setListExportProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListProduct({
-            search: debouncedSearchValue,
+          const exportFile = await getListImportProduct({
+            code: debouncedSearchValue,
             offset: 0,
             limit: 1000,
             ...queryParams,
           })
-          setListProductExport(exportFile?.data)
+          setListImportProductExport(exportFile?.data)
           //-----------
 
           return response?.data
         } else {
-          const response = await getListProduct({
+          const response = await getAllExportProduct({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListProduct(response?.data)
+          setListExportProduct(response?.data)
+          setIsLoadingListExport(response?.data?.isLoading)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct()
-          setListProductExport(exportFile?.data)
-          setIsLoadingListProducts(response?.data?.isLoading)
           //-----------
 
           return response?.data
         }
       },
     },
-    {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
-        const category = await getListExportTypeGood({
-          search: debouncedSearchValue,
-          offset: (currentPage - 1) * pageSize,
-          limit: pageSize,
-          ...queryParams,
-        })
-        setListCategory(category?.data?.data)
-        const typeGood = await getListExportSupplier({})
-        setListSupplier(typeGood?.data?.data)
-      },
-    },
   ])
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
+    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
@@ -254,37 +212,31 @@ function ManageGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/add-product`}>
+        <Link href={`/create-export-report`}>
           <a>
             <PrimaryBtn
-              className="max-w-[200px]"
+              className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Thêm sản phẩm
+              Tạo đơn xuất hàng
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
-        <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+        <div className="flex flex-col">
+          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm kiếm theo tên/ mã sản phẩm/ mã vạch"
-              value={searchParam ? searchParam : ""}
+              placeholder="Tìm theo mã đơn xuất, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
-            <ChooseSupplierDropdown
-              listDropdown={listSupplier}
-              textDefault={"Nhà cung cấp"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
-            />
-            <ChooseTypeDropdown
-              listDropdown={listCategory}
-              textDefault={"Loại sản phẩm"}
-              showing={typeSelected}
-              setShowing={setTypeSelected}
+
+            <ChooseStatusDropdown
+              listDropdown={status}
+              textDefault={"Trạng thái"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
             />
           </div>
           <ShowLabelBar
@@ -296,8 +248,7 @@ function ManageGoods({ ...props }) {
             handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
-
-        {isLoadingListProducts ? (
+        {isLoadingListExport ? (
           <TableSkeleton />
         ) : (
           <>
@@ -305,7 +256,7 @@ function ManageGoods({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listProduct?.data}
+                data={listExportProduct?.data}
               />
             </div>
             <Pagination
@@ -313,7 +264,7 @@ function ManageGoods({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listProduct?.total}
+              totalItems={listExportProduct?.total}
             />
           </>
         )}
@@ -322,7 +273,7 @@ function ManageGoods({ ...props }) {
   )
 }
 
-export default ManageGoods
+export default ManageExportGoods
 
 function ImportExportButton({
   accessoriesLeft,
@@ -341,4 +292,76 @@ function ImportExportButton({
       {children}
     </button>
   )
+}
+
+function StatusDisplay({ data }) {
+  if (data?.state == 0) {
+    return (
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+        <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+      </div>
+    )
+  } else if (data?.state == 1) {
+    return (
+      <div className="w-32 mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
+      </div>
+    )
+  } else if (data?.state == 2) {
+    return (
+      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+      </div>
+    )
+  } else {
+    return (
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
+        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+      </div>
+    )
+  }
+}
+
+function DetailImportProduct({ data }) {
+  if (data?.state == 0) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/export-report-draff/${data?.exportId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else if (data?.state == 1) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/export-report-detail/${data?.exportId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else if (data?.state == 2) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/export-report-succeed/${data?.exportId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/export-report-canceled/${data?.exportId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  }
 }

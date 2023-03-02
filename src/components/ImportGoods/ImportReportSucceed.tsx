@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries, useQueryClient } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import {
   createImportProduct,
@@ -10,21 +10,14 @@ import {
 import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
-import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
-import XIcons from "../icons/XIcons"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
-import AddProductPopup from "./AddProductPopup"
-import ChooseStaffDropdown from "./ChooseStaffDropdown"
 import ChooseUnitImport from "./ChooseUnitImport"
-import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 function ImportReportSucceed() {
   const columns = [
@@ -63,7 +56,7 @@ function ImportReportSucceed() {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.price} className="w-24" />
+              <PrimaryInput value={data?.costPrice} className="w-24" />
               <p>đ</p>
             </div>
           ),
@@ -92,6 +85,7 @@ function ImportReportSucceed() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
@@ -221,11 +215,13 @@ function ImportReportSucceed() {
 
   const now = new Date()
   const router = useRouter()
+  const { importId } = router.query
+
   useQueries([
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
-        const staff = await getListStaff({})
+        const staff = await getListStaff()
         setListStaff(staff?.data?.data)
         const supplier = await getListExportSupplier({})
         setListNhaCungCap(supplier?.data?.data)
@@ -233,10 +229,11 @@ function ImportReportSucceed() {
       },
     },
     {
-      queryKey: ["getDetailProductImport", router.query],
+      queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
         const detail = await getDetailImportProduct(router.query.importId)
         setProductImport(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
         return detail?.data
       },
     },
@@ -278,16 +275,18 @@ function ImportReportSucceed() {
     router.push("/manage-import-goods")
   }
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid gap-5 grid-cols md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-full">
+              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
                 Hoàn thành
               </div>
             </div>
@@ -350,199 +349,13 @@ function ImportReportSucceed() {
             data={productImport?.importOrderDetails}
           />
         </div>
+        <div className="flex items-center justify-end gap-5 mt-6">
+          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          {productImport?.totalCost}
+        </div>
       </div>
     </div>
   )
 }
 
 export default ImportReportSucceed
-
-function ListQuantitiveImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [quantity, setQuantity] = useState()
-  const handleOnChangeAmount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, amount: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
-}
-
-function ListPriceImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [costPrice, setCostPrice] = useState()
-
-  useEffect(() => {
-    if (data) {
-      // Bug chua su dung duoc gia co san de tinh toan
-      setCostPrice(data?.costPrice)
-    }
-  }, [data])
-
-  const handleOnChangePrice = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={costPrice ? costPrice : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCostPrice(e.target.value)
-        handleOnChangePrice(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
-}
-
-function ListDiscountImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [discount, setDiscount] = useState()
-  const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, discount: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[50px]"
-      type="number"
-      placeholder="0"
-      value={discount ? discount : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setDiscount(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
-}
-
-function CountTotalPrice({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-}) {
-  const [price, setPrice] = useState<any>()
-  const handleSetPrice = () => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount).multipliedBy(
-          item.costPrice,
-        )
-        const discountPrice = new BigNumber(item.amount)
-          .multipliedBy(item.costPrice)
-          .multipliedBy(item.discount)
-          .dividedBy(100)
-        if (item.discount) {
-          const afterPrice = totalPrice.minus(discountPrice)
-          setPrice(afterPrice.toFormat(0))
-          return { ...item, price: afterPrice.toFixed() }
-        } else {
-          setPrice(totalPrice.toFormat(0))
-          return { ...item, price: totalPrice.toFixed() }
-        }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn"
-      onClick={handleSetPrice}
-    >
-      {price} đ
-    </div>
-  )
-}
-
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
-  const [listDropdown, setListDropdown] = useState([])
-  const [unitChosen, setUnitChosen] = useState<any>()
-  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-
-  useEffect(() => {
-    if (data) {
-      setListDropdown(data?.measuredUnits)
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (unitChosen) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [unitChosen])
-
-  return (
-    <ChooseUnitImport
-      listDropdown={listDropdown}
-      showing={unitChosen}
-      setShowing={setUnitChosen}
-      textDefault={defaultMeasuredUnit}
-    />
-  )
-}

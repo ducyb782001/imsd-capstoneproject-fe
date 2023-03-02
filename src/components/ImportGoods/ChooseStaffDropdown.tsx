@@ -77,7 +77,7 @@ function ChooseStaffDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.name || showing || textDefault}
+              {showing?.userName || showing || textDefault}
             </p>
           </div>
           <ArrowDownIcon color="#373737" />
@@ -126,7 +126,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.name || data}
+      {data?.userName || data}
     </div>
   )
 }

@@ -90,8 +90,14 @@ function MainNav() {
     {
       id: 1,
       name: "Lịch sử kiểm hàng",
-      href: "/check-goods-list",
-      isActive: router.asPath.includes("/check-goods-list"),
+      href: "/manage-check-good",
+      isActive: router.asPath.includes("/manage-check-good"),
+    },
+    {
+      id: 2,
+      name: "Tạo phiếu kiểm",
+      href: "/create-check-report",
+      isActive: router.asPath.includes("/create-check-report"),
     },
   ]
   //indev
@@ -149,6 +155,10 @@ function MainNav() {
       icon: <ExportGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
         router.asPath.includes("/create-export-report"),
     },
     // indev
@@ -165,7 +175,9 @@ function MainNav() {
       name: "Kiểm hàng",
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
-      isActive: router.asPath.includes("/xyz"),
+      isActive:
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/create-check-report"),
     },
     // indev
     {

@@ -5,8 +5,6 @@ import { useMutation, useQueries, useQueryClient } from "react-query"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import CloseDialogIcon from "../icons/CloseDialogIcon"
 import InfoIcon from "../icons/InfoIcon"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import ChooseTypeDropdown from "../ManageGoods/ChooseTypeDropdown"
 import MotionDialogContent from "../MotionDialogContent"
 import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
@@ -17,7 +15,10 @@ import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { toast } from "react-toastify"
 import { addNewProduct } from "../../apis/product-module"
+import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
 
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 interface Product {
   productName: string
   productCode: string
@@ -48,6 +49,7 @@ function AddProductPopup({ className = "" }) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm mới sản phẩm thành công!")
           queryClient.refetchQueries("getListProductBySupplier")
           close()
@@ -68,6 +70,9 @@ function AddProductPopup({ className = "" }) {
 
   const handleSaveBtn = (event) => {
     event.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     addNewProductMutation.mutate({
       ...product,
@@ -232,7 +237,7 @@ function AddProductPopup({ className = "" }) {
                       <p className="mb-2 text-sm font-bold text-gray">
                         Nhà cung cấp
                       </p>
-                      <ChooseSupplierDropdown
+                      <AddChooseSupplierDropdown
                         listDropdown={listNhaCungCap}
                         textDefault={"Chọn nhà cung cấp"}
                         showing={nhaCungCapSelected}
@@ -243,7 +248,7 @@ function AddProductPopup({ className = "" }) {
                       <p className="mb-2 text-sm font-bold text-gray">
                         Loại sản phẩm
                       </p>
-                      <ChooseTypeDropdown
+                      <AddChooseTypeDropdown
                         listDropdown={listTypeProduct}
                         textDefault={"Chọn loại sản phẩm"}
                         showing={typeProduct}

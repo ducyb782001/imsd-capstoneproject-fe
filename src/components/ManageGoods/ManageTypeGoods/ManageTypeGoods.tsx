@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react"
 import DownloadIcon from "../../icons/DownloadIcon"
-import PlusIcon from "../../icons/PlusIcon"
 import UploadIcon from "../../icons/UploadIcon"
-import PrimaryBtn from "../../PrimaryBtn"
 import SearchInput from "../../SearchInput"
 import Table from "../../Table"
 import Pagination from "../../Pagination"
@@ -16,7 +14,7 @@ import * as XLSX from "xlsx/xlsx"
 import AddTypePopup from "./AddTypePopup"
 import EditTypePopup from "./EditTypePopup"
 import DetailTypePopup from "./DetailTypePopup"
-import Switch from "react-switch"
+import TableSkeleton from "../../Skeleton/TableSkeleton"
 
 function ManageTypeGoods({ ...props }) {
   const [searchParam, setSearchParam] = useState<string>("")
@@ -29,6 +27,7 @@ function ManageTypeGoods({ ...props }) {
 
   const [listTypeGoodExport, setListTypeGoodExport] = useState<any>()
   const [listFilter, setListFilter] = useState([])
+  const [isLoadingListType, setIsLoadingListType] = useState(true)
 
   const column = [
     {
@@ -46,7 +45,7 @@ function ManageTypeGoods({ ...props }) {
           Header: "Hành động",
           accessor: (data: any) => {
             return (
-              <div className="flex items-center gap-2 col-span-2">
+              <div className="flex items-center col-span-2 gap-2">
                 <EditTypePopup id={data?.categoryId} />
                 <DetailTypePopup id={data?.description} />
               </div>
@@ -107,7 +106,7 @@ function ManageTypeGoods({ ...props }) {
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportTypeGood({})
           setListTypeGoodExport(exportFile?.data)
-
+          setIsLoadingListType(response?.data?.isLoading)
           //-----------
 
           return response?.data
@@ -150,25 +149,27 @@ function ManageTypeGoods({ ...props }) {
             />
           </div>
         </div>
-
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={column}
-            data={listTypeGood?.data}
-            columnSize="w-1"
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listTypeGood?.total}
-        />
+        {isLoadingListType ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={column}
+                data={listTypeGood?.data}
+                columnSize="w-1"
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listTypeGood?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )

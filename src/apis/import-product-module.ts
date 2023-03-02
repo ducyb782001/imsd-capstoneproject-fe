@@ -5,6 +5,7 @@ import {
   importImportDetailUrl,
   importProductDetailUrl,
   importProductUrl,
+  updateImportUrl,
 } from "../constants/APIConfig"
 import {
   convertObjectToQueryString,
@@ -47,5 +48,12 @@ export const importImportProduct = (importProductId) => {
 export const denyImportProduct = (importProductId) => {
   return postAPI({
     url: `${denyImportDetailUrl}?importid=${importProductId}`,
+  })
+}
+
+export const updateImportProduct = (importProduct) => {
+  return patchAPI({
+    url: `${updateImportUrl}`,
+    data: importProduct,
   })
 }

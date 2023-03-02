@@ -4,7 +4,7 @@ import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
-function ChooseSupplierDropdown({
+function ChooseUnitExport({
   title = "",
   listDropdown,
   showing,
@@ -67,7 +67,7 @@ function ChooseSupplierDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
+        {title && <p className="mb-1 text-sm text-gray">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -75,7 +75,7 @@ function ChooseSupplierDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.supplierName || showing || textDefault}
+              {showing?.measuredUnitName || textDefault}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -99,12 +99,6 @@ function ChooseSupplierDropdown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder="Tìm kiếm hoặc nhập mới"
-        />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
@@ -118,7 +112,7 @@ function ChooseSupplierDropdown({
   )
 }
 
-export default ChooseSupplierDropdown
+export default ChooseUnitExport
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -126,22 +120,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.supplierName || data}
-    </div>
-  )
-}
-
-function DropdownSearch({ className = "", ...props }) {
-  return (
-    <div className={`relative w-full ${className} border-b border-grayLight`}>
-      <div className="absolute top-3 left-3">
-        <SearchIcon />
-      </div>
-      <input
-        {...props}
-        type="text"
-        className="w-full py-3 pl-10 pr-3 outline-none smooth-transform"
-      />
+      {data?.measuredUnitName || data}
     </div>
   )
 }

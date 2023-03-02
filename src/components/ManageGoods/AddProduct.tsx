@@ -7,27 +7,22 @@ import Switch from "react-switch"
 import { AnimatePresence, motion } from "framer-motion"
 import { variants } from "../../lib/constants"
 import Tooltip from "../ToolTip"
-import DemoDropDown from "../DemoDropDown"
 import PrimaryBtn from "../PrimaryBtn"
-import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
-import ChooseTypeDropdown from "./ChooseTypeDropdown"
-import SecondaryBtn from "../SecondaryBtn"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
-import ReadOnlyField from "../ReadOnlyField"
-import { IKImage, IKUpload } from "imagekitio-react"
+import { IKImage } from "imagekitio-react"
 import AddImage from "../AddImage"
 import Loading from "../Loading"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
-import {
-  getListExportTypeGood,
-  getListTypeGood,
-} from "../../apis/type-good-module"
+import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
+import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
+
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Product {
   productId: number
@@ -131,6 +126,20 @@ function AddProduct(props) {
   ])
 
   const router = useRouter()
+  useEffect(() => {
+    setProduct({
+      ...product,
+      status: true,
+    })
+  }, [isEnabled])
+
+  useEffect(() => {
+    setProduct({
+      ...product,
+      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
+    })
+  }, [])
+
   const addNewProductMutation = useMutation(
     async (newProduct) => {
       return await addNewProduct(newProduct)
@@ -138,6 +147,7 @@ function AddProduct(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm mới sản phẩm thành công")
           router.push("/manage-goods")
         } else {
@@ -155,22 +165,11 @@ function AddProduct(props) {
     },
   )
 
-  useEffect(() => {
-    setProduct({
-      ...product,
-      status: true,
-    })
-  }, [isEnabled])
-
-  useEffect(() => {
-    setProduct({
-      ...product,
-      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
-    })
-  }, [])
-
   const handleAddNewProduct = (event) => {
     event.preventDefault()
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     addNewProductMutation.mutate({
       ...product,
@@ -236,6 +235,7 @@ function AddProduct(props) {
             />
           </div>
           <PrimaryTextArea
+            className="mt-7"
             title="Ghi chú sản phẩm"
             onChange={(e) => {
               setProduct({ ...product, description: e.target.value })
@@ -435,7 +435,7 @@ function RightSideProductDetail({
         <p className="mt-4 text-xl font-semibold">Ảnh sản phẩm</p>
 
         <div className="flex justify-center md:justify-start">
-          <div className="flex items-center justify-center border rounded-full border-primary w-[150px] h-[150px] mt-5">
+          <div className="flex items-center justify-center border rounded-2xl border-primary w-[150px] h-[150px] mt-5">
             <AddImage
               onError={onErrorUpload}
               onSuccess={onSuccessUpload}
@@ -461,14 +461,14 @@ function RightSideProductDetail({
         </SmallTitle>
 
         <p className="mt-4">Nhà cung cấp</p>
-        <ChooseSupplierDropdown
+        <AddChooseSupplierDropdown
           listDropdown={listNhaCungCap}
           textDefault={"Chọn nhà cung cấp"}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
         <p className="mt-4">Loại sản phẩm</p>
-        <ChooseTypeDropdown
+        <AddChooseTypeDropdown
           listDropdown={listTypeProduct}
           textDefault={"Chọn loại sản phẩm"}
           showing={typeProduct}
@@ -493,12 +493,6 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="flex gap-4 mt-4 bg-white block-border">
-        {/* <PrimaryBtn className="bg-cancelBtn border-cancelBtn active:bg-cancelDark">
-          Hủy
-        </PrimaryBtn>
-        <PrimaryBtn className="bg-successBtn border-successBtn active:bg-greenDark">
-          Thêm sản phẩm
-        </PrimaryBtn> */}
         <PrimaryBtn
           className="bg-successBtn border-successBtn active:bg-greenDark"
           onClick={handleAddProduct}

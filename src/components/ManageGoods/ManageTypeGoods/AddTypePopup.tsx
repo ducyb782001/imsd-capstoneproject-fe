@@ -15,6 +15,8 @@ import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 
+const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
+
 function AddTypePopup({ className = "" }) {
   const router = useRouter()
 
@@ -28,6 +30,9 @@ function AddTypePopup({ className = "" }) {
   const queryClient = useQueryClient()
 
   const handleSaveBtn = () => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_TYPE_ID,
+    })
     // @ts-ignore
     addTypeMutation.mutate({
       categoryName: typeName,
@@ -50,6 +55,7 @@ function AddTypePopup({ className = "" }) {
     },
     {
       onSuccess: (data, error, variables) => {
+        toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success("Thêm loại sản phẩm mới thành công!")
         queryClient.refetchQueries("getListTypeGood")
       },

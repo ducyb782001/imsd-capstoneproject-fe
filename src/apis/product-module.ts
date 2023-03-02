@@ -30,7 +30,7 @@ export const getProductDetail = (productId) => {
   })
 }
 
-export const getListExportProduct = (searchObj) => {
+export const getListExportProduct = () => {
   return requestAPI({
     url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=0`,
   })

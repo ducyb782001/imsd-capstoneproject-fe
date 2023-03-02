@@ -9,20 +9,15 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "./ChooseStatusDropdown"
 import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
+import TableSkeleton from "../Skeleton/TableSkeleton"
 
 const columns = [
   {
@@ -83,7 +78,6 @@ const status = [
 function ManageImportGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
-  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -96,6 +90,7 @@ function ManageImportGoods({ ...props }) {
   const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [listSupplier, setListSupplier] = useState<any>()
 
+  const [isLoadingListImport, setIsLoadingListImport] = useState(true)
   useEffect(() => {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
@@ -178,6 +173,7 @@ function ManageImportGoods({ ...props }) {
             ...queryParams,
           })
           setListImportProduct(response?.data)
+          setIsLoadingListImport(response?.data?.isLoading)
           //-----------
 
           return response?.data
@@ -229,11 +225,11 @@ function ManageImportGoods({ ...props }) {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[51%_23%_23%]">
+          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
               placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
               onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full mb-4"
+              className="w-full"
             />
 
             <ChooseStatusDropdown
@@ -259,24 +255,26 @@ function ManageImportGoods({ ...props }) {
             handleRemoveDatefilter={handleRemoveFilter}
           />
         </div>
-
-        {/* Table */}
-        <div className="mt-4 table-style">
-          {/* {data && ( */}
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={listImportProduct?.data}
-          />
-          {/* )} */}
-        </div>
-        <Pagination
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalItems={listImportProduct?.total}
-        />
+        {isLoadingListImport ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <div className="mt-4 table-style">
+              <Table
+                pageSizePagination={pageSize}
+                columns={columns}
+                data={listImportProduct?.data}
+              />
+            </div>
+            <Pagination
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalItems={listImportProduct?.total}
+            />
+          </>
+        )}
       </div>
     </div>
   )
@@ -306,25 +304,25 @@ function ImportExportButton({
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="bg-orange-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
-        <h1 className="m-2 ml-3 text-green-500">Đang nhập hàng</h1>
+      <div className="w-32 mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="bg-green-50 text-white font-medium mt-4 w-32 text-center rounded-3xl">
+      <div className="w-32 mt-4 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )
   } else {
     return (
-      <div className="bg-red-50 text-white font-medium mt-4 w-32 text-center rounded-md">
+      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
       </div>
     )

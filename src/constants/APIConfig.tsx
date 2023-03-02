@@ -1,7 +1,9 @@
 // export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Dev baseUrl
-export const baseUrl = `https://imsdservice.azurewebsites.net/api`
+// export const baseUrl = `https://imsdservice.azurewebsites.net/api`
+
+export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
 
 // export const baseUrl = `https://localhost:7265/api`
 
@@ -56,7 +58,7 @@ export const getTypeGoodDetailUrl = `${baseUrl}/Categories/GetDetail`
 export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`
 
 // User
-export const listStaffUrl = "/fake-response/list-staff.json"
+export const listStaffUrl = `${baseUrl}/Users/GetUsers`
 
 // Import product
 
@@ -71,3 +73,21 @@ export const approveImportDetailUrl = `${baseUrl}/Import/ApproveImport`
 export const importImportDetailUrl = `${baseUrl}/Import/Import`
 
 export const denyImportDetailUrl = `${baseUrl}/Import/DenyImport`
+
+export const updateImportUrl = `${baseUrl}/Import/UpdateImportOrder`
+
+// Export product
+
+export const exportProductUrl = `${baseUrl}/Export/CreateExportOrder`
+
+export const allExportProductUrl = `${baseUrl}/Export/GetExportOrder`
+
+export const detailExportProductUrl = `${baseUrl}/Export/GetExportDetail`
+
+export const approveExportProductUrl = `${baseUrl}/Export/ApproveExport`
+
+export const exportExportProductUrl = `${baseUrl}/Export/Export`
+
+export const denyExportProductUrl = `${baseUrl}/Export/DenyImport`
+
+export const updateExportProductUrl = `${baseUrl}/Export/UpdateExportOrder`
