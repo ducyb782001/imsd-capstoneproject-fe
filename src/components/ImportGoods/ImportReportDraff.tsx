@@ -418,7 +418,14 @@ function CreateImportReport() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
+            {productImportObject?.created && (
+              <StepBar
+                createdDate={format(
+                  new Date(productImportObject?.created),
+                  "dd/MM/yyyy HH:mm",
+                )}
+              />
+            )}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -439,9 +446,16 @@ function CreateImportReport() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
-          </div>
+          {productImportObject?.created && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(
+                new Date(productImportObject?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+            </div>
+          )}
+
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <ChooseStaffDropdown
             listDropdown={listStaff}

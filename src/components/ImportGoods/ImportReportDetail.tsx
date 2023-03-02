@@ -7,18 +7,12 @@ import {
   getDetailImportProduct,
   importImportProduct,
 } from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import AddProductPopup from "./AddProductPopup"
-import ChooseUnitImport from "./ChooseUnitImport"
-import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
@@ -70,6 +64,24 @@ function ImportReportDetail() {
             <div className="flex items-center gap-1">
               <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
@@ -139,9 +151,6 @@ function ImportReportDetail() {
     router.push("/manage-import-goods")
   }
 
-  const now = new Date()
-  console.log(productImport)
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
@@ -172,23 +181,19 @@ function ImportReportDetail() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar
-              status="pending"
-              createdDate={
-                new Date(productImport?.created).getDate() +
-                "/" +
-                (new Date(productImport?.created).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.created).getFullYear()
-              }
-              approvedDate={
-                new Date(productImport?.approved).getDate() +
-                "/" +
-                (new Date(productImport?.approved).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.approved).getFullYear()
-              }
-            />
+            {productImport && (
+              <StepBar
+                status="pending"
+                createdDate={format(
+                  new Date(productImport?.created),
+                  "dd/MM/yyyy HH:mm",
+                )}
+                approvedDate={format(
+                  new Date(productImport?.approved),
+                  "dd/MM/yyyy HH:mm",
+                )}
+              />
+            )}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -197,26 +202,19 @@ function ImportReportDetail() {
             <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
               {productImport?.supplier?.supplierName}
             </div>
-            {/* <ChooseSupplierDropdown
-              listDropdown={listSupplier?.data}
-              textDefault={"Nhà cung cấp"}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
-            /> */}
           </div>
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {new Date(productImport?.approved).getDate() +
-              "/" +
-              (new Date(productImport?.approved).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.approved).getFullYear()}
-          </div>
+          {productImport && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+            </div>
+          )}
+
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
             <div className="flex items-center gap-1">

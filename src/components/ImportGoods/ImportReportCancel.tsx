@@ -7,6 +7,7 @@ import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
+import { BigNumber } from "bignumber.js"
 
 function ImportReportCanceled() {
   const columns = [
@@ -56,6 +57,24 @@ function ImportReportCanceled() {
             <div className="flex items-center gap-1">
               <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
@@ -124,13 +143,14 @@ function ImportReportCanceled() {
               new Date(productImport?.created).getFullYear()}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
+          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title="Ghi chú hóa đơn"
             placeholder={productImport?.note}
             value={productImport?.note}
+            readOnly={true}
           />
         </div>
       </div>
@@ -144,6 +164,10 @@ function ImportReportCanceled() {
             columns={columns}
             data={productImport?.importOrderDetails}
           />
+        </div>
+        <div className="flex items-center justify-end gap-5 mt-6">
+          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          {new BigNumber(productImport?.totalCost || 0).toFormat()}
         </div>
       </div>
     </div>
