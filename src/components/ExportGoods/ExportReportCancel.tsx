@@ -8,6 +8,8 @@ import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import { getDetailExportProduct } from "../../apis/export-product-module"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
+import { BigNumber } from "bignumber.js"
+import { format } from "date-fns"
 
 function ExportReportCanceled() {
   const columns = [
@@ -39,14 +41,22 @@ function ExportReportCanceled() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.price} className="w-24" />
+              <PrimaryInput
+                value={data?.product.sellingPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -55,8 +65,30 @@ function ExportReportCanceled() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.product.sellingPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.product.sellingPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
@@ -67,7 +99,6 @@ function ExportReportCanceled() {
   const router = useRouter()
   const { exportId } = router.query
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-
   useQueries([
     {
       queryKey: ["getDetailProductExport", exportId],
@@ -77,6 +108,7 @@ function ExportReportCanceled() {
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!exportId,
     },
   ])
 
@@ -106,13 +138,26 @@ function ExportReportCanceled() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar status="new" />
+            <StepBar
+              status="deny"
+              createdDate={format(
+                new Date(productExport?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productExport?.denied),
+                "dd/MM/yyyy HH:mm",
+              )}
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Nhân viên:</h1>
             </div>
-            <PrimaryInput value={productExport?.user?.userName} />
+            <PrimaryInput
+              value={productExport?.user?.userName}
+              readOnly={true}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
@@ -121,11 +166,7 @@ function ExportReportCanceled() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {new Date(productExport?.created).getDate() +
-              "/" +
-              new Date(productExport?.created).getMonth() +
-              "/" +
-              new Date(productExport?.created).getFullYear()}
+            {format(new Date(productExport?.created), "dd/MM/yyyy HH:mm")}
           </div>
           <PrimaryTextArea
             rows={7}
@@ -133,6 +174,7 @@ function ExportReportCanceled() {
             title="Ghi chú hóa đơn"
             placeholder={productExport?.note}
             value={productExport?.note}
+            readOnly={true}
           />
         </div>
       </div>

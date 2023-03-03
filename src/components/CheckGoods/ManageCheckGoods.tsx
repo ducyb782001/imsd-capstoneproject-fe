@@ -31,49 +31,49 @@ const data_fake = [
     exportCode: "KIHA1233",
     state: 0,
     note: "Lâm",
-    exportId: 12,
+    checkId: 0,
     created: "22/01/2001 14:30",
   },
   {
     exportCode: "KIHA1233",
     state: 1,
     note: "Lâm",
-    exportId: 12,
+    checkId: 1,
     created: "22/01/2001 15:30",
   },
   {
     exportCode: "KIHA1233",
     state: 2,
     note: "Lâm",
-    exportId: 12,
+    checkId: 2,
     created: "22/01/2001 15:30",
   },
   {
     exportCode: "KIHA1233",
     state: 2,
     note: "Lâm",
-    exportId: 12,
+    checkId: 2,
     created: "22/01/2001 15:30",
   },
   {
     exportCode: "KIHA1233",
     state: 0,
     note: "Lâm",
-    exportId: 12,
+    checkId: 0,
     created: "22/01/2001 15:30",
   },
   {
     exportCode: "KIHA1233",
     state: 1,
     note: "Lâm",
-    exportId: 12,
+    checkId: 1,
     created: "22/01/2001 15:30",
   },
   {
     exportCode: "KIHA1233",
     state: 1,
     note: "Lâm",
-    exportId: 12,
+    checkId: 1,
     created: "22/01/2001 15:30",
   },
 ]
@@ -378,7 +378,7 @@ function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/export-report-draff/${data?.exportId}`}>
+        <Link href={`/edit-check-good/${data?.checkId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -388,7 +388,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/export-report-detail/${data?.exportId}`}>
+        <Link href={`/check-good-detail/${data?.checkId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -398,17 +398,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 2) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/export-report-succeed/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetailIcon />
-          </a>
-        </Link>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <Link href={`/export-report-canceled/${data?.exportId}`}>
+        <Link href={`/check-good-detail/${data?.checkId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

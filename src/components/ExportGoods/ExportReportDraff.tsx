@@ -3,28 +3,16 @@ import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import {
-  approveImportProduct,
-  createImportProduct,
-  denyImportProduct,
-  getDetailImportProduct,
-  updateImportProduct,
-} from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
-import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import {
   approveExportProduct,
@@ -34,6 +22,7 @@ import {
 } from "../../apis/export-product-module"
 import SecondaryBtn from "../SecondaryBtn"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ExportReportDraff() {
   const columns = [
@@ -65,22 +54,10 @@ function ExportReportDraff() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <ListQuantitiveImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-              setAutoUpdatePrice={setAutoUpdatePrice}
-            />
-          ),
-        },
-        {
-          Header: "Đơn vị",
-          accessor: (data: any) => (
-            <ListUnitImport
-              data={data?.product}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
             />
           ),
         },
@@ -88,12 +65,10 @@ function ExportReportDraff() {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <ListPriceImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
+              <PrimaryInput
+                value={data?.costPrice}
+                className="w-24"
+                readOnly={true}
               />
               <p>đ</p>
             </div>
@@ -103,12 +78,10 @@ function ExportReportDraff() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <ListDiscountImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
               />
               <p>%</p>
             </div>
@@ -117,12 +90,19 @@ function ExportReportDraff() {
         {
           Header: "Thành tiền",
           accessor: (data: any) => (
-            <CountTotalPrice
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-            />
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
+            </div>
           ),
         },
         {
@@ -135,10 +115,6 @@ function ExportReportDraff() {
                   (i, ind) => ind !== index,
                 )
                 setListChosenProduct(result)
-                // let listProduct = listProductImport?.filter(
-                //   (i, ind) => ind !== index,
-                // )
-                // setListProductImport(listProduct)
               }}
             >
               <XIcons />
@@ -148,7 +124,7 @@ function ExportReportDraff() {
       ],
     },
   ]
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
@@ -159,7 +135,6 @@ function ExportReportDraff() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useEffect(() => {
@@ -337,6 +312,14 @@ function ExportReportDraff() {
         setProductImportObject(response?.data)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
+      },
+    },
+    {
+      queryKey: ["getListStaff"],
+      queryFn: async () => {
+        const staff = await getListStaff()
+        setListStaff(staff?.data)
+        return staff?.data?.data
       },
     },
     {
