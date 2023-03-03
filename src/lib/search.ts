@@ -33,8 +33,11 @@ export function searchProduct(searchInput: string, list: []) {
         return item
       }
       // @ts-ignore
-      if (item.barcode.toLowerCase().includes(searchInput.toLowerCase())) {
-        return item
+      if (item?.barcode) {
+        // @ts-ignore
+        if (item.barcode.toLowerCase().includes(searchInput.toLowerCase())) {
+          return item
+        }
       }
     })
   } else {

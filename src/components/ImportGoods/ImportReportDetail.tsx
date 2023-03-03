@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { format, parseISO } from "date-fns"
+import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
@@ -15,6 +15,8 @@ import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ImportReportDetail() {
   const columns = [
@@ -46,14 +48,22 @@ function ImportReportDetail() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.costPrice} className="w-24" />
+              <PrimaryInput
+                value={data?.costPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -62,7 +72,11 @@ function ImportReportDetail() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
             </div>
           ),
@@ -88,11 +102,9 @@ function ImportReportDetail() {
       ],
     },
   ]
-  const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (productImport) {
@@ -112,6 +124,7 @@ function ImportReportDetail() {
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!importId,
     },
   ])
 
@@ -183,7 +196,7 @@ function ImportReportDetail() {
           <div className="flex justify-center mt-6">
             {productImport && (
               <StepBar
-                status="pending"
+                status="approved"
                 createdDate={format(
                   new Date(productImport?.created),
                   "dd/MM/yyyy HH:mm",
@@ -226,12 +239,7 @@ function ImportReportDetail() {
             className="mt-2"
             title="Ghi chú hóa đơn"
             value={productImport?.note}
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
+            readOnly={true}
           />
         </div>
       </div>
