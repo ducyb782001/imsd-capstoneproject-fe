@@ -100,7 +100,6 @@ function ImportReportDetail() {
       ],
     },
   ]
-  const [productImportObject, setProductImportObject] = useState<any>()
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
@@ -196,7 +195,7 @@ function ImportReportDetail() {
           <div className="flex justify-center mt-6">
             {productImport && (
               <StepBar
-                status="pending"
+                status="approved"
                 createdDate={format(
                   new Date(productImport?.created),
                   "dd/MM/yyyy HH:mm",

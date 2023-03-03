@@ -94,7 +94,6 @@ function ImportReportSucceed() {
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
@@ -326,7 +325,7 @@ function ImportReportSucceed() {
                 new Date(productImport?.completed),
                 "dd/MM/yyyy HH:mm",
               )}
-              status="approved"
+              status="succeed"
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">

@@ -35,8 +35,17 @@ function StepBar({
             )}
           </div>
           <div className="flex items-center justify-center">
-            {status == "approved" ? <SuccessIcon /> : <StepIcon step={3} />}
+            {status == "succeed" ? (
+              <SuccessIcon />
+            ) : status === "approved" ? (
+              <ActiveIcon />
+            ) : (
+              <StepIcon step={3} />
+            )}
           </div>
+          {/* <div className="flex items-center justify-center">
+            {status == "succeed" ? <SuccessIcon /> : ""}
+          </div> */}
         </div>
         <div
           className={`h-[2px] w-[220px] absolute right-1/2 top-4 z-10 ${
@@ -45,7 +54,9 @@ function StepBar({
         ></div>
         <div
           className={`h-[2px] w-[220px] absolute left-1/2 top-4 z-10 ${
-            status == "approved" ? "bg-primary" : "bg-[#D6DDE8]"
+            status == "succeed" || status == "approved"
+              ? "bg-primary"
+              : "bg-[#D6DDE8]"
           }`}
         ></div>
       </div>

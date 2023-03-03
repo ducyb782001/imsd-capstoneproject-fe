@@ -129,10 +129,6 @@ function CreateImportReport() {
                   (i, ind) => ind !== index,
                 )
                 setListChosenProduct(result)
-                // let listProduct = listProductImport?.filter(
-                //   (i, ind) => ind !== index,
-                // )
-                // setListProductImport(listProduct)
               }}
             >
               <XIcons />
@@ -350,6 +346,7 @@ function CreateImportReport() {
         setProductImportObject(response?.data)
         return response?.data
       },
+      enabled: !!importId,
     },
     {
       queryKey: ["getListStaff"],
@@ -380,14 +377,13 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(productImportObject)
 
   return (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.importCode}
               </h1>
@@ -420,6 +416,7 @@ function CreateImportReport() {
           <div className="flex justify-center mt-6">
             {productImportObject?.created && (
               <StepBar
+                status="pending"
                 createdDate={format(
                   new Date(productImportObject?.created),
                   "dd/MM/yyyy HH:mm",

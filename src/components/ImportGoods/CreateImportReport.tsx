@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { createImportProduct } from "../../apis/import-product-module"
