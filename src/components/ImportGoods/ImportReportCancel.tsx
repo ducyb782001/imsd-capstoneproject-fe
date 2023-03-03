@@ -7,6 +7,9 @@ import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
+import { BigNumber } from "bignumber.js"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import { format } from "date-fns"
 
 function ImportReportCanceled() {
   const columns = [
@@ -38,14 +41,22 @@ function ImportReportCanceled() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.costPrice} className="w-24" />
+              <PrimaryInput
+                value={data?.costPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -54,8 +65,30 @@ function ImportReportCanceled() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
@@ -66,6 +99,7 @@ function ImportReportCanceled() {
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const { importId } = router.query
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useQueries([
     {
@@ -73,8 +107,10 @@ function ImportReportCanceled() {
       queryFn: async () => {
         const response = await getDetailImportProduct(importId)
         setProductImport(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!importId,
     },
   ])
 
@@ -82,7 +118,9 @@ function ImportReportCanceled() {
     router.push("/manage-import-goods")
   }
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
@@ -102,13 +140,26 @@ function ImportReportCanceled() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar status="new" />
+            <StepBar
+              status="deny"
+              createdDate={format(
+                new Date(productImport?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productImport?.denied),
+                "dd/MM/yyyy HH:mm",
+              )}
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <PrimaryInput
+              value={productImport?.supplier?.supplierName}
+              readOnly={true}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
@@ -117,20 +168,17 @@ function ImportReportCanceled() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              new Date(productImport?.created).getMonth() +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
+            {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
+          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title="Ghi chú hóa đơn"
             placeholder={productImport?.note}
             value={productImport?.note}
+            readOnly={true}
           />
         </div>
       </div>
@@ -144,6 +192,10 @@ function ImportReportCanceled() {
             columns={columns}
             data={productImport?.importOrderDetails}
           />
+        </div>
+        <div className="flex items-center justify-end gap-5 mt-6">
+          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          {new BigNumber(productImport?.totalCost || 0).toFormat()}
         </div>
       </div>
     </div>

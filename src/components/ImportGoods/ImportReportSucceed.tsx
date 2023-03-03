@@ -1,20 +1,12 @@
 import BigNumber from "bignumber.js"
-import { format, parseISO } from "date-fns"
+import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import {
-  createImportProduct,
-  getDetailImportProduct,
-} from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
+import { useQueries } from "react-query"
+import { getDetailImportProduct } from "../../apis/import-product-module"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitImport"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
@@ -70,47 +62,31 @@ function ImportReportSucceed() {
             </div>
           ),
         },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.costPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
+            </div>
+          ),
+        },
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
-  const [staffSelected, setStaffSelected] = useState<any>()
-  const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
-  const [listChosenProduct, setListChosenProduct] = useState([])
-  const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductBySupplierImport, setListProductBySupplierImport] =
-    useState<any>([])
-  const [productImportObject, setProductImportObject] = useState<any>()
+
+  useState<any>([])
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-
-  useEffect(() => {
-    if (staffSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        userId: staffSelected?.userId,
-      })
-    }
-  }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        importId: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
 
   useEffect(() => {
     if (productImport) {
@@ -120,114 +96,10 @@ function ImportReportSucceed() {
     }
   }, [productImport])
 
-  useEffect(() => {
-    if (productChosen) {
-      if (listChosenProduct.includes(productChosen)) {
-        return
-      }
-      setListChosenProduct([...listChosenProduct, productChosen])
-    }
-  }, [productChosen])
-
-  useEffect(() => {
-    if (listChosenProduct.length > 0) {
-      const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.discount
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = 0
-        if (discount != undefined) {
-          const price = listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.price
-        }
-        return {
-          productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: price,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId,
-        }
-      })
-      setListProductImport(list)
-    }
-  }, [listChosenProduct])
-
-  useEffect(() => {
-    if (listProductImport) {
-      setProductImportObject({
-        ...productImportObject,
-        importDetailDTOs: listProductImport,
-      })
-    }
-  }, [listProductImport])
-
-  const totalPrice = () => {
-    if (listProductImport?.length > 0) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      return <div>{price.toFormat()} đ</div>
-    } else {
-      return <div>0 đ</div>
-    }
-  }
-
-  const createImportMutation = useMutation(
-    async (importProduct) => {
-      return await createImportProduct(importProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Thêm đơn nhập hàng thành công")
-          router.push("/manage-import-goods")
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                "Opps! Something went wrong...",
-            )
-          }
-        }
-      },
-    },
-  )
-
-  const handleClickSaveBtn = (event) => {
-    event?.preventDefault()
-    createImportMutation.mutate(productImportObject)
-  }
-
-  const now = new Date()
   const router = useRouter()
   const { importId } = router.query
 
   useQueries([
-    {
-      queryKey: ["getListStaff"],
-      queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
-        return staff?.data?.data
-      },
-    },
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
@@ -236,40 +108,9 @@ function ImportReportSucceed() {
         setIsLoadingReport(detail?.data?.isLoading)
         return detail?.data
       },
-    },
-    {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
-      queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        } else {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-          })
-
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        }
-      },
+      enabled: !!importId,
     },
   ])
-  // const a = format(new Date(productImport?.created), "dd/MM/yyyy")
-  console.log(productImport)
 
   const handleClickOutBtn = (event) => {
     router.push("/manage-import-goods")
@@ -298,14 +139,19 @@ function ImportReportSucceed() {
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
-              createdDate={
-                new Date(productImport?.created).getDate() +
-                "/" +
-                (new Date(productImport?.created).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.created).getFullYear()
-              }
-              status="approved"
+              createdDate={format(
+                new Date(productImport?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productImport?.approved),
+                "dd/MM/yyyy HH:mm",
+              )}
+              succeededDate={format(
+                new Date(productImport?.completed),
+                "dd/MM/yyyy HH:mm",
+              )}
+              status="succeed"
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
