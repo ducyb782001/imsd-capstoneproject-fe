@@ -9,6 +9,7 @@ import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import { BigNumber } from "bignumber.js"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import { format } from "date-fns"
 
 function ImportReportCanceled() {
   const columns = [
@@ -139,7 +140,17 @@ function ImportReportCanceled() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar status="new" />
+            <StepBar
+              status="deny"
+              createdDate={format(
+                new Date(productImport?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productImport?.denied),
+                "dd/MM/yyyy HH:mm",
+              )}
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -157,11 +168,7 @@ function ImportReportCanceled() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              new Date(productImport?.created).getMonth() +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
+            {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <PrimaryInput value={productImport?.user?.email} readOnly={true} />

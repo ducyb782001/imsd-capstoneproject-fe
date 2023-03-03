@@ -1,5 +1,6 @@
 import React from "react"
 import VIcon from "./icons/VIcon"
+import XIcons from "./icons/XIcons"
 
 function StepBar({
   status = "new",
@@ -30,6 +31,8 @@ function StepBar({
               <ActiveIcon />
             ) : status === "new" ? (
               <StepIcon step={2} />
+            ) : status === "deny" ? (
+              <DenyIcon />
             ) : (
               <SuccessIcon />
             )}
@@ -95,6 +98,14 @@ function SuccessIcon() {
   return (
     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary">
       <VIcon color="#ffffff" />
+    </div>
+  )
+}
+
+function DenyIcon() {
+  return (
+    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#CB3A31]">
+      <XIcons color="#ffffff" />
     </div>
   )
 }

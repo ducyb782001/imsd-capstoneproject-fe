@@ -1,11 +1,11 @@
 import React from "react"
-import ImportReportDraff from "../../components/ImportGoods/ImportReportDraff"
+import ImportReportEdit from "../../components/ImportGoods/ImportReportEdit"
 import Layout from "../../components/Layout"
 
 function importId() {
   return (
     <Layout>
-      <ImportReportDraff />
+      <ImportReportEdit />
     </Layout>
   )
 }
