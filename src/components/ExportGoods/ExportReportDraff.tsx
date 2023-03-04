@@ -358,12 +358,22 @@ function ExportReportDraff() {
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
-                classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn hủy đơn?"
+                classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
+                title="Bạn chắc chắn muốn hủy đơn hàng này?"
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                Hủy đơn
+                Hủy
               </ConfirmPopup>
+              <SecondaryBtn
+                className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
+                onClick={() => {
+                  router.push(
+                    "/export-report-edit/" + productImportObject?.exportId,
+                  )
+                }}
+              >
+                Sửa đơn
+              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"

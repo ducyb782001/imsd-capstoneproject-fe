@@ -67,30 +67,28 @@ function CreateCheckReport() {
         {
           Header: "Tồn chi nhánh",
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <ListPriceImport
+            <div className="flex items-center max-w-[70px]">
+              <ListStock
                 data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
                 autoUpdatePrice={autoUpdatePrice}
                 setAutoUpdatePrice={setAutoUpdatePrice}
               />
-              <p>đ</p>
             </div>
           ),
         },
         {
           Header: "Tồn thực tế",
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <ListDiscountImport
+            <div className="flex items-center max-w-[80px]">
+              <ListActualStock
                 data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
                 autoUpdatePrice={autoUpdatePrice}
                 setAutoUpdatePrice={setAutoUpdatePrice}
               />
-              <p>%</p>
             </div>
           ),
         },
@@ -134,8 +132,7 @@ function CreateCheckReport() {
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
@@ -143,30 +140,17 @@ function CreateCheckReport() {
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
-  const [productExportObject, setProductExportObject] = useState<any>()
-  const [totalPriceSend, setTotalPriceSend] = useState<any>()
+  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
   const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
-      setProductExportObject({
-        ...productExportObject,
-        userId: staffSelected?.userId,
+      setProductStockTakeObject({
+        ...productStockTakeObject,
+        createdId: staffSelected?.userId,
       })
     }
   }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductExportObject({
-        ...productExportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductExportObject({
-        ...productExportObject,
-        state: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
 
   useEffect(() => {
     if (productChosen) {
@@ -212,36 +196,6 @@ function CreateCheckReport() {
     }
   }, [listChosenProduct])
 
-  useEffect(() => {
-    if (listProductImport) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      const priceSet = new BigNumber(price).toFormat()
-      setTotalPriceSend(priceSet)
-      setProductExportObject({
-        ...productExportObject,
-        exportOrderDetails: listProductImport,
-        totalPrice: new BigNumber(price).toFixed(),
-      })
-    }
-  }, [listProductImport])
-
-  const totalPrice = () => {
-    if (listProductImport?.length > 0) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      return <div>{price} đ</div>
-    } else {
-      return <div>0 đ</div>
-    }
-  }
-
   const router = useRouter()
   useQueries([
     {
@@ -249,8 +203,6 @@ function CreateCheckReport() {
       queryFn: async () => {
         const staff = await getListStaff()
         setListStaff(staff?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
         return staff?.data?.data
       },
     },
@@ -258,18 +210,12 @@ function CreateCheckReport() {
       queryKey: ["getListProduct"],
       queryFn: async () => {
         const response = await getListExportProduct()
-        setProductExportObject({
-          ...productExportObject,
-          exportId: 0,
-          state: 0,
-          exportCode: "string",
-        })
         setListProductExport(response?.data)
         return response?.data
       },
     },
   ])
-  console.log(listChosenProduct)
+  console.log(productStockTakeObject)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -301,7 +247,7 @@ function CreateCheckReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createExportMutation.mutate(productExportObject)
+    createExportMutation.mutate(productStockTakeObject)
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
@@ -309,7 +255,7 @@ function CreateCheckReport() {
   const handleExportCheckProduct = () => {
     const dateTime = Date().toLocaleString() + ""
     const worksheet = XLSX.utils.json_to_sheet(
-      productExportObject?.listProductImport,
+      productStockTakeObject?.listProductImport,
     )
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
@@ -356,11 +302,11 @@ function CreateCheckReport() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
-            value={productExportObject?.note}
+            title="Ghi chú"
+            value={productStockTakeObject?.note}
             onChange={(e) => {
-              setProductExportObject({
-                ...productExportObject,
+              setProductStockTakeObject({
+                ...productStockTakeObject,
                 note: e.target.value,
               })
             }}
@@ -435,7 +381,7 @@ function ListQuantitiveImport({
   )
 }
 
-function ListPriceImport({
+function ListStock({
   data,
   listProductImport,
   setListProductImport,
@@ -478,7 +424,7 @@ function ListPriceImport({
   )
 }
 
-function ListDiscountImport({
+function ListActualStock({
   data,
   listProductImport,
   setListProductImport,

@@ -9,74 +9,13 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
-import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
-import { getListImportProduct } from "../../apis/import-product-module"
-import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
-
-const data_fake = [
-  {
-    exportCode: "KIHA1233",
-    state: 0,
-    note: "Lâm",
-    checkId: 0,
-    created: "22/01/2001 14:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 1,
-    note: "Lâm",
-    checkId: 1,
-    created: "22/01/2001 15:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 2,
-    note: "Lâm",
-    checkId: 2,
-    created: "22/01/2001 15:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 2,
-    note: "Lâm",
-    checkId: 2,
-    created: "22/01/2001 15:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 0,
-    note: "Lâm",
-    checkId: 0,
-    created: "22/01/2001 15:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 1,
-    note: "Lâm",
-    checkId: 1,
-    created: "22/01/2001 15:30",
-  },
-  {
-    exportCode: "KIHA1233",
-    state: 1,
-    note: "Lâm",
-    checkId: 1,
-    created: "22/01/2001 15:30",
-  },
-]
+import { getListStockTakeProduct } from "../../apis/stocktake-product-module"
+import { format, parseISO } from "date-fns"
 
 const columns = [
   {
@@ -84,7 +23,7 @@ const columns = [
     columns: [
       {
         Header: "Mã đơn kiểm hàng",
-        accessor: (data: any) => <p>{data?.exportCode}</p>,
+        accessor: (data: any) => <p>{data?.stocktakeCode}</p>,
       },
       {
         Header: "Trạng thái",
@@ -109,15 +48,17 @@ const columns = [
       {
         Header: "Ngày tạo đơn",
         accessor: (data: any) => (
-          // <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-          <p>{data?.created}</p>
+          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
         ),
       },
       {
         Header: "Ngày cân bằng",
         accessor: (data: any) => (
-          // <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-          <p>{data?.created}</p>
+          <p>
+            {data?.updated
+              ? format(parseISO(data?.updated), "dd/MM/yyyy HH:mm")
+              : ""}
+          </p>
         ),
       },
       {
@@ -141,9 +82,7 @@ const status = [
 ]
 
 function ManageCheckGoods({ ...props }) {
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
-  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -151,25 +90,11 @@ function ManageCheckGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listExportProduct, setListExportProduct] = useState<any>()
+  const [listStockTakeProduct, setListStockTakeProduct] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "supId",
-          applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.supplierName,
-          id: nhaCungCapSelected?.supplierId,
-        },
-      ])
-    }
-  }, [nhaCungCapSelected])
   useEffect(() => {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
@@ -212,16 +137,16 @@ function ManageCheckGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getAllExportProduct({
+          const response = await getListStockTakeProduct({
             code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListExportProduct(response?.data)
+          setListStockTakeProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListImportProduct({
+          const exportFile = await getListStockTakeProduct({
             code: debouncedSearchValue,
             offset: 0,
             limit: 1000,
@@ -232,12 +157,12 @@ function ManageCheckGoods({ ...props }) {
 
           return response?.data
         } else {
-          const response = await getAllExportProduct({
+          const response = await getListStockTakeProduct({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListExportProduct(response?.data)
+          setListStockTakeProduct(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
 
           //-----------
@@ -270,7 +195,7 @@ function ManageCheckGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/create-export-report`}>
+        <Link href={`/create-check-report`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
@@ -314,7 +239,7 @@ function ManageCheckGoods({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={data_fake}
+                data={listStockTakeProduct?.data}
               />
             </div>
             <Pagination
@@ -322,7 +247,7 @@ function ManageCheckGoods({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listExportProduct?.total}
+              totalItems={listStockTakeProduct?.total}
             />
           </>
         )}
