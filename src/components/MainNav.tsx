@@ -146,6 +146,7 @@ function MainNav() {
         router.asPath.includes("/import-report-succeed") ||
         router.asPath.includes("/import-report-canceled") ||
         router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
         router.asPath.includes("/create-import-report"),
     },
     {
