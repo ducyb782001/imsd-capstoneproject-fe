@@ -145,8 +145,6 @@ function ImportReportEdit() {
   const router = useRouter()
   const { importId } = router.query
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
-  const [staffSelected, setStaffSelected] = useState<any>()
-  const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
@@ -160,26 +158,10 @@ function ImportReportEdit() {
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useEffect(() => {
-    if (staffSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        userId: staffSelected?.userId,
-      })
-    }
-  }, [staffSelected])
-
-  useEffect(() => {
-    setNhaCungCapSelected(productImportObject?.supplier)
-  }, [productImportObject])
-  useEffect(() => {
     if (nhaCungCapSelected) {
       setProductImportObject({
         ...productImportObject,
         supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
       })
     }
   }, [nhaCungCapSelected])
@@ -227,6 +209,8 @@ function ImportReportEdit() {
       setListProductImport(list)
     }
   }, [listChosenProduct])
+  console.log(123, listChosenProduct)
+  console.log(456, listProductImport)
 
   useEffect(() => {
     if (listProductImport) {
@@ -279,8 +263,7 @@ function ImportReportEdit() {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     event?.preventDefault()
-    await updateImportMutation.mutate(productImportObject)
-    // await approveImportMutation.mutate(productImportObject?.importId)
+    await updateImportMutation.mutate({ ...productImportObject, state: 0 })
   }
 
   const handleClickOutBtn = (event) => {
@@ -294,19 +277,18 @@ function ImportReportEdit() {
         const response = await getDetailImportProduct(importId)
         setListChosenProduct(response?.data?.importOrderDetails)
         setProductImportObject(response?.data)
+        setNhaCungCapSelected(response?.data?.supplier)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
       enabled: !!importId,
     },
     {
-      queryKey: ["getListStaff"],
+      queryKey: ["getListSupplier"],
       queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
-        return staff?.data?.data
+        const response = await getListExportSupplier({})
+        setListNhaCungCap(response?.data?.data)
+        return response?.data
       },
     },
     {
@@ -354,7 +336,7 @@ function ImportReportEdit() {
                 title="Bạn chắc chắn muốn cập nhật?"
                 handleClickSaveBtn={handleClickUpdateBtn}
               >
-                Cập nhật
+                Lưu
               </ConfirmPopup>
             </div>
           </div>

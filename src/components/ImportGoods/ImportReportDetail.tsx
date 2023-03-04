@@ -256,7 +256,7 @@ function ImportReportDetail() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalCost}
+          {new BigNumber(productImport?.totalCost).toFormat()} đ
         </div>
       </div>
     </div>
