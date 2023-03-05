@@ -20,7 +20,10 @@ import SecondaryBtn from "../SecondaryBtn"
 import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
-import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
+import {
+  getDetailStockTakeProduct,
+  updateStockTakeProduct,
+} from "../../apis/stocktake-product-module"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -145,6 +148,8 @@ function EditCheckReport() {
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductStockTake, setListProductStockTake] = useState<any>([])
+  const [listProductStockTakeCurrent, setListProductStockTakeCurrent] =
+    useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
@@ -180,13 +185,23 @@ function EditCheckReport() {
         )?.measuredUnitId
           ? undefined
           : 0
+        const stocktakeId = listProductStockTake.find(
+          (i) => i.productId == item.productId,
+        )?.actualStock
+          ? undefined
+          : 0
 
+        const currentStockTake = listProductStockTakeCurrent.map((a) => {
+          if (a.productId == item.productId) {
+            return a.actualStock
+          }
+        })
         return {
-          stocktakeId: 0,
+          stocktakeId: stocktakeId,
           productId: item.productId,
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
-          actualStock: 0,
+          actualStock: currentStockTake[0],
           note: "",
         }
       })
@@ -228,38 +243,35 @@ function EditCheckReport() {
       queryFn: async () => {
         const response = await getDetailStockTakeProduct(checkId)
         setProductStockTakeObject(response?.data)
-
+        setListProductStockTakeCurrent(response?.data?.stocktakeNoteDetails)
+        const list = response?.data?.stocktakeNoteDetails.map((item) => {
+          return item.product
+        })
+        setListChosenProduct(list)
+        setListProductStockTake(response?.data?.stocktakeNoteDetails)
         return response?.data
       },
       enabled: !!checkId,
     },
   ])
-  // console.log(productStockTakeObject)
+  console.log(productStockTakeObject)
 
-  useEffect(() => {
-    if (productStockTakeObject) {
-      const list = productStockTakeObject?.stocktakeNoteDetails.map((item) => {
-        return item.product
-      })
-      console.log(list)
-      setListChosenProduct(list)
-    }
-  }, [productStockTakeObject])
-
-  const createExportMutation = useMutation(
+  const updateStockTakeMutation = useMutation(
     async (exportProduct) => {
-      return await createExportProduct(exportProduct)
+      return await updateStockTakeProduct(exportProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn xuất hàng thành công!")
-          router.push("/manage-export-goods")
+          toast.success("Chỉnh sửa đơn kiểm hàng thành công!")
+          router.push("/draff-check-good/" + checkId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -276,7 +288,7 @@ function EditCheckReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createExportMutation.mutate(productStockTakeObject)
+    updateStockTakeMutation.mutate(productStockTakeObject)
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
@@ -441,7 +453,6 @@ function ListActualStock({
     <PrimaryInput
       className="w-[50px]"
       type="number"
-      placeholder="0"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()

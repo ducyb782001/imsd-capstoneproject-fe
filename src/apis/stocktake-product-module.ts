@@ -4,6 +4,7 @@ import {
   createStockTakeUrl,
   denyStockTakeUrl,
   detailStockTakeUrl,
+  updateStockTakeUrl,
 } from "../constants/APIConfig"
 import {
   convertObjectToQueryString,
@@ -40,5 +41,12 @@ export const approveStockTakeProduct = (stockTakeId) => {
 export const denyStockTakeProduct = (stockTakeId) => {
   return postAPI({
     url: `${denyStockTakeUrl}?stocktakeid=${stockTakeId}`,
+  })
+}
+
+export const updateStockTakeProduct = (stockTake) => {
+  return patchAPI({
+    url: `${updateStockTakeUrl}`,
+    data: stockTake,
   })
 }
