@@ -20,6 +20,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
+import { createStockTakeProduct } from "../../apis/stocktake-product-module"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -95,7 +96,7 @@ function CreateCheckReport() {
         {
           Header: "Lệch",
           accessor: (data: any) => (
-            <CountTotalPrice
+            <CountDeviated
               data={data}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
@@ -106,7 +107,13 @@ function CreateCheckReport() {
         {
           Header: "Ghi chú",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <ListNote
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+              autoUpdatePrice={autoUpdatePrice}
+              setAutoUpdatePrice={setAutoUpdatePrice}
+            />
           ),
         },
         {
@@ -139,9 +146,8 @@ function CreateCheckReport() {
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductExport, setListProductExport] = useState<any>([])
+  const [listProductSearch, setListProductSearch] = useState<any>([])
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (staffSelected) {
@@ -164,37 +170,38 @@ function CreateCheckReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
+        const currentStock = listProductImport.find(
           (i) => i.productId == item.productId,
-        )?.discount
+        )?.inStock
+          ? undefined
+          : item.inStock
+        const measuredUnitId = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.measuredUnitId
           ? undefined
           : 0
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.price
 
         return {
+          stocktakeId: 0,
           productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: costPrice,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          measuredUnitId: measuredUnitId,
+          currentStock: currentStock,
+          actualStock: 0,
+          note: "",
         }
       })
       setListProductImport(list)
     }
   }, [listChosenProduct])
+
+  useEffect(() => {
+    if (listProductImport) {
+      setProductStockTakeObject({
+        ...productStockTakeObject,
+        stocktakeNoteDetails: listProductImport,
+      })
+    }
+  }, [listProductImport])
 
   const router = useRouter()
   useQueries([
@@ -210,27 +217,29 @@ function CreateCheckReport() {
       queryKey: ["getListProduct"],
       queryFn: async () => {
         const response = await getListExportProduct()
-        setListProductExport(response?.data)
+        setListProductSearch(response?.data)
         return response?.data
       },
     },
   ])
   console.log(productStockTakeObject)
 
-  const createExportMutation = useMutation(
+  const createStockTakeMutation = useMutation(
     async (exportProduct) => {
-      return await createExportProduct(exportProduct)
+      return await createStockTakeProduct(exportProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn xuất hàng thành công!")
-          router.push("/manage-export-goods")
+          toast.success("Thêm đơn kiểm hàng thành công!")
+          router.push("/manage-check-good")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -247,7 +256,11 @@ function CreateCheckReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createExportMutation.mutate(productStockTakeObject)
+    createStockTakeMutation.mutate({
+      ...productStockTakeObject,
+      stocktakeId: 0,
+      stocktakeCode: "string",
+    })
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
@@ -327,7 +340,7 @@ function CreateCheckReport() {
           </ImportExportButton>
         </div>
         <SearchProductImportDropdown
-          listDropdown={listProductExport?.data}
+          listDropdown={listProductSearch?.data}
           textDefault={"Nhà cung cấp"}
           showing={productChosen}
           setShowing={setProductChosen}
@@ -346,41 +359,6 @@ function CreateCheckReport() {
 
 export default CreateCheckReport
 
-function ListQuantitiveImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [quantity, setQuantity] = useState()
-  const handleOnChangeAmount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, amount: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
-}
-
 function ListStock({
   data,
   listProductImport,
@@ -388,12 +366,12 @@ function ListStock({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [costPrice, setCostPrice] = useState()
+  const [currentStock, setCurrentStock] = useState()
 
   useEffect(() => {
     if (data) {
       // Bug chua su dung duoc gia co san de tinh toan
-      setCostPrice(data?.inStock)
+      setCurrentStock(data?.inStock)
     }
   }, [data])
 
@@ -401,7 +379,7 @@ function ListStock({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, costPrice: value, price: value }
+        return { ...item, currentStock: value }
       }
       return item
     })
@@ -413,10 +391,10 @@ function ListStock({
       className="w-[100px]"
       type="number"
       placeholder="---"
-      value={costPrice ? costPrice : ""}
+      value={currentStock ? currentStock : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setCostPrice(e.target.value)
+        setCurrentStock(e.target.value)
         handleOnChangePrice(e.target.value, data)
         setAutoUpdatePrice(!autoUpdatePrice)
       }}
@@ -431,12 +409,12 @@ function ListActualStock({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [discount, setDiscount] = useState()
+  const [actualStock, setActualStock] = useState()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, discount: value }
+        return { ...item, actualStock: value }
       }
       return item
     })
@@ -448,10 +426,10 @@ function ListActualStock({
       className="w-[50px]"
       type="number"
       placeholder="0"
-      value={discount ? discount : ""}
+      value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setDiscount(e.target.value)
+        setActualStock(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
         setAutoUpdatePrice(!autoUpdatePrice)
       }}
@@ -459,32 +437,20 @@ function ListActualStock({
   )
 }
 
-function CountTotalPrice({
+function CountDeviated({
   data,
   listProductImport,
   setListProductImport,
   autoUpdatePrice,
 }) {
-  const [price, setPrice] = useState<any>()
+  const [deviated, setDeviated] = useState<any>()
   const handleSetPrice = () => {
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount).multipliedBy(
-          item.costPrice,
-        )
-        const discountPrice = new BigNumber(item.amount)
-          .multipliedBy(item.costPrice)
-          .multipliedBy(item.discount)
-          .dividedBy(100)
-        if (item.discount) {
-          const afterPrice = totalPrice.minus(discountPrice)
-          setPrice(afterPrice.toFormat(0))
-          return { ...item, price: afterPrice.toFixed() }
-        } else {
-          setPrice(totalPrice.toFormat(0))
-          return { ...item, price: totalPrice.toFixed() }
-        }
+        const deviatedAmount = item.currentStock - item.actualStock
+        setDeviated(deviatedAmount)
+        return { ...item, amountDifferential: deviatedAmount }
       }
       return item
     })
@@ -496,7 +462,7 @@ function CountTotalPrice({
       className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12"
       onClick={handleSetPrice}
     >
-      {price}
+      {deviated}
     </div>
   )
 }
@@ -552,5 +518,39 @@ function ImportExportButton({
       {accessoriesLeft && <div>{accessoriesLeft}</div>}
       {children}
     </button>
+  )
+}
+
+function ListNote({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [note, setNote] = useState("")
+  const handleOnChangeDiscount = (value, data) => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, note: value }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
+
+  return (
+    <PrimaryInput
+      className="w-[50px]"
+      placeholder="Ghi chú"
+      value={note ? note : ""}
+      onChange={(e) => {
+        e.stopPropagation()
+        setNote(e.target.value)
+        handleOnChangeDiscount(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
+      }}
+    />
   )
 }

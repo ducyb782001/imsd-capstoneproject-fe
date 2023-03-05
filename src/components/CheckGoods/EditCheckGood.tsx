@@ -20,32 +20,11 @@ import SecondaryBtn from "../SecondaryBtn"
 import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
+import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function EditCheckReport() {
-  const data_fake = [
-    {
-      productCode: "AHC123",
-      productName: "Bánh mì tươi",
-      measuredUnitId: "Thùng",
-      typeGood: "Bánh mì",
-      stock: 12,
-      realStock: 10,
-      deviated: 2,
-      note: "Hỏng do thời tiết",
-    },
-    {
-      productCode: "AHC123",
-      productName: "Bánh mì tươi",
-      measuredUnitId: "Thùng",
-      typeGood: "Bánh mì",
-      stock: 12,
-      realStock: 10,
-      deviated: 2,
-      note: "Hỏng do thời tiết",
-    },
-  ]
   const columns = [
     {
       Header: " ",
@@ -79,31 +58,23 @@ function EditCheckReport() {
         {
           Header: "Đơn vị",
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.measuredUnitId}
-              className="w-20"
-              readOnly={true}
-            />
-          ),
-        },
-        {
-          Header: "Loại",
-          accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.typeGood}
-              className="w-16"
-              readOnly={true}
+            <ListUnitImport
+              data={data}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
             />
           ),
         },
         {
           Header: "Tồn chi nhánh",
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.stock}
-                className="w-16"
-                readOnly={true}
+            <div className="flex items-center max-w-[70px]">
+              <ListStock
+                data={data}
+                listProductImport={listProductStockTake}
+                setListProductImport={setListProductStockTake}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
               />
             </div>
           ),
@@ -111,11 +82,13 @@ function EditCheckReport() {
         {
           Header: "Tồn thực tế",
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.realStock}
-                className="w-16"
-                readOnly={true}
+            <div className="flex items-center max-w-[80px]">
+              <ListActualStock
+                data={data}
+                listProductImport={listProductStockTake}
+                setListProductImport={setListProductStockTake}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
               />
             </div>
           ),
@@ -123,55 +96,67 @@ function EditCheckReport() {
         {
           Header: "Lệch",
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.deviated}
-              className="w-16"
-              readOnly={true}
+            <CountDeviated
+              data={data}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
+              autoUpdatePrice={autoUpdatePrice}
             />
           ),
         },
         {
           Header: "Ghi chú",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.note} className="w-16" readOnly={true} />
+            <ListNote
+              data={data}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
+              autoUpdatePrice={autoUpdatePrice}
+              setAutoUpdatePrice={setAutoUpdatePrice}
+            />
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any, index) => (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                let result = listChosenProduct?.filter(
+                  (i, ind) => ind !== index,
+                )
+                setListChosenProduct(result)
+                // let listProduct = listProductImport?.filter(
+                //   (i, ind) => ind !== index,
+                // )
+                // setListProductImport(listProduct)
+              }}
+            >
+              <XIcons />
+            </div>
           ),
         },
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
+  const [listProductStockTake, setListProductStockTake] = useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
-  const [productExportObject, setProductExportObject] = useState<any>()
-  const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
-      setProductExportObject({
-        ...productExportObject,
+      setProductStockTakeObject({
+        ...productStockTakeObject,
         userId: staffSelected?.userId,
       })
     }
   }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductExportObject({
-        ...productExportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductExportObject({
-        ...productExportObject,
-        state: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
 
   useEffect(() => {
     if (productChosen) {
@@ -185,77 +170,48 @@ function EditCheckReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
+        const currentStock = listProductStockTake.find(
           (i) => i.productId == item.productId,
-        )?.discount
+        )?.inStock
+          ? undefined
+          : item.inStock
+        const measuredUnitId = listProductStockTake.find(
+          (i) => i.productId == item.productId,
+        )?.measuredUnitId
           ? undefined
           : 0
-        const amount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.amount
-        const costPrice = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.costPrice
-        const price = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.price
 
         return {
+          stocktakeId: 0,
           productId: item.productId,
-          amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          price: costPrice,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          measuredUnitId: measuredUnitId,
+          currentStock: currentStock,
+          actualStock: 0,
+          note: "",
         }
       })
-      setListProductImport(list)
+      setListProductStockTake(list)
     }
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      const priceSet = new BigNumber(price).toFormat()
-      setTotalPriceSend(priceSet)
-      setProductExportObject({
-        ...productExportObject,
-        exportOrderDetails: listProductImport,
-        totalPrice: new BigNumber(price).toFixed(),
+    if (listProductStockTake) {
+      setProductStockTakeObject({
+        ...productStockTakeObject,
+        stocktakeNoteDetails: listProductStockTake,
       })
     }
-  }, [listProductImport])
-
-  const totalPrice = () => {
-    if (listProductImport?.length > 0) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      return <div>{price} đ</div>
-    } else {
-      return <div>0 đ</div>
-    }
-  }
+  }, [listProductStockTake])
 
   const router = useRouter()
+  const { checkId } = router.query
+
   useQueries([
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff()
         setListStaff(staff?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
         return staff?.data?.data
       },
     },
@@ -263,18 +219,32 @@ function EditCheckReport() {
       queryKey: ["getListProduct"],
       queryFn: async () => {
         const response = await getListExportProduct()
-        setProductExportObject({
-          ...productExportObject,
-          exportId: 0,
-          state: 0,
-          exportCode: "string",
-        })
         setListProductExport(response?.data)
         return response?.data
       },
     },
+    {
+      queryKey: ["getDetailStockTake"],
+      queryFn: async () => {
+        const response = await getDetailStockTakeProduct(checkId)
+        setProductStockTakeObject(response?.data)
+
+        return response?.data
+      },
+      enabled: !!checkId,
+    },
   ])
-  console.log(listChosenProduct)
+  // console.log(productStockTakeObject)
+
+  useEffect(() => {
+    if (productStockTakeObject) {
+      const list = productStockTakeObject?.stocktakeNoteDetails.map((item) => {
+        return item.product
+      })
+      console.log(list)
+      setListChosenProduct(list)
+    }
+  }, [productStockTakeObject])
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -306,7 +276,7 @@ function EditCheckReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createExportMutation.mutate(productExportObject)
+    createExportMutation.mutate(productStockTakeObject)
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
@@ -314,7 +284,7 @@ function EditCheckReport() {
   const handleExportCheckProduct = () => {
     const dateTime = Date().toLocaleString() + ""
     const worksheet = XLSX.utils.json_to_sheet(
-      productExportObject?.listProductImport,
+      productStockTakeObject?.listProductImport,
     )
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
@@ -352,7 +322,7 @@ function EditCheckReport() {
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={"Chọn nhân viên kiểm hàng"}
+              textDefault={productStockTakeObject?.createdBy?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -362,10 +332,10 @@ function EditCheckReport() {
             rows={7}
             className="mt-4"
             title="Ghi chú hóa đơn"
-            value={productExportObject?.note}
+            value={productStockTakeObject?.note}
             onChange={(e) => {
-              setProductExportObject({
-                ...productExportObject,
+              setProductStockTakeObject({
+                ...productStockTakeObject,
                 note: e.target.value,
               })
             }}
@@ -392,7 +362,11 @@ function EditCheckReport() {
           setShowing={setProductChosen}
         />
         <div className="mt-4 table-style">
-          <Table pageSizePagination={10} columns={columns} data={data_fake} />
+          <Table
+            pageSizePagination={10}
+            columns={columns}
+            data={listChosenProduct}
+          />
         </div>
       </div>
     </div>
@@ -400,6 +374,149 @@ function EditCheckReport() {
 }
 
 export default EditCheckReport
+
+function ListStock({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [currentStock, setCurrentStock] = useState()
+
+  useEffect(() => {
+    if (data) {
+      // Bug chua su dung duoc gia co san de tinh toan
+      setCurrentStock(data?.inStock)
+    }
+  }, [data])
+
+  const handleOnChangePrice = (value, data) => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, currentStock: value }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
+
+  return (
+    <PrimaryInput
+      className="w-[100px]"
+      type="number"
+      placeholder="---"
+      value={currentStock ? currentStock : ""}
+      onChange={(e) => {
+        e.stopPropagation()
+        setCurrentStock(e.target.value)
+        handleOnChangePrice(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
+      }}
+    />
+  )
+}
+
+function ListActualStock({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [actualStock, setActualStock] = useState()
+  const handleOnChangeDiscount = (value, data) => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, actualStock: value }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
+
+  return (
+    <PrimaryInput
+      className="w-[50px]"
+      type="number"
+      placeholder="0"
+      value={actualStock ? actualStock : ""}
+      onChange={(e) => {
+        e.stopPropagation()
+        setActualStock(e.target.value)
+        handleOnChangeDiscount(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
+      }}
+    />
+  )
+}
+
+function CountDeviated({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+}) {
+  const [deviated, setDeviated] = useState<any>()
+  const handleSetPrice = () => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        const deviatedAmount = item.currentStock - item.actualStock
+        setDeviated(deviatedAmount)
+        return { ...item, amountDifferential: deviatedAmount }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
+
+  return (
+    <div
+      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12"
+      onClick={handleSetPrice}
+    >
+      {deviated}
+    </div>
+  )
+}
+
+function ListUnitImport({ data, listProductImport, setListProductImport }) {
+  const [listDropdown, setListDropdown] = useState([])
+  const [unitChosen, setUnitChosen] = useState<any>()
+  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
+
+  useEffect(() => {
+    if (data) {
+      setListDropdown(data?.measuredUnits)
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (unitChosen) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [unitChosen])
+
+  return (
+    <ChooseUnitImport
+      listDropdown={listDropdown}
+      showing={unitChosen}
+      setShowing={setUnitChosen}
+      textDefault={defaultMeasuredUnit}
+    />
+  )
+}
 
 function ImportExportButton({
   accessoriesLeft,
@@ -417,5 +534,39 @@ function ImportExportButton({
       {accessoriesLeft && <div>{accessoriesLeft}</div>}
       {children}
     </button>
+  )
+}
+
+function ListNote({
+  data,
+  listProductImport,
+  setListProductImport,
+  autoUpdatePrice,
+  setAutoUpdatePrice,
+}) {
+  const [note, setNote] = useState("")
+  const handleOnChangeDiscount = (value, data) => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, note: value }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
+
+  return (
+    <PrimaryInput
+      className="w-[50px]"
+      placeholder="Ghi chú"
+      value={note ? note : ""}
+      onChange={(e) => {
+        e.stopPropagation()
+        setNote(e.target.value)
+        handleOnChangeDiscount(e.target.value, data)
+        setAutoUpdatePrice(!autoUpdatePrice)
+      }}
+    />
   )
 }

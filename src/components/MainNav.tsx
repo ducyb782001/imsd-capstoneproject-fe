@@ -179,6 +179,7 @@ function MainNav() {
       isActive:
         router.asPath.includes("/manage-check-good") ||
         router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
         router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
     },

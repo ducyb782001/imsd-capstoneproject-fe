@@ -269,7 +269,7 @@ function CreateExportReport() {
       },
     },
   ])
-  console.log(listChosenProduct)
+  console.log(productExportObject)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -539,7 +539,6 @@ function CountTotalPrice({
         }
         return item
       })
-      console.log("newList", newList)
 
       setNewList(newList)
     }

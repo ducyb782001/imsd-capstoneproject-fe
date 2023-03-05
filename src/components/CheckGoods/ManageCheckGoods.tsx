@@ -35,15 +35,15 @@ const columns = [
       },
       {
         Header: "Nhân viên tạo",
-        accessor: (data: any) => <p>Kiểm kho {data?.note}</p>,
+        accessor: (data: any) => <p>Kiểm kho {data?.createdBy?.userName}</p>,
       },
       {
         Header: "Nhân viên kiểm",
-        accessor: (data: any) => <p>Kiểm kho {data?.note}</p>,
-      },
-      {
-        Header: "Nhân viên cân bằng",
-        accessor: (data: any) => <p>Kiểm kho {data?.note}</p>,
+        accessor: (data: any) => (
+          <p>
+            {data?.updatedBy ? "Kiểm kho " + data?.updatedBy?.userName : ""}
+          </p>
+        ),
       },
       {
         Header: "Ngày tạo đơn",
@@ -303,7 +303,7 @@ function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/edit-check-good/${data?.checkId}`}>
+        <Link href={`/draff-check-good/${data?.stocktakeId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -313,7 +313,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/check-good-detail/${data?.checkId}`}>
+        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -323,7 +323,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 2) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/check-good-detail/${data?.checkId}`}>
+        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
