@@ -99,10 +99,7 @@ function CreateImportReport() {
           accessor: (data: any) => (
             <CountTotalPrice
               data={data}
-              setListProductImport={setListProductImport}
               listProductImport={listProductImport}
-              newList={newList}
-              setNewList={setNewList}
             />
           ),
         },
@@ -129,7 +126,6 @@ function CreateImportReport() {
       ],
     },
   ]
-
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
@@ -186,16 +182,12 @@ function CreateImportReport() {
         const costPrice = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.costPrice
-        const price = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.price
 
         return {
           productId: item.productId,
           amount: amount,
           costPrice: costPrice,
           discount: discount,
-          price: price,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
           )?.measuredUnitId
@@ -209,11 +201,20 @@ function CreateImportReport() {
 
   useEffect(() => {
     if (listProductImport) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
+      const price = listProductImport.reduce((accumulator, currentProduct) => {
+        const cost = new BigNumber(currentProduct.costPrice).times(
+          currentProduct.amount,
+        )
+        if (currentProduct.discount) {
+          const discountPrice = new BigNumber(currentProduct.amount)
+            .multipliedBy(currentProduct.costPrice)
+            .multipliedBy(currentProduct.discount)
+            .dividedBy(100)
+          return accumulator.plus(cost).minus(discountPrice)
+        } else {
+          return accumulator.plus(cost)
+        }
+      }, new BigNumber(0))
       const priceSet = new BigNumber(price).toFormat()
       setTotalPriceSend(priceSet)
       setProductImportObject({
@@ -306,6 +307,7 @@ function CreateImportReport() {
             >
               Thoát
             </ConfirmPopup>
+            {/* <SecondaryBtn onClick={} className="max-w-[120px]">Thoát</SecondaryBtn> */}
           </div>
           <div className="flex justify-center mt-6">
             <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
@@ -485,13 +487,7 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function CountTotalPrice({
-  data,
-  setListProductImport,
-  listProductImport,
-  newList,
-  setNewList,
-}) {
+function CountTotalPrice({ data, listProductImport }) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
     const list = listProductImport
@@ -507,22 +503,20 @@ function CountTotalPrice({
         if (item.discount) {
           const afterPrice = totalPrice.minus(discountPrice)
           setPrice(afterPrice)
-          return { ...item, price: afterPrice }
         } else {
           setPrice(totalPrice)
-          return { ...item, price: totalPrice }
         }
       }
       return item
     })
-    setListProductImport(newList)
   }
 
+  useEffect(() => {
+    handleSetPrice()
+  }, [listProductImport])
+
   return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn"
-      onClick={handleSetPrice}
-    >
+    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )
