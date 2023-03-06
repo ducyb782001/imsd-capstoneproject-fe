@@ -372,10 +372,13 @@ function ImportReportEdit() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {detailResponse?.created && (
+          {detailResponse?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
-              {format(new Date(detailResponse?.created), "dd/MM/yyyy HH:mm")}
+              {format(
+                new Date(detailResponse?.createdDate),
+                "dd/MM/yyyy HH:mm",
+              )}
             </div>
           )}
 
@@ -502,6 +505,14 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   useEffect(() => {
     if (data) {
       setDiscount(data?.discount)
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, discount: data?.discount }
+        }
+        return item
+      })
+      setListProductImport(newList)
     }
   }, [data])
 
@@ -576,6 +587,7 @@ function ListUnitImport({
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
+  console.log(data)
 
   useEffect(() => {
     if (data) {
@@ -586,6 +598,7 @@ function ListUnitImport({
         },
         ...data?.measuredUnits,
       ])
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
     }
   }, [data])
 
@@ -604,15 +617,6 @@ function ListUnitImport({
       setListProductImport(newList)
     }
   }, [unitChosen])
-
-  useEffect(() => {
-    if (listChosenProduct) {
-      const list = listChosenProduct
-      const test = list.filter((item) => {
-        item.productId === data?.productId
-      })
-    }
-  }, [listChosenProduct])
 
   return (
     <ChooseUnitImport

@@ -57,6 +57,9 @@ function Profile() {
                 setShowing={setSelectRole}
               />
               <div className="hidden md:block"></div>
+            </div>
+
+            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <PrimaryInput
                 title="Tên đăng nhập"
                 placeholder="Nhập tên đăng nhập của nhân viên"
@@ -67,15 +70,11 @@ function Profile() {
                 title="Số CCCD/CMND"
                 placeholder="Nhập số CCCD/CMND"
               />
+            </div>
+            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
               <PrimaryInput
                 title="Số điện thoại"
                 placeholder="Nhập số điện thoại"
-              />
-              <PrimaryInput
-                type="email"
-                title="Email"
-                placeholder="Nhập Email"
-                // readOnly
               />
               <SelectGenderDropdown
                 title="Giới tính"

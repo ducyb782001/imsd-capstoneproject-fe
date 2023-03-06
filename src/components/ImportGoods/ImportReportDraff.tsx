@@ -252,7 +252,7 @@ function ImportReportDraff() {
               <StepBar
                 status="pending"
                 createdDate={format(
-                  new Date(productImport?.created),
+                  new Date(productImport?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -271,10 +271,10 @@ function ImportReportDraff() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {productImport && (
+          {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
-              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 

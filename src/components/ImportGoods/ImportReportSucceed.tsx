@@ -140,15 +140,15 @@ function ImportReportSucceed() {
           <div className="flex justify-center mt-6">
             <StepBar
               createdDate={format(
-                new Date(productImport?.created),
+                new Date(productImport?.createdDate),
                 "dd/MM/yyyy HH:mm",
               )}
               approvedDate={format(
-                new Date(productImport?.approved),
+                new Date(productImport?.approvedDate),
                 "dd/MM/yyyy HH:mm",
               )}
               succeededDate={format(
-                new Date(productImport?.completed),
+                new Date(productImport?.completedDate),
                 "dd/MM/yyyy HH:mm",
               )}
               status="succeed"
@@ -165,14 +165,12 @@ function ImportReportSucceed() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              (new Date(productImport?.created).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
-          </div>
+          {productImport?.createdDate && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
+            </div>
+          )}
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
