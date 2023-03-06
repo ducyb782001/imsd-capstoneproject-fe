@@ -143,11 +143,11 @@ function ImportReportCanceled() {
             <StepBar
               status="deny"
               createdDate={format(
-                new Date(productImport?.created),
+                new Date(productImport?.createdDate),
                 "dd/MM/yyyy HH:mm",
               )}
               approvedDate={format(
-                new Date(productImport?.denied),
+                new Date(productImport?.deniedDate),
                 "dd/MM/yyyy HH:mm",
               )}
             />
@@ -168,7 +168,7 @@ function ImportReportCanceled() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+            {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <PrimaryInput value={productImport?.user?.email} readOnly={true} />
