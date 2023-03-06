@@ -326,11 +326,19 @@ function EditCheckReport() {
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-semibold">Thông tin đơn</h1>
+            <h1 className="text-xl font-semibold">Thông tin phiếu</h1>
           </div>
           <div className="text-sm font-medium text-left text-gray mb-3">
-            Ngày kiểm hàng: {format(Date.now(), "dd/MM/yyyy")}
+            <p className="mb-3">Ngày kiểm hàng: </p>
+            <PrimaryInput
+              value={format(Date.now(), "dd/MM/yyyy HH:mm")}
+              className="w-[150px] text-sm font-normal text-gray"
+              readOnly={true}
+            />
           </div>
+          <p className="text-sm font-medium text-left text-gray mb-3">
+            Nhân viên
+          </p>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
@@ -356,17 +364,6 @@ function EditCheckReport() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportCheckProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
         <SearchProductImportDropdown
           listDropdown={listProductExport?.data}
           textDefault={"Nhà cung cấp"}

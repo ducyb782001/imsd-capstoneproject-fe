@@ -31,7 +31,10 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import SecondaryBtn from "../SecondaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
-import { getDetailExportProduct } from "../../apis/export-product-module"
+import {
+  getDetailExportProduct,
+  updateExportProduct,
+} from "../../apis/export-product-module"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -253,17 +256,19 @@ function ImportReportEdit() {
 
   const updateImportMutation = useMutation(
     async (importProduct) => {
-      return await updateImportProduct(importProduct)
+      return await updateExportProduct(importProduct)
     },
     {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Cập nhật đơn nhập hàng thành công")
+          toast.success("Cập nhật đơn xuất hàng thành công")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -285,7 +290,7 @@ function ImportReportEdit() {
   }
 
   const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
+    router.push("/export-report-draff/" + exportId)
   }
 
   useQueries([
@@ -471,12 +476,12 @@ function ListPriceImport({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [costPrice, setCostPrice] = useState(data?.costPrice)
+  const [costPrice, setCostPrice] = useState(data?.price)
 
   useEffect(() => {
     if (data) {
       // Bug chua su dung duoc gia co san de tinh toan
-      setCostPrice(data?.costPrice)
+      setCostPrice(data?.price)
     }
   }, [data])
 
@@ -484,7 +489,7 @@ function ListPriceImport({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
+        return { ...item, price: value }
       }
       return item
     })
@@ -553,11 +558,9 @@ function CountTotalPrice({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount).multipliedBy(
-          item.costPrice,
-        )
+        const totalPrice = new BigNumber(item.amount).multipliedBy(item.price)
         const discountPrice = new BigNumber(item.amount)
-          .multipliedBy(item.costPrice)
+          .multipliedBy(item.price)
           .multipliedBy(item.discount)
           .dividedBy(100)
         if (item.discount) {

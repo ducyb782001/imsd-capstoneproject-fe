@@ -211,15 +211,6 @@ function DraffCheckReport() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
   }
-  const handleExportCheckProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(
-      productStockTakeObject?.listProductImport,
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
 
   return (
     <div>
@@ -288,17 +279,6 @@ function DraffCheckReport() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportCheckProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

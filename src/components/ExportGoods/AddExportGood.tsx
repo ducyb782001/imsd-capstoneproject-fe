@@ -224,7 +224,7 @@ function CreateExportReport() {
       setProductExportObject({
         ...productExportObject,
         exportOrderDetails: newList,
-        totalCost: totalPrice.toFixed(),
+        totalPrice: totalPrice.toFixed(),
       })
     }
   }, [newList])

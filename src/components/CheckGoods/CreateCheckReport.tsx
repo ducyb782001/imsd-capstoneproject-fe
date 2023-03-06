@@ -96,12 +96,14 @@ function CreateCheckReport() {
         {
           Header: "Lệch",
           accessor: (data: any) => (
-            <CountDeviated
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-            />
+            <div className="w-[70px]">
+              <CountDeviated
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
+                autoUpdatePrice={autoUpdatePrice}
+              />
+            </div>
           ),
         },
         {
@@ -280,16 +282,16 @@ function CreateCheckReport() {
       <div>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Tạo đơn kiểm hàng</h1>
+            <h1 className="text-2xl font-semibold">Tạo phiếu kiểm hàng</h1>
           </div>
           <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
-              classNameBtn="w-[180px]"
+              classNameBtn="w-[190px]"
               title="Bạn chắc chắn muốn duyệt đơn?"
               handleClickSaveBtn={handleClickSaveBtn}
             >
-              Tạo đơn kiểm hàng
+              Tạo phiếu kiểm hàng
             </ConfirmPopup>
             <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
               Thoát
@@ -327,18 +329,7 @@ function CreateCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportCheckProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
         <SearchProductImportDropdown
           listDropdown={listProductSearch?.data}
           textDefault={"Nhà cung cấp"}

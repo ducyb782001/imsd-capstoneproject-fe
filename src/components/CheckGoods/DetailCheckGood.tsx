@@ -15,30 +15,9 @@ import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
 import PrimaryBtn from "../PrimaryBtn"
+import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
 
 function DetailCheckReport() {
-  const data_fake = [
-    {
-      productCode: "AHC123",
-      productName: "Bánh mì tươi",
-      measuredUnitId: "Thùng",
-      typeGood: "Bánh mì",
-      stock: 12,
-      realStock: 10,
-      deviated: 2,
-      note: "Hỏng do thời tiết",
-    },
-    {
-      productCode: "AHC123",
-      productName: "Bánh mì tươi",
-      measuredUnitId: "Thùng",
-      typeGood: "Bánh mì",
-      stock: 12,
-      realStock: 10,
-      deviated: 2,
-      note: "Hỏng do thời tiết",
-    },
-  ]
   const columns = [
     {
       Header: " ",
@@ -51,7 +30,7 @@ function DetailCheckReport() {
           Header: "Ảnh",
           accessor: (data: any) => (
             <img
-              src={data?.image || "/images/default-product-image.jpg"}
+              src={data?.product?.image || "/images/default-product-image.jpg"}
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
@@ -60,30 +39,28 @@ function DetailCheckReport() {
         {
           Header: "Mã sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productCode}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productCode}
+            </p>
           ),
         },
         {
           Header: "Tên sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productName}
+            </p>
           ),
         },
         {
           Header: "Đơn vị",
           accessor: (data: any) => (
             <PrimaryInput
-              value={data?.measuredUnitId}
-              className="w-20"
-              readOnly={true}
-            />
-          ),
-        },
-        {
-          Header: "Loại",
-          accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.typeGood}
+              value={
+                data?.measuredUnitId
+                  ? data?.measuredUnit
+                  : data?.product?.defaultMeasuredUnit
+              }
               className="w-16"
               readOnly={true}
             />
@@ -92,9 +69,9 @@ function DetailCheckReport() {
         {
           Header: "Tồn chi nhánh",
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center max-w-[70px]">
               <PrimaryInput
-                value={data?.stock}
+                value={data?.currentStock}
                 className="w-16"
                 readOnly={true}
               />
@@ -104,9 +81,9 @@ function DetailCheckReport() {
         {
           Header: "Tồn thực tế",
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center max-w-[80px]">
               <PrimaryInput
-                value={data?.realStock}
+                value={data?.actualStock}
                 className="w-16"
                 readOnly={true}
               />
@@ -117,7 +94,7 @@ function DetailCheckReport() {
           Header: "Lệch",
           accessor: (data: any) => (
             <PrimaryInput
-              value={data?.deviated}
+              value={data?.amountDifferential}
               className="w-16"
               readOnly={true}
             />
@@ -133,50 +110,24 @@ function DetailCheckReport() {
     },
   ]
 
-  const [productExportObject, setProductExportObject] = useState<any>()
-
   const router = useRouter()
   const { checkId } = router.query
-
-  // useQueries([
-  //   {
-  //     queryKey: ["getListStaff"],
-  //     queryFn: async () => {
-  //       const staff = await getListStaff()
-  //       setListStaff(staff?.data)
-  //       const supplier = await getListExportSupplier({})
-  //       setListNhaCungCap(supplier?.data?.data)
-  //       return staff?.data?.data
-  //     },
-  //   },
-
-  //   {
-  //     queryKey: ["getListProduct"],
-  //     queryFn: async () => {
-  //       const response = await getListExportProduct()
-  //       setProductExportObject({
-  //         ...productExportObject,
-  //         exportId: 0,
-  //         state: 0,
-  //         exportCode: "string",
-  //       })
-  //       setListProductExport(response?.data)
-  //       return response?.data
-  //     },
-  //   },
-  // ])
+  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  console.log(productStockTakeObject)
+  useQueries([
+    {
+      queryKey: ["getListProduct"],
+      queryFn: async () => {
+        const response = await getDetailStockTakeProduct(checkId)
+        setProductStockTakeObject(response?.data)
+        return response?.data
+      },
+      enabled: !!checkId,
+    },
+  ])
 
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
-  }
-  const handleExportCheckProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(
-      productExportObject?.listProductImport,
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
   }
 
   return (
@@ -189,7 +140,7 @@ function DetailCheckReport() {
           <div className="flex items-center justify-between w-full mb-10">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">Thông tin đơn</h1>
-              <StatusDisplay data={checkId} />
+              <StatusDisplay data={productStockTakeObject?.state} />
             </div>
             <div className="flex items-center justify-between gap-4">
               <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
@@ -198,47 +149,54 @@ function DetailCheckReport() {
             </div>
           </div>
 
-          <div className="flex items-center gap-12 text-sm font-normal text-left text-gray mb-3">
+          <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Mã đơn kiểm hàng:</p>
-            <p>KIHA123</p>
+            <p>{productStockTakeObject?.stocktakeCode}</p>
           </div>
           <div className="flex items-center gap-20 text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Ngày tạo đơn:</p>
-            <p>12/08/2022 15:30</p>
+            <p>
+              {productStockTakeObject?.created
+                ? format(
+                    new Date(productStockTakeObject?.created),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : ""}
+            </p>
           </div>
           <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Nhân viên tạo đơn:</p>
-            <p>Thủ kho Lâm</p>
+            <p>{productStockTakeObject?.createdBy?.userName}</p>
           </div>
           <div className="flex items-center gap-[72px] text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Ngày cân bằng:</p>
-            <p>12/08/2022 15:30</p>
+            <p>
+              {productStockTakeObject?.updated
+                ? format(
+                    new Date(productStockTakeObject?.updated),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : ""}
+            </p>
           </div>
           <div className="flex items-center gap-10 text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Nhân viên cân bằng:</p>
-            <p>Thủ kho Lâm</p>
+            <p>{productStockTakeObject?.updatedBy?.userName}</p>
           </div>
           <div className="flex items-center gap-[120px] text-sm font-medium text-left text-gray mb-3">
             <p className="font-bold">Ghi chú:</p>
-            <p>Kiểm tra hàng tháng 8</p>
+            <p>{productStockTakeObject?.note}</p>
           </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportCheckProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
         <div className="mt-4 table-style">
-          <Table pageSizePagination={10} columns={columns} data={data_fake} />
+          <Table
+            pageSizePagination={10}
+            columns={columns}
+            data={productStockTakeObject?.stocktakeNoteDetails}
+          />
         </div>
       </div>
     </div>

@@ -105,8 +105,8 @@ function MainNav() {
     {
       id: 1,
       name: "Quản lý nhân viên",
-      href: "/check-goods-list",
-      isActive: router.asPath.includes("/check-goods-list"),
+      href: "/manage-staff",
+      isActive: router.asPath.includes("/manage-staff"),
     },
   ]
 
@@ -189,7 +189,7 @@ function MainNav() {
       name: "Nhân viên",
       subMenu: subMenuUser,
       icon: <UserIcon />,
-      isActive: router.asPath.includes("/abcd"),
+      isActive: router.asPath.includes("/manage-staff"),
     },
   ]
 

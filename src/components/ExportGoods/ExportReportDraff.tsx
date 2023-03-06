@@ -66,7 +66,7 @@ function ExportReportDraff() {
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <PrimaryInput
-                value={data?.costPrice}
+                value={data?.price}
                 className="w-24"
                 readOnly={true}
               />
@@ -335,7 +335,7 @@ function ExportReportDraff() {
     router.push("/manage-export-goods")
   }
 
-  console.log(listChosenProduct)
+  console.log(productImportObject)
 
   return isLoadingReport ? (
     <ExportReportSkeleton />

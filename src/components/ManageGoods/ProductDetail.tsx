@@ -28,6 +28,8 @@ function ProductDetail() {
     },
   ])
 
+  console.log(detailProduct)
+
   return isLoadingProduct ? (
     <ProductDetailSkeleton />
   ) : (
