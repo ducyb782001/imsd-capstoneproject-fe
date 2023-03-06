@@ -401,8 +401,8 @@ function RightSideProductDetail({
   listNhaCungCap,
   listTypeProduct,
 }) {
-  const [loadingImage, setLoadingImage] = useState(false)
   const [disabled, setDisabled] = useState(true)
+  const [loadingImage, setLoadingImage] = useState(false)
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)

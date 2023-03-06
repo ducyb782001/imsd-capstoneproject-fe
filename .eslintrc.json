@@ -18,7 +18,8 @@
     "prefer-const": "off",
     "no-var": "off",
     "no-useless-escape": "off",
-    "@typescript-eslint/ban-types": "off"
+    "@typescript-eslint/ban-types": "off",
+    "no-unsafe-optional-chaining": "off"
   },
   "plugins": ["@typescript-eslint"]
 }

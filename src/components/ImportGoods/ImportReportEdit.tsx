@@ -72,6 +72,7 @@ function ImportReportEdit() {
           Header: "Đơn vị",
           accessor: (data: any) => (
             <ListUnitImport
+              listChosenProduct={listChosenProduct}
               data={data?.product}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
@@ -146,6 +147,7 @@ function ImportReportEdit() {
   const [productImportObject, setProductImportObject] = useState<any>()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
+  const [detailResponse, setDetailResponse] = useState<any>()
 
   useEffect(() => {
     if (nhaCungCapSelected) {
@@ -250,9 +252,12 @@ function ImportReportEdit() {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     event?.preventDefault()
-    await updateImportMutation.mutate({ ...productImportObject, state: 0 })
+    await updateImportMutation.mutate({
+      ...productImportObject,
+      state: 0,
+      userId: 1,
+    })
   }
-  // console.log(productImportObject)
 
   const handleClickOutBtn = (event) => {
     router.push("/manage-import-goods")
@@ -265,9 +270,18 @@ function ImportReportEdit() {
         const response = await getDetailImportProduct(importId)
         setListChosenProduct(response?.data?.importOrderDetails)
         setListProductImport(response?.data?.importOrderDetails)
-        setProductImportObject(response?.data)
+        const detailReport = response?.data
+        setProductImportObject({
+          importId: detailReport?.importId,
+          importCode: detailReport?.importCode,
+          userId: detailReport?.userId,
+          supplierId: detailReport?.supplierId,
+          importOrderDetails: detailReport?.importOrderDetails,
+          note: detailReport?.note,
+        })
         setNhaCungCapSelected(response?.data?.supplier)
         setIsLoadingReport(response?.data?.isLoading)
+        setDetailResponse(response?.data)
         return response?.data
       },
       enabled: !!importId,
@@ -358,13 +372,10 @@ function ImportReportEdit() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {productImportObject?.created && (
+          {detailResponse?.created && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
-              {format(
-                new Date(productImportObject?.created),
-                "dd/MM/yyyy HH:mm",
-              )}
+              {format(new Date(detailResponse?.created), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 
@@ -372,12 +383,13 @@ function ImportReportEdit() {
             Nhân viên tạo đơn
           </div>
           <div className="px-4 py-3 border rounded border-gray text-gray">
-            {productImportObject?.user?.userName}
+            {detailResponse?.user?.userName}
           </div>
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title="Ghi chú hóa đơn"
+            value={detailResponse?.note ? detailResponse?.note : ""}
             onChange={(e) => {
               setProductImportObject({
                 ...productImportObject,
@@ -555,7 +567,12 @@ function CountTotalPrice({ data, listProductImport }) {
   )
 }
 
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
+function ListUnitImport({
+  data,
+  listProductImport,
+  setListProductImport,
+  listChosenProduct,
+}) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
@@ -569,7 +586,6 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
         },
         ...data?.measuredUnits,
       ])
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
     }
   }, [data])
 
@@ -588,6 +604,15 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       setListProductImport(newList)
     }
   }, [unitChosen])
+
+  useEffect(() => {
+    if (listChosenProduct) {
+      const list = listChosenProduct
+      const test = list.filter((item) => {
+        item.productId === data?.productId
+      })
+    }
+  }, [listChosenProduct])
 
   return (
     <ChooseUnitImport

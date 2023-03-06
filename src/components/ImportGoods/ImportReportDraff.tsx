@@ -57,6 +57,16 @@ function ImportReportDraff() {
           ),
         },
         {
+          Header: "Đơn vị",
+          accessor: (data: any) => (
+            <div>
+              {data?.measuredUnit
+                ? data?.measuredUnit?.measuredUnitName
+                : data?.defaultMeasuredUnit}
+            </div>
+          ),
+        },
+        {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
