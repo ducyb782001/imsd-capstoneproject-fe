@@ -25,9 +25,6 @@ function AddImage({
       ) : imageUploaded ? (
         <div className="flex flex-col items-center justify-center w-max">
           {children}
-          <div className="flex items-center gap-1 mt-6 text-primary">
-            <UploadIcon /> Cập nhật ảnh
-          </div>
         </div>
       ) : (
         <div>
