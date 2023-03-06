@@ -19,6 +19,7 @@ import {
   getTypeGoodDetail,
   updateTypeGood,
 } from "../../../apis/type-good-module"
+const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function EditTypePopup({ className = "", id }) {
   const router = useRouter()
@@ -32,6 +33,9 @@ function EditTypePopup({ className = "", id }) {
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
   const handleSaveBtn = () => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_TYPE_ID,
+    })
     // @ts-ignore
     editTypeMutation.mutate({
       categoryId: id,
@@ -59,11 +63,13 @@ function EditTypePopup({ className = "", id }) {
     },
     {
       onSuccess: (data, error, variables) => {
+        toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success("Chỉnh sửa thành công!")
         queryClient.refetchQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)
+        toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.error("Có lỗi xảy ra! Xin kiểm tra lại!")
       },
     },

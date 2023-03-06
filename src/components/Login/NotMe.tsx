@@ -9,7 +9,6 @@ import { LeftBlock } from "./Login"
 import { useMutation } from "react-query"
 import axios from "axios"
 import { notMeUrl } from "../../constants/APIConfig"
-import { toast } from "react-toastify"
 
 function VerifySuccessful(props) {
   const router = useRouter()

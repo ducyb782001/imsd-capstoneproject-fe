@@ -9,58 +9,87 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
+import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
+import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
-import TableSkeleton from "../Skeleton/TableSkeleton"
-import { getListStockTakeProduct } from "../../apis/stocktake-product-module"
+import EditIcon from "../icons/EditIcon"
+import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
+import { getListExportTypeGood } from "../../apis/type-good-module"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
+import { getListExportSupplier } from "../../apis/supplier-module"
+import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
+import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
+import { getListImportProduct } from "../../apis/import-product-module"
+import { getAllExportProduct } from "../../apis/export-product-module"
+import TableSkeleton from "../Skeleton/TableSkeleton"
+import Switch from "react-switch"
+import ChooseRoleDropdown from "./ChooseRoleDropDown"
+
+const data_fake = [
+  {
+    staffCode: "NV101",
+    img: null,
+    staffName: "Vũ Nhật Minh",
+    phone: "0943746666",
+    state: true,
+  },
+  {
+    staffCode: "NV101",
+    img: null,
+    staffName: "Vũ Nhật Minh",
+    phone: "0943746666",
+    state: false,
+  },
+  {
+    staffCode: "NV101",
+    img: null,
+    staffName: "Vũ Nhật Minh",
+    phone: "0943746666",
+    state: false,
+  },
+  {
+    staffCode: "NV101",
+    img: null,
+    staffName: "Vũ Nhật Minh",
+    phone: "0943746666",
+    state: true,
+  },
+]
 
 const columns = [
   {
     Header: " ",
     columns: [
       {
-        Header: "Mã đơn kiểm hàng",
-        accessor: (data: any) => <p>{data?.stocktakeCode}</p>,
-      },
-
-      {
-        Header: "Nhân viên tạo",
-        accessor: (data: any) => <p>Kiểm kho {data?.createdBy?.userName}</p>,
+        Header: "Mã nhân viên",
+        accessor: (data: any) => <p>{data?.staffCode}</p>,
       },
       {
-        Header: "Nhân viên kiểm",
+        Header: "Ảnh",
+        accessor: (data: any) => <p>{data?.img}</p>,
+      },
+      {
+        Header: "Tên nhân viên",
+        accessor: (data: any) => <p>{data?.staffName}</p>,
+      },
+      {
+        Header: "Số điện thoại",
+        accessor: (data: any) => <p>{data?.phone}</p>,
+      },
+      {
+        Header: "Chức vụ",
         accessor: (data: any) => (
-          <p>
-            {data?.updatedBy ? "Kiểm kho " + data?.updatedBy?.userName : ""}
-          </p>
-        ),
-      },
-      {
-        Header: "Ngày tạo đơn",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: "Ngày kiểm hàng",
-        accessor: (data: any) => (
-          <p>
-            {data?.updated
-              ? format(parseISO(data?.updated), "dd/MM/yyyy HH:mm")
-              : ""}
-          </p>
-        ),
-      },
-      {
-        Header: "Trạng thái",
-        accessor: (data: any) => (
-          <div className="flex justify-center">
+          <div className="flex justify-self-start">
             <StatusDisplay data={data} />
           </div>
         ),
+      },
+      {
+        Header: "Trạng thái hoạt động",
+        accessor: (data: any) => <StatusSwitch data={data} />,
       },
       {
         Header: " ",
@@ -71,19 +100,26 @@ const columns = [
 ]
 
 const status = [
-  { id: 0, status: "Đang kiểm hàng" },
+  { id: 0, status: "Kiểm kho" },
+
   {
     id: 1,
-    status: "Hoàn thành",
+    status: "Nhân viên bán hàng",
   },
-  {
-    id: 2,
-    status: "Đã hủy",
-  },
+  //   {
+  //     id: 2,
+  //     status: "Hoàn thành",
+  //   },
+  //   {
+  //     id: 3,
+  //     status: "Đã hủy",
+  //   },
 ]
 
-function ManageCheckGoods({ ...props }) {
+function ManageStaff({ ...props }) {
+  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
+  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -91,11 +127,25 @@ function ManageCheckGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listStockTakeProduct, setListStockTakeProduct] = useState<any>()
+  const [listExportProduct, setListExportProduct] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
+  useEffect(() => {
+    if (nhaCungCapSelected) {
+      // Them logic check id cua nha cung cap phai khac thi moi them vao list
+      setListFilter([
+        ...listFilter,
+        {
+          key: "supId",
+          applied: "Nhà cung cấp",
+          value: nhaCungCapSelected?.supplierName,
+          id: nhaCungCapSelected?.supplierId,
+        },
+      ])
+    }
+  }, [nhaCungCapSelected])
   useEffect(() => {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
@@ -138,16 +188,16 @@ function ManageCheckGoods({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getListStockTakeProduct({
+          const response = await getAllExportProduct({
             code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListStockTakeProduct(response?.data)
+          setListExportProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListStockTakeProduct({
+          const exportFile = await getListImportProduct({
             code: debouncedSearchValue,
             offset: 0,
             limit: 1000,
@@ -158,12 +208,12 @@ function ManageCheckGoods({ ...props }) {
 
           return response?.data
         } else {
-          const response = await getListStockTakeProduct({
+          const response = await getAllExportProduct({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListStockTakeProduct(response?.data)
+          setListExportProduct(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
 
           //-----------
@@ -196,29 +246,36 @@ function ManageCheckGoods({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/create-check-report`}>
+        <Link href={`/create-export-report`}>
           <a>
             <PrimaryBtn
-              className="max-w-[230px]"
+              className="max-w-[250px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn kiểm hàng
+              Đăng ký nhân viên mới
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
+          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[60%_18%_22%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn kiểm hàng"
+              placeholder="Tìm theo tên nhân viên, mã nhân viên, số điện thoại"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
+            <ChooseRoleDropdown
+              listDropdown={status}
+              textDefault={"Chức vụ"}
+              showing={statusSelected}
+              setShowing={setStatusSelected}
+            />
+
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={"Trạng thái hoạt động"}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
@@ -240,7 +297,7 @@ function ManageCheckGoods({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listStockTakeProduct?.data}
+                data={data_fake}
               />
             </div>
             <Pagination
@@ -248,7 +305,7 @@ function ManageCheckGoods({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listStockTakeProduct?.total}
+              totalItems={listExportProduct?.total}
             />
           </>
         )}
@@ -257,7 +314,7 @@ function ManageCheckGoods({ ...props }) {
   )
 }
 
-export default ManageCheckGoods
+export default ManageStaff
 
 function ImportExportButton({
   accessoriesLeft,
@@ -278,23 +335,53 @@ function ImportExportButton({
   )
 }
 
+function StatusSwitch({ data }) {
+  const [checked, setChecked] = useState(data?.state)
+  const handleChangeStatus = () => {
+    setChecked(!checked)
+  }
+  return (
+    <Switch
+      onChange={handleChangeStatus}
+      checked={checked}
+      width={44}
+      height={24}
+      className="ml-2 !opacity-100"
+      uncheckedIcon={null}
+      checkedIcon={null}
+      offColor="#CBCBCB"
+      onColor="#6A44D2"
+    />
+  )
+}
+
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">Đang kiểm hàng</h1>
+      //   <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+        <h1 className="m-2 ml-3 text-green-500">Kiểm kho</h1>
+        {/* <h1 className="m-2 ml-3 text-orange-500">Kiểm kho</h1> */}
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+      <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">Nhân viên bán hàng</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
-        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+      <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+        <h1 className="m-2 ml-3 text-green-500">Kiểm kho</h1>
+      </div>
+    )
+  } else {
+    return (
+      //   <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
+      <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">Nhân viên bán hàng</h1>
+        {/* <h1 className="m-2 ml-3 text-red-500">Nhân viên bán hàng</h1> */}
       </div>
     )
   }
@@ -304,7 +391,7 @@ function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/draff-check-good/${data?.stocktakeId}`}>
+        <Link href={`/export-report-draff/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -314,7 +401,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
+        <Link href={`/export-report-detail/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -324,7 +411,17 @@ function DetailImportProduct({ data }) {
   } else if (data?.state == 2) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
+        <Link href={`/export-report-succeed/${data?.exportId}`}>
+          <a className="w-full">
+            <ShowDetailIcon />
+          </a>
+        </Link>
+      </div>
+    )
+  } else {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href={`/export-report-canceled/${data?.exportId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

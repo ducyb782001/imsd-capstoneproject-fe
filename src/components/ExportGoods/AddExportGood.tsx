@@ -24,7 +24,6 @@ import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
-
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateExportReport() {
@@ -82,8 +81,6 @@ function CreateExportReport() {
                 data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
               />
               <p>đ</p>
             </div>
@@ -111,7 +108,7 @@ function CreateExportReport() {
               data={data}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
+              setNewList={setNewList}
             />
           ),
         },
@@ -149,7 +146,7 @@ function CreateExportReport() {
   const [listProductExport, setListProductExport] = useState<any>([])
   const [productExportObject, setProductExportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+  const [newList, setNewList] = useState<any>([])
 
   useEffect(() => {
     if (staffSelected) {
@@ -217,21 +214,20 @@ function CreateExportReport() {
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
-      const price = listProductImport.reduce(
-        (total, currentValue) =>
-          new BigNumber(total).plus(currentValue.price || 0),
-        0,
-      )
-      const priceSet = new BigNumber(price).toFormat()
-      setTotalPriceSend(priceSet)
+    if (newList) {
+      const totalPrice = newList.reduce((total, item) => {
+        const price = new BigNumber(item.price || 0)
+        return new BigNumber(total).plus(price)
+      }, 0)
+
+      setTotalPriceSend(new BigNumber(totalPrice).toFormat(0))
       setProductExportObject({
         ...productExportObject,
-        exportOrderDetails: listProductImport,
-        totalPrice: new BigNumber(price).toFixed(),
+        exportOrderDetails: newList,
+        totalPrice: totalPrice.toFixed(),
       })
     }
-  }, [listProductImport])
+  }, [newList])
 
   const totalPrice = () => {
     if (listProductImport?.length > 0) {
@@ -273,7 +269,7 @@ function CreateExportReport() {
       },
     },
   ])
-  console.log(listChosenProduct)
+  console.log(productExportObject)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -379,7 +375,7 @@ function CreateExportReport() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
-            Tổng giá trị đơn hàng: {totalPriceSend}
+            Tổng giá trị đơn hàng: {totalPriceSend} đ
           </div>
         </div>
         <ConfirmPopup
@@ -403,7 +399,7 @@ function ListQuantitiveImport({
   autoUpdatePrice,
   setAutoUpdatePrice,
 }) {
-  const [quantity, setQuantity] = useState()
+  const [quantity, setQuantity] = useState(0)
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -431,13 +427,7 @@ function ListQuantitiveImport({
   )
 }
 
-function ListPriceImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
+function ListPriceImport({ data, listProductImport, setListProductImport }) {
   const [costPrice, setCostPrice] = useState()
 
   useEffect(() => {
@@ -447,16 +437,18 @@ function ListPriceImport({
     }
   }, [data])
 
-  const handleOnChangePrice = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, costPrice: value, price: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
+  useEffect(() => {
+    if (costPrice) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, costPrice: costPrice }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [costPrice])
 
   return (
     <PrimaryInput
@@ -467,8 +459,6 @@ function ListPriceImport({
       onChange={(e) => {
         e.stopPropagation()
         setCostPrice(e.target.value)
-        handleOnChangePrice(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
@@ -503,7 +493,6 @@ function ListDiscountImport({
         e.stopPropagation()
         setDiscount(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
@@ -513,7 +502,7 @@ function CountTotalPrice({
   data,
   listProductImport,
   setListProductImport,
-  autoUpdatePrice,
+  setNewList,
 }) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
@@ -529,24 +518,35 @@ function CountTotalPrice({
           .dividedBy(100)
         if (item.discount) {
           const afterPrice = totalPrice.minus(discountPrice)
-          setPrice(afterPrice.toFormat(0))
-          return { ...item, price: afterPrice.toFixed() }
+          setPrice(afterPrice)
         } else {
-          setPrice(totalPrice.toFormat(0))
-          return { ...item, price: totalPrice.toFixed() }
+          setPrice(totalPrice)
         }
       }
       return item
     })
-    setListProductImport(newList)
   }
+  useEffect(() => {
+    handleSetPrice()
+  }, [listProductImport])
+
+  useEffect(() => {
+    if (price) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId === data.productId) {
+          return { ...item, price: price.toFixed() }
+        }
+        return item
+      })
+
+      setNewList(newList)
+    }
+  }, [price])
 
   return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn"
-      onClick={handleSetPrice}
-    >
-      {price} đ
+    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+      {new BigNumber(price).toFormat(0)} đ
     </div>
   )
 }
@@ -568,7 +568,11 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
-          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+            costPrice: unitChosen?.suggestedPrice,
+          }
         }
         return item
       })

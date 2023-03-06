@@ -91,3 +91,17 @@ export const exportExportProductUrl = `${baseUrl}/Export/Export`
 export const denyExportProductUrl = `${baseUrl}/Export/DenyImport`
 
 export const updateExportProductUrl = `${baseUrl}/Export/UpdateExportOrder`
+
+// stocktake product
+
+export const allStocktakeUrl = `${baseUrl}/Stocktake/Get`
+
+export const createStockTakeUrl = `${baseUrl}/Stocktake/Create`
+
+export const detailStockTakeUrl = `${baseUrl}/Stocktake/GetDetail`
+
+export const approveStockTakeUrl = `${baseUrl}/Stocktake/Stocktake`
+
+export const denyStockTakeUrl = `${baseUrl}/Stocktake/Cancel`
+
+export const updateStockTakeUrl = `${baseUrl}/Stocktake/Update`

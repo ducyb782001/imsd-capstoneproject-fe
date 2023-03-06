@@ -16,6 +16,7 @@ import { resetPassword } from "../../constants/APIConfig"
 import { passRegex } from "../../constants/constants"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function SetPassword(props) {
   const [userPassword, setUserPassword] = useState("")
@@ -28,6 +29,9 @@ function SetPassword(props) {
     router.push("/login")
   }
   const handleChangePass = (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     resetPassMutation.mutate()
   }
   const { token } = router.query
@@ -40,6 +44,7 @@ function SetPassword(props) {
     },
     {
       onSuccess: (data, error, variables) => {
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.success("Cài lại mật khẩu thành công!")
         setDisabled(false)
         setTimeout(() => {
@@ -49,6 +54,7 @@ function SetPassword(props) {
       onError: (data: any) => {
         console.log("login error", data)
         // toast.error("Link reset mật khẩu lỗi! Xin thực hiện lại!")
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.error("Cài lại mật khẩu thành công!")
         router.push("/login")
       },

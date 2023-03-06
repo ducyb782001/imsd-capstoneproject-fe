@@ -16,6 +16,7 @@ import { passRegex } from "../../constants/constants"
 import { emailRegex } from "../../constants/constants"
 import InfoIcon from "../icons/InfoIcon"
 import Tooltip from "../ToolTip"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function Signup(props) {
   const [disabled, setDisabled] = useState(true)
@@ -29,6 +30,9 @@ function Signup(props) {
   }
 
   const handleSignUp = (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     event.preventDefault()
     if (
       userPassword == userPassword2 &&
@@ -48,6 +52,7 @@ function Signup(props) {
     },
     {
       onSuccess: (data, error, variables) => {
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.success("Đăng kí thành công!")
         setTimeout(() => {
           router.push("/confirm-email")
@@ -55,10 +60,9 @@ function Signup(props) {
       },
       onError: (data: any) => {
         console.log("login error", data)
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.success("Đăng kí thành công!")
         router.push("/confirm-email")
-
-        // toast.error("Có lỗi xảy ra! Xin hãy đăng nhập lại!")
       },
     },
   )

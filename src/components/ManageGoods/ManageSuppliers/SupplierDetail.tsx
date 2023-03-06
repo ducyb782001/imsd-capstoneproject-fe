@@ -75,9 +75,9 @@ interface Supplier {
   supplierId: number
   supplierName: string
   supplierPhone: string
-  city: string
-  district: string
-  ward: string
+  city: any
+  district: any
+  ward: any
   address: string
   note: string
   supplierEmail: string
@@ -95,14 +95,13 @@ function SupplierDetail() {
   const debouncedSearchValue = useDebounce(searchParam, 500)
 
   const router = useRouter()
-  const { queryId } = router.query
+  const { supplierid } = router.query
   const [isLoadingSupplierDetail, setIsLoadingSupplierDetail] = useState(true)
-
   useQueries([
     {
-      queryKey: ["getSupplierDetail", queryId],
+      queryKey: ["getSupplierDetail", supplierid],
       queryFn: async () => {
-        const response = await getSupplierDetail(queryId)
+        const response = await getSupplierDetail(supplierid)
         await setSupplier(response?.data)
         setIsLoadingSupplierDetail(response?.data?.isLoading)
         return response?.data
@@ -114,7 +113,7 @@ function SupplierDetail() {
         debouncedSearchValue,
         currentPage,
         pageSize,
-        queryId,
+        supplierid,
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
@@ -122,7 +121,7 @@ function SupplierDetail() {
             search: debouncedSearchValue,
             offset: 0,
             limit: 1000,
-            supId: queryId,
+            supId: supplierid,
             ...queryParams,
           })
           await setListProductSupplier(listProduct?.data)
@@ -130,13 +129,14 @@ function SupplierDetail() {
           const listProduct = await getListProduct({
             offset: 0,
             limit: 1000,
-            supId: queryId,
+            supId: supplierid,
           })
           await setListProductSupplier(listProduct?.data)
         }
       },
     },
   ])
+  console.log(supplier)
 
   useEffect(() => {
     setSupplier({
@@ -185,11 +185,11 @@ function SupplierDetail() {
             data={
               supplier?.address +
               ", " +
-              supplier?.ward +
+              supplier?.ward?.name +
               ", " +
-              supplier?.district +
+              supplier?.district?.name +
               ", " +
-              supplier?.city
+              supplier?.city?.name
             }
           />
           <SupplierInfo title="Ghi chú" data={supplier?.note} />
