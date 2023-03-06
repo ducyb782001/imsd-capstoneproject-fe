@@ -1,30 +1,23 @@
-import BigNumber from "bignumber.js"
-import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import {
-  getDetailImportProduct,
-  importImportProduct,
-} from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import ChooseUnitImport from "./ChooseUnitExport"
 import { useRouter } from "next/router"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import {
   exportExportProduct,
   getDetailExportProduct,
 } from "../../apis/export-product-module"
+import BigNumber from "bignumber.js"
+import { format } from "date-fns"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function ImportReportDetail() {
+function ExportReportDetail() {
   const columns = [
     {
       Header: " ",
@@ -54,14 +47,22 @@ function ImportReportDetail() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <PrimaryInput
+              value={data?.amount}
+              className="w-16"
+              readOnly={true}
+            />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.price} className="w-24" />
+              <PrimaryInput
+                value={data?.product?.sellingPrice}
+                className="w-24"
+                readOnly={true}
+              />
               <p>đ</p>
             </div>
           ),
@@ -70,19 +71,40 @@ function ImportReportDetail() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
+              <PrimaryInput
+                value={data?.discount}
+                className="w-12"
+                readOnly={true}
+              />
               <p>%</p>
+            </div>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <p>
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.product?.sellingPrice)
+                  .minus(
+                    new BigNumber(data.amount)
+                      .multipliedBy(data.product?.sellingPrice)
+                      .multipliedBy(data.discount)
+                      .dividedBy(100),
+                  )
+                  .toFormat(0)}
+              </p>
             </div>
           ),
         },
       ],
     },
   ]
-  const [productImportObject, setProductImportObject] = useState<any>()
+
   const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-  const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
   useEffect(() => {
     if (productImport) {
@@ -102,6 +124,7 @@ function ImportReportDetail() {
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!exportId,
     },
   ])
 
@@ -141,7 +164,6 @@ function ImportReportDetail() {
     })
     exportExportMutation.mutate(productImport?.exportId)
   }
-  console.log(productImport)
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
@@ -173,23 +195,19 @@ function ImportReportDetail() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar
-              status="pending"
-              createdDate={
-                new Date(productImport?.created).getDate() +
-                "/" +
-                (new Date(productImport?.created).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.created).getFullYear()
-              }
-              approvedDate={
-                new Date(productImport?.approved).getDate() +
-                "/" +
-                (new Date(productImport?.approved).getMonth() + 1) +
-                "/" +
-                new Date(productImport?.approved).getFullYear()
-              }
-            />
+            {productImport && (
+              <StepBar
+                status="approved"
+                createdDate={format(
+                  new Date(productImport?.created),
+                  "dd/MM/yyyy HH:mm",
+                )}
+                approvedDate={format(
+                  new Date(productImport?.approved),
+                  "dd/MM/yyyy HH:mm",
+                )}
+              />
+            )}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -207,20 +225,18 @@ function ImportReportDetail() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              (new Date(productImport?.created).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
-          </div>
+          {productImport && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+            </div>
+          )}
           <PrimaryTextArea
             rows={7}
             className="mt-4"
             title="Ghi chú hóa đơn"
             value={productImport?.note}
-            readonly
+            readOnly={true}
           />
         </div>
       </div>
@@ -244,4 +260,4 @@ function ImportReportDetail() {
   )
 }
 
-export default ImportReportDetail
+export default ExportReportDetail

@@ -38,7 +38,7 @@ const columns = [
       },
       {
         Header: "Địa chỉ",
-        accessor: (data: any) => <p>{data?.province}</p>,
+        accessor: (data: any) => <p>{data?.address}</p>,
       },
       {
         Header: "Hành động",

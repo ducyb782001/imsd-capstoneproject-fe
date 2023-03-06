@@ -6,3 +6,10 @@ export const getListStaff = () => {
     url: `${listStaffUrl}`,
   })
 }
+
+export const getAllStaff = (searchObj) => {
+  const queryString = convertObjectToQueryString(searchObj)
+  return requestAPI({
+    url: `${listStaffUrl}${queryString}`,
+  })
+}

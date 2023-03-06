@@ -14,6 +14,7 @@ import { toast } from "react-toastify"
 import { LeftBlock } from "./Login"
 import KeyIcon from "../icons/KeyIcon"
 import { emailRegex } from "../../constants/constants"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function InputEmailForgot(props) {
   const [userEmail, setUserEmail] = useState("")
@@ -31,18 +32,24 @@ function InputEmailForgot(props) {
     },
     {
       onSuccess: (data, error, variables) => {
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+        toast.success("Nhập tài khoản thành công!")
         setDisabled(true)
         setTimeout(() => {
           router.push("/check-reset-password-alert")
         }, 300)
       },
       onError: (data: any) => {
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         router.push("/check-reset-password-alert")
       },
     },
   )
 
   const handleSendEmail = (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({

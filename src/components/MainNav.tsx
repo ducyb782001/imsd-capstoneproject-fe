@@ -105,8 +105,8 @@ function MainNav() {
     {
       id: 1,
       name: "Quản lý nhân viên",
-      href: "/check-goods-list",
-      isActive: router.asPath.includes("/check-goods-list"),
+      href: "/manage-staff",
+      isActive: router.asPath.includes("/manage-staff"),
     },
   ]
 
@@ -146,6 +146,7 @@ function MainNav() {
         router.asPath.includes("/import-report-succeed") ||
         router.asPath.includes("/import-report-canceled") ||
         router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
         router.asPath.includes("/create-import-report"),
     },
     {
@@ -177,6 +178,9 @@ function MainNav() {
       icon: <CheckGoodsIcon />,
       isActive:
         router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
     },
     // indev
@@ -185,7 +189,7 @@ function MainNav() {
       name: "Nhân viên",
       subMenu: subMenuUser,
       icon: <UserIcon />,
-      isActive: router.asPath.includes("/abcd"),
+      isActive: router.asPath.includes("/manage-staff"),
     },
   ]
 

@@ -52,7 +52,7 @@ export const denyExportProduct = (exportProductId) => {
 }
 
 export const updateExportProduct = (importProduct) => {
-  patchAPI({
+  return patchAPI({
     url: `${updateExportProductUrl}`,
     data: importProduct,
   })

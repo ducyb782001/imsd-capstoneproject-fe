@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react"
 import PrimaryInput from "../../PrimaryInput"
 import PrimaryTextArea from "../../PrimaryTextArea"
 import SmallTitle from "../../SmallTitle"
-import PrimaryBtn from "../../PrimaryBtn"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import { addNewProduct } from "../../../apis/product-module"
 import CityDropDown from "../../CityDropDown"
 import WardDropDown from "../../WardDropDown"
 import DistrictDropDown from "../../DistrictDropDown"
@@ -18,6 +16,7 @@ import {
 import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
   supplierId: number
@@ -34,9 +33,6 @@ interface Supplier {
 
 function AddSupplier(props) {
   const [supplier, setSupplier] = useState<Supplier>()
-  const [listUnits, setListUnits] = useState([])
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
   const [disabled, setDisabled] = useState(true)
 
@@ -118,12 +114,15 @@ function AddSupplier(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm nhà cung cấp thành công!")
           router.push("/manage-suppliers")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -143,6 +142,9 @@ function AddSupplier(props) {
   }, [isEnabled])
 
   const handleAddNewSupplier = () => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     addNewSupplierMutation.mutate({
       ...supplier,

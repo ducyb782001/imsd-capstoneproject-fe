@@ -1,12 +1,10 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
-import DemoPopup from "../DemoPopup"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
-function ChooseStaffDropdown({
+function ChooseRoleDropdown({
   title = "",
   listDropdown,
   showing,
@@ -69,7 +67,7 @@ function ChooseStaffDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
+        {title && <p className="mb-1 text-sm text-gray font-bold">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -77,7 +75,7 @@ function ChooseStaffDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.userName || showing || textDefault}
+              {showing?.status || showing || textDefault}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -101,12 +99,6 @@ function ChooseStaffDropdown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder="Tìm kiếm theo tên"
-        />
         <div
           id="list-dropdown"
           className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
@@ -120,7 +112,7 @@ function ChooseStaffDropdown({
   )
 }
 
-export default ChooseStaffDropdown
+export default ChooseRoleDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -128,7 +120,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.userName || data}
+      {data?.status || data}
     </div>
   )
 }

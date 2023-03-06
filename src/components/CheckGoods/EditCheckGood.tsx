@@ -20,11 +20,14 @@ import SecondaryBtn from "../SecondaryBtn"
 import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
-import { createStockTakeProduct } from "../../apis/stocktake-product-module"
+import {
+  getDetailStockTakeProduct,
+  updateStockTakeProduct,
+} from "../../apis/stocktake-product-module"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateCheckReport() {
+function EditCheckReport() {
   const columns = [
     {
       Header: " ",
@@ -60,8 +63,8 @@ function CreateCheckReport() {
           accessor: (data: any) => (
             <ListUnitImport
               data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
             />
           ),
         },
@@ -71,8 +74,8 @@ function CreateCheckReport() {
             <div className="flex items-center max-w-[70px]">
               <ListStock
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductImport={listProductStockTake}
+                setListProductImport={setListProductStockTake}
                 autoUpdatePrice={autoUpdatePrice}
                 setAutoUpdatePrice={setAutoUpdatePrice}
               />
@@ -85,8 +88,8 @@ function CreateCheckReport() {
             <div className="flex items-center max-w-[80px]">
               <ListActualStock
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductImport={listProductStockTake}
+                setListProductImport={setListProductStockTake}
                 autoUpdatePrice={autoUpdatePrice}
                 setAutoUpdatePrice={setAutoUpdatePrice}
               />
@@ -96,14 +99,12 @@ function CreateCheckReport() {
         {
           Header: "Lệch",
           accessor: (data: any) => (
-            <div className="w-[70px]">
-              <CountDeviated
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-              />
-            </div>
+            <CountDeviated
+              data={data}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
+              autoUpdatePrice={autoUpdatePrice}
+            />
           ),
         },
         {
@@ -111,8 +112,8 @@ function CreateCheckReport() {
           accessor: (data: any) => (
             <ListNote
               data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+              listProductImport={listProductStockTake}
+              setListProductImport={setListProductStockTake}
               autoUpdatePrice={autoUpdatePrice}
               setAutoUpdatePrice={setAutoUpdatePrice}
             />
@@ -144,18 +145,20 @@ function CreateCheckReport() {
 
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductSearch, setListProductSearch] = useState<any>([])
+  const [listProductStockTake, setListProductStockTake] = useState<any>([])
+  const [listProductStockTakeCurrent, setListProductStockTakeCurrent] =
+    useState<any>([])
+  const [listProductExport, setListProductExport] = useState<any>([])
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
       setProductStockTakeObject({
         ...productStockTakeObject,
-        createdId: staffSelected?.userId,
+        userId: staffSelected?.userId,
       })
     }
   }, [staffSelected])
@@ -172,40 +175,52 @@ function CreateCheckReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const currentStock = listProductImport.find(
+        const currentStock = listProductStockTake.find(
           (i) => i.productId == item.productId,
         )?.inStock
           ? undefined
           : item.inStock
-        const measuredUnitId = listProductImport.find(
+        const measuredUnitId = listProductStockTake.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
           ? undefined
           : 0
+        const stocktakeId = listProductStockTake.find(
+          (i) => i.productId == item.productId,
+        )?.actualStock
+          ? undefined
+          : 0
 
+        const currentStockTake = listProductStockTakeCurrent.map((a) => {
+          if (a.productId == item.productId) {
+            return a.actualStock
+          }
+        })
         return {
-          stocktakeId: 0,
+          stocktakeId: stocktakeId,
           productId: item.productId,
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
-          actualStock: 0,
+          actualStock: currentStockTake[0],
           note: "",
         }
       })
-      setListProductImport(list)
+      setListProductStockTake(list)
     }
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
+    if (listProductStockTake) {
       setProductStockTakeObject({
         ...productStockTakeObject,
-        stocktakeNoteDetails: listProductImport,
+        stocktakeNoteDetails: listProductStockTake,
       })
     }
-  }, [listProductImport])
+  }, [listProductStockTake])
 
   const router = useRouter()
+  const { checkId } = router.query
+
   useQueries([
     {
       queryKey: ["getListStaff"],
@@ -219,23 +234,38 @@ function CreateCheckReport() {
       queryKey: ["getListProduct"],
       queryFn: async () => {
         const response = await getListExportProduct()
-        setListProductSearch(response?.data)
+        setListProductExport(response?.data)
         return response?.data
       },
+    },
+    {
+      queryKey: ["getDetailStockTake"],
+      queryFn: async () => {
+        const response = await getDetailStockTakeProduct(checkId)
+        setProductStockTakeObject(response?.data)
+        setListProductStockTakeCurrent(response?.data?.stocktakeNoteDetails)
+        const list = response?.data?.stocktakeNoteDetails.map((item) => {
+          return item.product
+        })
+        setListChosenProduct(list)
+        setListProductStockTake(response?.data?.stocktakeNoteDetails)
+        return response?.data
+      },
+      enabled: !!checkId,
     },
   ])
   console.log(productStockTakeObject)
 
-  const createStockTakeMutation = useMutation(
+  const updateStockTakeMutation = useMutation(
     async (exportProduct) => {
-      return await createStockTakeProduct(exportProduct)
+      return await updateStockTakeProduct(exportProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn kiểm hàng thành công!")
-          router.push("/manage-check-good")
+          toast.success("Chỉnh sửa đơn kiểm hàng thành công!")
+          router.push("/draff-check-good/" + checkId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -258,11 +288,7 @@ function CreateCheckReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createStockTakeMutation.mutate({
-      ...productStockTakeObject,
-      stocktakeId: 0,
-      stocktakeCode: "string",
-    })
+    updateStockTakeMutation.mutate(productStockTakeObject)
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
@@ -282,16 +308,16 @@ function CreateCheckReport() {
       <div>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Tạo phiếu kiểm hàng</h1>
+            <h1 className="text-2xl font-semibold">Chỉnh sửa kiểm hàng</h1>
           </div>
           <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
-              classNameBtn="w-[190px]"
+              classNameBtn="w-[180px]"
               title="Bạn chắc chắn muốn duyệt đơn?"
               handleClickSaveBtn={handleClickSaveBtn}
             >
-              Tạo phiếu kiểm hàng
+              Lưu
             </ConfirmPopup>
             <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
               Thoát
@@ -300,15 +326,23 @@ function CreateCheckReport() {
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-semibold">Thông tin đơn</h1>
+            <h1 className="text-xl font-semibold">Thông tin phiếu</h1>
           </div>
           <div className="text-sm font-medium text-left text-gray mb-3">
-            Ngày kiểm hàng: {format(Date.now(), "dd/MM/yyyy")}
+            <p className="mb-3">Ngày kiểm hàng: </p>
+            <PrimaryInput
+              value={format(Date.now(), "dd/MM/yyyy HH:mm")}
+              className="w-[150px] text-sm font-normal text-gray"
+              readOnly={true}
+            />
           </div>
+          <p className="text-sm font-medium text-left text-gray mb-3">
+            Nhân viên
+          </p>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={"Chọn nhân viên kiểm hàng"}
+              textDefault={productStockTakeObject?.createdBy?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -317,7 +351,7 @@ function CreateCheckReport() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú"
+            title="Ghi chú hóa đơn"
             value={productStockTakeObject?.note}
             onChange={(e) => {
               setProductStockTakeObject({
@@ -329,9 +363,9 @@ function CreateCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
         <SearchProductImportDropdown
-          listDropdown={listProductSearch?.data}
+          listDropdown={listProductExport?.data}
           textDefault={"Nhà cung cấp"}
           showing={productChosen}
           setShowing={setProductChosen}
@@ -348,7 +382,7 @@ function CreateCheckReport() {
   )
 }
 
-export default CreateCheckReport
+export default EditCheckReport
 
 function ListStock({
   data,
@@ -416,7 +450,6 @@ function ListActualStock({
     <PrimaryInput
       className="w-[50px]"
       type="number"
-      placeholder="0"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()

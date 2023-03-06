@@ -3,28 +3,42 @@ import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
+import {
+  approveImportProduct,
+  createImportProduct,
+  denyImportProduct,
+  getDetailImportProduct,
+  updateImportProduct,
+} from "../../apis/import-product-module"
+import {
+  getListExportProduct,
+  getListExportProductBySupplier,
+} from "../../apis/product-module"
+import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
+import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
+import Tooltip from "../ToolTip"
+import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
-import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
+import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import SecondaryBtn from "../SecondaryBtn"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import {
-  approveExportProduct,
-  denyExportProduct,
   getDetailExportProduct,
   updateExportProduct,
 } from "../../apis/export-product-module"
-import SecondaryBtn from "../SecondaryBtn"
-import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
+
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function ExportReportDraff() {
+function ImportReportEdit() {
   const columns = [
     {
       Header: " ",
@@ -54,10 +68,22 @@ function ExportReportDraff() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
+            <ListQuantitiveImport
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+              autoUpdatePrice={autoUpdatePrice}
+              setAutoUpdatePrice={setAutoUpdatePrice}
+            />
+          ),
+        },
+        {
+          Header: "Đơn vị",
+          accessor: (data: any) => (
+            <ListUnitImport
+              data={data?.product}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
             />
           ),
         },
@@ -65,10 +91,12 @@ function ExportReportDraff() {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.price}
-                className="w-24"
-                readOnly={true}
+              <ListPriceImport
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
               />
               <p>đ</p>
             </div>
@@ -78,10 +106,12 @@ function ExportReportDraff() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
+              <ListDiscountImport
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
+                autoUpdatePrice={autoUpdatePrice}
+                setAutoUpdatePrice={setAutoUpdatePrice}
               />
               <p>%</p>
             </div>
@@ -90,19 +120,12 @@ function ExportReportDraff() {
         {
           Header: "Thành tiền",
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <p>
-                {new BigNumber(data.amount)
-                  .multipliedBy(data.costPrice)
-                  .minus(
-                    new BigNumber(data.amount)
-                      .multipliedBy(data.costPrice)
-                      .multipliedBy(data.discount)
-                      .dividedBy(100),
-                  )
-                  .toFormat(0)}
-              </p>
-            </div>
+            <CountTotalPrice
+              data={data}
+              listProductImport={listProductImport}
+              setListProductImport={setListProductImport}
+              autoUpdatePrice={autoUpdatePrice}
+            />
           ),
         },
         {
@@ -125,14 +148,17 @@ function ExportReportDraff() {
     },
   ]
 
+  const router = useRouter()
+  const { exportId } = router.query
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductBySupplierImport, setListProductBySupplierImport] =
-    useState<any>([])
+  const [listProduct, setListProduct] = useState<any>([])
+
+  // cai de gui di de update
   const [productImportObject, setProductImportObject] = useState<any>()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
@@ -149,7 +175,6 @@ function ExportReportDraff() {
   useEffect(() => {
     setNhaCungCapSelected(productImportObject?.supplier)
   }, [productImportObject])
-
   useEffect(() => {
     if (nhaCungCapSelected) {
       setProductImportObject({
@@ -201,7 +226,6 @@ function ExportReportDraff() {
           )?.measuredUnitId
             ? undefined
             : 0,
-          exportId: productImportObject?.exportId,
         }
       })
       setListProductImport(list)
@@ -230,20 +254,21 @@ function ExportReportDraff() {
     }
   }
 
-  const approveImportMutation = useMutation(
+  const updateImportMutation = useMutation(
     async (importProduct) => {
-      return await approveExportProduct(importProduct)
+      return await updateExportProduct(importProduct)
     },
     {
-      onSuccess: (data, error, variables) => {
+      onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Duyệt đơn xuất hàng thành công")
-          router.push("/export-report-detail/" + productImportObject?.exportId)
+          toast.success("Cập nhật đơn xuất hàng thành công")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -254,52 +279,18 @@ function ExportReportDraff() {
       },
     },
   )
-  const updateExportMutation = useMutation(async (importProduct) => {
-    return await updateExportProduct(importProduct)
-  })
-  const router = useRouter()
-  const { exportId } = router.query
 
-  const handleClickApproveBtn = (event) => {
-    event?.preventDefault()
+  const handleClickUpdateBtn = async (event) => {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    // updateExportMutation.mutate(productImportObject)
-
-    approveImportMutation.mutate(productImportObject?.exportId)
+    event?.preventDefault()
+    await updateImportMutation.mutate(productImportObject)
+    // await approveImportMutation.mutate(productImportObject?.importId)
   }
 
-  const cancelImportMutation = useMutation(
-    async (importProduct) => {
-      return await denyExportProduct(importProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Hủy đơn nhập hàng thành công")
-          router.push("/manage-export-goods")
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                "Opps! Something went wrong...",
-            )
-          }
-        }
-      },
-    },
-  )
-  const handleClickCancelBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    cancelImportMutation.mutate(productImportObject?.exportId)
+  const handleClickOutBtn = (event) => {
+    router.push("/export-report-draff/" + exportId)
   }
 
   useQueries([
@@ -308,43 +299,39 @@ function ExportReportDraff() {
       queryFn: async () => {
         const response = await getDetailExportProduct(exportId)
         setListChosenProduct(response?.data?.exportOrderDetails)
-        setListProductImport(response?.data?.exportOrderDetails)
         setProductImportObject(response?.data)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
+      enabled: !!exportId,
     },
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data)
-        return staff?.data?.data
+        const response = await getListStaff()
+        setListStaff(response?.data)
+        return response?.data?.data
       },
     },
     {
-      queryKey: ["getListStaff"],
+      queryKey: ["getListProduct"],
       queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data)
-        return staff?.data?.data
+        const response = await getListExportProduct()
+        setListProduct(response?.data)
+        return response?.data?.data
       },
     },
   ])
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
-  }
-
   console.log(productImportObject)
 
   return isLoadingReport ? (
-    <ExportReportSkeleton />
+    <ImportReportSkeleton />
   ) : (
     <div>
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.exportCode}
               </h1>
@@ -354,42 +341,35 @@ function ExportReportDraff() {
             </div>
             <div className="flex items-center justify-between gap-4">
               <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                Thoát
-              </SecondaryBtn>
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
-                title="Bạn chắc chắn muốn hủy đơn hàng này?"
-                handleClickSaveBtn={handleClickCancelBtn}
-              >
-                Hủy
-              </ConfirmPopup>
-              <SecondaryBtn
-                className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
-                onClick={() => {
-                  router.push(
-                    "/export-report-edit/" + productImportObject?.exportId,
-                  )
-                }}
-              >
-                Sửa đơn
+                Quay lại
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn duyệt đơn?"
-                handleClickSaveBtn={handleClickApproveBtn}
+                title="Bạn chắc chắn muốn cập nhật?"
+                handleClickSaveBtn={handleClickUpdateBtn}
               >
-                Duyệt đơn
+                Cập nhật
               </ConfirmPopup>
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
+            {productImportObject?.created && (
+              <StepBar
+                status="pending"
+                createdDate={format(
+                  new Date(productImportObject?.created),
+                  "dd/MM/yyyy HH:mm",
+                )}
+              />
+            )}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">Chọn nhân viên</h1>
+              <Tooltip content="Chọn nhà cung cấp để hiển thị mặt hàng tương ứng">
+                <InfoIcon />
+              </Tooltip>
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
@@ -403,9 +383,15 @@ function ExportReportDraff() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
-          </div>
+          {productImportObject?.created && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(
+                new Date(productImportObject?.created),
+                "dd/MM/yyyy HH:mm",
+              )}
+            </div>
+          )}
           <PrimaryTextArea
             rows={7}
             className="mt-4"
@@ -422,10 +408,10 @@ function ExportReportDraff() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm xuất đi
+          Thông tin sản phẩm nhập vào
         </h1>
         <SearchProductImportDropdown
-          listDropdown={listProductBySupplierImport?.data}
+          listDropdown={listProduct?.data}
           textDefault={"Nhà cung cấp"}
           showing={productChosen}
           setShowing={setProductChosen}
@@ -446,7 +432,7 @@ function ExportReportDraff() {
   )
 }
 
-export default ExportReportDraff
+export default ImportReportEdit
 
 function ListQuantitiveImport({
   data,
@@ -503,7 +489,7 @@ function ListPriceImport({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
+        return { ...item, price: value }
       }
       return item
     })
@@ -572,11 +558,9 @@ function CountTotalPrice({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount).multipliedBy(
-          item.costPrice,
-        )
+        const totalPrice = new BigNumber(item.amount).multipliedBy(item.price)
         const discountPrice = new BigNumber(item.amount)
-          .multipliedBy(item.costPrice)
+          .multipliedBy(item.price)
           .multipliedBy(item.discount)
           .dividedBy(100)
         if (item.discount) {

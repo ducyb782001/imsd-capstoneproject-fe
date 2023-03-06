@@ -198,11 +198,11 @@ function ImportReportDetail() {
               <StepBar
                 status="approved"
                 createdDate={format(
-                  new Date(productImport?.created),
+                  new Date(productImport?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
                 approvedDate={format(
-                  new Date(productImport?.approved),
+                  new Date(productImport?.approvedDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -224,7 +224,7 @@ function ImportReportDetail() {
           {productImport && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
-              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 
@@ -256,7 +256,7 @@ function ImportReportDetail() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalCost}
+          {new BigNumber(productImport?.totalCost).toFormat()} đ
         </div>
       </div>
     </div>

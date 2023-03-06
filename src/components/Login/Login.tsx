@@ -12,21 +12,14 @@ import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { emailRegex } from "../../constants/constants"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+
 function Login(props) {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [disabled, setDisabled] = useState(true)
 
   const router = useRouter()
-
-  // useEffect(() => {
-  //   const cookies = cookie.parse(window.document.cookie)
-  //   if (cookies.token) {
-  //     router.push("/")
-  //   } else {
-  //     router.push("/login")
-  //   }
-  // }, [cookie])
 
   const loginMutation = useMutation(
     (login) => {
@@ -44,6 +37,7 @@ function Login(props) {
             path: "/",
           })
         }
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.success("Đăng nhập thành công!")
         setDisabled(true)
         setTimeout(() => {
@@ -51,12 +45,16 @@ function Login(props) {
         }, 300)
       },
       onError: (data: any) => {
+        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.error("Email hoặc mật khẩu sai!")
       },
     },
   )
 
   const handleLogin = (event) => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({

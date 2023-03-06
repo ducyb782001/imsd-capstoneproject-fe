@@ -19,6 +19,7 @@ import {
 } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
   supplierId: number
@@ -72,7 +73,7 @@ function EditSupplier(props) {
     {
       queryKey: ["getListDistrict", citySelected],
       queryFn: async () => {
-        const response = await getListDistrictByCode(citySelected?.code)
+        const response = await getListDistrictByCode(citySelected?.id)
         setListDistrict(response?.data?.districts)
         return response?.data
       },
@@ -80,20 +81,20 @@ function EditSupplier(props) {
     {
       queryKey: ["getListWards", districtSelected],
       queryFn: async () => {
-        const response = await getListWardByCode(districtSelected?.code)
+        const response = await getListWardByCode(districtSelected?.id)
         setListWard(response?.data?.wards)
         return response?.data
       },
     },
   ])
-
+  console.log(supplier)
   useEffect(() => {
     setDistrictSelected(undefined)
     setWardSelected(undefined)
     setSupplier({
       ...supplier,
       city: {
-        id: citySelected?.code,
+        id: citySelected?.id,
         name: citySelected?.name,
       },
     })
@@ -103,7 +104,7 @@ function EditSupplier(props) {
     setSupplier({
       ...supplier,
       district: {
-        id: districtSelected?.code,
+        id: districtSelected?.id,
         name: districtSelected?.name,
       },
     })
@@ -112,7 +113,7 @@ function EditSupplier(props) {
     setSupplier({
       ...supplier,
       ward: {
-        id: wardSelected?.code,
+        id: wardSelected?.id,
         name: wardSelected?.name,
       },
     })
@@ -125,12 +126,15 @@ function EditSupplier(props) {
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Cập nhật nhà cung cấp thành công!")
           router.push("/manage-suppliers")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
           } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
@@ -150,6 +154,9 @@ function EditSupplier(props) {
   }, [isEnabled])
 
   const handleEditSupplier = () => {
+    toast.loading("Thao tác đang được xử lý ... ", {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     editSupplierMutation.mutate({
       ...supplier,
@@ -217,21 +224,21 @@ function EditSupplier(props) {
         <CityDropDown
           title={"Tỉnh/Thành phố"}
           listDropdown={listCity}
-          textDefault={supplier?.city}
+          textDefault={supplier?.city?.name}
           showing={citySelected}
           setShowing={setCitySelected}
         />
         <DistrictDropDown
           title={"Quận/Huyện"}
           listDropdown={listDistrict}
-          textDefault={supplier?.district}
+          textDefault={supplier?.district?.name}
           showing={districtSelected}
           setShowing={setDistrictSelected}
         />
         <WardDropDown
           title={"Phường/Xã"}
           listDropdown={listWard}
-          textDefault={supplier?.ward}
+          textDefault={supplier?.ward?.name}
           showing={wardSelected}
           setShowing={setWardSelected}
         />

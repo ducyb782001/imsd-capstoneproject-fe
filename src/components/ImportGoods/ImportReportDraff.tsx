@@ -57,6 +57,16 @@ function ImportReportDraff() {
           ),
         },
         {
+          Header: "Đơn vị",
+          accessor: (data: any) => (
+            <div>
+              {data?.measuredUnit
+                ? data?.measuredUnit?.measuredUnitName
+                : data?.defaultMeasuredUnit}
+            </div>
+          ),
+        },
+        {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
@@ -86,7 +96,7 @@ function ImportReportDraff() {
           Header: "Thành tiền",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <p>
+              <div className="px-3 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
                 {new BigNumber(data.amount)
                   .multipliedBy(data.costPrice)
                   .minus(
@@ -95,8 +105,9 @@ function ImportReportDraff() {
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
-                  .toFormat(0)}
-              </p>
+                  .toFormat(0)}{" "}
+                đ
+              </div>
             </div>
           ),
         },
@@ -214,7 +225,7 @@ function ImportReportDraff() {
                 className="!w-fit"
                 classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
                 title="Bạn chắc chắn muốn hủy đơn hàng này?"
-                handleClickSaveBtn={handleClickApproveBtn}
+                handleClickSaveBtn={handleClickCancelBtn}
               >
                 Hủy
               </ConfirmPopup>
@@ -241,7 +252,7 @@ function ImportReportDraff() {
               <StepBar
                 status="pending"
                 createdDate={format(
-                  new Date(productImport?.created),
+                  new Date(productImport?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -260,10 +271,10 @@ function ImportReportDraff() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {productImport && (
+          {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
-              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 
@@ -295,7 +306,7 @@ function ImportReportDraff() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalCost}
+          {new BigNumber(productImport?.totalCost).toFormat(0)} đ
         </div>
       </div>
     </div>

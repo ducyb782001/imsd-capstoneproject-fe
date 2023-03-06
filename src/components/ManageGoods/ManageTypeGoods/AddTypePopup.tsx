@@ -61,6 +61,7 @@ function AddTypePopup({ className = "" }) {
       },
       onError: (data: any) => {
         console.log("login error", data)
+        toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.error("Có lỗi xảy ra! Xin kiểm tra lại!")
       },
     },
