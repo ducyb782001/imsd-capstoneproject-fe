@@ -197,6 +197,7 @@ function ManageExportGoods({ ...props }) {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
   }
+  console.log(listExportProduct)
 
   return (
     <div>

@@ -74,9 +74,7 @@ function ChooseStatusDropdown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">
-              {showing?.status || showing || textDefault}
-            </p>
+            <p className="text-gray">{textDefault}</p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
             <ArrowDownIcon color="#373737" />

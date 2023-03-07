@@ -107,18 +107,6 @@ function CreateCheckReport() {
           ),
         },
         {
-          Header: "Ghi chú",
-          accessor: (data: any) => (
-            <ListNote
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-              autoUpdatePrice={autoUpdatePrice}
-              setAutoUpdatePrice={setAutoUpdatePrice}
-            />
-          ),
-        },
-        {
           Header: " ",
           accessor: (data: any, index) => (
             <div

@@ -216,7 +216,7 @@ function CreateExportReport() {
   useEffect(() => {
     if (newList) {
       const totalPrice = newList.reduce((total, item) => {
-        const price = new BigNumber(item.price || 0)
+        const price = new BigNumber(item.costPrice || 0)
         return new BigNumber(total).plus(price)
       }, 0)
 
@@ -442,7 +442,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
-          return { ...item, costPrice: costPrice }
+          return { ...item, price: costPrice }
         }
         return item
       })
@@ -509,11 +509,9 @@ function CountTotalPrice({
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount).multipliedBy(
-          item.costPrice,
-        )
+        const totalPrice = new BigNumber(item.amount).multipliedBy(item.price)
         const discountPrice = new BigNumber(item.amount)
-          .multipliedBy(item.costPrice)
+          .multipliedBy(item.price)
           .multipliedBy(item.discount)
           .dividedBy(100)
         if (item.discount) {
@@ -535,7 +533,7 @@ function CountTotalPrice({
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId === data.productId) {
-          return { ...item, price: price.toFixed() }
+          return { ...item, costPrice: price.toFixed() }
         }
         return item
       })

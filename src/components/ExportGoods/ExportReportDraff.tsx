@@ -80,7 +80,7 @@ function ExportReportDraff() {
             <div className="flex items-center gap-1">
               <PrimaryInput
                 value={data?.discount}
-                className="w-12"
+                className="w-[55px]"
                 readOnly={true}
               />
               <p>%</p>
@@ -93,10 +93,10 @@ function ExportReportDraff() {
             <div className="flex items-center gap-1">
               <p>
                 {new BigNumber(data.amount)
-                  .multipliedBy(data.costPrice)
+                  .multipliedBy(data.price)
                   .minus(
                     new BigNumber(data.amount)
-                      .multipliedBy(data.costPrice)
+                      .multipliedBy(data.price)
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
@@ -411,12 +411,7 @@ function ExportReportDraff() {
             className="mt-4"
             title="Ghi chú hóa đơn"
             value={productImportObject?.note}
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
+            readOnly={true}
           />
         </div>
       </div>
@@ -439,7 +434,7 @@ function ExportReportDraff() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {totalPrice()}
+          {productImportObject?.totalPrice}
         </div>
       </div>
     </div>

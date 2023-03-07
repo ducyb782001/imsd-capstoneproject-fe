@@ -53,7 +53,7 @@ function ExportReportCanceled() {
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <PrimaryInput
-                value={data?.product.sellingPrice}
+                value={data?.price}
                 className="w-24"
                 readOnly={true}
               />
@@ -80,10 +80,10 @@ function ExportReportCanceled() {
             <div className="flex items-center gap-1">
               <p>
                 {new BigNumber(data.amount)
-                  .multipliedBy(data.product.sellingPrice)
+                  .multipliedBy(data.price)
                   .minus(
                     new BigNumber(data.amount)
-                      .multipliedBy(data.product.sellingPrice)
+                      .multipliedBy(data.price)
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )

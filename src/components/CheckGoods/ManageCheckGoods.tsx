@@ -22,13 +22,19 @@ const columns = [
     Header: " ",
     columns: [
       {
-        Header: "Mã đơn kiểm hàng",
+        Header: "Mã phiếu kiểm hàng",
         accessor: (data: any) => <p>{data?.stocktakeCode}</p>,
       },
 
       {
         Header: "Nhân viên tạo",
         accessor: (data: any) => <p>Kiểm kho {data?.createdBy?.userName}</p>,
+      },
+      {
+        Header: "Ngày tạo phiếu",
+        accessor: (data: any) => (
+          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+        ),
       },
       {
         Header: "Nhân viên kiểm",
@@ -38,12 +44,7 @@ const columns = [
           </p>
         ),
       },
-      {
-        Header: "Ngày tạo đơn",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
+
       {
         Header: "Ngày kiểm hàng",
         accessor: (data: any) => (
@@ -202,7 +203,7 @@ function ManageCheckGoods({ ...props }) {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn kiểm hàng
+              Tạo phiếu kiểm hàng
             </PrimaryBtn>
           </a>
         </Link>
@@ -211,7 +212,7 @@ function ManageCheckGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn kiểm hàng"
+              placeholder="Tìm theo mã phiếu kiểm hàng"
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
