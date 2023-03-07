@@ -1,17 +1,20 @@
-import React, { useState } from "react"
+import BigNumber from "bignumber.js"
+import { format } from "date-fns"
+import React, { useEffect, useState } from "react"
 import { useQueries } from "react-query"
+import {
+  getDetailImportProduct,
+  getProductDetailImportProduct,
+} from "../../apis/import-product-module"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
-import { getDetailExportProduct } from "../../apis/export-product-module"
-import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
-import { BigNumber } from "bignumber.js"
-import { format } from "date-fns"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
-function ExportReportCanceled() {
+function ImportProductDetail() {
   const columns = [
     {
       Header: " ",
@@ -41,22 +44,14 @@ function ExportReportCanceled() {
         {
           Header: "SL nhập",
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <PrimaryInput value={data?.amount} className="w-16" />
           ),
         },
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.price}
-                className="w-24"
-                readOnly={true}
-              />
+              <PrimaryInput value={data?.costPrice} className="w-24" />
               <p>đ</p>
             </div>
           ),
@@ -65,11 +60,7 @@ function ExportReportCanceled() {
           Header: "Chiết khấu",
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
+              <PrimaryInput value={data?.discount} className="w-12" />
               <p>%</p>
             </div>
           ),
@@ -80,10 +71,10 @@ function ExportReportCanceled() {
             <div className="flex items-center gap-1">
               <p>
                 {new BigNumber(data.amount)
-                  .multipliedBy(data.price)
+                  .multipliedBy(data.costPrice)
                   .minus(
                     new BigNumber(data.amount)
-                      .multipliedBy(data.price)
+                      .multipliedBy(data.costPrice)
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
@@ -95,40 +86,52 @@ function ExportReportCanceled() {
       ],
     },
   ]
-  const [productExport, setProductExport] = useState<any>()
-  const router = useRouter()
-  const { exportId } = router.query
+
+  useState<any>([])
+  const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
+
+  useEffect(() => {
+    if (productImport) {
+      if (productImport?.state != 2) {
+        router.push("/manage-import-goods")
+      }
+    }
+  }, [productImport])
+
+  const router = useRouter()
+  const { detailCode } = router.query
+
   useQueries([
     {
-      queryKey: ["getDetailProductExport", exportId],
+      queryKey: ["getDetailProductImport", detailCode],
       queryFn: async () => {
-        const response = await getDetailExportProduct(exportId)
-        setProductExport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
+        const detail = await getProductDetailImportProduct(detailCode)
+        setProductImport(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
+        return detail?.data
       },
-      enabled: !!exportId,
+      enabled: !!detailCode,
     },
   ])
-
+  console.log(productImport)
   const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
+    router.back()
   }
 
   return isLoadingReport ? (
-    <ExportReportSkeleton />
+    <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid gap-5 grid-cols md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
-                #{productExport?.exportCode}
+                #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-2xl">
-                Đã hủy
+              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
+                Hoàn thành
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
@@ -139,42 +142,46 @@ function ExportReportCanceled() {
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
-              status="deny"
               createdDate={format(
-                new Date(productExport?.created),
+                new Date(productImport?.createdDate),
                 "dd/MM/yyyy HH:mm",
               )}
               approvedDate={format(
-                new Date(productExport?.denied),
+                new Date(productImport?.approvedDate),
                 "dd/MM/yyyy HH:mm",
               )}
+              succeededDate={format(
+                new Date(productImport?.completedDate),
+                "dd/MM/yyyy HH:mm",
+              )}
+              status="succeed"
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên:</h1>
+              <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
             </div>
-            <PrimaryInput
-              value={productExport?.user?.userName}
-              readOnly={true}
-            />
+            <PrimaryInput value={productImport?.supplier?.supplierName} />
           </div>
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {format(new Date(productExport?.created), "dd/MM/yyyy HH:mm")}
-          </div>
+          {productImport?.createdDate && (
+            <div className="text-sm font-medium text-center text-gray">
+              Ngày tạo đơn:{" "}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
+            </div>
+          )}
+          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
-            rows={7}
-            className="mt-4"
+            rows={4}
+            className="mt-2"
             title="Ghi chú hóa đơn"
-            placeholder={productExport?.note}
-            value={productExport?.note}
-            readOnly={true}
+            placeholder={productImport?.note}
+            value={productImport?.note}
           />
         </div>
       </div>
@@ -186,16 +193,16 @@ function ExportReportCanceled() {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productExport?.exportOrderDetails}
+            data={productImport?.importOrderDetails}
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productExport?.totalPrice} đ
+          {productImport?.totalCost}
         </div>
       </div>
     </div>
   )
 }
 
-export default ExportReportCanceled
+export default ImportProductDetail

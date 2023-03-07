@@ -2,6 +2,7 @@ import {
   allImportProductUrl,
   approveImportDetailUrl,
   denyImportDetailUrl,
+  getImportProductDetailUrl,
   importImportDetailUrl,
   importProductDetailUrl,
   importProductUrl,
@@ -33,6 +34,11 @@ export const getDetailImportProduct = (importProductId) => {
   })
 }
 
+export const getProductDetailImportProduct = (importProductCode) => {
+  return requestAPI({
+    url: `${getImportProductDetailUrl}?importCode=${importProductCode}`,
+  })
+}
 export const approveImportProduct = (importProductId) => {
   return postAPI({
     url: `${approveImportDetailUrl}?importid=${importProductId}`,

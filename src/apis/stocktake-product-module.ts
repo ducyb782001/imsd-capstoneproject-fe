@@ -3,6 +3,7 @@ import {
   approveStockTakeUrl,
   createStockTakeUrl,
   denyStockTakeUrl,
+  detailProductStockTakeUrl,
   detailStockTakeUrl,
   updateStockTakeUrl,
 } from "../constants/APIConfig"
@@ -29,6 +30,12 @@ export const createStockTakeProduct = (newStockTaketProduct) =>
 export const getDetailStockTakeProduct = (stockTakeId) => {
   return requestAPI({
     url: `${detailStockTakeUrl}?stocktakeid=${stockTakeId}`,
+  })
+}
+
+export const getProductDetailStockTakeProduct = (stockTakeId) => {
+  return requestAPI({
+    url: `${detailProductStockTakeUrl}?stocktakeCode=${stockTakeId}`,
   })
 }
 

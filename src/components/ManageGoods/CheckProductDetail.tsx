@@ -15,9 +15,12 @@ import DownloadIcon from "../icons/DownloadIcon"
 import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
 import PrimaryBtn from "../PrimaryBtn"
-import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
+import {
+  getDetailStockTakeProduct,
+  getProductDetailStockTakeProduct,
+} from "../../apis/stocktake-product-module"
 
-function DetailCheckReport() {
+function CheckProductDetail() {
   const columns = [
     {
       Header: " ",
@@ -100,28 +103,34 @@ function DetailCheckReport() {
             />
           ),
         },
+        {
+          Header: "Ghi chú",
+          accessor: (data: any) => (
+            <PrimaryInput value={data?.note} className="w-16" readOnly={true} />
+          ),
+        },
       ],
     },
   ]
 
   const router = useRouter()
-  const { checkId } = router.query
+  const { detailCode } = router.query
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
   console.log(productStockTakeObject)
   useQueries([
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getDetailStockTakeProduct(checkId)
+        const response = await getProductDetailStockTakeProduct(detailCode)
         setProductStockTakeObject(response?.data)
         return response?.data
       },
-      enabled: !!checkId,
+      enabled: !!detailCode,
     },
   ])
 
   const handleClickOutBtn = (event) => {
-    router.push("/manage-check-good")
+    router.back()
   }
 
   return (
@@ -197,26 +206,8 @@ function DetailCheckReport() {
   )
 }
 
-export default DetailCheckReport
+export default CheckProductDetail
 
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 function StatusDisplay({ data }) {
   if (data == 2) {
     return (

@@ -68,6 +68,8 @@ export const importProductUrl = `${baseUrl}/Import/CreateImportOrder`
 
 export const importProductDetailUrl = `${baseUrl}/Import/GetImportDetail`
 
+export const getImportProductDetailUrl = `${baseUrl}/Import/GetDetail`
+
 export const approveImportDetailUrl = `${baseUrl}/Import/ApproveImport`
 
 export const importImportDetailUrl = `${baseUrl}/Import/Import`
@@ -84,6 +86,8 @@ export const allExportProductUrl = `${baseUrl}/Export/GetExportOrder`
 
 export const detailExportProductUrl = `${baseUrl}/Export/GetExportDetail`
 
+export const detailProductExportProductUrl = `${baseUrl}/Export/GetDetail`
+
 export const approveExportProductUrl = `${baseUrl}/Export/ApproveExport`
 
 export const exportExportProductUrl = `${baseUrl}/Export/Export`
@@ -98,7 +102,9 @@ export const allStocktakeUrl = `${baseUrl}/Stocktake/Get`
 
 export const createStockTakeUrl = `${baseUrl}/Stocktake/Create`
 
-export const detailStockTakeUrl = `${baseUrl}/Stocktake/GetDetail`
+export const detailProductStockTakeUrl = `${baseUrl}/Stocktake/GetDetail`
+
+export const detailStockTakeUrl = `${baseUrl}/Stocktake/GetStockTakeDetail`
 
 export const approveStockTakeUrl = `${baseUrl}/Stocktake/Stocktake`
 

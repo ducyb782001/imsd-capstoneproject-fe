@@ -111,12 +111,6 @@ function DraffCheckReport() {
             />
           ),
         },
-        {
-          Header: "Ghi chú",
-          accessor: (data: any) => (
-            <PrimaryInput value={data?.note} className="w-16" readOnly={true} />
-          ),
-        },
       ],
     },
   ]

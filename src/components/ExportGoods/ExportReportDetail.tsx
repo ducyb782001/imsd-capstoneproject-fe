@@ -59,7 +59,7 @@ function ExportReportDetail() {
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <PrimaryInput
-                value={data?.product?.sellingPrice}
+                value={data?.price}
                 className="w-24"
                 readOnly={true}
               />
@@ -86,10 +86,10 @@ function ExportReportDetail() {
             <div className="flex items-center gap-1">
               <p>
                 {new BigNumber(data.amount)
-                  .multipliedBy(data.product?.sellingPrice)
+                  .multipliedBy(data.price)
                   .minus(
                     new BigNumber(data.amount)
-                      .multipliedBy(data.product?.sellingPrice)
+                      .multipliedBy(data.price)
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
@@ -114,7 +114,7 @@ function ExportReportDetail() {
     }
   }, [productImport])
   const { exportId } = router.query
-
+  console.log(productImport)
   useQueries([
     {
       queryKey: ["getDetailProductExport", exportId],
