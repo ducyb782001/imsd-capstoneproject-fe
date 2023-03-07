@@ -263,6 +263,7 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Cập nhật đơn xuất hàng thành công")
+          router.push("/export-report-draff/" + exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
