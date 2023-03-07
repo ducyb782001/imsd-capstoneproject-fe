@@ -112,9 +112,6 @@ function UserDropdown(props) {
         variants={subMenuAnimate}
         className={`absolute top-[70] right-0 w-auto`}
         style={{
-          // position: "absolute",
-          // top: 40,
-          // right: 0,
           borderRadius: 5,
           backgroundColor: "#ECF1F4",
           transformOrigin: "50% -30px",
@@ -125,12 +122,12 @@ function UserDropdown(props) {
         <div className="smooth-transform z-50 flex w-full min-w-[209px] flex-col gap-3 rounded-lg bg-[#fff] py-5 px-8 shadow-md">
           <Link href={`/profile`}>
             <a>
-              <DropDownItem label={"Profile"} />
+              <DropDownItem label={"Thông tin cá nhân"} />
             </a>
           </Link>
 
           <div onClick={signOut}>
-            <DropDownItem label="Logout" />
+            <DropDownItem label="Đăng xuất" />
           </div>
         </div>
       </motion.div>

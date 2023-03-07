@@ -246,7 +246,7 @@ function ManageStaff({ ...props }) {
             Nhập file
           </ImportExportButton>
         </div>
-        <Link href={`/create-export-report`}>
+        <Link href={`/create-staff`}>
           <a>
             <PrimaryBtn
               className="max-w-[250px]"
@@ -378,7 +378,7 @@ function StatusDisplay({ data }) {
     )
   } else {
     return (
-      //   <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
+      //   <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">Nhân viên bán hàng</h1>
         {/* <h1 className="m-2 ml-3 text-red-500">Nhân viên bán hàng</h1> */}
