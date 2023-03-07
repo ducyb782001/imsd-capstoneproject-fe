@@ -448,7 +448,7 @@ function ListActualStock({
 
   return (
     <PrimaryInput
-      className="w-[50px]"
+      className="w-[70px]"
       type="number"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {

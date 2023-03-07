@@ -9,6 +9,7 @@ import {
   approveExportProductUrl,
   denyExportProductUrl,
   detailExportProductUrl,
+  detailProductExportProductUrl,
   exportExportProductUrl,
   exportProductUrl,
   updateExportProductUrl,
@@ -30,6 +31,12 @@ export const getAllExportProduct = (searchObj) => {
 export const getDetailExportProduct = (exportProductId) => {
   return requestAPI({
     url: `${detailExportProductUrl}?exportId=${exportProductId}`,
+  })
+}
+
+export const getDetailProductExportProduct = (exportProductCode) => {
+  return requestAPI({
+    url: `${detailProductExportProductUrl}?exportCode=${exportProductCode}`,
   })
 }
 

@@ -82,7 +82,7 @@ function CreateCheckReport() {
         {
           Header: "Tồn thực tế",
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[80px]">
+            <div className="flex items-center max-w-[100px]">
               <ListActualStock
                 data={data}
                 listProductImport={listProductImport}
@@ -414,7 +414,7 @@ function ListActualStock({
 
   return (
     <PrimaryInput
-      className="w-[50px]"
+      className="w-[70px]"
       type="number"
       placeholder="0"
       value={actualStock ? actualStock : ""}

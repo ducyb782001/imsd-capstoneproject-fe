@@ -8,6 +8,8 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import ProductDetailSkeleton from "../Skeleton/ProductDetailSkeleton"
 import { format } from "date-fns"
+import Link from "next/link"
+import ShowDetailIcon from "../icons/ShowDetailIcon"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
@@ -103,7 +105,7 @@ function ProductDetail() {
           </div>
         </div>
       </div>
-      <HistoryProduct />
+      <HistoryProduct data={detailProduct} />
     </div>
   )
 }
@@ -119,7 +121,7 @@ function ProductInfo({ title = "", data = "" }) {
   )
 }
 
-function HistoryProduct() {
+function HistoryProduct({ data }) {
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
   return (
@@ -129,7 +131,7 @@ function HistoryProduct() {
         <Table
           pageSizePagination={10}
           columns={columns}
-          data={FAKE_DATA_TEST?.data}
+          data={data?.productHistories}
         />
       </div>
       <Pagination
@@ -137,67 +139,74 @@ function HistoryProduct() {
         setPageSize={setPageSize}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalItems={FAKE_DATA_TEST?.total}
+        totalItems={data?.productHistories?.total}
       />
     </div>
   )
-}
-
-const FAKE_DATA_TEST = {
-  total: 4,
-  data: [
-    {
-      type: "import",
-      created: "18/02/2023",
-      user: "Trung Đức",
-      action: "Khởi tạo hàng hóa",
-      number: 5,
-      inWarehouse: 5,
-      code: "test",
-    },
-    {
-      type: "import",
-      created: "20/02/2023",
-      user: "Trung Đức",
-      action: "Nhập hàng vào kho",
-      number: 6,
-      inWarehouse: 11,
-      code: "IMPORT123",
-    },
-  ],
 }
 const columns = [
   {
     Header: " ",
     columns: [
       {
-        Header: "Ngày ghi nhận",
-        accessor: (data: any) => <p>{data?.created}</p>,
+        Header: "Mã hành động",
+        accessor: (data: any) => {
+          return <ShowDetailHistory data={data} />
+        },
       },
       {
         Header: "Nhân viên",
-        accessor: (data: any) => <p>{data?.user}</p>,
+        accessor: (data: any) => <p>{data?.user?.userName}</p>,
       },
       {
         Header: "Hành động",
-        accessor: (data: any) => <p>{data?.action}</p>,
+        accessor: (data: any) => <p>{data?.actionType?.action}</p>,
       },
       {
         Header: "Số lượng thay đổi",
         // In dev later change + or - by type
         accessor: (data: any) => (
-          <p className="text-center">
-            {data?.type == "import" ? "+" : "-"}
-            {data?.number}
-          </p>
+          <p className="text-center">{data?.amountDifferential}</p>
         ),
       },
       {
         Header: "Số lượng tồn kho",
+        accessor: (data: any) => <p className="text-center">{data?.amount}</p>,
+      },
+      {
+        Header: "Ngày ghi nhận",
         accessor: (data: any) => (
-          <p className="text-center">{data?.inWarehouse}</p>
+          <p>{format(new Date(data?.date), "dd/MM/yyyy HH:mm")}</p>
         ),
       },
     ],
   },
 ]
+function ShowDetailHistory({ data }) {
+  const a = data?.actionCode ? data?.actionCode : ""
+  if (data?.actionType?.action == "Kiểm hàng") {
+    return (
+      <div>
+        <Link href={`/check-product-detail/` + a}>
+          <p className="text-blue cursor-pointer">{a}</p>
+        </Link>
+      </div>
+    )
+  } else if (data?.actionType?.action == "Xuất hàng") {
+    return (
+      <div>
+        <Link href={`/export-product-detail/` + a}>
+          <p className="text-blue cursor-pointer">{a}</p>
+        </Link>
+      </div>
+    )
+  } else if (data?.actionType?.action == "Nhập hàng") {
+    return (
+      <div>
+        <Link href={`/import-product-detail/` + a}>
+          <p className="text-blue cursor-pointer">{a}</p>
+        </Link>
+      </div>
+    )
+  }
+}
