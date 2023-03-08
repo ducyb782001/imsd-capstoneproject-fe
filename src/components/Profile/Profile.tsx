@@ -75,6 +75,7 @@ function Profile() {
               <PrimaryInput
                 title="Số điện thoại"
                 placeholder="Nhập số điện thoại"
+                type="number"
               />
               <SelectGenderDropdown
                 title="Giới tính"

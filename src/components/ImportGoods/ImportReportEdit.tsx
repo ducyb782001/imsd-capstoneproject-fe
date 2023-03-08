@@ -72,7 +72,6 @@ function ImportReportEdit() {
           Header: "Đơn vị",
           accessor: (data: any) => (
             <ListUnitImport
-              listChosenProduct={listChosenProduct}
               data={data?.product}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
@@ -262,6 +261,7 @@ function ImportReportEdit() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-import-goods")
   }
+  console.log(productImportObject)
 
   useQueries([
     {
@@ -578,12 +578,7 @@ function CountTotalPrice({ data, listProductImport }) {
   )
 }
 
-function ListUnitImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  listChosenProduct,
-}) {
+function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")

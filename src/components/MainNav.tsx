@@ -100,15 +100,6 @@ function MainNav() {
       isActive: router.asPath.includes("/create-check-report"),
     },
   ]
-  //indev
-  const subMenuUser = [
-    {
-      id: 1,
-      name: "Quản lý nhân viên",
-      href: "/manage-staff",
-      isActive: router.asPath.includes("/manage-staff"),
-    },
-  ]
 
   const mainMenu = [
     {
@@ -190,9 +181,11 @@ function MainNav() {
     {
       id: 7,
       name: "Nhân viên",
-      subMenu: subMenuUser,
       icon: <UserIcon />,
-      isActive: router.asPath.includes("/manage-staff"),
+      isActive:
+        router.asPath.includes("/manage-staff") ||
+        router.asPath.includes("/create-staff"),
+      href: "/manage-staff",
     },
   ]
 
