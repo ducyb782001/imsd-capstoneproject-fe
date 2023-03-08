@@ -60,15 +60,15 @@ function ProductDetail() {
             <ProductInfo title="Đơn vị tính" data={"Hộp"} />
             <ProductInfo
               title="Giá nhập"
-              data={`${new BigNumber(
-                detailProduct?.costPrice,
-              ).toFormat()} đồng`}
+              data={`${new BigNumber(detailProduct?.costPrice).toFormat(
+                0,
+              )} đồng`}
             />
             <ProductInfo
               title="Giá bán"
-              data={`${new BigNumber(
-                detailProduct?.sellingPrice,
-              ).toFormat()} đồng`}
+              data={`${new BigNumber(detailProduct?.sellingPrice).toFormat(
+                0,
+              )} đồng`}
             />
             <ProductInfo
               title="Ngày tạo"

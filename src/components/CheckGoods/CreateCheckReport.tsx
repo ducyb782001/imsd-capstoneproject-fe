@@ -17,8 +17,6 @@ import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
-import DownloadIcon from "../icons/DownloadIcon"
-import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
 import { createStockTakeProduct } from "../../apis/stocktake-product-module"
 
@@ -73,8 +71,6 @@ function CreateCheckReport() {
                 data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
               />
             </div>
           ),
@@ -87,8 +83,6 @@ function CreateCheckReport() {
                 data={data}
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
               />
             </div>
           ),
@@ -100,8 +94,6 @@ function CreateCheckReport() {
               <CountDeviated
                 data={data}
                 listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-                autoUpdatePrice={autoUpdatePrice}
               />
             </div>
           ),
@@ -116,10 +108,6 @@ function CreateCheckReport() {
                   (i, ind) => ind !== index,
                 )
                 setListChosenProduct(result)
-                // let listProduct = listProductImport?.filter(
-                //   (i, ind) => ind !== index,
-                // )
-                // setListProductImport(listProduct)
               }}
             >
               <XIcons />
@@ -132,7 +120,6 @@ function CreateCheckReport() {
 
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
@@ -255,15 +242,6 @@ function CreateCheckReport() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
   }
-  const handleExportCheckProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(
-      productStockTakeObject?.listProductImport,
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
 
   return (
     <div>
@@ -338,13 +316,7 @@ function CreateCheckReport() {
 
 export default CreateCheckReport
 
-function ListStock({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
+function ListStock({ data, listProductImport, setListProductImport }) {
   const [currentStock, setCurrentStock] = useState()
 
   useEffect(() => {
@@ -375,19 +347,12 @@ function ListStock({
         e.stopPropagation()
         setCurrentStock(e.target.value)
         handleOnChangePrice(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function ListActualStock({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
+function ListActualStock({ data, listProductImport, setListProductImport }) {
   const [actualStock, setActualStock] = useState()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
@@ -404,25 +369,19 @@ function ListActualStock({
     <PrimaryInput
       className="w-[70px]"
       type="number"
-      placeholder="0"
+      placeholder="--"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()
         setActualStock(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function CountDeviated({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-}) {
-  const [deviated, setDeviated] = useState<any>()
+function CountDeviated({ data, listProductImport }) {
+  const [deviated, setDeviated] = useState<any>(0)
   const handleSetPrice = () => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -433,14 +392,14 @@ function CountDeviated({
       }
       return item
     })
-    setListProductImport(newList)
   }
 
+  useEffect(() => {
+    handleSetPrice()
+  }, [listProductImport])
+
   return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12"
-      onClick={handleSetPrice}
-    >
+    <div className="py-2 text-center text-white rounded-md  bg-successBtn h-12">
       {deviated}
     </div>
   )
@@ -478,25 +437,6 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       setShowing={setUnitChosen}
       textDefault={defaultMeasuredUnit}
     />
-  )
-}
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
   )
 }
 

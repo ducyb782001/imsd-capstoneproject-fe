@@ -166,6 +166,7 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
+  console.log(listChosenProduct)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -222,7 +223,6 @@ function ImportReportEdit() {
       })
     }
   }, [listProductImport])
-
   const updateImportMutation = useMutation(
     async (importProduct) => {
       return await updateImportProduct(importProduct)
@@ -587,7 +587,6 @@ function ListUnitImport({
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-  console.log(data)
 
   useEffect(() => {
     if (data) {

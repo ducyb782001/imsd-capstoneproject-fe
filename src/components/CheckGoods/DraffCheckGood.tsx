@@ -272,7 +272,7 @@ function DraffCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
