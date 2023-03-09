@@ -64,7 +64,7 @@ function SelectRoleDropdown({
   return (
     <motion.div className={`relative text-[#4F4F4F] ${className}`}>
       <div ref={node}>
-        {title && <p className="mb-2 text-sm font-bold text-gray">{title}</p>}
+        {title && <h1 className="mb-2 text-sm font-bold text-gray">{title}</h1>}
 
         <div
           onClick={toggleOpenMenu}

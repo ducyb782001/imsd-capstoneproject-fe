@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
-import DownloadIcon from "../icons/DownloadIcon"
 import PlusIcon from "../icons/PlusIcon"
-import UploadIcon from "../icons/UploadIcon"
 import PrimaryBtn from "../PrimaryBtn"
 import SearchInput from "../SearchInput"
 import ShowLabelBar from "../Filter/ShowLabelBar"
@@ -9,55 +7,14 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
-import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
-import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
-import { getListImportProduct } from "../../apis/import-product-module"
-import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import Switch from "react-switch"
 import ChooseRoleDropdown from "./ChooseRoleDropDown"
-
-const data_fake = [
-  {
-    staffCode: "NV101",
-    img: null,
-    staffName: "Vũ Nhật Minh",
-    phone: "0943746666",
-    state: true,
-  },
-  {
-    staffCode: "NV101",
-    img: null,
-    staffName: "Vũ Nhật Minh",
-    phone: "0943746666",
-    state: false,
-  },
-  {
-    staffCode: "NV101",
-    img: null,
-    staffName: "Vũ Nhật Minh",
-    phone: "0943746666",
-    state: false,
-  },
-  {
-    staffCode: "NV101",
-    img: null,
-    staffName: "Vũ Nhật Minh",
-    phone: "0943746666",
-    state: true,
-  },
-]
+import { getAllStaff } from "../../apis/user-module"
+import SetStatusPopup from "./SetStatusPopup"
 
 const columns = [
   {
@@ -65,7 +22,7 @@ const columns = [
     columns: [
       {
         Header: "Mã nhân viên",
-        accessor: (data: any) => <p>{data?.staffCode}</p>,
+        accessor: (data: any) => <p>{data?.userCode}</p>,
       },
       {
         Header: "Ảnh",
@@ -73,7 +30,7 @@ const columns = [
       },
       {
         Header: "Tên nhân viên",
-        accessor: (data: any) => <p>{data?.staffName}</p>,
+        accessor: (data: any) => <p>{data?.userName}</p>,
       },
       {
         Header: "Số điện thoại",
@@ -89,7 +46,7 @@ const columns = [
       },
       {
         Header: "Trạng thái hoạt động",
-        accessor: (data: any) => <StatusSwitch data={data} />,
+        accessor: (data: any) => <SetStatusPopup data={data} />,
       },
       {
         Header: " ",
@@ -100,26 +57,26 @@ const columns = [
 ]
 
 const status = [
-  { id: 0, status: "Kiểm kho" },
+  { id: "true", status: "Kích hoạt" },
 
   {
-    id: 1,
-    status: "Nhân viên bán hàng",
+    id: "false",
+    status: "Vô hiệu hóa",
   },
-  //   {
-  //     id: 2,
-  //     status: "Hoàn thành",
-  //   },
-  //   {
-  //     id: 3,
-  //     status: "Đã hủy",
-  //   },
+]
+
+const role = [
+  { id: 1, name: "Nhân viên bán hàng" },
+
+  {
+    id: 2,
+    name: "Kiểm kho",
+  },
 ]
 
 function ManageStaff({ ...props }) {
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
+  const [roleSelected, setRoleSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
-  const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -127,32 +84,32 @@ function ManageStaff({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listExportProduct, setListExportProduct] = useState<any>()
+  const [listStaffs, setListStaffs] = useState<any>()
 
   const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
-    if (nhaCungCapSelected) {
+    if (roleSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
       setListFilter([
         ...listFilter,
         {
-          key: "supId",
-          applied: "Nhà cung cấp",
-          value: nhaCungCapSelected?.supplierName,
-          id: nhaCungCapSelected?.supplierId,
+          key: "roleId",
+          applied: "Chức vụ",
+          value: roleSelected?.id,
+          id: roleSelected?.id,
         },
       ])
     }
-  }, [nhaCungCapSelected])
+  }, [roleSelected])
   useEffect(() => {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
       setListFilter([
         ...listFilter,
         {
-          key: "state",
+          key: "status",
           applied: "Trạng thái",
           value: statusSelected?.status,
           id: statusSelected?.id,
@@ -180,7 +137,7 @@ function ManageStaff({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListExportProduct",
+        "getListStaffs",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -188,32 +145,22 @@ function ManageStaff({ ...props }) {
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
-          const response = await getAllExportProduct({
+          const response = await getAllStaff({
             code: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListExportProduct(response?.data)
-
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListImportProduct({
-            code: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListImportProductExport(exportFile?.data)
-          //-----------
+          setListStaffs(response?.data)
 
           return response?.data
         } else {
-          const response = await getAllExportProduct({
+          const response = await getAllStaff({
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
-          setListExportProduct(response?.data)
+          setListStaffs(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
 
           //-----------
@@ -224,28 +171,11 @@ function ManageStaff({ ...props }) {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
+  // console.log(listStaffs)
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
         <Link href={`/create-staff`}>
           <a>
             <PrimaryBtn
@@ -267,10 +197,10 @@ function ManageStaff({ ...props }) {
             />
 
             <ChooseRoleDropdown
-              listDropdown={status}
+              listDropdown={role}
               textDefault={"Chức vụ"}
-              showing={statusSelected}
-              setShowing={setStatusSelected}
+              showing={roleSelected}
+              setShowing={setRoleSelected}
             />
 
             <ChooseStatusDropdown
@@ -297,7 +227,7 @@ function ManageStaff({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={data_fake}
+                data={listStaffs?.data}
               />
             </div>
             <Pagination
@@ -305,7 +235,7 @@ function ManageStaff({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listExportProduct?.total}
+              totalItems={listStaffs?.total}
             />
           </>
         )}
@@ -315,45 +245,6 @@ function ManageStaff({ ...props }) {
 }
 
 export default ManageStaff
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
-
-function StatusSwitch({ data }) {
-  const [checked, setChecked] = useState(data?.state)
-  const handleChangeStatus = () => {
-    setChecked(!checked)
-  }
-  return (
-    <Switch
-      onChange={handleChangeStatus}
-      checked={checked}
-      width={44}
-      height={24}
-      className="ml-2 !opacity-100"
-      uncheckedIcon={null}
-      checkedIcon={null}
-      offColor="#CBCBCB"
-      onColor="#6A44D2"
-    />
-  )
-}
 
 function StatusDisplay({ data }) {
   if (data?.state == 0) {
@@ -388,45 +279,13 @@ function StatusDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
-  if (data?.state == 0) {
-    return (
-      <div className="flex items-center gap-2">
-        <Link href={`/export-report-draff/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetailIcon />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 1) {
-    return (
-      <div className="flex items-center gap-2">
-        <Link href={`/export-report-detail/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetailIcon />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 2) {
-    return (
-      <div className="flex items-center gap-2">
-        <Link href={`/export-report-succeed/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetailIcon />
-          </a>
-        </Link>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <Link href={`/export-report-canceled/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetailIcon />
-          </a>
-        </Link>
-      </div>
-    )
-  }
+  return (
+    <div className="flex items-center gap-2">
+      <Link href={`/edit-staff/${data?.userId}`}>
+        <a className="w-full">
+          <ShowDetailIcon />
+        </a>
+      </Link>
+    </div>
+  )
 }

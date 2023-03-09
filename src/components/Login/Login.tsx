@@ -70,7 +70,7 @@ function Login(props) {
   }
 
   useEffect(() => {
-    if (emailRegex.test(userEmail) && userPassword.trim() !== "") {
+    if (userEmail.trim() !== "" && userPassword.trim() !== "") {
       setDisabled(false)
     } else {
       setDisabled(true)

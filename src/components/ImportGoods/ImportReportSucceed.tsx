@@ -103,7 +103,7 @@ function ImportReportSucceed() {
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
-        const detail = await getDetailImportProduct(router.query.importId)
+        const detail = await getDetailImportProduct(importId)
         setProductImport(detail?.data)
         setIsLoadingReport(detail?.data?.isLoading)
         return detail?.data

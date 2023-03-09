@@ -60,6 +60,16 @@ export const editTypeGoodUrl = `${baseUrl}/Categories/PutCategory`
 // User
 export const listStaffUrl = `${baseUrl}/Users/GetUsers`
 
+export const getStaffDetailUrl = `${baseUrl}/Users/GetUserDetail`
+
+export const activeStaffUrl = `${baseUrl}/Users/Activate`
+
+export const deactiveStaffUrl = `${baseUrl}/Users/Deactivate`
+
+export const createStaffUrl = `${baseUrl}/Users/CreateStaff`
+
+export const updateStaffUrl = `${baseUrl}/Users/UpdateStaff`
+
 // Import product
 
 export const allImportProductUrl = `${baseUrl}/Import/GetImportOrder`
