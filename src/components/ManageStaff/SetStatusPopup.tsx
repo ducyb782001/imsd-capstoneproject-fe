@@ -1,6 +1,6 @@
 import { DialogOverlay } from "@reach/dialog"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 // import { approveOneCollection } from "../../apis/collection-module"
@@ -9,7 +9,6 @@ import CloseDialogIcon from "../icons/CloseDialogIcon"
 import WarningCircleIcon from "../icons/WarningCircleIcon"
 import MotionDialogContent from "../MotionDialogContent"
 import PrimaryBtn from "../PrimaryBtn"
-import PrimaryInputCheckbox from "../PrimaryInputCheckbox"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import Switch from "react-switch"
@@ -17,8 +16,14 @@ import { activeStaffModule, deactiveStaffModule } from "../../apis/user-module"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function SetStatusPopup({ data, className = "" }) {
-  const [checked, setChecked] = useState<boolean>(data?.status)
-  console.log(data)
+  const [checked, setChecked] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (data) {
+      setChecked(data?.status)
+    }
+  }, [data])
+
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
