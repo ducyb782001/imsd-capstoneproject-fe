@@ -214,7 +214,7 @@ function EditCheckReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff()
-        setListStaff(staff?.data)
+        setListStaff(staff?.data?.data)
         return staff?.data?.data
       },
     },

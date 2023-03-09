@@ -16,7 +16,7 @@ import {
 
 export const getListStaff = () => {
   return requestAPI({
-    url: `${listStaffUrl}`,
+    url: `${listStaffUrl}?offset=0&limit=1000`,
   })
 }
 

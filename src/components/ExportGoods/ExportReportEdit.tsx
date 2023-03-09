@@ -298,7 +298,7 @@ function ImportReportEdit() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const response = await getListStaff()
-        setListStaff(response?.data)
+        setListStaff(response?.data?.data)
         return response?.data?.data
       },
     },

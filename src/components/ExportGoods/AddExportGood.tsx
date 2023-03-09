@@ -229,7 +229,7 @@ function CreateExportReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff()
-        setListStaff(staff?.data)
+        setListStaff(staff?.data?.data)
         const supplier = await getListExportSupplier({})
         setListNhaCungCap(supplier?.data?.data)
         return staff?.data?.data
