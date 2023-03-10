@@ -19,6 +19,9 @@ import {
 } from "../apis/search-country-module"
 import CountryDropDown from "./CountryDropDown"
 import useScanDetection from "../hooks/useScanDetection"
+import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
+import useTrans from "../hooks/useTrans"
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -94,8 +97,11 @@ function TestPage(props) {
     setSearchBarcode(searchBarCode.replace("Shift", ""))
   }, [searchBarCode])
 
+  const router = useRouter()
+  const trans = useTrans()
   return (
     <div className="flex flex-col gap-4 mb-20">
+      {trans.home.title}
       {searchBarCode}
       {/* <div className="w-full h-[500px] skeleton-loading" /> */}
       <PrimaryBtn>ABCD</PrimaryBtn>

@@ -8,6 +8,7 @@ import { IKContext } from "imagekitio-react"
 
 import "react-date-range/dist/styles.css"
 import "react-date-range/dist/theme/default.css"
+import { appWithTranslation } from "next-i18next"
 
 import "../styles/globals.css"
 import "../styles/nav.css"
@@ -80,4 +81,4 @@ function App({ Component, pageProps }) {
   )
 }
 
-export default App
+export default appWithTranslation(App)

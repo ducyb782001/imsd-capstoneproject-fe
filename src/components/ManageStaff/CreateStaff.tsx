@@ -17,9 +17,11 @@ import { toast } from "react-toastify"
 import { createStaff } from "../../apis/user-module"
 import router from "next/router"
 import { format } from "date-fns"
+import useTrans from "../../hooks/useTrans"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateStaff() {
+  const trans = useTrans()
   const [gender, setGender] = useState<any>()
   const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
@@ -108,7 +110,7 @@ function CreateStaff() {
   return (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>Thông tin cá nhân</SmallTitle>
+        <SmallTitle>{trans.common.personalInformation}</SmallTitle>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">

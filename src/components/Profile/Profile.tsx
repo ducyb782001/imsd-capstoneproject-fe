@@ -13,8 +13,10 @@ import InfoIcon from "../icons/InfoIcon"
 import { useQueries } from "react-query"
 import { useRouter } from "next/router"
 import { getDetailStaff } from "../../apis/user-module"
+import useTrans from "../../hooks/useTrans"
 
 function Profile() {
+  const trans = useTrans()
   const [gender, setGender] = useState({ id: 1, value: "Nam" })
   const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
@@ -56,7 +58,7 @@ function Profile() {
   return (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>Thông tin cá nhân</SmallTitle>
+        <SmallTitle>{trans.common.personalInformation}</SmallTitle>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
