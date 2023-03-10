@@ -1,5 +1,14 @@
 {
   "signOut": "Đăng xuất",
   "dashboard": "Thống kê",
-  "manageGoods": "Quản lý hàng hóa"
+  "manageGoods": "Quản lý hàng hóa",
+  "product": "Sản phẩm",
+  "supplier": "Nhà cung cấp",
+  "type": {
+    "typeGoods": "Loại sản phẩm",
+    "type": "Loại"
+  },
+  "search": {
+    "searchInGoods": "Tìm kiếm theo tên, mã sản phẩm, mã vạch"
+  }
 }

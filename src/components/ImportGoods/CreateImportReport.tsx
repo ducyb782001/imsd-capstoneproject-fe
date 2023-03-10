@@ -153,7 +153,6 @@ function CreateImportReport() {
       })
     }
   }, [nhaCungCapSelected])
-  console.log(listStaff)
   useEffect(() => {
     if (productChosen) {
       if (listChosenProduct.includes(productChosen)) {

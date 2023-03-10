@@ -1,5 +1,14 @@
 {
   "signOut": "Sign out",
   "dashboard": "Dashboard",
-  "manageGoods": "Manage goods"
+  "manageGoods": "Manage goods",
+  "product": "Products",
+  "supplier": "Suppliers",
+  "type": {
+    "typeGoods": "Type of goods",
+    "type": "Type"
+  },
+  "search": {
+    "searchInGoods": "Search by product name, code, barcode"
+  }
 }

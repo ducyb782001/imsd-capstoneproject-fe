@@ -27,6 +27,22 @@ import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
+interface ProductImport {
+  importCode: string
+  importId: number
+  importOrderDetails: {
+    amount: any
+    costPrice: any
+    discount: any
+    measuredUnitId: any
+    productId: any
+  }
+  note: string
+  supplierId: number
+  totalCost: any
+  userId: number
+}
+
 function ImportReportEdit() {
   const columns = [
     {
@@ -165,7 +181,6 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
-  console.log(listChosenProduct)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -262,15 +277,16 @@ function ImportReportEdit() {
     router.push("/manage-import-goods")
   }
   console.log(productImportObject)
+  console.log("Detail response: ", detailResponse)
 
   useQueries([
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
         const response = await getDetailImportProduct(importId)
-        setListChosenProduct(response?.data?.importOrderDetails)
-        setListProductImport(response?.data?.importOrderDetails)
         const detailReport = response?.data
+        setListChosenProduct(detailReport?.importOrderDetails)
+        setListProductImport(detailReport?.importOrderDetails)
         setProductImportObject({
           importId: detailReport?.importId,
           importCode: detailReport?.importCode,

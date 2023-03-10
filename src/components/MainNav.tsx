@@ -32,19 +32,19 @@ function MainNav() {
   const subMenuManageGoods = [
     {
       id: 1,
-      name: "Sản phẩm",
+      name: t("product"),
       href: "/manage-goods",
       isActive: router.asPath.includes("/manage-goods"),
     },
     {
       id: 2,
-      name: "Nhà cung cấp",
+      name: t("supplier"),
       href: "/manage-suppliers",
       isActive: router.asPath.includes("/manage-suppliers"),
     },
     {
       id: 3,
-      name: "Loại sản phẩm",
+      name: t("type.typeGoods"),
       // Chua tao page
       href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
