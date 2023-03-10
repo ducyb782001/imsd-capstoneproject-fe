@@ -14,10 +14,12 @@ import ExportGoodsIcon from "./icons/ExportGoodsIcon"
 import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
 import UserIcon from "./icons/UserIcon"
+import { useTranslation } from "react-i18next"
 
 function MainNav() {
   const [isLogin, setIsLogin] = useState(false)
   const router = useRouter()
+  const { t } = useTranslation()
   // useEffect(() => {
   //   const cookies = cookie.parse(window.document.cookie)
   //   if (cookies.token) {
@@ -104,14 +106,14 @@ function MainNav() {
   const mainMenu = [
     {
       id: 1,
-      name: "Thống kê",
+      name: t("dashboard"),
       href: "/dashboard",
       icon: <DashboardIcon />,
       isActive: router.asPath.includes("/dashboard"),
     },
     {
       id: 2,
-      name: "Quản lý hàng hóa",
+      name: t("manageGoods"),
       subMenu: subMenuManageGoods,
       icon: <ManageGoodsIcon />,
       isActive:

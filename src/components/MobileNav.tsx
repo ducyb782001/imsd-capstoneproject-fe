@@ -13,8 +13,10 @@ import ExportGoodsIcon from "./icons/ExportGoodsIcon"
 import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
 import UserIcon from "./icons/UserIcon"
+import { useTranslation } from "react-i18next"
 
 function MobileNav() {
+  const { t } = useTranslation()
   const router = useRouter()
   const subMenuManageGoods = [
     {
@@ -96,14 +98,14 @@ function MobileNav() {
   const mainMenu = [
     {
       id: 1,
-      name: "Thống kê",
+      name: t("dashboard"),
       href: "/dashboard",
       icon: <DashboardIcon />,
       isActive: router.asPath.includes("/dashboard"),
     },
     {
       id: 2,
-      name: "Quản lý hàng hóa",
+      name: t("manageGoods"),
       subMenu: subMenuManageGoods,
       icon: <ManageGoodsIcon />,
       href: "/manage-goods",
@@ -159,7 +161,6 @@ function MobileNav() {
       isActive: router.asPath.includes("/abcd"),
     },
   ]
-
   const node = useRef()
   const [isHover, toggleHover] = useState(false)
 

@@ -1,25 +1,25 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../lib/search"
-import ArrowDownIcon from "./icons/ArrowDownIcon"
-import SearchIcon from "./icons/SearchIcon"
+import EngFlagIcon from "../icons/EngFlagIcon"
+import VnFlagIcon from "../icons/VnFlagIcon"
+import { useTranslation } from "react-i18next"
 
-function DemoDropDown({
-  title = "",
-  listDropdown,
-  showing,
-  setShowing,
-  textDefault,
-}) {
+const listResult = [
+  { id: 1, name: "Tiếng Việt", code: "vi", logo: <VnFlagIcon /> },
+  { id: 2, name: "English", code: "en", logo: <EngFlagIcon /> },
+]
+
+function LanguageDropdown({ title = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
-  const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
-
+  const [showing, setShowing] = useState<any>({
+    id: 1,
+    name: "Tiếng Việt",
+    code: "vi",
+    logo: <VnFlagIcon />,
+  })
   const toggleOpenMenu = () => {
-    if (listDropdown?.length > 0) {
-      toggleOpen(!isOpen)
-    }
+    toggleOpen(!isOpen)
   }
 
   const handleClickOutside = (e) => {
@@ -63,20 +63,23 @@ function DemoDropDown({
       },
     },
   }
+  const { i18n } = useTranslation()
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng)
+  }
 
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
         {title && <p className="mb-1 text-sm text-gray">{title}</p>}
-
         <div
           onClick={toggleOpenMenu}
-          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
+          className="flex items-center justify-between gap-1 cursor-pointer"
         >
-          <div className="flex items-center gap-1">
-            <p className="text-gray">{textDefault}</p>
+          <div className="flex items-center gap-2">
+            <div>{showing?.logo}</div>
+            <p className="text-base font-medium text-black">{showing?.name}</p>
           </div>
-          <ArrowDownIcon color="#373737" />
         </div>
       </div>
 
@@ -92,18 +95,17 @@ function DemoDropDown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder="Search"
-        />
         <div
           id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto"
+          className="smooth-transform z-50 flex min-w-[150px] flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto border border-grayLight rounded-md"
         >
-          {listResult?.map((i, index) => (
-            <DropDownItem key={index} data={i} setShowing={setShowing} />
+          {listResult?.map((i) => (
+            <DropDownItem
+              key={i?.id}
+              data={i}
+              setShowing={setShowing}
+              changeLanguage={changeLanguage}
+            />
           ))}
         </div>
       </motion.div>
@@ -111,30 +113,18 @@ function DemoDropDown({
   )
 }
 
-export default DemoDropDown
+export default LanguageDropdown
 
-function DropDownItem({ data, setShowing }) {
+function DropDownItem({ data, setShowing, changeLanguage }) {
   return (
     <div
-      onClick={() => setShowing(data)}
+      onClick={() => {
+        setShowing(data)
+        changeLanguage(data?.code)
+      }}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.name || data}
-    </div>
-  )
-}
-
-function DropdownSearch({ className = "", ...props }) {
-  return (
-    <div className={`relative w-full ${className} border-b border-grayLight`}>
-      <div className="absolute top-3 left-3">
-        <SearchIcon />
-      </div>
-      <input
-        {...props}
-        type="text"
-        className="w-full py-3 pl-10 pr-3 outline-none smooth-transform"
-      />
+      {data?.name}
     </div>
   )
 }

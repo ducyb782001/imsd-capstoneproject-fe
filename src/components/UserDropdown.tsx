@@ -8,8 +8,9 @@ import { useMutation, useQuery } from "react-query"
 import { getUserData, logout } from "../apis/auth"
 import { browserRedirectToIndexAfterSignOut } from "../lib/redirect"
 import useGetMe from "../hooks/useGetMe"
+import { useTranslation } from "react-i18next"
 
-function UserDropdown(props) {
+function UserDropdown() {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
@@ -94,6 +95,8 @@ function UserDropdown(props) {
   //   }
   // }, [data])
 
+  const { t } = useTranslation()
+
   return (
     <div className="relative">
       <div
@@ -127,7 +130,7 @@ function UserDropdown(props) {
           </Link>
 
           <div onClick={signOut}>
-            <DropDownItem label="Đăng xuất" />
+            <DropDownItem label={t("signOut")} />
           </div>
         </div>
       </motion.div>
