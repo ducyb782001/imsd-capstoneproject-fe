@@ -108,18 +108,6 @@ function EditCheckReport() {
           ),
         },
         {
-          Header: "Ghi chú",
-          accessor: (data: any) => (
-            <ListNote
-              data={data}
-              listProductImport={listProductStockTake}
-              setListProductImport={setListProductStockTake}
-              autoUpdatePrice={autoUpdatePrice}
-              setAutoUpdatePrice={setAutoUpdatePrice}
-            />
-          ),
-        },
-        {
           Header: " ",
           accessor: (data: any, index) => (
             <div
@@ -226,7 +214,7 @@ function EditCheckReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff()
-        setListStaff(staff?.data)
+        setListStaff(staff?.data?.data)
         return staff?.data?.data
       },
     },
@@ -363,7 +351,7 @@ function EditCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
         <SearchProductImportDropdown
           listDropdown={listProductExport?.data}
           textDefault={"Nhà cung cấp"}

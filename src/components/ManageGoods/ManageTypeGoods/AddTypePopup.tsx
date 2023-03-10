@@ -57,7 +57,7 @@ function AddTypePopup({ className = "" }) {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success("Thêm loại sản phẩm mới thành công!")
-        queryClient.refetchQueries("getListTypeGood")
+        queryClient.refetchQueries("getListStaffs")
       },
       onError: (data: any) => {
         console.log("login error", data)

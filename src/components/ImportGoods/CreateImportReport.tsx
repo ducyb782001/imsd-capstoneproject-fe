@@ -153,7 +153,7 @@ function CreateImportReport() {
       })
     }
   }, [nhaCungCapSelected])
-
+  console.log(listStaff)
   useEffect(() => {
     if (productChosen) {
       if (listChosenProduct.includes(productChosen)) {
@@ -258,7 +258,7 @@ function CreateImportReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         const staff = await getListStaff()
-        setListStaff(staff?.data)
+        setListStaff(staff?.data?.data)
         const supplier = await getListExportSupplier({})
         setListNhaCungCap(supplier?.data?.data)
         return staff?.data?.data

@@ -184,7 +184,7 @@ function DetailCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
@@ -220,13 +220,13 @@ function ImportExportButton({
 function StatusDisplay({ data }) {
   if (data == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="w-32 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">Đã hủy</h1>
       </div>
     )
   } else if (data == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+      <div className="w-32 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )

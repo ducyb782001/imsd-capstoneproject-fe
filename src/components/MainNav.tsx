@@ -124,6 +124,9 @@ function MainNav() {
         router.asPath.includes("/edit-product") ||
         router.asPath.includes("/add-supplier") ||
         router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
         router.asPath.includes("/add-product"),
     },
     {

@@ -12,28 +12,29 @@ import SelectRoleDropdown from "../Profile/SelectRoleDropdown"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
 import ConfirmPopup from "../ConfirmPopup"
-import { useMutation } from "react-query"
+import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { createStaff } from "../../apis/user-module"
-import router from "next/router"
+import {
+  createStaff,
+  getDetailStaff,
+  updateStaff,
+} from "../../apis/user-module"
+import router, { useRouter } from "next/router"
 import { format } from "date-fns"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateStaff() {
+function EditStaff() {
   const [gender, setGender] = useState<any>()
-  const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useEffect(() => {
     setStaffAccountObject({
       ...staffAccountObject,
-      userId: 0,
+      status: staffAccountObject?.status,
       password: "123456aA@",
-      roleId: 1,
-      status: true,
-      gender: true,
     })
   }, [])
 
@@ -66,15 +67,32 @@ function CreateStaff() {
     //   identity: res.url,
     // })
   }
-  const createStaffMutation = useMutation(
-    async (importProduct) => {
-      return await createStaff(importProduct)
+
+  const router = useRouter()
+  const { staffId } = router.query
+
+  useQueries([
+    {
+      queryKey: ["getDetailStaff", staffId],
+      queryFn: async () => {
+        const detail = await getDetailStaff(staffId)
+        setStaffAccountObject(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
+        return detail?.data
+      },
+      enabled: !!staffId,
+    },
+  ])
+
+  const updateStaffMutation = useMutation(
+    async (staff) => {
+      return await updateStaff(staff)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm nhân viên thành công")
+          toast.success("Chỉnh sửa nhân viên thành công")
           router.push("/manage-staff")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -98,7 +116,7 @@ function CreateStaff() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createStaffMutation.mutate({ ...staffAccountObject })
+    updateStaffMutation.mutate(staffAccountObject)
   }
   const handleOut = (event) => {
     router.push("/manage-staff")
@@ -115,6 +133,11 @@ function CreateStaff() {
               <PrimaryInput
                 title="Họ và tên"
                 placeholder="Nhập họ và tên"
+                value={
+                  staffAccountObject?.userName
+                    ? staffAccountObject?.userName
+                    : ""
+                }
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -131,12 +154,18 @@ function CreateStaff() {
                     value: "Nhân viên bán hàng",
                   },
                 ]}
+                textDefault={staffAccountObject?.role?.roleName}
                 showing={selectRole}
                 setShowing={setSelectRole}
               />
               <PrimaryInput
                 title="Số CCCD/CMND"
-                placeholder="Nhập số CCCD/CMND"
+                placeholder={"Nhập số CCCD/CMND"}
+                value={
+                  staffAccountObject?.identity
+                    ? staffAccountObject?.identity
+                    : ""
+                }
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -148,18 +177,14 @@ function CreateStaff() {
 
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <PrimaryInput
-                title={
-                  <p>
-                    Tên đăng nhập <span className="text-red-500">*</span>
-                  </p>
-                }
+                title={<p>Tên đăng nhập</p>}
                 placeholder="Nhập tên đăng nhập của nhân viên"
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    userCode: e.target.value,
-                  })
-                }}
+                value={
+                  staffAccountObject?.userCode
+                    ? staffAccountObject?.userCode
+                    : ""
+                }
+                readOnly={true}
               />
               <PasswordInput
                 title={
@@ -176,6 +201,11 @@ function CreateStaff() {
                     </Tooltip>
                   </div>
                 }
+                value={
+                  staffAccountObject?.password
+                    ? staffAccountObject?.password
+                    : ""
+                }
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -189,6 +219,9 @@ function CreateStaff() {
                 title="Số điện thoại"
                 placeholder="Nhập số điện thoại"
                 type="number"
+                value={
+                  staffAccountObject?.phone ? staffAccountObject?.phone : ""
+                }
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -215,9 +248,9 @@ function CreateStaff() {
                     staffAccountObject?.birthDate
                       ? format(
                           new Date(staffAccountObject?.birthDate),
-                          "dd/MM/yyyy",
+                          "yyyy-MM-dd",
                         )
-                      : ""
+                      : format(Date.now(), "yyyy-MM-dd")
                   }
                   onChange={(e) => {
                     setStaffAccountObject({
@@ -235,6 +268,7 @@ function CreateStaff() {
               title="Địa chỉ chi tiết"
               rows={4}
               placeholder="Nhập địa chỉ chi tiết"
+              value={staffAccountObject?.address}
               onChange={(e) => {
                 setStaffAccountObject({
                   ...staffAccountObject,
@@ -277,7 +311,7 @@ function CreateStaff() {
               <div className="w-[200px]">
                 <ConfirmPopup
                   classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title="Bạn có chắc chắn muốn hủy tạo nhân viên không?"
+                  title="Bạn có chắc chắn muốn hủy chỉnh sửa nhân viên không?"
                   handleClickSaveBtn={handleOut}
                 >
                   Hủy
@@ -287,7 +321,7 @@ function CreateStaff() {
               <div className="w-[200px]">
                 <ConfirmPopup
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title="Bạn có chắc chắn muốn tạo nhân viên không?"
+                  title="Bạn có chắc chắn muốn chỉnh sửa nhân viên không?"
                   handleClickSaveBtn={handleClickSaveBtn}
                   //   disabled={disabled}
                 >
@@ -302,4 +336,4 @@ function CreateStaff() {
   )
 }
 
-export default CreateStaff
+export default EditStaff

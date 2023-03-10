@@ -165,6 +165,7 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
+  console.log(listChosenProduct)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -221,7 +222,6 @@ function ImportReportEdit() {
       })
     }
   }, [listProductImport])
-
   const updateImportMutation = useMutation(
     async (importProduct) => {
       return await updateImportProduct(importProduct)

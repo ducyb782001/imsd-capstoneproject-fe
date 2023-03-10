@@ -8,18 +8,39 @@ import SmallTitle from "../SmallTitle"
 import SelectGenderDropdown from "./SelectGenderDropdown"
 import { IKImage } from "imagekitio-react"
 import AddImage from "../AddImage"
-import SelectRoleDropdown from "./SelectRoleDropdown"
+import Tooltip from "../ToolTip"
+import InfoIcon from "../icons/InfoIcon"
+import { useQueries } from "react-query"
+import { useRouter } from "next/router"
+import { getDetailStaff } from "../../apis/user-module"
 
 function Profile() {
   const [gender, setGender] = useState({ id: 1, value: "Nam" })
   const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
+  const [staffAccountObject, setStaffAccountObject] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
+
   const [selectRole, setSelectRole] = useState({
     id: 2,
     value: "Nhân viên bán hàng",
   })
 
+  const router = useRouter()
+  const { staffId } = router.query
+  useQueries([
+    {
+      queryKey: ["getDetailProductImport", staffId],
+      queryFn: async () => {
+        const detail = await getDetailStaff(staffId)
+        setStaffAccountObject(detail?.data)
+        setIsLoadingReport(detail?.data?.isLoading)
+        return detail?.data
+      },
+      enabled: !!staffId,
+    },
+  ])
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
     setLoadingImage(false)
@@ -39,24 +60,33 @@ function Profile() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
-              <PrimaryInput title="Họ và tên" placeholder="Nhập họ và tên" />
-              <SelectRoleDropdown
-                title={
-                  <p>
-                    Vị trí <span className="text-red-500">*</span>
-                  </p>
-                }
-                listDropdown={[
-                  { id: 1, value: "Thủ kho" },
-                  {
-                    id: 2,
-                    value: "Nhân viên bán hàng",
-                  },
-                ]}
-                showing={selectRole}
-                setShowing={setSelectRole}
+              <PrimaryInput
+                title="Họ và tên"
+                placeholder="Nhập họ và tên"
+                value={staffAccountObject?.userName}
+                onChange={(e) => {
+                  setStaffAccountObject({
+                    ...staffAccountObject,
+                    userName: e.target.value,
+                  })
+                }}
               />
-              <div className="hidden md:block"></div>
+              <PrimaryInput
+                title="Vị trí"
+                value={staffAccountObject?.roleId}
+                readOnly={true}
+              />
+              <PrimaryInput
+                title="Số CCCD/CMND"
+                placeholder={"Nhập số CCCD/CMND"}
+                value={staffAccountObject?.identity}
+                onChange={(e) => {
+                  setStaffAccountObject({
+                    ...staffAccountObject,
+                    identity: e.target.value,
+                  })
+                }}
+              />
             </div>
 
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
@@ -64,11 +94,29 @@ function Profile() {
                 title="Tên đăng nhập"
                 placeholder="Nhập tên đăng nhập của nhân viên"
                 readOnly={true}
-                value="ducndt"
+                value={staffAccountObject?.userCode}
               />
-              <PrimaryInput
-                title="Số CCCD/CMND"
-                placeholder="Nhập số CCCD/CMND"
+              <PasswordInput
+                title={
+                  <div className="flex gap-1">
+                    <h1>Mật khẩu</h1>
+                    <Tooltip
+                      content={
+                        <div>
+                          Mật khẩu mặc định khi tạo nhân viên là 123456aA@
+                        </div>
+                      }
+                    >
+                      <InfoIcon />
+                    </Tooltip>
+                  </div>
+                }
+                onChange={(e) => {
+                  setStaffAccountObject({
+                    ...staffAccountObject,
+                    password: e.target.value,
+                  })
+                }}
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
@@ -76,6 +124,13 @@ function Profile() {
                 title="Số điện thoại"
                 placeholder="Nhập số điện thoại"
                 type="number"
+                value={staffAccountObject?.phone}
+                onChange={(e) => {
+                  setStaffAccountObject({
+                    ...staffAccountObject,
+                    phone: e.target.value,
+                  })
+                }}
               />
               <SelectGenderDropdown
                 title="Giới tính"
@@ -91,9 +146,16 @@ function Profile() {
                   Ngày sinh
                 </div>
                 <input
-                  value={birthDate}
+                  value={
+                    staffAccountObject?.birthDate
+                      ? staffAccountObject?.birthDate
+                      : ""
+                  }
                   onChange={(e) => {
-                    setBirthDate(e.target.value)
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      birthDate: e.target.value,
+                    })
                   }}
                   type="date"
                   className="w-full h-[46px] px-4 py-3 border rounded-md outline-none border-gray focus:border-primary hover:border-primary smooth-transform"
@@ -105,6 +167,13 @@ function Profile() {
               title="Địa chỉ chi tiết"
               rows={4}
               placeholder="Nhập địa chỉ chi tiết"
+              value={staffAccountObject?.address}
+              onChange={(e) => {
+                setStaffAccountObject({
+                  ...staffAccountObject,
+                  address: e.target.value,
+                })
+              }}
             />
           </div>
           <div className="w-full h-auto">
