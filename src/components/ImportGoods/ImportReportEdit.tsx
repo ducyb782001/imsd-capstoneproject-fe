@@ -27,22 +27,6 @@ import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-interface ProductImport {
-  importCode: string
-  importId: number
-  importOrderDetails: {
-    amount: any
-    costPrice: any
-    discount: any
-    measuredUnitId: any
-    productId: any
-  }
-  note: string
-  supplierId: number
-  totalCost: any
-  userId: number
-}
-
 function ImportReportEdit() {
   const columns = [
     {
