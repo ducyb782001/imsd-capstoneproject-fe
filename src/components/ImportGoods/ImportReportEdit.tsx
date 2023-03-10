@@ -260,8 +260,6 @@ function ImportReportEdit() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-import-goods")
   }
-  console.log(productImportObject)
-  console.log("Detail response: ", detailResponse)
 
   useQueries([
     {
@@ -270,7 +268,7 @@ function ImportReportEdit() {
         const response = await getDetailImportProduct(importId)
         const detailReport = response?.data
         setListChosenProduct(detailReport?.importOrderDetails)
-        setListProductImport(detailReport?.importOrderDetails)
+        //setListProductImport(detailReport?.importOrderDetails)
         setProductImportObject({
           importId: detailReport?.importId,
           importCode: detailReport?.importCode,
@@ -544,6 +542,8 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
 }
 
 function CountTotalPrice({ data, listProductImport }) {
+  console.log(listProductImport)
+
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
     const list = listProductImport
