@@ -168,8 +168,6 @@ function CreateImportReport() {
         const discount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.discount
-          ? undefined
-          : 0
         const amount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.amount
@@ -283,6 +281,7 @@ function CreateImportReport() {
       },
     },
   ])
+  console.log(productImportObject)
 
   return (
     <div>
@@ -454,7 +453,8 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
 function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   const [discount, setDiscount] = useState()
-  const handleOnChangeDiscount = (value, data) => {
+
+  const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
@@ -474,7 +474,7 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
       onChange={(e) => {
         e.stopPropagation()
         setDiscount(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
+        handleOnChangeAmount(e.target.value, data)
       }}
     />
   )
