@@ -14,10 +14,12 @@ import ExportGoodsIcon from "./icons/ExportGoodsIcon"
 import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
 import UserIcon from "./icons/UserIcon"
+import { useTranslation } from "react-i18next"
 
 function MainNav() {
   const [isLogin, setIsLogin] = useState(false)
   const router = useRouter()
+  const { t } = useTranslation()
   // useEffect(() => {
   //   const cookies = cookie.parse(window.document.cookie)
   //   if (cookies.token) {
@@ -30,19 +32,19 @@ function MainNav() {
   const subMenuManageGoods = [
     {
       id: 1,
-      name: "Sản phẩm",
+      name: t("product"),
       href: "/manage-goods",
       isActive: router.asPath.includes("/manage-goods"),
     },
     {
       id: 2,
-      name: "Nhà cung cấp",
+      name: t("supplier"),
       href: "/manage-suppliers",
       isActive: router.asPath.includes("/manage-suppliers"),
     },
     {
       id: 3,
-      name: "Loại sản phẩm",
+      name: t("type.typeGoods"),
       // Chua tao page
       href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
@@ -51,13 +53,13 @@ function MainNav() {
   const subMenuImportGoods = [
     {
       id: 1,
-      name: "Danh sách nhập hàng",
+      name: t("list_import_report"),
       href: "/manage-import-goods",
       isActive: router.asPath.includes("/manage-import-goods"),
     },
     {
       id: 2,
-      name: "Tạo đơn nhập hàng",
+      name: t("create_import_report"),
       href: "/create-import-report",
       isActive: router.asPath.includes("/create-import-report"),
     },
@@ -65,13 +67,13 @@ function MainNav() {
   const subMenuExportGoods = [
     {
       id: 1,
-      name: "Danh sách xuất hàng",
+      name: t("list_export_report"),
       href: "/manage-export-goods",
       isActive: router.asPath.includes("/manage-export-goods"),
     },
     {
       id: 2,
-      name: "Tạo đơn xuất hàng",
+      name: t("create_export_report"),
       href: "/create-export-report",
       isActive: router.asPath.includes("/create-export-report"),
     },
@@ -89,38 +91,29 @@ function MainNav() {
   const subMenuCheckGoods = [
     {
       id: 1,
-      name: "Lịch sử kiểm hàng",
+      name: t("check_history"),
       href: "/manage-check-good",
       isActive: router.asPath.includes("/manage-check-good"),
     },
     {
       id: 2,
-      name: "Tạo phiếu kiểm",
+      name: t("create_check_good"),
       href: "/create-check-report",
       isActive: router.asPath.includes("/create-check-report"),
-    },
-  ]
-  //indev
-  const subMenuUser = [
-    {
-      id: 1,
-      name: "Quản lý nhân viên",
-      href: "/manage-staff",
-      isActive: router.asPath.includes("/manage-staff"),
     },
   ]
 
   const mainMenu = [
     {
       id: 1,
-      name: "Thống kê",
+      name: t("dashboard"),
       href: "/dashboard",
       icon: <DashboardIcon />,
       isActive: router.asPath.includes("/dashboard"),
     },
     {
       id: 2,
-      name: "Quản lý hàng hóa",
+      name: t("manageGoods"),
       subMenu: subMenuManageGoods,
       icon: <ManageGoodsIcon />,
       isActive:
@@ -133,11 +126,14 @@ function MainNav() {
         router.asPath.includes("/edit-product") ||
         router.asPath.includes("/add-supplier") ||
         router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
         router.asPath.includes("/add-product"),
     },
     {
       id: 3,
-      name: "Nhập hàng",
+      name: t("import good"),
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
       isActive:
@@ -151,7 +147,7 @@ function MainNav() {
     },
     {
       id: 4,
-      name: "Xuất hàng",
+      name: t("export good"),
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
       isActive:
@@ -165,15 +161,14 @@ function MainNav() {
     // indev
     {
       id: 5,
-      name: "Trả hàng",
+      name: t("return good"),
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
       isActive: router.asPath.includes("/return-goods-list"),
     },
-    // indev
     {
       id: 6,
-      name: "Kiểm hàng",
+      name: t("check good"),
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
       isActive:
@@ -183,13 +178,14 @@ function MainNav() {
         router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
     },
-    // indev
     {
       id: 7,
-      name: "Nhân viên",
-      subMenu: subMenuUser,
+      name: t("staff"),
       icon: <UserIcon />,
-      isActive: router.asPath.includes("/manage-staff"),
+      isActive:
+        router.asPath.includes("/manage-staff") ||
+        router.asPath.includes("/create-staff"),
+      href: "/manage-staff",
     },
   ]
 

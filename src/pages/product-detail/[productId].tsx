@@ -1,10 +1,12 @@
 import React from "react"
 import Layout from "../../components/Layout"
 import ProductDetail from "../../components/ManageGoods/ProductDetail"
+import { useTranslation } from "react-i18next"
 
-function detailProduct(props) {
+function detailProduct() {
+  const { t } = useTranslation()
   return (
-    <Layout headTitle="Chi tiết sản phẩm">
+    <Layout headTitle={t("product_detail")}>
       <ProductDetail />
     </Layout>
   )

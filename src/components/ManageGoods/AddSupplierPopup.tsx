@@ -8,6 +8,7 @@ import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
+import { useTranslation } from "react-i18next"
 
 function AddSupplierPopup({ className = "" }) {
   const [showDialog, setShowDialog] = useState(false)
@@ -16,7 +17,7 @@ function AddSupplierPopup({ className = "" }) {
   const handleSaveBtn = () => {
     close()
   }
-
+  const { t } = useTranslation()
   return (
     <div className={`${className}`}>
       <button
@@ -24,7 +25,7 @@ function AddSupplierPopup({ className = "" }) {
         onClick={open}
       >
         <AddPlusIcon />
-        <p className="text-[#4794F8] text-base">Thêm mới nhà cung cấp</p>
+        <p className="text-[#4794F8] text-base">{t("add_new_supplier")}</p>
       </button>
       <AnimatePresence>
         {showDialog && (
@@ -47,19 +48,21 @@ function AddSupplierPopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm nhà cung cấp</SmallTitle>
+                  <SmallTitle>{t("add_new_supplier")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput title="Tên nhà cung cấp" />
+                  <PrimaryInput title={t("supplier_name")} />
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
                   <PrimaryBtn className="w-[200px]">
-                    Thêm nhà cung cấp
+                    {t("add_new_supplier")}
                   </PrimaryBtn>
-                  <SecondaryBtn className="w-[70px]">Thoát</SecondaryBtn>
+                  <SecondaryBtn onClick={close} className="w-[70px]">
+                    {t("exit")}
+                  </SecondaryBtn>
                 </div>
               </motion.div>
             </MotionDialogContent>

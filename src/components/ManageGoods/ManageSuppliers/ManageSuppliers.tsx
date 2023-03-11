@@ -19,51 +19,52 @@ import {
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../../icons/EditIcon"
 import TableSkeleton from "../../Skeleton/TableSkeleton"
-
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Tên nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplierName}</p>,
-      },
-      {
-        Header: "Số điện thoại",
-        accessor: (data: any) => <p>{data?.supplierPhone}</p>,
-      },
-      {
-        Header: "Email",
-        accessor: (data: any) => <p>{data?.supplierEmail}</p>,
-      },
-      {
-        Header: "Địa chỉ",
-        accessor: (data: any) => <p>{data?.address}</p>,
-      },
-      {
-        Header: "Hành động",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/edit-supplier/${data?.supplierId}`}>
-                <a>
-                  <EditIcon />
-                </a>
-              </Link>
-              <Link href={`/supplier-detail/${data?.supplierId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
-      },
-    ],
-  },
-]
+import { useTranslation } from "react-i18next"
 
 function ManageSuppliers({ ...props }) {
+  const { t } = useTranslation()
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("supplier_name"),
+          accessor: (data: any) => <p>{data?.supplierName}</p>,
+        },
+        {
+          Header: t("phone_number"),
+          accessor: (data: any) => <p>{data?.supplierPhone}</p>,
+        },
+        {
+          Header: "Email",
+          accessor: (data: any) => <p>{data?.supplierEmail}</p>,
+        },
+        {
+          Header: t("address"),
+          accessor: (data: any) => <p>{data?.address}</p>,
+        },
+        {
+          Header: t("action"),
+          accessor: (data: any) => {
+            return (
+              <div className="flex items-center gap-2">
+                <Link href={`/edit-supplier/${data?.supplierId}`}>
+                  <a>
+                    <EditIcon />
+                  </a>
+                </Link>
+                <Link href={`/supplier-detail/${data?.supplierId}`}>
+                  <a className="w-full">
+                    <ShowDetailIcon />
+                  </a>
+                </Link>
+              </div>
+            )
+          },
+        },
+      ],
+    },
+  ]
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -85,11 +86,6 @@ function ManageSuppliers({ ...props }) {
       setQueryParams(queryObj)
     }
   }, [listFilter])
-
-  const handleRemoveFilter = (itemIndex) => {
-    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
-    setListFilter(listRemove)
-  }
 
   useQueries([
     {
@@ -170,7 +166,7 @@ function ManageSuppliers({ ...props }) {
               className="max-w-[250px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Thêm nhà cung cấp
+              {t("add_new_supplier")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -179,19 +175,11 @@ function ManageSuppliers({ ...props }) {
         <div className="flex flex-col gap-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder="Tìm kiếm bằng tên nhà cung cấp"
+              placeholder={t("search.searchSupplier")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full col-span-3"
             />
           </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
         </div>
 
         {isLoadingListSupplier ? (

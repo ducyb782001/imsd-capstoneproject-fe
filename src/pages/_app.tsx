@@ -17,6 +17,7 @@ import "../styles/tooltip.css"
 import "../styles/add-image.css"
 import "../styles/skeleton-loading.css"
 import { ThemeProvier } from "../context/ThemeContext"
+import "src/i18n/i18n"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs

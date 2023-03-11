@@ -4,6 +4,7 @@ import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddSupplierPopup from "./AddSupplierPopup"
+import { useTranslation } from "react-i18next"
 
 function AddChooseSupplierDropdown({
   title = "",
@@ -16,6 +17,7 @@ function AddChooseSupplierDropdown({
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
   const listResult = search(searchInput, listDropdown)
+  const { t } = useTranslation()
 
   const toggleOpenMenu = () => {
     toggleOpen(!isOpen)
@@ -89,9 +91,6 @@ function AddChooseSupplierDropdown({
         variants={subMenuAnimate}
         className={`absolute right-0 w-full shadow-md mt-2`}
         style={{
-          // position: "absolute",
-          // top: 40,
-          // right: 0,
           borderRadius: 5,
           backgroundColor: "#ECF1F4",
           transformOrigin: "50% -30px",
@@ -102,7 +101,7 @@ function AddChooseSupplierDropdown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Tìm kiếm hoặc nhập mới"
+          placeholder={t("search.searchAdd")}
         />
         <div
           id="list-dropdown"

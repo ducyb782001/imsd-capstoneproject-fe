@@ -19,6 +19,7 @@ import {
 } from "../apis/search-country-module"
 import CountryDropDown from "./CountryDropDown"
 import useScanDetection from "../hooks/useScanDetection"
+import { useTranslation } from "react-i18next"
 
 const listNhaCungCapDemo = [
   { id: "1", name: "Chinh Bac" },
@@ -94,9 +95,11 @@ function TestPage(props) {
     setSearchBarcode(searchBarCode.replace("Shift", ""))
   }, [searchBarCode])
 
+  const { t } = useTranslation()
+
   return (
     <div className="flex flex-col gap-4 mb-20">
-      {searchBarCode}
+      {/* {searchBarCode} */}
       {/* <div className="w-full h-[500px] skeleton-loading" /> */}
       <PrimaryBtn>ABCD</PrimaryBtn>
       <SecondaryBtn className="border-transparent hover:bg-transparent">

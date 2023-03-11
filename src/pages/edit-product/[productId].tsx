@@ -1,10 +1,12 @@
 import React from "react"
 import Layout from "../../components/Layout"
 import EditProduct from "../../components/ManageGoods/EditProduct"
+import { useTranslation } from "react-i18next"
 
-function editProduct(props) {
+function editProduct() {
+  const { t } = useTranslation()
   return (
-    <Layout headTitle="Chỉnh sửa sản phẩm">
+    <Layout headTitle={t("edit_product")}>
       <EditProduct />
     </Layout>
   )

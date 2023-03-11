@@ -10,14 +10,14 @@ function PasswordInput({
 }) {
   const [showPassword, setShowPassword] = useState(false)
   return (
-    <div className={`flex flex-col gap-1 ${className}`}>
-      <h5 className="mb-2 text-sm font-bold text-black">{title}</h5>
+    <div className={`flex flex-col ${className}`}>
+      <h5 className="mb-2 text-sm font-bold text-gray">{title}</h5>
       <div className="relative w-full">
         <input
           placeholder={placeholder}
           type={showPassword ? "text" : "password"}
           {...props}
-          className="outline-none py-[14px] px-4 rounded bg-transparent border-gray border-[1px] w-full focus:border-primary smooth-transform"
+          className="outline-none h-[46px] py-3 px-4 rounded bg-transparent border-gray border-[1px] w-full focus:border-primary smooth-transform"
         />
         <div
           className="absolute top-[19px] cursor-pointer my-auto right-4"

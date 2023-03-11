@@ -31,7 +31,7 @@ const columns = [
     Header: " ",
     columns: [
       {
-        Header: "Mã đơn nhập",
+        Header: "Mã đơn xuất",
         accessor: (data: any) => <p>{data?.exportCode}</p>,
       },
       {

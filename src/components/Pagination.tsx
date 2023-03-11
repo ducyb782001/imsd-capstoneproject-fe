@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { basePagination } from "../lib/pagination"
 import SelectPageSizeDropDown from "./SelectPageSizeDropDown"
+import { useTranslation } from "react-i18next"
 
 function Pagination({
   totalItems,
@@ -10,7 +11,7 @@ function Pagination({
   setPageSize,
 }) {
   const [totalPage, setTotalPage] = useState(1)
-
+  const { t } = useTranslation()
   useEffect(() => {
     if (totalItems % pageSize == 0) {
       setTotalPage(Math.floor(totalItems / pageSize))
@@ -48,7 +49,7 @@ function Pagination({
       <div className="flex items-center justify-center h-8 px-2 border rounded border-grayLight">
         {startList} -&nbsp;
         {endList > totalItems ? totalItems : endList}
-        &nbsp; of {totalItems}
+        &nbsp; {t("of")} {totalItems}
       </div>
     </div>
   )

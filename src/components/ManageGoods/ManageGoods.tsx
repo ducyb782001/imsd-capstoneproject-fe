@@ -15,7 +15,6 @@ import { useQueries } from "react-query"
 import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
 import { getListExportTypeGood } from "../../apis/type-good-module"
 import ChooseSupplierDropdown from "./ChooseSupplierDropdown"
@@ -23,79 +22,81 @@ import ChooseTypeDropdown from "./ChooseTypeDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import useScanDetection from "../../hooks/useScanDetection"
-
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
-      },
-      {
-        Header: "Ảnh",
-        accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover w-full h-full rounded-xl"
-              src={data?.image}
-              alt="image-product"
-            />
-          </div>
-        ),
-      },
-      {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
-      },
-      {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-      },
-      {
-        Header: "Loại",
-        accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-      },
-      {
-        Header: "Tồn kho",
-        accessor: (data: any) => (
-          <p>{new BigNumber(data?.inStock).toFormat()}</p>
-        ),
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/edit-product/${data?.productId}`}>
-                <a>
-                  <EditIcon />
-                </a>
-              </Link>
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
-      },
-    ],
-  },
-]
+import { useTranslation } from "react-i18next"
 
 function ManageGoods({ ...props }) {
+  const { t } = useTranslation()
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("product_code"),
+          accessor: (data: any) => <p>{data?.productCode}</p>,
+        },
+        {
+          Header: t("image"),
+          accessor: (data: any) => (
+            <div className="w-[35px] h-[35px] rounded-xl">
+              <img
+                className="object-cover w-full h-full rounded-xl"
+                src={data?.image}
+                alt="image-product"
+              />
+            </div>
+          ),
+        },
+        {
+          Header: t("product_name"),
+          accessor: (data: any) => <p>{data?.productName}</p>,
+        },
+        {
+          Header: t("supplier"),
+          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+        },
+        {
+          Header: t("type.type"),
+          accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+        },
+        {
+          Header: t("in_stock"),
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.inStock).toFormat()}</p>
+          ),
+        },
+        {
+          Header: t("unit"),
+          accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+        },
+        {
+          Header: t("created_date"),
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => {
+            return (
+              <div className="flex items-center gap-2">
+                <Link href={`/edit-product/${data?.productId}`}>
+                  <a>
+                    <EditIcon />
+                  </a>
+                </Link>
+                <Link href={`/product-detail/${data?.productId}`}>
+                  <a className="w-full">
+                    <ShowDetailIcon />
+                  </a>
+                </Link>
+              </div>
+            )
+          },
+        },
+      ],
+    },
+  ]
+
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -260,7 +261,7 @@ function ManageGoods({ ...props }) {
               className="max-w-[200px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Thêm sản phẩm
+              {t("add_product")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -269,20 +270,20 @@ function ManageGoods({ ...props }) {
         <div className="flex flex-col gap-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
             <SearchInput
-              placeholder="Tìm kiếm theo tên/ mã sản phẩm/ mã vạch"
+              placeholder={t("search.searchInGoods")}
               value={searchParam ? searchParam : ""}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
             <ChooseSupplierDropdown
               listDropdown={listSupplier}
-              textDefault={"Nhà cung cấp"}
+              textDefault={t("supplier")}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
             />
             <ChooseTypeDropdown
               listDropdown={listCategory}
-              textDefault={"Loại sản phẩm"}
+              textDefault={t("type.typeGoods")}
               showing={typeSelected}
               setShowing={setTypeSelected}
             />
