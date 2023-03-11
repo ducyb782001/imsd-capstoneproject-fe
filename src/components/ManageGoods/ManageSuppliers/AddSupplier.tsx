@@ -16,6 +16,8 @@ import {
 import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
+import { useTranslation } from "react-i18next"
+
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
@@ -31,7 +33,8 @@ interface Supplier {
   status: boolean
 }
 
-function AddSupplier(props) {
+function AddSupplier() {
+  const { t } = useTranslation()
   const [supplier, setSupplier] = useState<Supplier>()
   const [isEnabled, setIsEnabled] = useState(true)
   const [disabled, setDisabled] = useState(true)
@@ -115,7 +118,7 @@ function AddSupplier(props) {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm nhà cung cấp thành công!")
+          toast.success(t("add_supplier_success"))
           router.push("/manage-suppliers")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -126,7 +129,7 @@ function AddSupplier(props) {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Đã có lỗi xảy ra! Xin kiểm tra lại",
+                t("error_occur"),
             )
           }
         }
@@ -142,7 +145,7 @@ function AddSupplier(props) {
   }, [isEnabled])
 
   const handleAddNewSupplier = () => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     // @ts-ignore
@@ -169,14 +172,14 @@ function AddSupplier(props) {
   return (
     <div className="">
       <div>
-        <div className="bg-white block-border w-full">
-          <SmallTitle>Thông tin chung</SmallTitle>
+        <div className="w-full bg-white block-border">
+          <SmallTitle>{t("general_information")}</SmallTitle>
           <PrimaryInput
             className="mt-6"
-            placeholder="Nhập tên nhà cung cấp"
+            placeholder={t("fill_supplier_name")}
             title={
               <h1>
-                Tên nhà cung cấp <span className="text-red-500">*</span>
+                {t("supplier_name")} <span className="text-red-500">*</span>
               </h1>
             }
             onChange={(e) => {
@@ -185,11 +188,11 @@ function AddSupplier(props) {
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
             <PrimaryInput
-              placeholder="Nhập số điện thoại"
+              placeholder={t("enter_number")}
               title={
                 <div className="flex gap-1">
                   <h1>
-                    Số điện thoại <span className="text-red-500">*</span>
+                    {t("phone_number")} <span className="text-red-500">*</span>
                   </h1>
                 </div>
               }
@@ -199,7 +202,7 @@ function AddSupplier(props) {
             />
             <PrimaryInput
               title="Email"
-              placeholder="Nhập tên tài khoản gmail"
+              placeholder={t("enter_email")}
               onChange={(e) => {
                 setSupplier({ ...supplier, supplierEmail: e.target.value })
               }}
@@ -211,12 +214,12 @@ function AddSupplier(props) {
               title={
                 <div className="flex gap-1">
                   <h1>
-                    Tỉnh/Thành phố <span className="text-red-500">*</span>
+                    {t("city")} <span className="text-red-500">*</span>
                   </h1>
                 </div>
               }
               listDropdown={listCity}
-              textDefault={"Chọn Tỉnh/Thành phố"}
+              textDefault={t("choose_city")}
               showing={citySelected}
               setShowing={setCitySelected}
             />
@@ -224,12 +227,12 @@ function AddSupplier(props) {
               title={
                 <div className="flex gap-1">
                   <h1>
-                    Quận/Huyện <span className="text-red-500">*</span>
+                    {t("district")} <span className="text-red-500">*</span>
                   </h1>
                 </div>
               }
               listDropdown={listDistrict}
-              textDefault={"Chọn Quận/Huyện"}
+              textDefault={t("choose_district")}
               showing={districtSelected}
               setShowing={setDistrictSelected}
             />
@@ -262,9 +265,9 @@ function AddSupplier(props) {
               setSupplier({ ...supplier, note: e.target.value })
             }}
           />
-          <div className="flex items-center absolute-right mt-6">
+          <div className="flex items-center mt-6 absolute-right">
             <div className="flex flex-col gap-4">
-              <div className="grid items-center justify-between fle w-full gap-4 md:grid-cols-2 ">
+              <div className="grid items-center justify-between w-full gap-4 fle md:grid-cols-2 ">
                 <ConfirmPopup
                   classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
                   title="Bạn có chắc chắn muốn hủy thêm nhà cung cấp không?"

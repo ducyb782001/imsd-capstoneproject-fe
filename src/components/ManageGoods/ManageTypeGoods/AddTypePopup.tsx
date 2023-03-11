@@ -14,12 +14,13 @@ import SecondaryBtn from "../../SecondaryBtn"
 import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function AddTypePopup({ className = "" }) {
   const router = useRouter()
-
+  const { t } = useTranslation()
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
@@ -30,7 +31,7 @@ function AddTypePopup({ className = "" }) {
   const queryClient = useQueryClient()
 
   const handleSaveBtn = () => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_TYPE_ID,
     })
     // @ts-ignore
@@ -56,13 +57,13 @@ function AddTypePopup({ className = "" }) {
     {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
-        toast.success("Thêm loại sản phẩm mới thành công!")
+        toast.success(t("add_type_success"))
         queryClient.refetchQueries("getListStaffs")
       },
       onError: (data: any) => {
         console.log("login error", data)
         toast.dismiss(TOAST_CREATED_TYPE_ID)
-        toast.error("Có lỗi xảy ra! Xin kiểm tra lại!")
+        toast.error(t("error_occur"))
       },
     },
   )
@@ -70,7 +71,7 @@ function AddTypePopup({ className = "" }) {
   return (
     <div className={`${className}`}>
       <PrimaryBtn onClick={open}>
-        <PlusIcon /> Thêm loại sản phẩm
+        <PlusIcon /> {t("add_type")}
       </PrimaryBtn>
       <AnimatePresence>
         {showDialog && (
@@ -93,19 +94,19 @@ function AddTypePopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm loại sản phẩm</SmallTitle>
+                  <SmallTitle>{t("add_type")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
                 <div className="px-6  text-base text-[#4F4F4F] pt-5">
                   <PrimaryInput
-                    title="Tên loại sản phẩm"
+                    title={t("name_type")}
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
                 <div className="px-6 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
-                    title="Mô tả loại sản phẩm"
+                    title={t("description_type")}
                     onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
@@ -116,9 +117,11 @@ function AddTypePopup({ className = "" }) {
                     onClick={handleSaveBtn}
                     disabled={disabled}
                   >
-                    Lưu
+                    {t("save")}
                   </PrimaryBtn>
-                  <SecondaryBtn className="w-[70px]">Thoát</SecondaryBtn>
+                  <SecondaryBtn onClick={close} className="w-[70px]">
+                    {t("exit")}
+                  </SecondaryBtn>
                 </div>
               </motion.div>
             </MotionDialogContent>

@@ -9,7 +9,7 @@ import Pagination from "../Pagination"
 import ProductDetailSkeleton from "../Skeleton/ProductDetailSkeleton"
 import { format } from "date-fns"
 import Link from "next/link"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
+import { useTranslation } from "react-i18next"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
@@ -29,58 +29,58 @@ function ProductDetail() {
       },
     },
   ])
-
-  console.log(detailProduct)
-
+  const { t } = useTranslation()
   return isLoadingProduct ? (
     <ProductDetailSkeleton />
   ) : (
     <div>
       <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>Thông tin sản phẩm</SmallTitle>
+        <SmallTitle>{t("product_infor")}</SmallTitle>
         <div className="grid mt-4 md:grid-cols-433">
           <div className="grid grid-cols-2 gap-y-1">
             <ProductInfo
-              title="Mã sản phẩm"
+              title={t("product code")}
               data={detailProduct?.productCode}
             />
             <ProductInfo
-              title="Nhà cung cấp"
+              title={t("supplier")}
               data={detailProduct?.supplier?.supplierName}
             />
             <ProductInfo
-              title="Loại sản phẩm"
+              title={t("type.typeGoods")}
               data={detailProduct?.category?.categoryName}
             />
             <ProductInfo
-              title="Tồn kho"
+              title={t("in_stock")}
               data={new BigNumber(detailProduct?.inStock).toFormat()}
             />
-            <ProductInfo title="Đơn vị tính" data={"Hộp"} />
             <ProductInfo
-              title="Giá nhập"
-              data={`${new BigNumber(detailProduct?.costPrice).toFormat(
-                0,
-              )} đồng`}
+              title={t("product_unit")}
+              data={detailProduct?.defaultMeasuredUnit}
             />
             <ProductInfo
-              title="Giá bán"
+              title={t("cost_price")}
+              data={`${new BigNumber(detailProduct?.costPrice).toFormat(0)} ${t(
+                "dong",
+              )}`}
+            />
+            <ProductInfo
+              title={t("sell_price")}
               data={`${new BigNumber(detailProduct?.sellingPrice).toFormat(
                 0,
-              )} đồng`}
+              )} ${t("dong")}`}
             />
             <ProductInfo
-              title="Ngày tạo"
+              title={t("date_create")}
               data={format(
                 new Date(detailProduct?.created),
                 "dd/MM/yyyy HH:mm",
               )}
-              // data={formatISO(detailProduct?.created)}
             />
           </div>
           <div>
-            <div className="text-gray">Mô tả sản phẩm</div>
+            <div className="text-gray">{t("product_description")}</div>
             <p>{detailProduct?.description}</p>
           </div>
           <div className="flex flex-col items-center justify-center">
@@ -122,11 +122,54 @@ function ProductInfo({ title = "", data = "" }) {
 }
 
 function HistoryProduct({ data }) {
+  const { t } = useTranslation()
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("code_action"),
+          accessor: (data: any) => {
+            return <ShowDetailHistory data={data} />
+          },
+        },
+        {
+          Header: t("staff"),
+          accessor: (data: any) => <p>{data?.user?.userName}</p>,
+        },
+        {
+          Header: t("action"),
+          accessor: (data: any) => <p>{data?.actionType?.action}</p>,
+        },
+        {
+          Header: t("amount_change"),
+          // In dev later change + or - by type
+          accessor: (data: any) => (
+            <p className="text-center">{data?.amountDifferential}</p>
+          ),
+        },
+        {
+          Header: t("inventory_number"),
+          accessor: (data: any) => (
+            <p className="text-center">{data?.amount}</p>
+          ),
+        },
+        {
+          Header: t("recorded_date"),
+          accessor: (data: any) => (
+            <p>{format(new Date(data?.date), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+      ],
+    },
+  ]
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+  console.log(data)
+
   return (
     <div className="mt-4 bg-white block-border">
-      <SmallTitle>Lịch sử</SmallTitle>
+      <SmallTitle>{t("history")}</SmallTitle>
       <div className="mt-4 table-style">
         <Table
           pageSizePagination={10}
@@ -139,56 +182,19 @@ function HistoryProduct({ data }) {
         setPageSize={setPageSize}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalItems={data?.productHistories?.total}
+        totalItems={data?.productHistories?.length}
       />
     </div>
   )
 }
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã hành động",
-        accessor: (data: any) => {
-          return <ShowDetailHistory data={data} />
-        },
-      },
-      {
-        Header: "Nhân viên",
-        accessor: (data: any) => <p>{data?.user?.userName}</p>,
-      },
-      {
-        Header: "Hành động",
-        accessor: (data: any) => <p>{data?.actionType?.action}</p>,
-      },
-      {
-        Header: "Số lượng thay đổi",
-        // In dev later change + or - by type
-        accessor: (data: any) => (
-          <p className="text-center">{data?.amountDifferential}</p>
-        ),
-      },
-      {
-        Header: "Số lượng tồn kho",
-        accessor: (data: any) => <p className="text-center">{data?.amount}</p>,
-      },
-      {
-        Header: "Ngày ghi nhận",
-        accessor: (data: any) => (
-          <p>{format(new Date(data?.date), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-    ],
-  },
-]
+
 function ShowDetailHistory({ data }) {
   const a = data?.actionCode ? data?.actionCode : ""
   if (data?.actionType?.action == "Kiểm hàng") {
     return (
       <div>
         <Link href={`/check-product-detail/` + a}>
-          <p className="text-blue cursor-pointer">{a}</p>
+          <p className="cursor-pointer text-blue">{a}</p>
         </Link>
       </div>
     )
@@ -196,7 +202,7 @@ function ShowDetailHistory({ data }) {
     return (
       <div>
         <Link href={`/export-product-detail/` + a}>
-          <p className="text-blue cursor-pointer">{a}</p>
+          <p className="cursor-pointer text-blue">{a}</p>
         </Link>
       </div>
     )
@@ -204,7 +210,7 @@ function ShowDetailHistory({ data }) {
     return (
       <div>
         <Link href={`/import-product-detail/` + a}>
-          <p className="text-blue cursor-pointer">{a}</p>
+          <p className="cursor-pointer text-blue">{a}</p>
         </Link>
       </div>
     )

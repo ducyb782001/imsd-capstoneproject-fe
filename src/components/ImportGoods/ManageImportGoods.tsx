@@ -18,6 +18,7 @@ import ChooseStatusDropdown from "./ChooseStatusDropdown"
 import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
+import { useTranslation } from "react-i18next"
 
 const columns = [
   {
@@ -76,6 +77,7 @@ const status = [
 ]
 
 function ManageImportGoods({ ...props }) {
+  const { t } = useTranslation()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -218,7 +220,7 @@ function ManageImportGoods({ ...props }) {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn nhập hàng
+              {t("create_import_report")}
             </PrimaryBtn>
           </a>
         </Link>

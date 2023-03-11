@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { search } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
+import { useTranslation } from "react-i18next"
 
 function ChooseSupplierDropdown({
   title = "",
@@ -11,6 +12,7 @@ function ChooseSupplierDropdown({
   setShowing,
   textDefault,
 }) {
+  const { t } = useTranslation()
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -103,7 +105,7 @@ function ChooseSupplierDropdown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Tìm kiếm hoặc nhập mới"
+          placeholder={t("search.search")}
         />
         <div
           id="list-dropdown"

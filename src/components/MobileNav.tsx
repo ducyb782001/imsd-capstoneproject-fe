@@ -42,13 +42,13 @@ function MobileNav() {
   const subMenuImportGoods = [
     {
       id: 1,
-      name: "Danh sách nhập hàng",
+      name: t("list_import_report"),
       href: "/manage-import-goods",
       isActive: router.asPath.includes("/manage-import-goods"),
     },
     {
       id: 2,
-      name: "Tạo đơn nhập hàng",
+      name: t("create_import_report"),
       href: "/create-import-report",
       isActive: router.asPath.includes("/create-import-report"),
     },
@@ -56,13 +56,13 @@ function MobileNav() {
   const subMenuExportGoods = [
     {
       id: 1,
-      name: "Danh sách xuất hàng",
+      name: t("list_export_report"),
       href: "/manage-export-goods",
       isActive: router.asPath.includes("/manage-export-goods"),
     },
     {
       id: 2,
-      name: "Tạo đơn xuất hàng",
+      name: t("create_export_report"),
       href: "/create-export-report",
       isActive: router.asPath.includes("/create-export-report"),
     },
@@ -76,22 +76,18 @@ function MobileNav() {
       isActive: router.asPath.includes("/return-goods-list"),
     },
   ]
-  //indev
   const subMenuCheckGoods = [
     {
       id: 1,
-      name: "Lịch sử kiểm hàng",
-      href: "/check-goods-list",
-      isActive: router.asPath.includes("/check-goods-list"),
+      name: t("check_history"),
+      href: "/manage-check-good",
+      isActive: router.asPath.includes("/manage-check-good"),
     },
-  ]
-  //indev
-  const subMenuUser = [
     {
-      id: 1,
-      name: "Quản lý nhân viên",
-      href: "/check-goods-list",
-      isActive: router.asPath.includes("/check-goods-list"),
+      id: 2,
+      name: t("create_check_good"),
+      href: "/create-check-report",
+      isActive: router.asPath.includes("/create-check-report"),
     },
   ]
 
@@ -115,7 +111,7 @@ function MobileNav() {
     },
     {
       id: 3,
-      name: "Nhập hàng",
+      name: t("import good"),
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
       href: "/manage-import-goods",
@@ -125,7 +121,7 @@ function MobileNav() {
     },
     {
       id: 4,
-      name: "Xuất hàng",
+      name: t("export good"),
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
       href: "/manage-export-goods",
@@ -136,7 +132,7 @@ function MobileNav() {
     // indev
     {
       id: 5,
-      name: "Trả hàng",
+      name: t("return good"),
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
       href: "/return-goods-list",
@@ -145,20 +141,20 @@ function MobileNav() {
     // indev
     {
       id: 6,
-      name: "Kiểm hàng",
+      name: t("check good"),
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
       href: "/return-goods-list",
       isActive: router.asPath.includes("/xyz"),
     },
-    // indev
     {
       id: 7,
-      name: "Nhân viên",
-      subMenu: subMenuUser,
+      name: t("staff"),
       icon: <UserIcon />,
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/abcd"),
+      isActive:
+        router.asPath.includes("/manage-staff") ||
+        router.asPath.includes("/create-staff"),
+      href: "/manage-staff",
     },
   ]
   const node = useRef()

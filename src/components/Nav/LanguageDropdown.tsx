@@ -2,22 +2,15 @@ import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import EngFlagIcon from "../icons/EngFlagIcon"
 import VnFlagIcon from "../icons/VnFlagIcon"
-import { useTranslation } from "react-i18next"
 
 const listResult = [
   { id: 1, name: "Tiếng Việt", code: "vi", logo: <VnFlagIcon /> },
   { id: 2, name: "English", code: "en", logo: <EngFlagIcon /> },
 ]
 
-function LanguageDropdown({ title = "" }) {
+function LanguageDropdown({ showing, changeLanguage, title = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
-  const [showing, setShowing] = useState<any>({
-    id: 1,
-    name: "Tiếng Việt",
-    code: "vi",
-    logo: <VnFlagIcon />,
-  })
   const toggleOpenMenu = () => {
     toggleOpen(!isOpen)
   }
@@ -63,10 +56,6 @@ function LanguageDropdown({ title = "" }) {
       },
     },
   }
-  const { i18n } = useTranslation()
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
-  }
 
   return (
     <motion.div className="relative text-[#4F4F4F]">
@@ -103,7 +92,6 @@ function LanguageDropdown({ title = "" }) {
             <DropDownItem
               key={i?.id}
               data={i}
-              setShowing={setShowing}
               changeLanguage={changeLanguage}
             />
           ))}
@@ -115,11 +103,10 @@ function LanguageDropdown({ title = "" }) {
 
 export default LanguageDropdown
 
-function DropDownItem({ data, setShowing, changeLanguage }) {
+function DropDownItem({ data, changeLanguage }) {
   return (
     <div
       onClick={() => {
-        setShowing(data)
         changeLanguage(data?.code)
       }}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"

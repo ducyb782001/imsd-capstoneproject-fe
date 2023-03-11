@@ -21,6 +21,7 @@ import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -55,6 +56,7 @@ function AddProduct(props) {
   const [isImageNull, setIsImageNull] = useState(true)
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
+  const { t } = useTranslation()
 
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
@@ -148,7 +150,7 @@ function AddProduct(props) {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm mới sản phẩm thành công")
+          toast.success(t("add_product_success"))
           router.push("/manage-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -157,7 +159,7 @@ function AddProduct(props) {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Đã có lỗi xảy ra! Xin hãy thử lại.",
+                t("error_occur"),
             )
           }
         }
@@ -167,7 +169,7 @@ function AddProduct(props) {
 
   const handleAddNewProduct = (event) => {
     event.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     // @ts-ignore
@@ -180,12 +182,12 @@ function AddProduct(props) {
     <div className="grid gap-4 md:grid-cols-73">
       <div>
         <div className="bg-white block-border">
-          <SmallTitle>Thông tin chung</SmallTitle>
+          <SmallTitle>{t("general_information")}</SmallTitle>
           <PrimaryInput
             className="mt-6"
             title={
               <p>
-                Tên sản phẩm <span className="text-red-500">*</span>
+                {t("product_name")} <span className="text-red-500">*</span>
               </p>
             }
             onChange={(e) => {
@@ -196,12 +198,12 @@ function AddProduct(props) {
             <PrimaryInput
               title={
                 <div className="flex gap-1">
-                  <p>Mã sản phẩm</p>
+                  <p>{t("product code")}</p>
                   <Tooltip
                     content={
                       <div>
-                        Mã không trùng lặp giữa các sản phẩm
-                        <p>Nếu để trống, mã sản phẩm sẽ có tiền tố SP</p>
+                        {t("product_can_not_duplicate")}
+                        <p>{t("head_of_product_code")}</p>
                       </div>
                     }
                   >
@@ -214,20 +216,20 @@ function AddProduct(props) {
               }}
             />
             <PrimaryInput
-              title="Đơn vị tính"
+              title={t("product_unit")}
               onChange={(e) => {
                 setProduct({ ...product, defaultMeasuredUnit: e.target.value })
               }}
             />
             <PrimaryInput
-              title="Giá nhập"
+              title={t("cost_price")}
               type="number"
               onChange={(e) => {
                 setProduct({ ...product, costPrice: e.target.value })
               }}
             />
             <PrimaryInput
-              title="Giá bán"
+              title={t("sell_price")}
               type="number"
               onChange={(e) => {
                 setProduct({ ...product, sellingPrice: e.target.value })
@@ -236,7 +238,7 @@ function AddProduct(props) {
           </div>
           <PrimaryTextArea
             className="mt-7"
-            title="Ghi chú sản phẩm"
+            title={t("note_product")}
             onChange={(e) => {
               setProduct({ ...product, description: e.target.value })
             }}
@@ -244,10 +246,8 @@ function AddProduct(props) {
         </div>
         <div className="mt-4 bg-white block-border">
           <div className="flex items-center gap-2">
-            <SmallTitle>Khởi tạo kho hàng</SmallTitle>
-            <Tooltip
-              content={<div>Khởi tạo số lượng hàng sẵn có trong kho.</div>}
-            >
+            <SmallTitle>{t("create_stock")}</SmallTitle>
+            <Tooltip content={<div>{t("add_unit_info")}</div>}>
               <InfoIcon />
             </Tooltip>
             <Switch
@@ -278,14 +278,14 @@ function AddProduct(props) {
                   className="grid grid-cols-2 mt-4 gap-7"
                 >
                   <PrimaryInput
-                    title="Tồn kho ban đầu"
+                    title={t("in_stock_first")}
                     type="number"
                     onChange={(e) => {
                       setProduct({ ...product, inStock: e.target.value })
                     }}
                   />
                   <PrimaryInput
-                    title="Giá nhập"
+                    title={t("cost_price")}
                     type="number"
                     onChange={(e) => {
                       setProduct({ ...product, stockPrice: e.target.value })
@@ -299,12 +299,12 @@ function AddProduct(props) {
 
         <div className="mt-4 bg-white block-border">
           <div className="flex items-center gap-2">
-            <SmallTitle>Thêm đơn vị quy đổi</SmallTitle>
+            <SmallTitle>{t("add_unit")}</SmallTitle>
             <Tooltip
               content={
                 <div>
-                  Tạo thêm các đơn vị để quản lí sản phẩm.
-                  <p>Ví dụ: 1 thùng = 10 chai</p>
+                  {t("more_unit_product")}
+                  <p>{t("example_unit")}</p>
                 </div>
               }
             >
@@ -428,11 +428,11 @@ function RightSideProductDetail({
       setDisabled(false)
     }
   })
-
+  const { t } = useTranslation()
   return (
     <div className="">
       <div className="bg-white block-border h-[365px] flex flex-col items-center justify-center gap-4">
-        <p className="mt-4 text-xl font-semibold">Ảnh sản phẩm</p>
+        <p className="mt-4 text-xl font-semibold">{t("image_product")}</p>
 
         <div className="flex justify-center md:justify-start">
           <div className="flex items-center justify-center border rounded-2xl border-primary w-[150px] h-[150px] mt-5">
@@ -457,26 +457,27 @@ function RightSideProductDetail({
       </div>
       <div className="mt-4 bg-white block-border">
         <SmallTitle>
-          Thông tin bổ sung <span className="text-red-500">*</span>
+          {t("additional_information")}
+          <span className="text-red-500">*</span>
         </SmallTitle>
 
-        <p className="mt-4">Nhà cung cấp</p>
+        <p className="mt-4">{t("supplier")}</p>
         <AddChooseSupplierDropdown
           listDropdown={listNhaCungCap}
-          textDefault={"Chọn nhà cung cấp"}
+          textDefault={t("choose_supplier")}
           showing={nhaCungCapSelected}
           setShowing={setNhaCungCapSelected}
         />
-        <p className="mt-4">Loại sản phẩm</p>
+        <p className="mt-4">{t("type.typeGoods")}</p>
         <AddChooseTypeDropdown
           listDropdown={listTypeProduct}
-          textDefault={"Chọn loại sản phẩm"}
+          textDefault={t("choose_type")}
           showing={typeProduct}
           setShowing={setTypeProduct}
         />
-        <p className="mt-4">Trạng thái</p>
+        <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
-          <p className="text-gray">Cho phép bán</p>
+          <p className="text-gray">{t("can_sale")}</p>
           <Switch
             onChange={() => {
               setIsEnabled(!isEnabled)
@@ -498,7 +499,7 @@ function RightSideProductDetail({
           onClick={handleAddProduct}
           disabled={disabled}
         >
-          Thêm sản phẩm
+          {t("add_product")}
         </PrimaryBtn>
       </div>
     </div>
@@ -512,19 +513,20 @@ function AdditionUnitRow({
   setNewDetail,
   handleAddNewUnit,
 }) {
+  const { t } = useTranslation()
   return (
     <div className="grid items-end gap-2 mt-3 text-white grid-cols-454510 md:gap-5">
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
-        placeholder="Thùng"
-        title="Đơn vị quy đổi"
+        placeholder={t("carton")}
+        title={t("unit_same")}
         onChange={(e) => setNewType(e.target.value)}
         value={newType}
       />
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
-        title="Số lượng trong đơn vị tương ứng"
+        title={t("number_in_unit")}
         onChange={(e) => setNewDetail(e.target.value)}
         type="number"
         value={newDetail}
@@ -549,20 +551,20 @@ function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
     const listRemove = listUnits.filter((i, index) => index !== itemIndex)
     setListUnits(listRemove)
   }
-
+  const { t } = useTranslation()
   return (
     <div className="grid items-end gap-2 mt-3 text-white grid-cols-454510 md:gap-5">
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
-        placeholder="Thùng"
-        title="Đơn vị quy đổi"
+        placeholder={t("carton")}
+        title={t("unit_same")}
         value={data?.measuredUnitName}
         readOnly
       />
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
-        title="Số lượng trong đơn vị tương ứng"
+        title={t("number_in_unit")}
         value={data?.measuredUnitValue}
         type="number"
         readOnly
