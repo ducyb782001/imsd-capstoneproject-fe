@@ -15,66 +15,67 @@ import Switch from "react-switch"
 import ChooseRoleDropdown from "./ChooseRoleDropDown"
 import { getAllStaff } from "../../apis/user-module"
 import SetStatusPopup from "./SetStatusPopup"
+import { useTranslation } from "react-i18next"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã nhân viên",
-        accessor: (data: any) => <p>{data?.userCode}</p>,
-      },
-      {
-        Header: "Ảnh",
-        accessor: (data: any) => <p>{data?.img}</p>,
-      },
-      {
-        Header: "Tên nhân viên",
-        accessor: (data: any) => <p>{data?.userName}</p>,
-      },
-      {
-        Header: "Số điện thoại",
-        accessor: (data: any) => <p>{data?.phone}</p>,
-      },
-      {
-        Header: "Chức vụ",
-        accessor: (data: any) => (
-          <div className="flex justify-self-start">
-            <StatusDisplay data={data} />
-          </div>
-        ),
-      },
-      {
-        Header: "Trạng thái hoạt động",
-        accessor: (data: any) => <SetStatusPopup data={data} />,
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => <DetailImportProduct data={data} />,
-      },
-    ],
-  },
-]
+function ManageStaff() {
+  const { t } = useTranslation()
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("staff_code"),
+          accessor: (data: any) => <p>{data?.userCode}</p>,
+        },
+        {
+          Header: t("image"),
+          accessor: (data: any) => <p>{data?.img}</p>,
+        },
+        {
+          Header: t("staff_name"),
+          accessor: (data: any) => <p>{data?.userName}</p>,
+        },
+        {
+          Header: t("phone_number"),
+          accessor: (data: any) => <p>{data?.phone}</p>,
+        },
+        {
+          Header: t("staff_position"),
+          accessor: (data: any) => (
+            <div className="flex justify-self-start">
+              <StatusDisplay data={data} />
+            </div>
+          ),
+        },
+        {
+          Header: t("status_staff"),
+          accessor: (data: any) => <SetStatusPopup data={data} />,
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => <DetailImportProduct data={data} />,
+        },
+      ],
+    },
+  ]
+  const status = [
+    { id: "true", status: t("active") },
 
-const status = [
-  { id: "true", status: "Kích hoạt" },
+    {
+      id: "false",
+      status: t("deactive"),
+    },
+  ]
 
-  {
-    id: "false",
-    status: "Vô hiệu hóa",
-  },
-]
+  const role = [
+    { id: 1, name: t("seller") },
 
-const role = [
-  { id: 1, name: "Nhân viên bán hàng" },
+    {
+      id: 2,
+      name: t("store_keeper"),
+    },
+  ]
 
-  {
-    id: 2,
-    name: "Kiểm kho",
-  },
-]
-
-function ManageStaff({ ...props }) {
   const [roleSelected, setRoleSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -96,7 +97,7 @@ function ManageStaff({ ...props }) {
         ...listFilter,
         {
           key: "roleId",
-          applied: "Chức vụ",
+          applied: t("staff_position"),
           value: roleSelected?.id,
           id: roleSelected?.id,
         },
@@ -110,7 +111,7 @@ function ManageStaff({ ...props }) {
         ...listFilter,
         {
           key: "status",
-          applied: "Trạng thái",
+          applied: t("status"),
           value: statusSelected?.status,
           id: statusSelected?.id,
         },
@@ -182,7 +183,7 @@ function ManageStaff({ ...props }) {
               className="max-w-[250px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Đăng ký nhân viên mới
+              {t("create_new_staff")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -191,21 +192,21 @@ function ManageStaff({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[60%_18%_22%] mb-4">
             <SearchInput
-              placeholder="Tìm theo tên nhân viên, mã nhân viên, số điện thoại"
+              placeholder={t("search.searchStaff")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
             <ChooseRoleDropdown
               listDropdown={role}
-              textDefault={"Chức vụ"}
+              textDefault={t("staff_position")}
               showing={roleSelected}
               setShowing={setRoleSelected}
             />
 
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái hoạt động"}
+              textDefault={t("status_staff")}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
@@ -247,32 +248,29 @@ function ManageStaff({ ...props }) {
 export default ManageStaff
 
 function StatusDisplay({ data }) {
+  const { t } = useTranslation()
   if (data?.state == 0) {
     return (
-      //   <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Kiểm kho</h1>
-        {/* <h1 className="m-2 ml-3 text-orange-500">Kiểm kho</h1> */}
+        <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">Nhân viên bán hàng</h1>
+        <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Kiểm kho</h1>
+        <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
       </div>
     )
   } else {
     return (
-      //   <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">Nhân viên bán hàng</h1>
-        {/* <h1 className="m-2 ml-3 text-red-500">Nhân viên bán hàng</h1> */}
+        <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
   }

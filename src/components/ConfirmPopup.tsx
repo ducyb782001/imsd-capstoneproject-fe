@@ -6,6 +6,7 @@ import MotionDialogContent from "./MotionDialogContent"
 import PrimaryBtn from "./PrimaryBtn"
 import SecondaryBtn from "./SecondaryBtn"
 import SmallTitle from "./SmallTitle"
+import { useTranslation } from "react-i18next"
 
 function ConfirmPopup({
   disabled = false,
@@ -23,6 +24,7 @@ function ConfirmPopup({
     handleClickSaveBtn()
   }
 
+  const { t } = useTranslation()
   const handleCloseBtn = () => {
     close()
   }
@@ -53,7 +55,7 @@ function ConfirmPopup({
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Xác nhận hành động</SmallTitle>
+                  <SmallTitle>{t("confirm_action")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
@@ -63,10 +65,10 @@ function ConfirmPopup({
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
                   <PrimaryBtn className="w-[164px]" onClick={handleSaveBtn}>
-                    Xác nhận
+                    {t("confirm")}
                   </PrimaryBtn>
                   <SecondaryBtn className="w-[70px]" onClick={handleCloseBtn}>
-                    Hủy
+                    {t("cancel")}
                   </SecondaryBtn>
                 </div>
               </motion.div>

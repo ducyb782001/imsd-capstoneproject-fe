@@ -125,7 +125,7 @@ function UserDropdown() {
         <div className="smooth-transform z-50 flex w-full min-w-[209px] flex-col gap-3 rounded-lg bg-[#fff] py-5 px-8 shadow-md">
           <Link href={`/profile`}>
             <a>
-              <DropDownItem label={"Thông tin cá nhân"} />
+              <DropDownItem label={t("personal_imformation")} />
             </a>
           </Link>
 

@@ -17,9 +17,12 @@ import { toast } from "react-toastify"
 import { createStaff } from "../../apis/user-module"
 import router from "next/router"
 import { format } from "date-fns"
+import { useTranslation } from "react-i18next"
+
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateStaff() {
+  const { t } = useTranslation()
   const [gender, setGender] = useState<any>()
   const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
@@ -48,7 +51,7 @@ function CreateStaff() {
 
   const [selectRole, setSelectRole] = useState({
     id: 2,
-    value: "Nhân viên bán hàng",
+    value: t("seller"),
   })
 
   const onErrorUpload = (error: any) => {
@@ -74,7 +77,7 @@ function CreateStaff() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm nhân viên thành công")
+          toast.success(t("add_staff_success"))
           router.push("/manage-staff")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -85,7 +88,7 @@ function CreateStaff() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -95,7 +98,7 @@ function CreateStaff() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     createStaffMutation.mutate({ ...staffAccountObject })
@@ -108,13 +111,13 @@ function CreateStaff() {
   return (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>Thông tin cá nhân</SmallTitle>
+        <SmallTitle>{t("personal_imformation")}</SmallTitle>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <PrimaryInput
-                title="Họ và tên"
-                placeholder="Nhập họ và tên"
+                title={t("full_name")}
+                placeholder={t("enter_full_name")}
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -123,20 +126,20 @@ function CreateStaff() {
                 }}
               />
               <SelectRoleDropdown
-                title={<p>Vị trí</p>}
+                title={t("staff_position")}
                 listDropdown={[
-                  { id: 1, value: "Thủ kho" },
+                  { id: 1, value: t("store_keeper") },
                   {
                     id: 2,
-                    value: "Nhân viên bán hàng",
+                    value: t("seller"),
                   },
                 ]}
                 showing={selectRole}
                 setShowing={setSelectRole}
               />
               <PrimaryInput
-                title="Số CCCD/CMND"
-                placeholder="Nhập số CCCD/CMND"
+                title={t("staff_id")}
+                placeholder={t("enter_staff_id")}
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -150,10 +153,10 @@ function CreateStaff() {
               <PrimaryInput
                 title={
                   <p>
-                    Tên đăng nhập <span className="text-red-500">*</span>
+                    {t("userName")} <span className="text-red-500">*</span>
                   </p>
                 }
-                placeholder="Nhập tên đăng nhập của nhân viên"
+                placeholder={t("enter_username")}
                 onChange={(e) => {
                   setStaffAccountObject({
                     ...staffAccountObject,
@@ -164,14 +167,8 @@ function CreateStaff() {
               <PasswordInput
                 title={
                   <div className="flex gap-1">
-                    <h1>Mật khẩu</h1>
-                    <Tooltip
-                      content={
-                        <div>
-                          Mật khẩu mặc định khi tạo nhân viên là 123456aA@
-                        </div>
-                      }
-                    >
+                    <h1>{t("password")}</h1>
+                    <Tooltip content={<div>{t("password_default")}</div>}>
                       <InfoIcon />
                     </Tooltip>
                   </div>
@@ -186,8 +183,8 @@ function CreateStaff() {
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
               <PrimaryInput
-                title="Số điện thoại"
-                placeholder="Nhập số điện thoại"
+                title={t("phone_number")}
+                placeholder={t("enter_number")}
                 type="number"
                 onChange={(e) => {
                   setStaffAccountObject({
@@ -197,18 +194,18 @@ function CreateStaff() {
                 }}
               />
               <SelectGenderDropdown
-                title="Giới tính"
-                textDefault="Nam"
+                title={t("gender")}
+                textDefault={t("male")}
                 listDropdown={[
-                  { id: true, value: "Nam" },
-                  { id: false, value: "Nữ" },
+                  { id: true, value: t("male") },
+                  { id: false, value: t("female") },
                 ]}
                 showing={gender}
                 setShowing={setGender}
               />
               <div>
                 <div className="mb-2 text-sm font-bold text-gray">
-                  Ngày sinh
+                  {t("dob")}
                 </div>
                 <input
                   value={
@@ -232,9 +229,9 @@ function CreateStaff() {
             </div>
             <PrimaryTextArea
               className="mt-7"
-              title="Địa chỉ chi tiết"
+              title={t("detail_adderss")}
               rows={4}
-              placeholder="Nhập địa chỉ chi tiết"
+              placeholder={t("enter_detail_address")}
               onChange={(e) => {
                 setStaffAccountObject({
                   ...staffAccountObject,
@@ -247,7 +244,7 @@ function CreateStaff() {
             <div className="flex flex-col items-center justify-between h-full">
               <div>
                 <div className="mb-5 text-xl font-semibold text-center">
-                  Ảnh Đại diện
+                  {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
                   <AddImage
@@ -277,21 +274,21 @@ function CreateStaff() {
               <div className="w-[200px]">
                 <ConfirmPopup
                   classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title="Bạn có chắc chắn muốn hủy tạo nhân viên không?"
+                  title={t("cancel_create_staff")}
                   handleClickSaveBtn={handleOut}
                 >
-                  Hủy
+                  {t("cancel")}
                 </ConfirmPopup>
               </div>
 
               <div className="w-[200px]">
                 <ConfirmPopup
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title="Bạn có chắc chắn muốn tạo nhân viên không?"
+                  title={t("confirm_create_staff")}
                   handleClickSaveBtn={handleClickSaveBtn}
                   //   disabled={disabled}
                 >
-                  Lưu
+                  {t("save")}
                 </ConfirmPopup>
               </div>
             </div>
