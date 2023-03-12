@@ -18,7 +18,7 @@ import InfoIcon from "../icons/InfoIcon"
 import Tooltip from "../ToolTip"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function Signup(props) {
+function Signup() {
   const [disabled, setDisabled] = useState(true)
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")

@@ -13,19 +13,16 @@ import InfoIcon from "../icons/InfoIcon"
 import { useQueries } from "react-query"
 import { useRouter } from "next/router"
 import { getDetailStaff } from "../../apis/user-module"
+import { useTranslation } from "react-i18next"
 
 function Profile() {
+  const { t } = useTranslation()
   const [gender, setGender] = useState({ id: 1, value: "Nam" })
   const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-
-  const [selectRole, setSelectRole] = useState({
-    id: 2,
-    value: "Nhân viên bán hàng",
-  })
 
   const router = useRouter()
   const { staffId } = router.query
@@ -56,13 +53,13 @@ function Profile() {
   return (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>Thông tin cá nhân</SmallTitle>
+        <SmallTitle>{t("personal_imformation")}</SmallTitle>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <PrimaryInput
-                title="Họ và tên"
-                placeholder="Nhập họ và tên"
+                title={t("full_name")}
+                placeholder={t("enter_full_name")}
                 value={staffAccountObject?.userName}
                 onChange={(e) => {
                   setStaffAccountObject({
@@ -72,13 +69,13 @@ function Profile() {
                 }}
               />
               <PrimaryInput
-                title="Vị trí"
+                title={t("staff_position")}
                 value={staffAccountObject?.roleId}
                 readOnly={true}
               />
               <PrimaryInput
-                title="Số CCCD/CMND"
-                placeholder={"Nhập số CCCD/CMND"}
+                title={t("staff_id")}
+                placeholder={t("enter_staff_id")}
                 value={staffAccountObject?.identity}
                 onChange={(e) => {
                   setStaffAccountObject({
@@ -91,22 +88,16 @@ function Profile() {
 
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <PrimaryInput
-                title="Tên đăng nhập"
-                placeholder="Nhập tên đăng nhập của nhân viên"
+                title={t("userName")}
+                placeholder={t("enter_username")}
                 readOnly={true}
                 value={staffAccountObject?.userCode}
               />
               <PasswordInput
                 title={
                   <div className="flex gap-1">
-                    <h1>Mật khẩu</h1>
-                    <Tooltip
-                      content={
-                        <div>
-                          Mật khẩu mặc định khi tạo nhân viên là 123456aA@
-                        </div>
-                      }
-                    >
+                    <h1>{t("password")}</h1>
+                    <Tooltip content={<div>{t("password_default")}</div>}>
                       <InfoIcon />
                     </Tooltip>
                   </div>
@@ -121,8 +112,8 @@ function Profile() {
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
               <PrimaryInput
-                title="Số điện thoại"
-                placeholder="Nhập số điện thoại"
+                title={t("phone_number")}
+                placeholder={t("enter_number")}
                 type="number"
                 value={staffAccountObject?.phone}
                 onChange={(e) => {
@@ -133,17 +124,17 @@ function Profile() {
                 }}
               />
               <SelectGenderDropdown
-                title="Giới tính"
+                title={t("gender")}
                 listDropdown={[
-                  { id: 1, value: "Nam" },
-                  { id: 2, value: "Nữ" },
+                  { id: 1, value: t("male") },
+                  { id: 2, value: t("female") },
                 ]}
                 showing={gender}
                 setShowing={setGender}
               />
               <div>
                 <div className="mb-2 text-sm font-bold text-gray">
-                  Ngày sinh
+                  {t("dob")}
                 </div>
                 <input
                   value={
@@ -164,9 +155,9 @@ function Profile() {
             </div>
             <PrimaryTextArea
               className="mt-7"
-              title="Địa chỉ chi tiết"
+              title={t("detail_adderss")}
               rows={4}
-              placeholder="Nhập địa chỉ chi tiết"
+              placeholder={t("enter_detail_address")}
               value={staffAccountObject?.address}
               onChange={(e) => {
                 setStaffAccountObject({
@@ -180,7 +171,7 @@ function Profile() {
             <div className="flex flex-col items-center justify-between h-full">
               <div>
                 <div className="mb-5 text-xl font-semibold text-center">
-                  Ảnh Đại diện
+                  {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
                   <AddImage
@@ -204,19 +195,22 @@ function Profile() {
             </div>
           </div>
         </div>
-        <PrimaryBtn className="max-w-[182px] mt-6">Lưu</PrimaryBtn>
+        <PrimaryBtn className="max-w-[182px] mt-6">{t("save")}</PrimaryBtn>
       </div>
       <div className="mt-10 bg-white block-border">
-        <SmallTitle>Đổi mật khẩu</SmallTitle>
+        <SmallTitle>{t("update_password")}</SmallTitle>
         <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
           <PasswordInput
-            title="Mật khẩu hiện tại"
-            placeholder="Nhập mật khẩu hiện tại"
+            title={t("current_password")}
+            placeholder={t("enter_current_pass")}
           />
-          <PasswordInput title="Mật khẩu mới" placeholder="Nhập mật khẩu mới" />
           <PasswordInput
-            title="Xác nhận mật khẩu"
-            placeholder="Nhập lại mật khẩu mới"
+            title={t("new_password")}
+            placeholder={t("enter_new_password")}
+          />
+          <PasswordInput
+            title={t("re_password")}
+            placeholder={t("enter_re_password")}
           />
         </div>
         {/* <p className="h-6 mt-1 text-sm text-red-500">
@@ -229,7 +223,7 @@ function Profile() {
           // onClick={() => handleChangePassword()}
           // disabled={!canChangePassword}
         >
-          Lưu
+          {t("save")}
         </PrimaryBtn>
       </div>
     </div>

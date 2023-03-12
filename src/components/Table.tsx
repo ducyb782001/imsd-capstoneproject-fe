@@ -2,6 +2,7 @@ import React from "react"
 import { useTable, useSortBy, usePagination } from "react-table"
 import PaginationLeft from "./icons/PaginationLeft"
 import PaginationRight from "./icons/PaginationRight"
+import { useTranslation } from "react-i18next"
 
 function Table({
   columns,
@@ -52,13 +53,15 @@ function Table({
   }, [pageIndex, pageSize])
 
   const firstPageRows = rows.slice(0, pageSize)
-
+  const { t } = useTranslation()
   const headerTextAlightRight = []
 
   const headerTextAlignCenter = [
     "Trạng thái",
     "Số lượng thay đổi",
     "Số lượng tồn kho",
+    t("price"),
+    t("discount"),
   ]
 
   return (

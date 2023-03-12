@@ -1,6 +1,7 @@
 import React from "react"
 import VIcon from "./icons/VIcon"
 import XIcons from "./icons/XIcons"
+import { useTranslation } from "react-i18next"
 
 function StepBar({
   status = "new",
@@ -8,17 +9,18 @@ function StepBar({
   approvedDate = null,
   succeededDate = null,
 }) {
+  const { t } = useTranslation()
   return (
     <div className="max-w-[668px] w-full mx-auto">
       <div className="grid w-full grid-cols-3">
         <p className="text-[#999999] text-sm uppercase font-semibold text-center">
-          Tạo đơn
+          {t("create_report")}
         </p>
         <p className="text-[#999999] text-sm uppercase font-semibold text-center">
-          Duyệt đơn
+          {t("approve_report")}
         </p>
         <p className="text-[#999999] text-sm uppercase font-semibold text-center">
-          Hoàn thành
+          {t("final")}
         </p>
       </div>
       <div className="relative">

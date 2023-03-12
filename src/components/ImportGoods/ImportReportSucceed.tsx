@@ -10,18 +10,21 @@ import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import { useTranslation } from "react-i18next"
 
 function ImportReportSucceed() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -31,7 +34,7 @@ function ImportReportSucceed() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -39,34 +42,38 @@ function ImportReportSucceed() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("import_number"),
           accessor: (data: any) => (
-            <PrimaryInput value={data?.amount} className="w-16" />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("unit"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput value={data?.costPrice} className="w-24" />
-              <p>đ</p>
+            <div>
+              {data?.measuredUnit
+                ? data?.measuredUnit?.measuredUnitName
+                : data?.defaultMeasuredUnit}
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput value={data?.discount} className="w-12" />
-              <p>%</p>
-            </div>
+            <p className="text-center">{data?.costPrice} đ</p>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("discount"),
+          accessor: (data: any) => (
+            <p className="text-center">{data?.discount} %</p>
+          ),
+        },
+        {
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <p>
+              <div className="px-3 py-2 text-center text-white rounded-md bg-successBtn">
                 {new BigNumber(data.amount)
                   .multipliedBy(data.costPrice)
                   .minus(
@@ -75,8 +82,9 @@ function ImportReportSucceed() {
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
-                  .toFormat(0)}
-              </p>
+                  .toFormat(0)}{" "}
+                đ
+              </div>
             </div>
           ),
         },
@@ -128,12 +136,12 @@ function ImportReportSucceed() {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
-                Hoàn thành
+                {t("final")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
+                {t("exit")}
               </PrimaryBtn>
             </div>
           </div>
@@ -156,18 +164,18 @@ function ImportReportSucceed() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
+              <h1 className="text-xl font-semibold">{t("supplier") + ": "}</h1>
             </div>
             <PrimaryInput value={productImport?.supplier?.supplierName} />
           </div>
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
+              {t("created_report_import")}:{" "}
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
@@ -176,7 +184,7 @@ function ImportReportSucceed() {
           <PrimaryTextArea
             rows={4}
             className="mt-2"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
           />
@@ -184,7 +192,7 @@ function ImportReportSucceed() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          {t("import_product_list")}
         </h1>
         <div className="mt-4 table-style">
           <Table
@@ -194,8 +202,8 @@ function ImportReportSucceed() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalCost}
+          <div className="text-base font-semibold">{t("price_overall")}</div>
+          {new BigNumber(productImport?.totalCost || 0).toFormat()}
         </div>
       </div>
     </div>

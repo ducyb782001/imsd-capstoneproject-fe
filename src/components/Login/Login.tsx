@@ -14,7 +14,7 @@ import LeftBlockBackground from "./LeftBlockBackground"
 import { emailRegex } from "../../constants/constants"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function Login(props) {
+function Login() {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [disabled, setDisabled] = useState(true)
@@ -62,10 +62,10 @@ function Login(props) {
       password: userPassword,
     })
   }
-  const handleSignUp = (event) => {
+  const handleSignUp = () => {
     router.push("/signup")
   }
-  const handleForgotPass = (event) => {
+  const handleForgotPass = () => {
     router.push("/input-forgot-email")
   }
 

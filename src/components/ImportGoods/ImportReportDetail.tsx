@@ -15,20 +15,23 @@ import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ImportReportDetail() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -38,7 +41,7 @@ function ImportReportDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -46,46 +49,38 @@ function ImportReportDetail() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("import_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("unit"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.costPrice}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
+            <div>
+              {data?.measuredUnit
+                ? data?.measuredUnit?.measuredUnitName
+                : data?.defaultMeasuredUnit}
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
-            </div>
+            <p className="text-center">{data?.costPrice} đ</p>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("discount"),
+          accessor: (data: any) => (
+            <p className="text-center">{data?.discount} %</p>
+          ),
+        },
+        {
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <p>
+              <div className="px-3 py-2 text-center text-white rounded-md bg-successBtn">
                 {new BigNumber(data.amount)
                   .multipliedBy(data.costPrice)
                   .minus(
@@ -94,8 +89,9 @@ function ImportReportDetail() {
                       .multipliedBy(data.discount)
                       .dividedBy(100),
                   )
-                  .toFormat(0)}
-              </p>
+                  .toFormat(0)}{" "}
+                đ
+              </div>
             </div>
           ),
         },
@@ -136,7 +132,7 @@ function ImportReportDetail() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Nhập hàng đơn nhập hàng thành công")
+          toast.success(t("import_success"))
           router.push("/import-report-succeed/" + productImport?.importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -145,7 +141,7 @@ function ImportReportDetail() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -155,7 +151,7 @@ function ImportReportDetail() {
 
   const handleClickApproveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     importImportMutation.mutate(productImport?.importId)
@@ -176,20 +172,20 @@ function ImportReportDetail() {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                Chờ nhận hàng
+                {t("wait_get_product")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                Thoát
+                {t("exit")}
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
-                classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn duyệt đơn?"
+                classNameBtn="min-w-[120px]"
+                title={t("confirm_receive_instock")}
                 handleClickSaveBtn={handleClickApproveBtn}
               >
-                Nhận hàng
+                {t("receive_goods")}
               </ConfirmPopup>
             </div>
           </div>

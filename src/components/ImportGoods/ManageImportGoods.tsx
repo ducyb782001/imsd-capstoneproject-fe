@@ -20,64 +20,65 @@ import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã đơn nhập",
-        accessor: (data: any) => <p>{data?.importCode}</p>,
-      },
-      {
-        Header: "Ghi chú",
-        accessor: (data: any) => <p>{data?.note}</p>,
-      },
-      {
-        Header: "Nhà cung cấp",
-        accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-      },
-      {
-        Header: "Trạng thái",
-        accessor: (data: any) => (
-          <div className="flex justify-center">
-            <StatusDisplay data={data} />
-          </div>
-        ),
-      },
-
-      {
-        Header: "Ngày nhập",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => <DetailImportProduct data={data} />,
-      },
-    ],
-  },
-]
-
-const status = [
-  { id: 0, status: "Đang xử lý" },
-
-  {
-    id: 1,
-    status: "Đang nhập hàng",
-  },
-  {
-    id: 2,
-    status: "Hoàn thành",
-  },
-  {
-    id: 3,
-    status: "Đã hủy",
-  },
-]
-
-function ManageImportGoods({ ...props }) {
+function ManageImportGoods() {
   const { t } = useTranslation()
+
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("import_code"),
+          accessor: (data: any) => <p>{data?.importCode}</p>,
+        },
+        {
+          Header: t("note"),
+          accessor: (data: any) => <p>{data?.note}</p>,
+        },
+        {
+          Header: t("supplier"),
+          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+        },
+        {
+          Header: t("status"),
+          accessor: (data: any) => (
+            <div className="flex justify-center">
+              <StatusDisplay data={data} />
+            </div>
+          ),
+        },
+
+        {
+          Header: t("created_date"),
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => <DetailImportProduct data={data} />,
+        },
+      ],
+    },
+  ]
+
+  const status = [
+    { id: 0, status: t("in_progress") },
+
+    {
+      id: 1,
+      status: t("in_import"),
+    },
+    {
+      id: 2,
+      status: t("complete"),
+    },
+    {
+      id: 3,
+      status: t("cancelled"),
+    },
+  ]
+
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
@@ -100,7 +101,7 @@ function ManageImportGoods({ ...props }) {
         ...listFilter,
         {
           key: "supId",
-          applied: "Nhà cung cấp",
+          applied: t("supplier"),
           value: nhaCungCapSelected?.supplierName,
           id: nhaCungCapSelected?.supplierId,
         },
@@ -114,7 +115,7 @@ function ManageImportGoods({ ...props }) {
         ...listFilter,
         {
           key: "state",
-          applied: "Trạng thái",
+          applied: t("status"),
           value: statusSelected?.status,
           id: statusSelected?.id,
         },
@@ -217,7 +218,7 @@ function ManageImportGoods({ ...props }) {
         <Link href={`/create-import-report`}>
           <a>
             <PrimaryBtn
-              className="max-w-[230px]"
+              className="min-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
               {t("create_import_report")}
@@ -229,21 +230,21 @@ function ManageImportGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn nhập, nhà cung cấp"
+              placeholder={t("searchInImport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={t("status")}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
 
             <ChooseSupplierImportGoodDropdown
               listDropdown={listSupplier}
-              textDefault={"Nhà cung cấp"}
+              textDefault={t("supplier")}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
             />
@@ -304,28 +305,29 @@ function ImportExportButton({
 }
 
 function StatusDisplay({ data }) {
+  const { t } = useTranslation()
   if (data?.state == 0) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+        <h1 className="m-2 ml-3 text-orange-500">{t("in_progress")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
       <div className="w-32 mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
+        <h1 className="m-2 ml-3">{t("in_import")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
-        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+        <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
-        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+        <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
   }

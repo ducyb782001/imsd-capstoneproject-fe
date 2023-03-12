@@ -120,7 +120,7 @@ function DetailCheckReport() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
+  const handleClickOutBtn = () => {
     router.push("/manage-check-good")
   }
 
@@ -143,11 +143,11 @@ function DetailCheckReport() {
             </div>
           </div>
 
-          <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
+          <div className="flex items-center gap-12 mb-3 text-sm font-medium text-left text-gray">
             <p className="font-bold">Mã đơn kiểm hàng:</p>
             <p>{productStockTakeObject?.stocktakeCode}</p>
           </div>
-          <div className="flex items-center gap-20 text-sm font-medium text-left text-gray mb-3">
+          <div className="flex items-center gap-20 mb-3 text-sm font-medium text-left text-gray">
             <p className="font-bold">Ngày tạo đơn:</p>
             <p>
               {productStockTakeObject?.created
@@ -158,7 +158,7 @@ function DetailCheckReport() {
                 : ""}
             </p>
           </div>
-          <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
+          <div className="flex items-center gap-12 mb-3 text-sm font-medium text-left text-gray">
             <p className="font-bold">Nhân viên tạo đơn:</p>
             <p>{productStockTakeObject?.createdBy?.userName}</p>
           </div>
@@ -173,7 +173,7 @@ function DetailCheckReport() {
                 : ""}
             </p>
           </div>
-          <div className="flex items-center gap-10 text-sm font-medium text-left text-gray mb-3">
+          <div className="flex items-center gap-10 mb-3 text-sm font-medium text-left text-gray">
             <p className="font-bold">Nhân viên cân bằng:</p>
             <p>{productStockTakeObject?.updatedBy?.userName}</p>
           </div>
@@ -226,7 +226,7 @@ function StatusDisplay({ data }) {
     )
   } else if (data == 1) {
     return (
-      <div className="w-32 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+      <div className="w-32 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )
