@@ -19,6 +19,7 @@ import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
 import * as XLSX from "xlsx/xlsx"
 import { createStockTakeProduct } from "../../apis/stocktake-product-module"
+import ReasonDropdown from "./ReasonDropdown"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -165,6 +166,9 @@ function CreateCheckReport() {
         )?.measuredUnitId
           ? undefined
           : 0
+        const note = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.note
 
         return {
           stocktakeId: 0,
@@ -172,7 +176,7 @@ function CreateCheckReport() {
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
           actualStock: 0,
-          note: "",
+          note: note,
         }
       })
       setListProductImport(list)
@@ -207,7 +211,6 @@ function CreateCheckReport() {
       },
     },
   ])
-  console.log(productStockTakeObject)
 
   const createStockTakeMutation = useMutation(
     async (exportProduct) => {
@@ -413,7 +416,7 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
 }
 
 function ListNote({ data, listProductImport, setListProductImport }) {
-  const [note, setNote] = useState("")
+  const [note, setNote] = useState<any>()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -425,15 +428,30 @@ function ListNote({ data, listProductImport, setListProductImport }) {
     setListProductImport(newList)
   }
 
+  useEffect(() => {
+    if (note) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, note: note?.value }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [note])
+  console.log(listProductImport)
+
   return (
-    <PrimaryInput
-      placeholder="Ghi chú"
-      value={note ? note : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setNote(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
-      }}
-    />
+    // <PrimaryInput
+    //   placeholder="Ghi chú"
+    //   value={note ? note : ""}
+    //   onChange={(e) => {
+    //     e.stopPropagation()
+    //     setNote(e.target.value)
+    //     handleOnChangeDiscount(e.target.value, data)
+    //   }}
+    // />
+    <ReasonDropdown showing={note} setShowing={setNote} />
   )
 }

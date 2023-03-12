@@ -1,20 +1,18 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
+import ArrowDownIcon from "../icons/ArrowDownIcon"
 
-function ReasonDropdown({
-  title = "",
-  listDropdown,
-  showing,
-  setShowing,
-  textDefault,
-}) {
+function ReasonDropdown({ showing, setShowing, textDefault = "" }) {
+  const listDropdown = [
+    { id: 1, value: "Khác" },
+    { id: 2, value: "Hư hỏng" },
+    { id: 3, value: "Trả hàng" },
+  ]
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
 
   const toggleOpenMenu = () => {
-    if (listDropdown?.length > 0) {
-      toggleOpen(!isOpen)
-    }
+    toggleOpen(!isOpen)
   }
 
   const handleClickOutside = (e) => {
@@ -60,17 +58,14 @@ function ReasonDropdown({
   }
 
   return (
-    <motion.div className="relative text-[#4F4F4F]">
-      <div ref={node}>
-        {title && <p className="mb-1 text-sm text-gray">{title}</p>}
-
+    <motion.div className="w-full relative text-[#4F4F4F]">
+      <div className="w-full" ref={node}>
         <div
           onClick={toggleOpenMenu}
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
-          <div className="flex items-center gap-1">
-            <p className="text-gray">{textDefault}</p>
-          </div>
+          <p className="text-gray">{showing?.value || textDefault}</p>
+          <ArrowDownIcon color="#373737" />
         </div>
       </div>
 
@@ -107,7 +102,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.name || data}
+      {data?.value || data}
     </div>
   )
 }
