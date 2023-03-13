@@ -65,7 +65,7 @@ function Table({
   ]
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full overflow-visible">
       <table className="w-full" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup, index) => (
