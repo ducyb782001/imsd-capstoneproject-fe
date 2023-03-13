@@ -305,7 +305,7 @@ function CreateCheckReport() {
           />
         </div>
       </div>
-      <div className="mt-4 bg-white block-border">
+      <div className="!pb-20 mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
         <SearchProductImportDropdown
           listDropdown={listProductSearch?.data}
@@ -417,16 +417,6 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
 
 function ListNote({ data, listProductImport, setListProductImport }) {
   const [note, setNote] = useState<any>()
-  const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, note: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
 
   useEffect(() => {
     if (note) {
@@ -442,16 +432,5 @@ function ListNote({ data, listProductImport, setListProductImport }) {
   }, [note])
   console.log(listProductImport)
 
-  return (
-    // <PrimaryInput
-    //   placeholder="Ghi chú"
-    //   value={note ? note : ""}
-    //   onChange={(e) => {
-    //     e.stopPropagation()
-    //     setNote(e.target.value)
-    //     handleOnChangeDiscount(e.target.value, data)
-    //   }}
-    // />
-    <ReasonDropdown showing={note} setShowing={setNote} />
-  )
+  return <ReasonDropdown showing={note} setShowing={setNote} />
 }
