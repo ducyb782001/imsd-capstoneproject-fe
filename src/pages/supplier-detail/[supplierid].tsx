@@ -1,10 +1,13 @@
 import React from "react"
 import Layout from "../../components/Layout"
 import SupplierDetail from "../../components/ManageGoods/ManageSuppliers/SupplierDetail"
+import { useTranslation } from "react-i18next"
 
-function detailSupplier(props) {
+function detailSupplier() {
+  const { t } = useTranslation()
+
   return (
-    <Layout headTitle="Chi tiết nhà cung cấp">
+    <Layout headTitle={t("detail_supplier")}>
       <SupplierDetail />
     </Layout>
   )

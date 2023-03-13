@@ -1,10 +1,12 @@
 import React from "react"
 import Layout from "../../components/Layout"
 import EditSupplier from "../../components/ManageGoods/ManageSuppliers/EditSupplier"
+import { useTranslation } from "react-i18next"
 
-function editSupplier(props) {
+function editSupplier() {
+  const { t } = useTranslation()
   return (
-    <Layout headTitle="Chỉnh sửa nhà cung cấp">
+    <Layout headTitle={t("edit_supplier")}>
       <EditSupplier />
     </Layout>
   )

@@ -16,20 +16,22 @@ import Table from "../Table"
 import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ImportReportDraff() {
+  const { t } = useTranslation()
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -39,7 +41,7 @@ function ImportReportDraff() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -47,17 +49,13 @@ function ImportReportDraff() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("import_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
             <div>
               {data?.measuredUnit
@@ -67,36 +65,22 @@ function ImportReportDraff() {
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.costPrice}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
-            </div>
+            <p className="text-center">{data?.costPrice} đ</p>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
-            </div>
+            <p className="text-center">{data?.discount} %</p>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <div className="px-3 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+              <div className="px-3 py-2 text-center text-white rounded-md bg-successBtn">
                 {new BigNumber(data.amount)
                   .multipliedBy(data.costPrice)
                   .minus(
@@ -128,7 +112,7 @@ function ImportReportDraff() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Duyệt đơn nhập hàng thành công")
+          toast.success(t("success_import"))
           router.push("/import-report-detail/" + productImport?.importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -137,7 +121,7 @@ function ImportReportDraff() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -146,7 +130,7 @@ function ImportReportDraff() {
   )
 
   const handleClickApproveBtn = async (event) => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     event?.preventDefault()
@@ -161,7 +145,7 @@ function ImportReportDraff() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Hủy đơn nhập hàng thành công")
+          toast.success(t("cancel_import"))
           router.push("/manage-import-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -170,7 +154,7 @@ function ImportReportDraff() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -178,7 +162,7 @@ function ImportReportDraff() {
     },
   )
   const handleClickCancelBtn = (event) => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     event?.preventDefault()
@@ -214,20 +198,20 @@ function ImportReportDraff() {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                Chờ duyệt đơn
+                {t("wait_accept_import")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                Thoát
+                {t("exit")}
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
-                title="Bạn chắc chắn muốn hủy đơn hàng này?"
+                title={t("cancel_confirm_import")}
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                Hủy
+                {t("cancel")}
               </ConfirmPopup>
               <SecondaryBtn
                 className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
@@ -235,15 +219,15 @@ function ImportReportDraff() {
                   router.push("/import-report-edit/" + productImport?.importId)
                 }}
               >
-                Sửa đơn
+                {t("edit_import")}
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn duyệt đơn?"
+                title={t("confirm_import")}
                 handleClickSaveBtn={handleClickApproveBtn}
               >
-                Duyệt đơn
+                {t("approve")}
               </ConfirmPopup>
             </div>
           </div>
@@ -260,7 +244,7 @@ function ImportReportDraff() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp</h1>
+              <h1 className="text-xl font-semibold">{t("supplier")}</h1>
             </div>
             <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
               {productImport?.supplier?.supplierName}
@@ -269,16 +253,16 @@ function ImportReportDraff() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
+              {t("created_report_import")}:{" "}
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
           <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
             <div className="flex items-center gap-1">
               <p className="text-gray">{productImport?.user?.userName}</p>
@@ -287,7 +271,7 @@ function ImportReportDraff() {
           <PrimaryTextArea
             rows={4}
             className="mt-2"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             value={productImport?.note}
             readOnly={true}
           />
@@ -295,7 +279,7 @@ function ImportReportDraff() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          {t("import_product_list")}
         </h1>
         <div className="mt-4 table-style">
           <Table
@@ -305,7 +289,7 @@ function ImportReportDraff() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          <div className="text-base font-semibold">{t("price_overall")}</div>
           {new BigNumber(productImport?.totalCost).toFormat(0)} đ
         </div>
       </div>

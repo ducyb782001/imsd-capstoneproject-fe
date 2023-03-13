@@ -38,12 +38,11 @@
 }
 
 .table-style table tbody tr td {
-  /* background: rgba(142, 89, 255, 0.5); */
   font-size: 14px;
   line-height: 24px;
   color: #343434;
   font-style: normal;
-  border-bottom: 1px solid #f6f5fa50;
+  border-bottom: 2px solid #f6f5fa;
 }
 
 .table-style table tbody tr:hover td {

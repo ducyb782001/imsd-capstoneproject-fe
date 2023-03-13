@@ -15,8 +15,10 @@ import AddTypePopup from "./AddTypePopup"
 import EditTypePopup from "./EditTypePopup"
 import DetailTypePopup from "./DetailTypePopup"
 import TableSkeleton from "../../Skeleton/TableSkeleton"
+import { useTranslation } from "react-i18next"
 
-function ManageTypeGoods({ ...props }) {
+function ManageTypeGoods() {
+  const { t } = useTranslation()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
@@ -34,7 +36,7 @@ function ManageTypeGoods({ ...props }) {
       Header: " ",
       columns: [
         {
-          Header: "Tên loại sản phẩm",
+          Header: t("name_type"),
           accessor: (data: any) => (
             <div>
               <p>{data?.categoryName}</p>
@@ -42,7 +44,7 @@ function ManageTypeGoods({ ...props }) {
           ),
         },
         {
-          Header: "Hành động",
+          Header: t("action"),
           accessor: (data: any) => {
             return (
               <div className="flex items-center col-span-2 gap-2">
@@ -143,7 +145,7 @@ function ManageTypeGoods({ ...props }) {
         <div className="flex flex-col gap-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder="Tìm kiếm bằng tên loại sản phẩm"
+              placeholder={t("search.searchInType")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full col-span-3"
             />

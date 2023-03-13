@@ -13,63 +13,7 @@ import { getSupplierDetail } from "../../../apis/supplier-module"
 import Pagination from "../../Pagination"
 import useDebounce from "../../../hooks/useDebounce"
 import SupplierDetailSkeleton from "../../Skeleton/SupplierDetailSkeleton"
-
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã SP",
-        accessor: (data: any) => <p>{data?.productCode}</p>,
-      },
-      {
-        Header: "Ảnh",
-        accessor: (data: any) => (
-          <div className="w-[35px] h-[35px] rounded-xl">
-            <img
-              className="object-cover w-full h-full rounded-xl"
-              src={data?.image}
-              alt="image-product"
-            />
-          </div>
-        ),
-      },
-      {
-        Header: "Tên sản phẩm",
-        accessor: (data: any) => <p>{data?.productName}</p>,
-      },
-      {
-        Header: "Loại",
-        // accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-        accessor: (data: any) => <p>{data?.categoryName}</p>,
-      },
-      {
-        Header: "Đơn vị",
-        accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
-      },
-      {
-        Header: "Ngày khởi tạo",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Link href={`/product-detail/${data?.productId}`}>
-                <a className="w-full">
-                  <ShowDetailIcon />
-                </a>
-              </Link>
-            </div>
-          )
-        },
-      },
-    ],
-  },
-]
+import { useTranslation } from "react-i18next"
 
 interface Supplier {
   supplierId: number
@@ -84,6 +28,63 @@ interface Supplier {
   status: boolean
 }
 function SupplierDetail() {
+  const { t } = useTranslation()
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("product_code"),
+          accessor: (data: any) => <p>{data?.productCode}</p>,
+        },
+        {
+          Header: t("image"),
+          accessor: (data: any) => (
+            <div className="w-[35px] h-[35px] rounded-xl">
+              <img
+                className="object-cover w-full h-full rounded-xl"
+                src={data?.image}
+                alt="image-product"
+              />
+            </div>
+          ),
+        },
+        {
+          Header: t("product_name"),
+          accessor: (data: any) => <p>{data?.productName}</p>,
+        },
+        {
+          Header: t("type.type"),
+          // accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+          accessor: (data: any) => <p>{data?.categoryName}</p>,
+        },
+        {
+          Header: t("unit"),
+          accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+        },
+        {
+          Header: t("created_date"),
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => {
+            return (
+              <div className="flex items-center gap-2">
+                <Link href={`/product-detail/${data?.productId}`}>
+                  <a className="w-full">
+                    <ShowDetailIcon />
+                  </a>
+                </Link>
+              </div>
+            )
+          },
+        },
+      ],
+    },
+  ]
   const [supplier, setSupplier] = useState<Supplier>()
   const [isEnabled, setIsEnabled] = useState(true)
   const [listProductSupplier, setListProductSupplier] = useState<any>()
@@ -136,7 +137,6 @@ function SupplierDetail() {
       },
     },
   ])
-  console.log(supplier)
 
   useEffect(() => {
     setSupplier({
@@ -156,7 +156,7 @@ function SupplierDetail() {
       <div className="bg-white block-border">
         <div>
           <div className="float-left">
-            <SmallTitle>Thông tin chung</SmallTitle>
+            <SmallTitle>{t("general_information")}</SmallTitle>
           </div>
           <div className="float-right">
             <PrimaryBtn
@@ -164,7 +164,7 @@ function SupplierDetail() {
               onClick={handleEditSupplier}
               className="bg-successBtn border-successBtn active:bg-greenDark"
             >
-              Chỉnh sửa nhà cung cấp
+              {t("edit_supplier")}
             </PrimaryBtn>
           </div>
         </div>
@@ -175,33 +175,37 @@ function SupplierDetail() {
           </div>
           <div className="col-span-2 text-black"></div>
           <SupplierInfo
-            title="Tên nhà cung cấp: "
-            data={supplier?.supplierName}
+            title={t("supplier_name")}
+            data={supplier?.supplierName || "---"}
           />
-          <SupplierInfo title="Số điện thoại" data={supplier?.supplierPhone} />
-          <SupplierInfo title="Email" data={supplier?.supplierEmail} />
           <SupplierInfo
-            title="Địa chỉ"
+            title={t("phone_number")}
+            data={supplier?.supplierPhone || "---"}
+          />
+          <SupplierInfo title="Email" data={supplier?.supplierEmail || "---"} />
+          <SupplierInfo
+            title={t("address")}
             data={
-              supplier?.address +
-              ", " +
-              supplier?.ward?.name +
-              ", " +
-              supplier?.district?.name +
-              ", " +
-              supplier?.city?.name
+              [
+                supplier?.address,
+                supplier?.ward?.name,
+                supplier?.district?.name,
+                supplier?.city?.name,
+              ]
+                .filter(Boolean)
+                .join(", ") || "---"
             }
           />
-          <SupplierInfo title="Ghi chú" data={supplier?.note} />
+          <SupplierInfo title={t("note")} data={supplier?.note || "---"} />
         </div>
       </div>
 
       <div className="mt-4 bg-white block-border">
-        <h1 className="text-2xl font-bold">Mặt hàng cung cấp</h1>
+        <h1 className="text-2xl font-bold">{t("productOfSupplier")}</h1>
         <div className="flex flex-col gap-4 mt-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder="Tìm kiếm bằng tên sản phẩm"
+              placeholder={t("searchByProduct")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full col-span-3"
             />
@@ -237,16 +241,17 @@ function SupplierInfo({ title = "", data = "" }) {
   )
 }
 function SupplierStatus({ status = false }) {
+  const { t } = useTranslation()
   if (status) {
     return (
       <div className="mt-4 font-bold text-white bg-green-500 rounded-md w-36">
-        <h1 className="m-2 ml-3">Đang giao dịch</h1>
+        <h1 className="m-2 ml-3">{t("on_sale")}</h1>
       </div>
     )
   } else {
     return (
       <div className="mt-4 font-bold text-white rounded-md bg-gray w-36">
-        <h1 className="ml-3 ">Dừng giao dịch</h1>
+        <h1 className="ml-3 ">{t("off_sale")}</h1>
       </div>
     )
   }

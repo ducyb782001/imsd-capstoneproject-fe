@@ -213,9 +213,7 @@ function AddSupplier() {
             <CityDropDown
               title={
                 <div className="flex gap-1">
-                  <h1>
-                    {t("city")} <span className="text-red-500">*</span>
-                  </h1>
+                  <h1>{t("city")}</h1>
                 </div>
               }
               listDropdown={listCity}
@@ -226,9 +224,7 @@ function AddSupplier() {
             <DistrictDropDown
               title={
                 <div className="flex gap-1">
-                  <h1>
-                    {t("district")} <span className="text-red-500">*</span>
-                  </h1>
+                  <h1>{t("district")}</h1>
                 </div>
               }
               listDropdown={listDistrict}
@@ -237,30 +233,24 @@ function AddSupplier() {
               setShowing={setDistrictSelected}
             />
             <WardDropDown
-              title={
-                <div className="flex gap-1">
-                  <h1>
-                    Phường/Xã <span className="text-red-500">*</span>
-                  </h1>
-                </div>
-              }
+              title={t("ward")}
               listDropdown={listWard}
-              textDefault={"Chọn Phường/Xã"}
+              textDefault={t("choose_ward")}
               showing={wardSelected}
               setShowing={setWardSelected}
             />
           </div>
           <PrimaryInput
             className="mt-4"
-            title="Địa chỉ chi tiết"
-            placeholder="Địa chỉ chi tiếp như số nhà, ngõ, đường"
+            title={t("detail_adderss")}
+            placeholder={t("enter_detail_address")}
             onChange={(e) => {
               setSupplier({ ...supplier, address: e.target.value })
             }}
           />
           <PrimaryTextArea
             className="mt-4"
-            title="Ghi chú nhà cung cấp"
+            title={t("note_supplier")}
             onChange={(e) => {
               setSupplier({ ...supplier, note: e.target.value })
             }}
@@ -270,19 +260,19 @@ function AddSupplier() {
               <div className="grid items-center justify-between w-full gap-4 fle md:grid-cols-2 ">
                 <ConfirmPopup
                   classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title="Bạn có chắc chắn muốn hủy thêm nhà cung cấp không?"
+                  title={t("cancel_confirm_supplier")}
                   handleClickSaveBtn={handleCancelAddNewSupplier}
                 >
-                  Hủy
+                  {t("cancel")}
                 </ConfirmPopup>
 
                 <ConfirmPopup
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title="Bạn có chắc chắn muốn thêm nhà cung cấp không?"
+                  title={t("add_confirm_supplier")}
                   handleClickSaveBtn={handleAddNewSupplier}
                   disabled={disabled}
                 >
-                  Thêm nhà cung cấp
+                  {t("add_new_supplier")}
                 </ConfirmPopup>
               </div>
             </div>

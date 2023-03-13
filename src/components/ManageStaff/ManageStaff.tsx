@@ -11,7 +11,6 @@ import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
 import TableSkeleton from "../Skeleton/TableSkeleton"
-import Switch from "react-switch"
 import ChooseRoleDropdown from "./ChooseRoleDropDown"
 import { getAllStaff } from "../../apis/user-module"
 import SetStatusPopup from "./SetStatusPopup"
@@ -43,7 +42,7 @@ function ManageStaff() {
           Header: t("staff_position"),
           accessor: (data: any) => (
             <div className="flex justify-self-start">
-              <StatusDisplay data={data} />
+              <RoleDisplay data={data} />
             </div>
           ),
         },
@@ -86,8 +85,6 @@ function ManageStaff() {
   const [listFilter, setListFilter] = useState([])
 
   const [listStaffs, setListStaffs] = useState<any>()
-
-  const [listImportProductExport, setListImportProductExport] = useState<any>()
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
@@ -98,7 +95,7 @@ function ManageStaff() {
         {
           key: "roleId",
           applied: t("staff_position"),
-          value: roleSelected?.id,
+          value: roleSelected?.name,
           id: roleSelected?.id,
         },
       ])
@@ -134,7 +131,7 @@ function ManageStaff() {
     const listRemove = listFilter.filter((i, index) => index !== itemIndex)
     setListFilter(listRemove)
   }
-
+  console.log(listStaffs)
   useQueries([
     {
       queryKey: [
@@ -172,11 +169,10 @@ function ManageStaff() {
     },
   ])
 
-  // console.log(listStaffs)
-
   return (
     <div>
       <div className="flex items-center justify-between">
+        <div className="flex gap-2"></div>
         <Link href={`/create-staff`}>
           <a>
             <PrimaryBtn
@@ -247,30 +243,18 @@ function ManageStaff() {
 
 export default ManageStaff
 
-function StatusDisplay({ data }) {
+function RoleDisplay({ data }) {
   const { t } = useTranslation()
-  if (data?.state == 0) {
-    return (
-      <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
-      </div>
-    )
-  } else if (data?.state == 1) {
+  if (data?.roleId == 1) {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
-  } else if (data?.state == 2) {
+  } else if (data?.roleId == 2) {
     return (
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
-      </div>
-    )
-  } else {
-    return (
-      <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
   }

@@ -19,6 +19,8 @@ import {
 } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
+import { useTranslation } from "react-i18next"
+
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
@@ -127,7 +129,7 @@ function EditSupplier(props) {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Cập nhật nhà cung cấp thành công!")
+          toast.success(t("update_supplier_success"))
           router.push("/manage-suppliers")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -138,7 +140,7 @@ function EditSupplier(props) {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Đã có lỗi xảy ra! Xin kiểm tra lại",
+                t("error_occur"),
             )
           }
         }
@@ -154,7 +156,7 @@ function EditSupplier(props) {
   }, [isEnabled])
 
   const handleEditSupplier = () => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     // @ts-ignore
@@ -180,16 +182,16 @@ function EditSupplier(props) {
       setDisabled(true)
     }
   })
-
+  const { t } = useTranslation()
   return (
     <div className="w-full bg-white block-border">
-      <SmallTitle>Thông tin chung</SmallTitle>
+      <SmallTitle>{t("general_information")}</SmallTitle>
       <PrimaryInput
         className="mt-6"
-        placeholder="Nhập tên nhà cung cấp"
+        placeholder={t("fill_supplier_name")}
         title={
           <h1>
-            Tên nhà cung cấp <span className="text-red-500">*</span>
+            {t("supplier_name")} <span className="text-red-500">*</span>
           </h1>
         }
         value={supplier?.supplierName}
@@ -199,13 +201,7 @@ function EditSupplier(props) {
       />
       <div className="grid grid-cols-2 mt-4 gap-7">
         <PrimaryInput
-          title={
-            <div className="flex gap-1">
-              <h1>
-                Số điện thoại <span className="text-red-500">*</span>
-              </h1>
-            </div>
-          }
+          title={t("phone_number")}
           value={supplier?.supplierPhone}
           onChange={(e) => {
             setSupplier({ ...supplier, supplierPhone: e.target.value })
@@ -222,21 +218,21 @@ function EditSupplier(props) {
 
       <div className="grid grid-cols-3 mt-4 gap-7">
         <CityDropDown
-          title={"Tỉnh/Thành phố"}
+          title={t("city")}
           listDropdown={listCity}
           textDefault={supplier?.city?.name}
           showing={citySelected}
           setShowing={setCitySelected}
         />
         <DistrictDropDown
-          title={"Quận/Huyện"}
+          title={t("district")}
           listDropdown={listDistrict}
           textDefault={supplier?.district?.name}
           showing={districtSelected}
           setShowing={setDistrictSelected}
         />
         <WardDropDown
-          title={"Phường/Xã"}
+          title={t("ward")}
           listDropdown={listWard}
           textDefault={supplier?.ward?.name}
           showing={wardSelected}
@@ -245,7 +241,7 @@ function EditSupplier(props) {
       </div>
       <PrimaryInput
         className="mt-4"
-        title="Địa chỉ chi tiết"
+        title={t("detail_adderss")}
         value={supplier?.address}
         onChange={(e) => {
           setSupplier({ ...supplier, address: e.target.value })
@@ -253,7 +249,7 @@ function EditSupplier(props) {
       />
       <PrimaryTextArea
         className="mt-4"
-        title="Ghi chú nhà cung cấp"
+        title={t("note_supplier")}
         value={supplier?.note}
         onChange={(e) => {
           setSupplier({ ...supplier, note: e.target.value })
@@ -264,19 +260,19 @@ function EditSupplier(props) {
           <div className="grid items-center justify-between w-full gap-4 fle md:grid-cols-4 ">
             <ConfirmPopup
               classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-              title="Bạn có chắc chắn muốn hủy chỉnh sửa nhà cung cấp không?"
+              title={t("cancel_update_supplier")}
               handleClickSaveBtn={handleCancelEditSupplier}
             >
-              Hủy
+              {t("cancel")}
             </ConfirmPopup>
 
             <ConfirmPopup
               classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-              title="Bạn có chắc chắn muốn chỉnh sửa nhà cung cấp không?"
+              title={t("confirm_update_spplier")}
               handleClickSaveBtn={handleEditSupplier}
               disabled={disabled}
             >
-              Chỉnh sửa
+              {t("edit")}
             </ConfirmPopup>
           </div>
         </div>

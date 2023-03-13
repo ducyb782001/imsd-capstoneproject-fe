@@ -19,6 +19,7 @@ import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
 import * as XLSX from "xlsx/xlsx"
 import { createStockTakeProduct } from "../../apis/stocktake-product-module"
+import ReasonDropdown from "./ReasonDropdown"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -67,11 +68,7 @@ function CreateCheckReport() {
           Header: "Tồn chi nhánh",
           accessor: (data: any) => (
             <div className="flex items-center max-w-[70px]">
-              <ListStock
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-              />
+              {data?.inStock}
             </div>
           ),
         },
@@ -94,6 +91,18 @@ function CreateCheckReport() {
               <CountDeviated
                 data={data}
                 listProductImport={listProductImport}
+              />
+            </div>
+          ),
+        },
+        {
+          Header: "Lí do",
+          accessor: (data: any) => (
+            <div className="flex items-center w-[150px]">
+              <ListNote
+                data={data}
+                listProductImport={listProductImport}
+                setListProductImport={setListProductImport}
               />
             </div>
           ),
@@ -157,6 +166,9 @@ function CreateCheckReport() {
         )?.measuredUnitId
           ? undefined
           : 0
+        const note = listProductImport.find(
+          (i) => i.productId == item.productId,
+        )?.note
 
         return {
           stocktakeId: 0,
@@ -164,7 +176,7 @@ function CreateCheckReport() {
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
           actualStock: 0,
-          note: "",
+          note: note,
         }
       })
       setListProductImport(list)
@@ -199,7 +211,6 @@ function CreateCheckReport() {
       },
     },
   ])
-  console.log(productStockTakeObject)
 
   const createStockTakeMutation = useMutation(
     async (exportProduct) => {
@@ -268,7 +279,7 @@ function CreateCheckReport() {
           <div className="flex items-center gap-2 mb-4">
             <h1 className="text-xl font-semibold">Thông tin đơn</h1>
           </div>
-          <div className="text-sm font-medium text-left text-gray mb-3">
+          <div className="mb-3 text-sm font-medium text-left text-gray">
             Ngày kiểm hàng: {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <div className="w-64">
@@ -315,42 +326,6 @@ function CreateCheckReport() {
 }
 
 export default CreateCheckReport
-
-function ListStock({ data, listProductImport, setListProductImport }) {
-  const [currentStock, setCurrentStock] = useState()
-
-  useEffect(() => {
-    if (data) {
-      // Bug chua su dung duoc gia co san de tinh toan
-      setCurrentStock(data?.inStock)
-    }
-  }, [data])
-
-  const handleOnChangePrice = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, currentStock: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={currentStock ? currentStock : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCurrentStock(e.target.value)
-        handleOnChangePrice(e.target.value, data)
-      }}
-    />
-  )
-}
 
 function ListActualStock({ data, listProductImport, setListProductImport }) {
   const [actualStock, setActualStock] = useState()
@@ -399,7 +374,7 @@ function CountDeviated({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div className="py-2 text-center text-white rounded-md  bg-successBtn h-12">
+    <div className="py-2 text-center text-white rounded-md bg-successBtn">
       {deviated}
     </div>
   )
@@ -440,14 +415,8 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function ListNote({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [note, setNote] = useState("")
+function ListNote({ data, listProductImport, setListProductImport }) {
+  const [note, setNote] = useState<any>()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -459,17 +428,30 @@ function ListNote({
     setListProductImport(newList)
   }
 
+  useEffect(() => {
+    if (note) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, note: note?.value }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [note])
+  console.log(listProductImport)
+
   return (
-    <PrimaryInput
-      className="w-[50px]"
-      placeholder="Ghi chú"
-      value={note ? note : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setNote(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
+    // <PrimaryInput
+    //   placeholder="Ghi chú"
+    //   value={note ? note : ""}
+    //   onChange={(e) => {
+    //     e.stopPropagation()
+    //     setNote(e.target.value)
+    //     handleOnChangeDiscount(e.target.value, data)
+    //   }}
+    // />
+    <ReasonDropdown showing={note} setShowing={setNote} />
   )
 }
