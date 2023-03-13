@@ -47,10 +47,16 @@ function EditStaff() {
     }
   }, [gender])
 
-  const [selectRole, setSelectRole] = useState({
-    id: 2,
-    value: "Nhân viên bán hàng",
-  })
+  const [selectRole, setSelectRole] = useState<any>()
+
+  useEffect(() => {
+    if (selectRole) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        roleId: selectRole.id,
+      })
+    }
+  }, [selectRole])
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
@@ -178,7 +184,6 @@ function EditStaff() {
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <PrimaryInput
                 title={<p>Tên đăng nhập</p>}
-                placeholder="Nhập tên đăng nhập của nhân viên"
                 value={
                   staffAccountObject?.userCode
                     ? staffAccountObject?.userCode

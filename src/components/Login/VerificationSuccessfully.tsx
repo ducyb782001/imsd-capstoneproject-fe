@@ -26,7 +26,9 @@ function VerifySuccessful(props) {
   })
 
   useEffect(() => {
-    resetPassMutation.mutate()
+    if (param != undefined) {
+      resetPassMutation.mutate()
+    }
   }, [param])
 
   const resetPassMutation = useMutation(() => {

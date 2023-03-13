@@ -55,8 +55,7 @@ function SetPassword(props) {
         console.log("login error", data)
         // toast.error("Link reset mật khẩu lỗi! Xin thực hiện lại!")
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        toast.error("Cài lại mật khẩu thành công!")
-        router.push("/login")
+        toast.error("Cài lại mật khẩu thất bại, xin kiểm tra lại!")
       },
     },
   )

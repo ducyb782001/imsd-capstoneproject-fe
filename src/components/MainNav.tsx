@@ -15,6 +15,7 @@ import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
 import UserIcon from "./icons/UserIcon"
 import { useTranslation } from "react-i18next"
+import useGetMe from "../hooks/useGetMe"
 
 function MainNav() {
   const [isLogin, setIsLogin] = useState(false)
@@ -29,6 +30,15 @@ function MainNav() {
   //     router.push("/login")
   //   }
   // }, [cookie])
+
+  // const [userDate, setUserDate] = useState<any>()
+  // useEffect(() => {
+  //   if (typeof window !== undefined) {
+  //     const userData = localStorage.getItem("userData")
+  //     setUserData(JSON.parse(userData))
+  //   }
+  // }, [])
+  // use data?.role of useGetMe to show/hide menubar
   const subMenuManageGoods = [
     {
       id: 1,

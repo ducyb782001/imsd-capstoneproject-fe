@@ -22,11 +22,9 @@ export const signUpUrl = `${baseUrl}/Authentication/SignUp`
 
 export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail?token=`
 
-export const logoutUrl = `${baseUrl}/partner/logout`
+export const logoutUrl = `${baseUrl}/logout`
 
-export const meUrl = `${baseUrl}/partner/profile`
-
-export const changePasswordUrl = `${baseUrl}/partner/change-password`
+export const meUrl = `${baseUrl}/profile`
 
 export const notMeUrl = `${baseUrl}/Authentication/RevokeToken?token=`
 

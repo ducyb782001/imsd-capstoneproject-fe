@@ -93,24 +93,6 @@ function Profile() {
                 readOnly={true}
                 value={staffAccountObject?.userCode}
               />
-              <PasswordInput
-                title={
-                  <div className="flex gap-1">
-                    <h1>{t("password")}</h1>
-                    <Tooltip content={<div>{t("password_default")}</div>}>
-                      <InfoIcon />
-                    </Tooltip>
-                  </div>
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    password: e.target.value,
-                  })
-                }}
-              />
-            </div>
-            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
               <PrimaryInput
                 title={t("phone_number")}
                 placeholder={t("enter_number")}
@@ -123,6 +105,8 @@ function Profile() {
                   })
                 }}
               />
+            </div>
+            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <SelectGenderDropdown
                 title={t("gender")}
                 listDropdown={[
