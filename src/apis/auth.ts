@@ -1,5 +1,5 @@
-import { logoutUrl, meUrl } from "../constants/APIConfig"
-import { postAPI, requestAPI } from "../lib/api"
+import { changePasswordUrl, logoutUrl, meUrl } from "../constants/APIConfig"
+import { patchAPI, postAPI, requestAPI } from "../lib/api"
 
 export const getUserData = () =>
   requestAPI({
@@ -7,3 +7,9 @@ export const getUserData = () =>
   })
 
 export const logout = () => postAPI({ url: logoutUrl })
+
+export const changePassword = (password) =>
+  patchAPI({
+    url: changePasswordUrl,
+    data: password,
+  })

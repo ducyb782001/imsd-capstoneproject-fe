@@ -31,13 +31,16 @@ function MainNav() {
   //   }
   // }, [cookie])
 
-  // const [userDate, setUserDate] = useState<any>()
-  // useEffect(() => {
-  //   if (typeof window !== undefined) {
-  //     const userData = localStorage.getItem("userData")
-  //     setUserData(JSON.parse(userData))
-  //   }
-  // }, [])
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      console.log(userData)
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
   // use data?.role of useGetMe to show/hide menubar
   const subMenuManageGoods = [
     {
@@ -113,7 +116,7 @@ function MainNav() {
     },
   ]
 
-  const mainMenu = [
+  const mainMenuOwner = [
     {
       id: 1,
       name: t("dashboard"),
@@ -199,6 +202,160 @@ function MainNav() {
     },
   ]
 
+  const mainMenuStoreKeeper = [
+    {
+      id: 1,
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
+    {
+      id: 2,
+      name: t("manageGoods"),
+      subMenu: subMenuManageGoods,
+      icon: <ManageGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-goods") ||
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
+        router.asPath.includes("/add-suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
+        router.asPath.includes("/add-product"),
+    },
+    {
+      id: 3,
+      name: t("import good"),
+      subMenu: subMenuImportGoods,
+      icon: <ImportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
+        router.asPath.includes("/create-import-report"),
+    },
+    {
+      id: 4,
+      name: t("export good"),
+      subMenu: subMenuExportGoods,
+      icon: <ExportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
+        router.asPath.includes("/create-export-report"),
+    },
+    // indev
+    {
+      id: 5,
+      name: t("return good"),
+      subMenu: subMenuReturnGoods,
+      icon: <ReturnGoodsIcon />,
+      isActive: router.asPath.includes("/return-goods-list"),
+    },
+    {
+      id: 6,
+      name: t("check good"),
+      subMenu: subMenuCheckGoods,
+      icon: <CheckGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
+        router.asPath.includes("/create-check-report"),
+    },
+  ]
+
+  const mainMenuSeller = [
+    {
+      id: 1,
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
+    {
+      id: 2,
+      name: t("manageGoods"),
+      subMenu: subMenuManageGoods,
+      icon: <ManageGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-goods") ||
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
+        router.asPath.includes("/add-suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
+        router.asPath.includes("/add-product"),
+    },
+    {
+      id: 3,
+      name: t("import good"),
+      subMenu: subMenuImportGoods,
+      icon: <ImportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
+        router.asPath.includes("/create-import-report"),
+    },
+    {
+      id: 4,
+      name: t("export good"),
+      subMenu: subMenuExportGoods,
+      icon: <ExportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
+        router.asPath.includes("/create-export-report"),
+    },
+    // indev
+    {
+      id: 5,
+      name: t("return good"),
+      subMenu: subMenuReturnGoods,
+      icon: <ReturnGoodsIcon />,
+      isActive: router.asPath.includes("/return-goods-list"),
+    },
+    {
+      id: 6,
+      name: t("check good"),
+      subMenu: subMenuCheckGoods,
+      icon: <CheckGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
+        router.asPath.includes("/create-check-report"),
+    },
+  ]
+
   return (
     <div className="flex flex-col z-50 w-full md:w-[276px] h-min-content md:h-screen overflow-y-auto bg-white px-4 py-[6px] md:pt-7 md:pb-10 shadow-lg fixed top-0 bottom-0 left-0">
       <div className="items-center justify-between hidden h-full md:flex-col md:flex">
@@ -215,17 +372,39 @@ function MainNav() {
 
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
-            {mainMenu &&
-              mainMenu.map((i) => (
-                <MenuItem
-                  key={i?.id}
-                  icon={i?.icon}
-                  name={i?.name}
-                  subMenuItem={i?.subMenu}
-                  href={i?.href}
-                  isActive={i?.isActive}
-                />
-              ))}
+            {userData?.roleId === 1
+              ? mainMenuOwner.map((i) => (
+                  <MenuItem
+                    key={i?.id}
+                    icon={i?.icon}
+                    name={i?.name}
+                    subMenuItem={i?.subMenu}
+                    href={i?.href}
+                    isActive={i?.isActive}
+                  />
+                ))
+              : userData?.roleId === 2
+              ? mainMenuStoreKeeper.map((i) => (
+                  <MenuItem
+                    key={i?.id}
+                    icon={i?.icon}
+                    name={i?.name}
+                    subMenuItem={i?.subMenu}
+                    href={i?.href}
+                    isActive={i?.isActive}
+                  />
+                ))
+              : userData?.roleId === 3 &&
+                mainMenuSeller.map((i) => (
+                  <MenuItem
+                    key={i?.id}
+                    icon={i?.icon}
+                    name={i?.name}
+                    subMenuItem={i?.subMenu}
+                    href={i?.href}
+                    isActive={i?.isActive}
+                  />
+                ))}
           </div>
         </div>
       </div>

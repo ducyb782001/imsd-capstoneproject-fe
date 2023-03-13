@@ -186,5 +186,6 @@
   "wait_get_product": "Wait to receive the goods",
   "receive_goods": "Receive goods",
   "confirm_receive_instock": "All stock has been imported?",
-  "export_code": "Export code"
+  "export_code": "Export code",
+  "owner": "Owner"
 }
