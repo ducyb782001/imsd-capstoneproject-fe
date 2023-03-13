@@ -28,6 +28,7 @@ function CreateStaff() {
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
+  const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
     setStaffAccountObject({
@@ -286,7 +287,6 @@ function CreateStaff() {
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
                   title={t("confirm_create_staff")}
                   handleClickSaveBtn={handleClickSaveBtn}
-                  //   disabled={disabled}
                 >
                   {t("save")}
                 </ConfirmPopup>
