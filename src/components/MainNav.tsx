@@ -35,7 +35,6 @@ function MainNav() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userData = localStorage.getItem("userData")
-      console.log(userData)
       if (userData) {
         setUserData(JSON.parse(userData))
       }
