@@ -28,7 +28,8 @@ function Login() {
     {
       onSuccess: (data, error, variables) => {
         if (typeof window !== "undefined") {
-          const token = data?.data?.token
+          console.log(data)
+          const token = data?.data?.accessToken
           const maxAge = data?.data?.expiresIn
           localStorage.setItem("token", token)
           window.document.cookie = cookie.serialize("token", token, {
