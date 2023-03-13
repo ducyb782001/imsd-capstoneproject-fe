@@ -12,7 +12,7 @@ import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { emailRegex } from "../../constants/constants"
-const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+const TOAST_LOGIN = "toast-created-product-type-id"
 
 function Login() {
   const [userEmail, setUserEmail] = useState("")
@@ -38,7 +38,7 @@ function Login() {
             path: "/",
           })
         }
-        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+        toast.dismiss(TOAST_LOGIN)
         toast.success("Đăng nhập thành công!")
         setDisabled(true)
         setTimeout(() => {
@@ -46,17 +46,17 @@ function Login() {
         }, 300)
       },
       onError: (data: any) => {
-        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+        toast.dismiss(TOAST_LOGIN)
         toast.error("Email hoặc mật khẩu sai!")
       },
     },
   )
 
-  const handleLogin = (event) => {
+  const handleLogin = (e) => {
+    e.preventDefault()
     toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+      toastId: TOAST_LOGIN,
     })
-    event.preventDefault()
     // @ts-ignore
     loginMutation.mutate({
       email: userEmail,
@@ -133,11 +133,11 @@ export function LeftBlock() {
       <div className="pt-16 pl-16 cursor-pointer">
         <p className="text-3xl text-white">IMSD</p>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 pr-40 mx-auto w-max">
+      <div className="absolute bottom-0 left-[64px] right-0">
         <img
-          src="/images/AuthenticationLeftBar.png"
+          src="/images/left-side-bar-menu.png"
           alt="menu"
-          className="w-2/5"
+          className="w-1/2"
         />
       </div>
     </div>
