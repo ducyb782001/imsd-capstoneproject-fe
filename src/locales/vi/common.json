@@ -185,5 +185,6 @@
   "import_success": "Nhập hàng thành công",
   "wait_get_product": "Chờ nhận hàng",
   "receive_goods": "Nhận hàng",
-  "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?"
+  "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?",
+  "export_code": "Mã đơn xuất"
 }
