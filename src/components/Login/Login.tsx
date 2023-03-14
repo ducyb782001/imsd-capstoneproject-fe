@@ -18,7 +18,7 @@ function Login() {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [disabled, setDisabled] = useState(true)
-
+  const [paramLogin, setParamLogin] = useState("")
   const router = useRouter()
 
   const loginMutation = useMutation(
@@ -57,11 +57,20 @@ function Login() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_LOGIN,
     })
-    // @ts-ignore
-    loginMutation.mutate({
-      email: userEmail,
-      password: userPassword,
-    })
+    const paramLogin = ""
+    if (emailRegex.test(userEmail)) {
+      // @ts-ignore
+      loginMutation.mutate({
+        email: userEmail,
+        password: userPassword,
+      })
+    } else {
+      // @ts-ignore
+      loginMutation.mutate({
+        usercode: userEmail,
+        password: userPassword,
+      })
+    }
   }
   const handleSignUp = () => {
     router.push("/signup")

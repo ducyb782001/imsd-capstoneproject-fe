@@ -36,7 +36,6 @@ function SetStatusPopup({ data, className = "" }) {
     } else if (checked == true) {
       deactiveStaff.mutate()
     }
-    setChecked(!checked)
   }
   const queryClient = useQueryClient()
 
@@ -51,6 +50,7 @@ function SetStatusPopup({ data, className = "" }) {
           toast.success("Kích hoạt tài khoản thành công")
           queryClient.refetchQueries("getListTypeGood")
           setShowDialog(false)
+          setChecked(true)
           // queryClient.invalidateQueries("getListCollections")
         } else {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -78,6 +78,7 @@ function SetStatusPopup({ data, className = "" }) {
           toast.success("Vô hiệu hóa tài khoản thành công")
           queryClient.refetchQueries("getListTypeGood")
           setShowDialog(false)
+          setChecked(false)
           // queryClient.invalidateQueries("getListCollections")
         } else {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)

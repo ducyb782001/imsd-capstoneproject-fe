@@ -12,7 +12,7 @@ import SelectRoleDropdown from "../Profile/SelectRoleDropdown"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
 import ConfirmPopup from "../ConfirmPopup"
-import { useMutation, useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 import { getDetailStaff, updateStaff } from "../../apis/user-module"
 import router, { useRouter } from "next/router"
@@ -20,6 +20,8 @@ import { format } from "date-fns"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 import { useTranslation } from "react-i18next"
 import { checkPassword } from "../../lib/check-password"
+import { changePassword } from "../../apis/auth"
+import Switch from "react-switch"
 
 function DetailStaff() {
   const { t } = useTranslation()
@@ -28,16 +30,16 @@ function DetailStaff() {
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
-  const [currentPassword, setCurrentPassword] = useState("")
+  const [statusStaff, setStatusStaff] = useState<any>(true)
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    setStaffAccountObject({
-      ...staffAccountObject,
-      status: staffAccountObject?.status,
-    })
-  }, [])
+    if (staffAccountObject) {
+      setStatusStaff(staffAccountObject?.status)
+    }
+  }, [staffAccountObject])
 
   useEffect(() => {
     if (gender) {
@@ -69,10 +71,6 @@ function DetailStaff() {
     console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
-    // setStaffAccountObject({
-    //   ...staffAccountObject,
-    //   identity: res.url,
-    // })
   }
 
   const router = useRouter()
@@ -100,7 +98,7 @@ function DetailStaff() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Chỉnh sửa nhân viên thành công")
-          router.push("/manage-staff")
+          queryClient.invalidateQueries("getDetailStaff")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -123,17 +121,37 @@ function DetailStaff() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
+    // @ts-ignore
     updateStaffMutation.mutate(staffAccountObject)
   }
-
+  const changePasswordMutation = useMutation(
+    async (password) => {
+      return await changePassword(password)
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success("Change password success!")
+        } else {
+          toast.error(
+            data?.response?.data?.message ||
+              data?.message ||
+              "Opps! Something went wrong...",
+          )
+        }
+      },
+    },
+  )
   const handleChangePassword = () => {
-    // @ts-ignore
-    changePasswordMutation.mutate({
-      userId: 0,
-      oldPassword: currentPassword,
-      password: newPassword,
-    })
+    if (staffId != undefined) {
+      // @ts-ignore
+      changePasswordMutation.mutate({
+        userId: staffId,
+        password: newPassword,
+      })
+    }
   }
+  const handleChangeStatus = () => {}
 
   const canChangePassword = checkPassword(newPassword, confirmPassword)
 
@@ -174,6 +192,37 @@ function DetailStaff() {
                 showing={selectRole}
                 setShowing={setSelectRole}
               />
+              <div>
+                <label className="mb-2 text-sm font-bold text-gray">
+                  {t("status")}
+                </label>
+                <div className="h-[40px] mt-4">
+                  <Switch
+                    onChange={handleChangeStatus}
+                    readOnly={true}
+                    checked={statusStaff}
+                    width={44}
+                    height={24}
+                    className="ml-2 !opacity-100"
+                    uncheckedIcon={null}
+                    checkedIcon={null}
+                    offColor="#CBCBCB"
+                    onColor="#6A44D2"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
+              <PrimaryInput
+                title={t("userName")}
+                value={
+                  staffAccountObject?.userCode
+                    ? staffAccountObject?.userCode
+                    : ""
+                }
+                readOnly={true}
+              />
               <PrimaryInput
                 title={t("staff_id")}
                 placeholder={t("enter_staff_id")}
@@ -187,37 +236,6 @@ function DetailStaff() {
                     ...staffAccountObject,
                     identity: e.target.value,
                   })
-                }}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
-              <PrimaryInput
-                title={t("userName")}
-                value={
-                  staffAccountObject?.userCode
-                    ? staffAccountObject?.userCode
-                    : ""
-                }
-                readOnly={true}
-              />
-              <PasswordInput
-                title={
-                  <div className="flex gap-1">
-                    <h1>{t("password")}</h1>
-                    <Tooltip content={<div>{t("password_default")}</div>}>
-                      <InfoIcon />
-                    </Tooltip>
-                  </div>
-                }
-                placeholder={t("enter_password_placeholder")}
-                onChange={(e) => {
-                  if (e.target.value !== "") {
-                    setStaffAccountObject({
-                      ...staffAccountObject,
-                      password: e.target.value,
-                    })
-                  }
                 }}
               />
             </div>
@@ -318,50 +336,43 @@ function DetailStaff() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between w-full gap-4 fle md:grid-cols-4 ">
               <div className="w-[200px]">
-                <ConfirmPopup
-                  classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title={t("confirm_update_user")}
-                  handleClickSaveBtn={handleClickSaveBtn}
-                  //   disabled={disabled}
+                <PrimaryBtn
+                  className="max-w-[182px] mt-6"
+                  onClick={handleClickSaveBtn}
                 >
                   {t("save")}
-                </ConfirmPopup>
+                </PrimaryBtn>
               </div>
             </div>
           </div>
         </div>
-        <div className="mt-10 bg-white block-border">
-          <SmallTitle>{t("update_password")}</SmallTitle>
-          <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
-            <PasswordInput
-              title={t("current_password")}
-              placeholder={t("enter_current_pass")}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <PasswordInput
-              title={t("new_password")}
-              placeholder={t("enter_new_password")}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <PasswordInput
-              title={t("re_password")}
-              placeholder={t("enter_re_password")}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-          <p className="h-6 mt-1 text-sm text-red-500">
-            {!canChangePassword &&
-              newPassword &&
-              "* Password must be at least 8 characters with at least 1 Upper Case, 1 lower case, 1 special character and 1 numeric character"}
-          </p>
-          <PrimaryBtn
-            className="max-w-[182px] mt-6"
-            onClick={() => handleChangePassword()}
-            disabled={!canChangePassword}
-          >
-            {t("save")}
-          </PrimaryBtn>
+      </div>
+      <div className="mt-10 bg-white block-border">
+        <SmallTitle>{t("update_password")}</SmallTitle>
+        <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
+          <PasswordInput
+            title={t("new_password")}
+            placeholder={t("enter_new_password")}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <PasswordInput
+            title={t("re_password")}
+            placeholder={t("enter_re_password")}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
         </div>
+        <p className="h-6 mt-1 text-sm text-red-500">
+          {!canChangePassword &&
+            newPassword &&
+            "* Password must be at least 8 characters with at least 1 Upper Case, 1 lower case, 1 special character and 1 numeric character"}
+        </p>
+        <PrimaryBtn
+          className="max-w-[182px] mt-6"
+          onClick={() => handleChangePassword()}
+          disabled={!canChangePassword}
+        >
+          {t("save")}
+        </PrimaryBtn>
       </div>
     </div>
   )
