@@ -20,6 +20,7 @@ import { toast } from "react-toastify"
 import { checkPassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import { format } from "date-fns"
+import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
 
 function Profile() {
   const { t } = useTranslation()
@@ -105,7 +106,9 @@ function Profile() {
 
   const canChangePassword = checkPassword(newPassword, confirmPassword)
 
-  return (
+  return isLoading ? (
+    <DetailStaffSkeleton />
+  ) : (
     <div>
       <div className="bg-white block-border">
         <SmallTitle>{t("personal_imformation")}</SmallTitle>

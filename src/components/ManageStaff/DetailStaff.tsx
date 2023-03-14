@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next"
 import { checkPassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import Switch from "react-switch"
+import DetailStaffSkeleton from "./DetailStaffSkeleton"
 
 function DetailStaff() {
   const { t } = useTranslation()
@@ -152,7 +153,9 @@ function DetailStaff() {
 
   const canChangePassword = checkPassword(newPassword, confirmPassword)
 
-  return (
+  return isLoadingReport ? (
+    <DetailStaffSkeleton />
+  ) : (
     <div>
       <div className="bg-white block-border">
         <SmallTitle>{t("profile_detail")}</SmallTitle>
@@ -329,20 +332,9 @@ function DetailStaff() {
             </div>
           </div>
         </div>
-        <div className="flex items-center mt-6 absolute-right">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between w-full gap-4 fle md:grid-cols-4 ">
-              <div className="w-[200px]">
-                <PrimaryBtn
-                  className="max-w-[182px] mt-6"
-                  onClick={handleClickSaveBtn}
-                >
-                  {t("save")}
-                </PrimaryBtn>
-              </div>
-            </div>
-          </div>
-        </div>
+        <PrimaryBtn className="max-w-[182px] mt-6" onClick={handleClickSaveBtn}>
+          {t("save")}
+        </PrimaryBtn>
       </div>
       <div className="mt-10 bg-white block-border">
         <SmallTitle>{t("update_password")}</SmallTitle>
