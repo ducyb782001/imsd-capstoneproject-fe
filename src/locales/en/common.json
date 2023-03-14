@@ -107,7 +107,6 @@
   "active": "Active",
   "deactive": "Deactive",
   "seller": "Seller",
-  "owner": "Store owner",
   "store_keeper": "Store keeper",
   "create_new_staff": "Create new staff",
   "add_staff_success": "Add staff successfully",
@@ -188,5 +187,7 @@
   "wait_get_product": "Wait to receive the goods",
   "receive_goods": "Receive goods",
   "confirm_receive_instock": "All stock has been imported?",
-  "profile_detail": "Personal information"
+  "profile_detail": "Personal information",
+  "export_code": "Export code",
+  "owner": "Owner"
 }

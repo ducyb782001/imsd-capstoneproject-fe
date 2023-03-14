@@ -85,6 +85,7 @@ function ManageStaff() {
   const [listFilter, setListFilter] = useState([])
 
   const [listStaffs, setListStaffs] = useState<any>()
+  const [newList, setNewList] = useState([])
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
@@ -131,7 +132,17 @@ function ManageStaff() {
     const listRemove = listFilter.filter((i, index) => index !== itemIndex)
     setListFilter(listRemove)
   }
-  console.log(listStaffs)
+
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   useQueries([
     {
       queryKey: [
@@ -140,6 +151,7 @@ function ManageStaff() {
         currentPage,
         pageSize,
         queryParams,
+        userData,
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
@@ -158,14 +170,18 @@ function ManageStaff() {
             limit: pageSize,
             ...queryParams,
           })
+          const listStaff = response?.data?.data
+          const newList = listStaff.filter((i) => userData?.email != i?.email)
+
           setListStaffs(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
-
+          setNewList(newList)
           //-----------
 
           return response?.data
         }
       },
+      enabled: !!userData,
     },
   ])
 
@@ -224,7 +240,7 @@ function ManageStaff() {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listStaffs?.data}
+                data={newList}
               />
             </div>
             <Pagination

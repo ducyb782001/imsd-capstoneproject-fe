@@ -24,7 +24,7 @@ export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail?token=`
 
 export const logoutUrl = `${baseUrl}/logout`
 
-export const meUrl = `${baseUrl}/profile`
+export const meUrl = `${baseUrl}/Users/GetUserDetail`
 
 export const notMeUrl = `${baseUrl}/Authentication/RevokeToken?token=`
 
@@ -67,6 +67,8 @@ export const deactiveStaffUrl = `${baseUrl}/Users/Deactivate`
 export const createStaffUrl = `${baseUrl}/Users/CreateStaff`
 
 export const updateStaffUrl = `${baseUrl}/Users/UpdateStaff`
+
+export const changePasswordUrl = `${baseUrl}/Users/ChangePassword`
 
 // Import product
 

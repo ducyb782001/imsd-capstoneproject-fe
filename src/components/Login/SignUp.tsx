@@ -108,8 +108,8 @@ function Signup() {
                         <div>
                           Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
                           <h1>
-                            Phải bao gồm chữ in hoa, in thường, số, không được
-                            để trống
+                            Phải bao gồm chữ in hoa, in thường, số, kí tự đặc
+                            biệt
                           </h1>
                         </div>
                       }

@@ -107,7 +107,6 @@
   "active": "Kích hoạt",
   "deactive": "Vô hiệu hóa",
   "seller": "Nhân viên bán hàng",
-  "owner": "Chủ kho",
   "store_keeper": "Thủ kho",
   "create_new_staff": "Đăng ký nhân viên mới",
   "add_staff_success": "Thêm nhân viên thành công",
@@ -188,5 +187,7 @@
   "wait_get_product": "Chờ nhận hàng",
   "receive_goods": "Nhận hàng",
   "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?",
-  "profile_detail": "Thông tin cá nhân"
+  "profile_detail": "Thông tin cá nhân",
+  "export_code": "Mã đơn xuất",
+  "owner": "Chủ cửa hàng"
 }

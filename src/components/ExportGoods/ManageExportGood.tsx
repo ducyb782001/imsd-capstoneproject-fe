@@ -9,80 +9,75 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
+import { useTranslation } from "react-i18next"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã đơn xuất",
-        accessor: (data: any) => <p>{data?.exportCode}</p>,
-      },
-      {
-        Header: "Ghi chú",
-        accessor: (data: any) => <p>{data?.note}</p>,
-      },
-      {
-        Header: "Tổng tiền",
-        accessor: (data: any) => <p>{data?.totalPrice}</p>,
-      },
-      {
-        Header: "Trạng thái",
-        accessor: (data: any) => (
-          <div className="flex justify-center">
-            <StatusDisplay data={data} />
-          </div>
-        ),
-      },
+function ManageExportGoods() {
+  const { t } = useTranslation()
 
-      {
-        Header: "Ngày xuất",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => <DetailImportProduct data={data} />,
-      },
-    ],
-  },
-]
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("export_code"),
+          accessor: (data: any) => <p>{data?.exportCode}</p>,
+        },
+        {
+          Header: "Ghi chú",
+          accessor: (data: any) => <p>{data?.note}</p>,
+        },
+        {
+          Header: "Tổng tiền",
+          accessor: (data: any) => <p>{data?.totalPrice}</p>,
+        },
+        {
+          Header: "Trạng thái",
+          accessor: (data: any) => (
+            <div className="flex justify-center">
+              <StatusDisplay data={data} />
+            </div>
+          ),
+        },
 
-const status = [
-  { id: 0, status: "Đang xử lý" },
+        {
+          Header: "Ngày xuất",
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => <DetailImportProduct data={data} />,
+        },
+      ],
+    },
+  ]
 
-  {
-    id: 1,
-    status: "Đang nhập hàng",
-  },
-  {
-    id: 2,
-    status: "Hoàn thành",
-  },
-  {
-    id: 3,
-    status: "Đã hủy",
-  },
-]
+  const status = [
+    { id: 0, status: "Đang xử lý" },
 
-function ManageExportGoods({ ...props }) {
+    {
+      id: 1,
+      status: "Đang nhập hàng",
+    },
+    {
+      id: 2,
+      status: "Hoàn thành",
+    },
+    {
+      id: 3,
+      status: "Đã hủy",
+    },
+  ]
+
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
@@ -197,7 +192,6 @@ function ManageExportGoods({ ...props }) {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
   }
-  console.log(listExportProduct)
 
   return (
     <div>
@@ -219,7 +213,7 @@ function ManageExportGoods({ ...props }) {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn xuất hàng
+              {t("create_export_report")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -310,13 +304,13 @@ function StatusDisplay({ data }) {
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+      <div className="w-32 mt-4 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
+      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
       </div>
     )
