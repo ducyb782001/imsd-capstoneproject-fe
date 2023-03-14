@@ -25,6 +25,7 @@ import {
   denyStockTakeProduct,
   getDetailStockTakeProduct,
 } from "../../apis/stocktake-product-module"
+import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -116,6 +117,7 @@ function DraffCheckReport() {
   ]
 
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   const router = useRouter()
   const { checkId } = router.query
@@ -126,6 +128,7 @@ function DraffCheckReport() {
       queryFn: async () => {
         const response = await getDetailStockTakeProduct(checkId)
         setProductStockTakeObject(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
       enabled: !!checkId,
@@ -206,7 +209,9 @@ function DraffCheckReport() {
     router.push("/manage-check-good")
   }
 
-  return (
+  return isLoadingReport ? (
+    <StockTakeSkeleton />
+  ) : (
     <div>
       <div>
         <div className="flex items-center justify-between w-full">

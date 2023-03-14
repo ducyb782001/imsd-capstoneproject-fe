@@ -61,7 +61,7 @@ function SetPassword(props) {
   )
 
   useEffect(() => {
-    if (userPassword == userPassword2 && passRegex.test(userPassword)) {
+    if (userPassword == userPassword2) {
       setDisabled(false)
     } else {
       setDisabled(true)
