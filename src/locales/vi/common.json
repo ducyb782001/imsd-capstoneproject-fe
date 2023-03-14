@@ -189,5 +189,7 @@
   "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?",
   "profile_detail": "Thông tin cá nhân",
   "export_code": "Mã đơn xuất",
-  "owner": "Chủ cửa hàng"
+  "owner": "Chủ cửa hàng",
+  "cancel_update_user": "Bạn có chắc chắn muốn hủy chỉnh sửa nhân viên không?",
+  "confirm_update_user": "Bạn có chắc chắn muốn chỉnh sửa nhân viên không?"
 }

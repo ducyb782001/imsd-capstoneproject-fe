@@ -98,7 +98,7 @@ function Profile() {
     // @ts-ignore
     changePasswordMutation.mutate({
       oldPassword: currentPassword,
-      newPassword: newPassword,
+      password: newPassword,
     })
   }
 

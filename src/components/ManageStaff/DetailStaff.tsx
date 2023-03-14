@@ -19,6 +19,7 @@ import router, { useRouter } from "next/router"
 import { format } from "date-fns"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 import { useTranslation } from "react-i18next"
+import { checkPassword } from "../../lib/check-password"
 
 function DetailStaff() {
   const { t } = useTranslation()
@@ -27,6 +28,9 @@ function DetailStaff() {
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
   useEffect(() => {
     setStaffAccountObject({
@@ -121,10 +125,17 @@ function DetailStaff() {
     })
     updateStaffMutation.mutate(staffAccountObject)
   }
-  const handleOut = (event) => {
-    router.push("/manage-staff")
+
+  const handleChangePassword = () => {
+    // @ts-ignore
+    changePasswordMutation.mutate({
+      userId: 0,
+      oldPassword: currentPassword,
+      password: newPassword,
+    })
   }
-  console.log(staffAccountObject)
+
+  const canChangePassword = checkPassword(newPassword, confirmPassword)
 
   return (
     <div>
@@ -226,8 +237,10 @@ function DetailStaff() {
                 }}
               />
               <SelectGenderDropdown
-                title="Giới tính"
-                textDefault="Nam"
+                title={t("gender")}
+                textDefault={
+                  staffAccountObject?.gender == true ? t("male") : t("gender")
+                }
                 listDropdown={[
                   { id: true, value: "Nam" },
                   { id: false, value: "Nữ" },
@@ -237,7 +250,7 @@ function DetailStaff() {
               />
               <div>
                 <div className="mb-2 text-sm font-bold text-gray">
-                  Ngày sinh
+                  {t("dob")}
                 </div>
                 <input
                   value={
@@ -261,9 +274,9 @@ function DetailStaff() {
             </div>
             <PrimaryTextArea
               className="mt-7"
-              title="Địa chỉ chi tiết"
+              title={t("detail_adderss")}
               rows={4}
-              placeholder="Nhập địa chỉ chi tiết"
+              placeholder={t("enter_detail_address")}
               value={staffAccountObject?.address}
               onChange={(e) => {
                 setStaffAccountObject({
@@ -277,7 +290,7 @@ function DetailStaff() {
             <div className="flex flex-col items-center justify-between h-full">
               <div>
                 <div className="mb-5 text-xl font-semibold text-center">
-                  Ảnh Đại diện
+                  {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
                   <AddImage
@@ -306,26 +319,48 @@ function DetailStaff() {
             <div className="flex items-center justify-between w-full gap-4 fle md:grid-cols-4 ">
               <div className="w-[200px]">
                 <ConfirmPopup
-                  classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title="Bạn có chắc chắn muốn hủy chỉnh sửa nhân viên không?"
-                  handleClickSaveBtn={handleOut}
-                >
-                  Hủy
-                </ConfirmPopup>
-              </div>
-
-              <div className="w-[200px]">
-                <ConfirmPopup
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title="Bạn có chắc chắn muốn chỉnh sửa nhân viên không?"
+                  title={t("confirm_update_user")}
                   handleClickSaveBtn={handleClickSaveBtn}
                   //   disabled={disabled}
                 >
-                  Lưu
+                  {t("save")}
                 </ConfirmPopup>
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-10 bg-white block-border">
+          <SmallTitle>{t("update_password")}</SmallTitle>
+          <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
+            <PasswordInput
+              title={t("current_password")}
+              placeholder={t("enter_current_pass")}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <PasswordInput
+              title={t("new_password")}
+              placeholder={t("enter_new_password")}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <PasswordInput
+              title={t("re_password")}
+              placeholder={t("enter_re_password")}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <p className="h-6 mt-1 text-sm text-red-500">
+            {!canChangePassword &&
+              newPassword &&
+              "* Password must be at least 8 characters with at least 1 Upper Case, 1 lower case, 1 special character and 1 numeric character"}
+          </p>
+          <PrimaryBtn
+            className="max-w-[182px] mt-6"
+            onClick={() => handleChangePassword()}
+            disabled={!canChangePassword}
+          >
+            {t("save")}
+          </PrimaryBtn>
         </div>
       </div>
     </div>

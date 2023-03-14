@@ -189,5 +189,7 @@
   "confirm_receive_instock": "All stock has been imported?",
   "profile_detail": "Personal information",
   "export_code": "Export code",
-  "owner": "Owner"
+  "owner": "Owner",
+  "cancel_update_user": "Are you sure to cancel update staff's profile?",
+  "confirm_update_user": "Are you sure to update staff's profile?"
 }

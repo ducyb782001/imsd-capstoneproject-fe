@@ -162,6 +162,7 @@ function ManageStaff() {
             ...queryParams,
           })
           setListStaffs(response?.data)
+          setNewList(response?.data?.data)
 
           return response?.data
         } else {
@@ -184,7 +185,7 @@ function ManageStaff() {
       enabled: !!userData,
     },
   ])
-
+  console.log(listStaffs)
   return (
     <div>
       <div className="flex items-center justify-between">

@@ -72,7 +72,6 @@ function ImportReportEdit() {
           accessor: (data: any) => (
             <ListUnitImport
               data={data?.product}
-              listChosenProduct={listChosenProduct}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
             />
@@ -191,8 +190,6 @@ function ImportReportEdit() {
         const discount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.discount
-          ? undefined
-          : 0
         const amount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.amount
@@ -455,26 +452,18 @@ function ListQuantitiveImport({
 }
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState()
+  const [costPrice, setCostPrice] = useState(data?.price)
 
-  useEffect(() => {
-    if (data) {
-      setCostPrice(data?.price)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (costPrice) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return { ...item, price: costPrice }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [costPrice])
+  const handleOnChangeAmount = (value) => {
+    const list = listProductImport
+    const newList = list.map((item) => {
+      if (item.productId == data.productId) {
+        return { ...item, price: value }
+      }
+      return item
+    })
+    setListProductImport(newList)
+  }
 
   return (
     <PrimaryInput
@@ -485,6 +474,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       onChange={(e) => {
         e.stopPropagation()
         setCostPrice(e.target.value)
+        handleOnChangeAmount(e.target.value)
       }}
     />
   )
@@ -492,24 +482,12 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
 function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   const [discount, setDiscount] = useState(data?.discount)
-  useEffect(() => {
-    if (data) {
-      setDiscount(data?.discount)
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return { ...item, discount: data?.discount }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [data])
-  const handleOnChangeDiscount = (value, data) => {
+
+  const handleOnChangeDiscount = (value) => {
     const list = listProductImport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        return { ...item, discount: value }
+        return { ...item, discount: value ? value : 0 }
       }
       return item
     })
@@ -525,7 +503,7 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
       onChange={(e) => {
         e.stopPropagation()
         setDiscount(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
+        handleOnChangeDiscount(e.target.value)
       }}
     />
   )
@@ -560,29 +538,33 @@ function CountTotalPrice({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn"
-      onClick={handleSetPrice}
-    >
+    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )
 }
 
-function ListUnitImport({
-  data,
-  listProductImport,
-  setListProductImport,
-  listChosenProduct,
-}) {
+function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
 
   useEffect(() => {
     if (data) {
-      setListDropdown(data?.measuredUnits)
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
+      const list = listProductImport
+      setListDropdown([
+        {
+          measuredUnitId: 0,
+          measuredUnitName: data?.defaultMeasuredUnit,
+        },
+        ...data?.measuredUnits,
+      ])
+      const test = list.filter((i) => i?.productId === data?.productId)
+      if (test[0].measuredUnitId) {
+        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
+      } else {
+        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit)
+      }
     }
   }, [data])
 

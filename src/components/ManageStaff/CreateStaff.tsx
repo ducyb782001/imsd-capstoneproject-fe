@@ -180,6 +180,7 @@ function CreateStaff() {
                     password: e.target.value,
                   })
                 }}
+                placeholder={t("enter_password_placeholder")}
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
