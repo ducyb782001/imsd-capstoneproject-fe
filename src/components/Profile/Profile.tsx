@@ -97,6 +97,7 @@ function Profile() {
   const handleChangePassword = () => {
     // @ts-ignore
     changePasswordMutation.mutate({
+      userId: 0,
       oldPassword: currentPassword,
       password: newPassword,
     })
