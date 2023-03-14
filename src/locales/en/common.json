@@ -107,6 +107,7 @@
   "active": "Active",
   "deactive": "Deactive",
   "seller": "Seller",
+  "owner": "Store owner",
   "store_keeper": "Store keeper",
   "create_new_staff": "Create new staff",
   "add_staff_success": "Add staff successfully",
@@ -153,6 +154,7 @@
   "enter_re_password": "Enter confirm password",
   "new_password": "New password",
   "enter_new_password": "Enter new password",
+  "enter_password_placeholder": "Enter password here",
   "import_code": "Import code",
   "in_progress": "Processing",
   "in_import": "Importing",
@@ -185,5 +187,6 @@
   "import_success": "Import successful",
   "wait_get_product": "Wait to receive the goods",
   "receive_goods": "Receive goods",
-  "confirm_receive_instock": "All stock has been imported?"
+  "confirm_receive_instock": "All stock has been imported?",
+  "profile_detail": "Personal information"
 }

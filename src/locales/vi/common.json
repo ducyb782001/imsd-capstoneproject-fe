@@ -107,6 +107,7 @@
   "active": "Kích hoạt",
   "deactive": "Vô hiệu hóa",
   "seller": "Nhân viên bán hàng",
+  "owner": "Chủ kho",
   "store_keeper": "Thủ kho",
   "create_new_staff": "Đăng ký nhân viên mới",
   "add_staff_success": "Thêm nhân viên thành công",
@@ -153,6 +154,7 @@
   "enter_re_password": "Nhập lại mật khẩu mới",
   "new_password": "Mật khẩu mới",
   "enter_new_password": "Nhập mật khẩu mới",
+  "enter_password_placeholder": "Nhập mật khẩu vào đây",
   "import_code": "Mã đơn nhập",
   "in_progress": "Đang xử lý",
   "in_import": "Đang nhập hàng",
@@ -185,5 +187,6 @@
   "import_success": "Nhập hàng thành công",
   "wait_get_product": "Chờ nhận hàng",
   "receive_goods": "Nhận hàng",
-  "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?"
+  "confirm_receive_instock": "Toàn bộ số hàng đã được nhập vào kho?",
+  "profile_detail": "Thông tin cá nhân"
 }

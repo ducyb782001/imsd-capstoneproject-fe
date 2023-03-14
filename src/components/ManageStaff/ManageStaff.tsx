@@ -144,7 +144,7 @@ function ManageStaff() {
       queryFn: async () => {
         if (debouncedSearchValue) {
           const response = await getAllStaff({
-            code: debouncedSearchValue,
+            search: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
@@ -248,13 +248,19 @@ function RoleDisplay({ data }) {
   if (data?.roleId == 1) {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">{t("seller")}</h1>
+        <h1 className="m-2 ml-3">{t("owner")}</h1>
       </div>
     )
   } else if (data?.roleId == 2) {
     return (
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
+      </div>
+    )
+  } else if (data?.roleId == 3) {
+    return (
+      <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
   }

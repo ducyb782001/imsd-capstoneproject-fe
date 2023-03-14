@@ -14,16 +14,14 @@ import InfoIcon from "../icons/InfoIcon"
 import ConfirmPopup from "../ConfirmPopup"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import {
-  createStaff,
-  getDetailStaff,
-  updateStaff,
-} from "../../apis/user-module"
+import { getDetailStaff, updateStaff } from "../../apis/user-module"
 import router, { useRouter } from "next/router"
 import { format } from "date-fns"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+import { useTranslation } from "react-i18next"
 
-function EditStaff() {
+function DetailStaff() {
+  const { t } = useTranslation()
   const [gender, setGender] = useState<any>()
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
@@ -34,7 +32,6 @@ function EditStaff() {
     setStaffAccountObject({
       ...staffAccountObject,
       status: staffAccountObject?.status,
-      password: "123456aA@",
     })
   }, [])
 
@@ -132,13 +129,13 @@ function EditStaff() {
   return (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>Thông tin cá nhân</SmallTitle>
+        <SmallTitle>{t("profile_detail")}</SmallTitle>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <PrimaryInput
-                title="Họ và tên"
-                placeholder="Nhập họ và tên"
+                title={t("full_name")}
+                placeholder={t("enter_full_name")}
                 value={
                   staffAccountObject?.userName
                     ? staffAccountObject?.userName
@@ -152,21 +149,23 @@ function EditStaff() {
                 }}
               />
               <SelectRoleDropdown
-                title={<p>Vị trí</p>}
+                title={t("position")}
                 listDropdown={[
-                  { id: 1, value: "Thủ kho" },
+                  { id: 2, value: t("store_keeper") },
                   {
-                    id: 2,
-                    value: "Nhân viên bán hàng",
+                    id: 3,
+                    value: t("seller"),
                   },
                 ]}
-                textDefault={staffAccountObject?.role?.roleName}
+                textDefault={
+                  staffAccountObject?.id == 2 ? t("store_keeper") : t("seller")
+                }
                 showing={selectRole}
                 setShowing={setSelectRole}
               />
               <PrimaryInput
-                title="Số CCCD/CMND"
-                placeholder={"Nhập số CCCD/CMND"}
+                title={t("staff_id")}
+                placeholder={t("enter_staff_id")}
                 value={
                   staffAccountObject?.identity
                     ? staffAccountObject?.identity
@@ -183,7 +182,7 @@ function EditStaff() {
 
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <PrimaryInput
-                title={<p>Tên đăng nhập</p>}
+                title={t("userName")}
                 value={
                   staffAccountObject?.userCode
                     ? staffAccountObject?.userCode
@@ -194,35 +193,27 @@ function EditStaff() {
               <PasswordInput
                 title={
                   <div className="flex gap-1">
-                    <h1>Mật khẩu</h1>
-                    <Tooltip
-                      content={
-                        <div>
-                          Mật khẩu mặc định khi tạo nhân viên là 123456aA@
-                        </div>
-                      }
-                    >
+                    <h1>{t("password")}</h1>
+                    <Tooltip content={<div>{t("password_default")}</div>}>
                       <InfoIcon />
                     </Tooltip>
                   </div>
                 }
-                value={
-                  staffAccountObject?.password
-                    ? staffAccountObject?.password
-                    : ""
-                }
+                placeholder={t("enter_password_placeholder")}
                 onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    password: e.target.value,
-                  })
+                  if (e.target.value !== "") {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      password: e.target.value,
+                    })
+                  }
                 }}
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
               <PrimaryInput
-                title="Số điện thoại"
-                placeholder="Nhập số điện thoại"
+                title={t("phone_number")}
+                placeholder={t("enter_number")}
                 type="number"
                 value={
                   staffAccountObject?.phone ? staffAccountObject?.phone : ""
@@ -341,4 +332,4 @@ function EditStaff() {
   )
 }
 
-export default EditStaff
+export default DetailStaff
