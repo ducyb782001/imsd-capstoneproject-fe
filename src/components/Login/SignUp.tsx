@@ -30,21 +30,21 @@ function Signup() {
   }
 
   const handleSignUp = (event) => {
+    event.preventDefault()
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    event.preventDefault()
-    if (
-      userPassword == userPassword2 &&
-      passRegex.test(userPassword) &&
-      emailRegex.test(userEmail)
-    ) {
-      // @ts-ignore
-      signUpMutation.mutate({
-        email: userEmail,
-        password: userPassword,
-      })
-    }
+    // if (
+    //   userPassword == userPassword2 &&
+    //   passRegex.test(userPassword) &&
+    //   emailRegex.test(userEmail)
+    // ) {
+    // @ts-ignore
+    signUpMutation.mutate({
+      email: userEmail,
+      password: userPassword,
+    })
+    // }
   }
   const signUpMutation = useMutation(
     (account) => {
@@ -144,7 +144,7 @@ function Signup() {
               />
             </div>
             <PrimaryBtn
-              disabled={disabled}
+              // disabled={disabled}
               className="mt-11"
               onClick={handleSignUp}
             >
