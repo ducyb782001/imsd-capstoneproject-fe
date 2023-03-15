@@ -17,7 +17,8 @@
     "searchStaff": "Search by employee name, employee code, phone number",
     "searchByProduct": "Search by product name",
     "searchInType": "Search by product type name",
-    "searchInImport": "Search by import code"
+    "searchInImport": "Search by import code",
+    "searchReturn": "Search by return code, supplier name"
   },
   "import good": "Import goods",
   "export good": "Export goods",
@@ -191,5 +192,10 @@
   "export_code": "Export code",
   "owner": "Owner",
   "cancel_update_user": "Are you sure to cancel update staff's profile?",
-  "confirm_update_user": "Are you sure to update staff's profile?"
+  "confirm_update_user": "Are you sure to update staff's profile?",
+
+  "return_code": "Return code",
+  "return_cost": "Return cost",
+  "bill_create_user": "Return order creator",
+  "return_date": "Return date"
 }

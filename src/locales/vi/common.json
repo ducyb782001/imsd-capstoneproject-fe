@@ -17,7 +17,8 @@
     "searchStaff": "Tìm theo tên nhân viên, mã nhân viên, số điện thoại",
     "searchByProduct": "Tìm kiếm bằng tên sản phẩm",
     "searchInType": "Tìm kiếm bằng tên loại sản phẩm",
-    "searchInImport": "Tìm theo mã đơn nhập"
+    "searchInImport": "Tìm theo mã đơn nhập",
+    "searchReturn": "Tìm theo mã đơn trả hàng, nhà cung cấp"
   },
   "import good": "Nhập hàng",
   "export good": "Xuất hàng",
@@ -191,5 +192,10 @@
   "export_code": "Mã đơn xuất",
   "owner": "Chủ cửa hàng",
   "cancel_update_user": "Bạn có chắc chắn muốn hủy chỉnh sửa nhân viên không?",
-  "confirm_update_user": "Bạn có chắc chắn muốn chỉnh sửa nhân viên không?"
+  "confirm_update_user": "Bạn có chắc chắn muốn chỉnh sửa nhân viên không?",
+
+  "return_code": "Mã đơn trả hàng",
+  "return_cost": "Giá trị đơn hàng",
+  "bill_create_user": "Người tạo đơn",
+  "return_date": "Ngày trả hàng"
 }

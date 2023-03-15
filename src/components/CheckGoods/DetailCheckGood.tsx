@@ -16,6 +16,7 @@ import UploadIcon from "../icons/UploadIcon"
 import * as XLSX from "xlsx/xlsx"
 import PrimaryBtn from "../PrimaryBtn"
 import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
+import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 
 function DetailCheckReport() {
   const columns = [
@@ -107,6 +108,7 @@ function DetailCheckReport() {
   const router = useRouter()
   const { checkId } = router.query
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
   console.log(productStockTakeObject)
   useQueries([
     {
@@ -114,6 +116,7 @@ function DetailCheckReport() {
       queryFn: async () => {
         const response = await getDetailStockTakeProduct(checkId)
         setProductStockTakeObject(response?.data)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
       enabled: !!checkId,
@@ -124,7 +127,9 @@ function DetailCheckReport() {
     router.push("/manage-check-good")
   }
 
-  return (
+  return isLoadingReport ? (
+    <StockTakeSkeleton />
+  ) : (
     <div>
       <div>
         <div className="flex items-center justify-between w-full">
@@ -199,24 +204,6 @@ function DetailCheckReport() {
 
 export default DetailCheckReport
 
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 function StatusDisplay({ data }) {
   if (data == 2) {
     return (

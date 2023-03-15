@@ -182,7 +182,7 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
-  console.log(listProductImport)
+  console.log(listStaff)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -358,7 +358,7 @@ function ImportReportEdit() {
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={productImportObject?.user?.userName}
+              textDefault={""}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />

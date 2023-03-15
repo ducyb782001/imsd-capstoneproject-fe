@@ -24,6 +24,7 @@ import {
   getDetailStockTakeProduct,
   updateStockTakeProduct,
 } from "../../apis/stocktake-product-module"
+import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -166,18 +167,12 @@ function EditCheckReport() {
         const currentStock = listProductStockTake.find(
           (i) => i.productId == item.productId,
         )?.inStock
-          ? undefined
-          : item.inStock
         const measuredUnitId = listProductStockTake.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
-          ? undefined
-          : 0
         const stocktakeId = listProductStockTake.find(
           (i) => i.productId == item.productId,
         )?.actualStock
-          ? undefined
-          : 0
 
         const currentStockTake = listProductStockTakeCurrent.map((a) => {
           if (a.productId == item.productId) {
@@ -208,6 +203,7 @@ function EditCheckReport() {
 
   const router = useRouter()
   const { checkId } = router.query
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useQueries([
     {
@@ -237,12 +233,13 @@ function EditCheckReport() {
         })
         setListChosenProduct(list)
         setListProductStockTake(response?.data?.stocktakeNoteDetails)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
       enabled: !!checkId,
     },
   ])
-  console.log(productStockTakeObject)
+  console.log(listStaff)
 
   const updateStockTakeMutation = useMutation(
     async (exportProduct) => {
@@ -281,17 +278,10 @@ function EditCheckReport() {
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
   }
-  const handleExportCheckProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(
-      productStockTakeObject?.listProductImport,
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
 
-  return (
+  return isLoadingReport ? (
+    <StockTakeSkeleton />
+  ) : (
     <div>
       <div>
         <div className="flex items-center justify-between w-full">
@@ -510,59 +500,6 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       showing={unitChosen}
       setShowing={setUnitChosen}
       textDefault={defaultMeasuredUnit}
-    />
-  )
-}
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
-
-function ListNote({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [note, setNote] = useState("")
-  const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, note: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[50px]"
-      placeholder="Ghi chú"
-      value={note ? note : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setNote(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
     />
   )
 }
