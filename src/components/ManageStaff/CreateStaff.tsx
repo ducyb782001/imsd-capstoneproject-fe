@@ -61,14 +61,9 @@ function CreateStaff() {
   }
 
   const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
     console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
-    // setStaffAccountObject({
-    //   ...staffAccountObject,
-    //   identity: res.url,
-    // })
   }
   const createStaffMutation = useMutation(
     async (importProduct) => {

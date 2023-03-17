@@ -17,8 +17,7 @@
     "searchStaff": "Tìm theo tên nhân viên, mã nhân viên, số điện thoại",
     "searchByProduct": "Tìm kiếm bằng tên sản phẩm",
     "searchInType": "Tìm kiếm bằng tên loại sản phẩm",
-    "searchInImport": "Tìm theo mã đơn nhập",
-    "searchReturn": "Tìm theo mã đơn trả hàng, nhà cung cấp"
+    "searchInImport": "Tìm theo mã đơn nhập"
   },
   "import good": "Nhập hàng",
   "export good": "Xuất hàng",
@@ -197,5 +196,15 @@
   "return_code": "Mã đơn trả hàng",
   "return_cost": "Giá trị đơn hàng",
   "bill_create_user": "Người tạo đơn",
-  "return_date": "Ngày trả hàng"
+  "return_date": "Ngày trả hàng",
+  "return_supplier_title": "Danh sách đơn trả hàng về nhà cung cấp",
+  "search_return": "Tìm theo mã đơn trả hàng, nhà cung cấp",
+  "in_return_progress": "Đang trả hàng",
+  "create_return_good": "Tạo đơn trả hàng",
+  "return_report_detail": "Chi tiết đơn trả hàng về nhà cung cấp",
+  "return_to": "Trả về nhà cung cấp",
+  "return_status": "Trạng thái trả hàng",
+  "return_product_detail": "Thông tin sản phẩm trả",
+  "return_amount": "SL trả",
+  "return_customer_title": "Danh sách đơn khách trả hàng"
 }

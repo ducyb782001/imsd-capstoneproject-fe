@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next"
 import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 
-function ManageReturnGood() {
+function ManageReturnCustomer() {
   const { t } = useTranslation()
 
   const fake_data = [
@@ -97,10 +97,6 @@ function ManageReturnGood() {
         {
           Header: t("return_cost"),
           accessor: (data: any) => <p>{data?.returnCost}</p>,
-        },
-        {
-          Header: t("supplier"),
-          accessor: (data: any) => <p>{data?.supplier}</p>,
         },
         {
           Header: t("status"),
@@ -264,19 +260,11 @@ function ManageReturnGood() {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2"></div>
-        <Link href={`/create-return-report`}>
+        <Link href={`/create-return-customer`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
@@ -343,26 +331,7 @@ function ManageReturnGood() {
   )
 }
 
-export default ManageReturnGood
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
+export default ManageReturnCustomer
 
 function StatusDisplay({ data }) {
   const { t } = useTranslation()
@@ -397,7 +366,7 @@ function DetailImportProduct({ data }) {
   if (data?.status == 0) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-report-draff/${data?.returnId}`}>
+        <Link href={`/return-customer-draff/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -407,7 +376,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.status == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-report-detail/${data?.returnId}`}>
+        <Link href={`/return-customer-detail/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

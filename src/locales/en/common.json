@@ -17,8 +17,7 @@
     "searchStaff": "Search by employee name, employee code, phone number",
     "searchByProduct": "Search by product name",
     "searchInType": "Search by product type name",
-    "searchInImport": "Search by import code",
-    "searchReturn": "Search by return code, supplier name"
+    "searchInImport": "Search by import code"
   },
   "import good": "Import goods",
   "export good": "Export goods",
@@ -197,5 +196,15 @@
   "return_code": "Return code",
   "return_cost": "Return cost",
   "bill_create_user": "Return order creator",
-  "return_date": "Return date"
+  "return_date": "Return date",
+  "return_title": "Return order list",
+  "search_return": "Search by return code, supplier name",
+  "in_return_progress": "In returning",
+  "create_return_good": "Create return order",
+  "return_report_detail": "Return order detail",
+  "return_to": "Return to",
+  "return_status": "Return status",
+  "return_product_detail": "Return product detail",
+  "return_amount": "Return amount",
+  "return_customer_title": "Return product to customer"
 }
