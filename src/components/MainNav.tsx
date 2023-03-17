@@ -183,9 +183,12 @@ function MainNav() {
         router.asPath.includes("/manage-return-good") ||
         router.asPath.includes("/return-customer-draff") ||
         router.asPath.includes("/return-report-detail") ||
+        router.asPath.includes("/return-customer-detail") ||
         router.asPath.includes("/return-report-draff") ||
         router.asPath.includes("/create-return-customer") ||
         router.asPath.includes("/create-return-report") ||
+        router.asPath.includes("/edit-return-good") ||
+        router.asPath.includes("/edit-return-customer") ||
         router.asPath.includes("/manage-return-customer"),
     },
     {

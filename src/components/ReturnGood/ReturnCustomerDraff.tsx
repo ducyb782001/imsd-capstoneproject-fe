@@ -290,22 +290,24 @@ function DraffReturnCustomer() {
     },
   ])
   const handleClickCancelBtn = (event) => {
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    event?.preventDefault()
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // event?.preventDefault()
     // cancelImportMutation.mutate(productImport?.importId)
+    router.push("/return-customer-detail/" + 2005)
   }
 
   const handleClickOutBtn = () => {
     router.push("/manage-return-good")
   }
   const handleClickApproveBtn = async (event) => {
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    event?.preventDefault()
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // event?.preventDefault()
     // await approveImportMutation.mutate(productImport?.importId)
+    router.push("/return-customer-pending/" + 2005)
   }
   console.log(productImportObject)
 
@@ -314,12 +316,33 @@ function DraffReturnCustomer() {
       <div className="flex items-center justify-between w-full">
         <h1 className="text-2xl font-semibold">#HOHA2901</h1>
         <div className="flex items-center justify-between gap-4">
-          <PrimaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-            {t("edit")}
-          </PrimaryBtn>
           <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
             {t("exit")}
           </SecondaryBtn>
+          <ConfirmPopup
+            className="!w-fit"
+            classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
+            title={t("cancel_confirm_import")}
+            handleClickSaveBtn={handleClickCancelBtn}
+          >
+            {t("cancel")}
+          </ConfirmPopup>
+          <SecondaryBtn
+            className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
+            onClick={() => {
+              router.push("/edit-return-customer/" + 2005)
+            }}
+          >
+            {t("edit_import")}
+          </SecondaryBtn>
+          <ConfirmPopup
+            className="!w-fit"
+            classNameBtn="w-[120px]"
+            title={t("confirm_import")}
+            handleClickSaveBtn={handleClickApproveBtn}
+          >
+            {t("approve")}
+          </ConfirmPopup>
         </div>
       </div>
       <div className="w-full p-6 mt-6 bg-white block-border">

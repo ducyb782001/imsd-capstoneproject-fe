@@ -206,5 +206,10 @@
   "return_status": "Return status",
   "return_product_detail": "Return product detail",
   "return_amount": "Return amount",
-  "return_customer_title": "Return product to customer"
+  "return_customer_title": "Return product to customer",
+  "approve_return": "Return good",
+  "returning_status": "In returning",
+  "return_customer_detail": "Customer return order detail",
+  "return_customer_edit": "Edit customer return order",
+  "return_report_edit": "Edit supplier return order"
 }

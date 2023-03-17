@@ -27,9 +27,11 @@ import { IKImage } from "imagekitio-react"
 import Loading from "../Loading"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import { useTranslation } from "react-i18next"
+import SecondaryBtn from "../SecondaryBtn"
+import PrimaryBtn from "../PrimaryBtn"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateReturnReport() {
+function EditReturnReport() {
   const { t } = useTranslation()
 
   const product_fake = [
@@ -291,14 +293,6 @@ function CreateReturnReport() {
     },
   )
 
-  const handleClickSaveBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    createImportMutation.mutate(productImportObject)
-  }
-
   const router = useRouter()
   useQueries([
     {
@@ -331,6 +325,19 @@ function CreateReturnReport() {
       },
     },
   ])
+  const handleClickOutBtn = () => {
+    router.push("/return-report-draff/" + 2005)
+  }
+  const handleClickSaveBtn = () => {
+    router.push("/return-report-draff/" + 2005)
+  }
+  //   const handleClickSaveBtn = (event) => {
+  //     event?.preventDefault()
+  //     toast.loading("Thao tác đang được xử lý ... ", {
+  //       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+  //     })
+  //     createImportMutation.mutate(productImportObject)
+  //   }
   console.log(productImportObject)
 
   return (
@@ -338,17 +345,15 @@ function CreateReturnReport() {
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-return-good")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
+            <h1 className="text-2xl font-semibold">#TAHA201</h1>
+            <div className="flex items-center justify-between gap-4">
+              <PrimaryBtn className="w-[120px]" onClick={handleClickSaveBtn}>
+                {t("save")}
+              </PrimaryBtn>
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+                {t("exit")}
+              </SecondaryBtn>
+            </div>
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <SmallTitle>Thông tin đơn</SmallTitle>
@@ -407,9 +412,7 @@ function CreateReturnReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
-        </h1>
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm trả</h1>
         <SearchProductImportDropdown
           listDropdown={listProductBySupplierImport?.data}
           textDefault={"Nhà cung cấp"}
@@ -429,19 +432,12 @@ function CreateReturnReport() {
             Tổng giá trị đơn hàng: {new BigNumber(totalPriceSend).toFormat(0)} đ
           </div>
         </div>
-        <ConfirmPopup
-          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
-          handleClickSaveBtn={handleClickSaveBtn}
-        >
-          Tạo hóa đơn trả hàng
-        </ConfirmPopup>
       </div>
     </div>
   )
 }
 
-export default CreateReturnReport
+export default EditReturnReport
 
 function ListQuantitiveImport({
   data,

@@ -22,14 +22,13 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
-import AddImage from "../AddImage"
-import { IKImage } from "imagekitio-react"
-import Loading from "../Loading"
-import AddPlusIcon from "../icons/AddPlusIcon"
+import SecondaryBtn from "../SecondaryBtn"
 import { useTranslation } from "react-i18next"
+import AddPlusIcon from "../icons/AddPlusIcon"
+import PrimaryBtn from "../PrimaryBtn"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateReturnReport() {
+function ReturnCustomerEdit() {
   const { t } = useTranslation()
 
   const product_fake = [
@@ -169,20 +168,6 @@ function CreateReturnReport() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const [loadingImage, setLoadingImage] = useState(false)
-  const [imageUploaded, setImageUploaded] = useState("")
-
-  const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    console.log("Run onsucces here")
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
-
   useEffect(() => {
     if (staffSelected) {
       setProductImportObject({
@@ -292,11 +277,12 @@ function CreateReturnReport() {
   )
 
   const handleClickSaveBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    createImportMutation.mutate(productImportObject)
+    // event?.preventDefault()
+    // toast.loading("Thao tác đang được xử lý ... ", {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // createImportMutation.mutate(productImportObject)
+    router.push("/return-customer-draff/" + 2005)
   }
 
   const router = useRouter()
@@ -331,79 +317,67 @@ function CreateReturnReport() {
       },
     },
   ])
+  const handleClickOutBtn = () => {
+    router.push("/manage-return-customer")
+  }
   console.log(productImportObject)
 
   return (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
-        <div>
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-return-good")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
+      <div>
+        <div className="flex items-center justify-between w-full">
+          <h1 className="text-2xl font-semibold">#HOHA2901</h1>
+          <div className="flex items-center justify-between gap-4">
+            <PrimaryBtn className="w-[120px]" onClick={handleClickSaveBtn}>
+              {t("save")}
+            </PrimaryBtn>
+            <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+              {t("exit")}
+            </SecondaryBtn>
           </div>
-          <div className="w-full p-6 mt-6 bg-white block-border">
-            <SmallTitle>Thông tin đơn</SmallTitle>
-            <div className="mt-6">
-              <AddChooseSupplierDropdown
-                title="Nhà cung cấp"
-                listDropdown={listNhaCungCap}
-                textDefault={"Nhà cung cấp"}
-                showing={nhaCungCapSelected}
-                setShowing={setNhaCungCapSelected}
+        </div>
+        <div className="w-full p-6 mt-6 bg-white block-border">
+          <SmallTitle>Thông tin đơn trả</SmallTitle>
+          <div className="grid gap-5 grid-cols md: grid-cols-[49%49%]">
+            <div className="  mt-4">
+              <ChooseStaffDropdown
+                title="Nhân viên tạo đơn trả hàng"
+                listDropdown={listStaff}
+                textDefault={"Chọn nhân viên"}
+                showing={staffSelected}
+                setShowing={setStaffSelected}
               />
             </div>
-            <div className="mt-6">
+            <div className=" mt-4">
               <ChooseImportReportDropdown
                 title="Đơn trả"
                 listDropdown={import_fake}
-                textDefault={"Mã đơn trả"}
+                textDefault={"Chọn đơn để trả"}
                 showing={productChosen}
                 setShowing={setProductChosen}
               />
             </div>
           </div>
-        </div>
-        <div className="bg-white block-border">
-          <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
-          </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày trả hàng: {format(Date.now(), "dd/MM/yyyy")}
+          <div className=" mt-4">
+            <PrimaryTextArea
+              rows={4}
+              className="mt-2"
+              title="Lý do trả hàng"
+              onChange={(e) => {
+                setProductImportObject({
+                  ...productImportObject,
+                  note: e.target.value,
+                })
+              }}
+            />
+            <button
+              className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
+              // onClick={open}
+            >
+              <AddPlusIcon />
+              <p className="text-[#4794F8] text-base">{t("add_image")}</p>
+            </button>
           </div>
-          <ChooseStaffDropdown
-            title="Nhân viên"
-            listDropdown={listStaff}
-            textDefault={"Chọn nhân viên"}
-            showing={staffSelected}
-            setShowing={setStaffSelected}
-          />
-          <PrimaryTextArea
-            rows={4}
-            className="mt-2"
-            title="Ghi chú hóa đơn"
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
-          />
-          <button
-            className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
-            // onClick={open}
-          >
-            <AddPlusIcon />
-            <p className="text-[#4794F8] text-base">{t("add_image")}</p>
-          </button>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
@@ -441,7 +415,7 @@ function CreateReturnReport() {
   )
 }
 
-export default CreateReturnReport
+export default ReturnCustomerEdit
 
 function ListQuantitiveImport({
   data,

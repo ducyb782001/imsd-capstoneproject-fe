@@ -206,5 +206,10 @@
   "return_status": "Trạng thái trả hàng",
   "return_product_detail": "Thông tin sản phẩm trả",
   "return_amount": "SL trả",
-  "return_customer_title": "Danh sách đơn khách trả hàng"
+  "return_customer_title": "Danh sách đơn khách trả hàng",
+  "approve_return": "Trả hàng",
+  "returning_status": "Đang trả hàng",
+  "return_customer_detail": "Chi tiết đơn khách trả hàng",
+  "return_customer_edit": "Chỉnh sửa đơn khách trả hàng",
+  "return_report_edit": "Chỉnh sửa đơn trả nhà cung cấp"
 }

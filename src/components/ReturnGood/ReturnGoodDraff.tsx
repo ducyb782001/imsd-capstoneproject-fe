@@ -288,22 +288,24 @@ function DraffReturnReport() {
     },
   ])
   const handleClickCancelBtn = (event) => {
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    event?.preventDefault()
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // event?.preventDefault()
     // cancelImportMutation.mutate(productImport?.importId)
+    router.push("/return-report-detail/" + 2005)
   }
 
   const handleClickOutBtn = () => {
     router.push("/manage-return-good")
   }
   const handleClickApproveBtn = async (event) => {
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    event?.preventDefault()
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // event?.preventDefault()
     // await approveImportMutation.mutate(productImport?.importId)
+    router.push("/return-good-pending/" + 2005)
   }
   console.log(productImportObject)
 
@@ -313,7 +315,7 @@ function DraffReturnReport() {
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex flex-wrap items-center gap-4">
-              <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
+              <h1 className="text-2xl font-semibold">#TAHA201</h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
                 {t("wait_accept_import")}
               </div>
@@ -333,7 +335,7 @@ function DraffReturnReport() {
               <SecondaryBtn
                 className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
                 onClick={() => {
-                  router.push("/import-report-edit/" + 2005)
+                  router.push("/edit-return-good/" + 2005)
                 }}
               >
                 {t("edit_import")}

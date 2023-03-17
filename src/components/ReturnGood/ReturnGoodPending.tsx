@@ -8,13 +8,10 @@ import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
-import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
@@ -22,14 +19,11 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
-import AddImage from "../AddImage"
-import { IKImage } from "imagekitio-react"
-import Loading from "../Loading"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import { useTranslation } from "react-i18next"
+import SecondaryBtn from "../SecondaryBtn"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateReturnReport() {
+function ReturnGoodPending() {
   const { t } = useTranslation()
 
   const product_fake = [
@@ -74,90 +68,66 @@ function CreateReturnReport() {
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
-              src={data?.image || "/images/default-product-image.jpg"}
+              src={data?.product?.image || "/images/default-product-image.jpg"}
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_code"),
+          accessor: (data: any) => (
+            <p className="truncate-2-line max-w-[100px]">
+              {/* {data?.product?.productCode} */}
+              {data?.productCode}
+            </p>
+          ),
+        },
+        {
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("unit"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productCode}</p>
+            <div>{data?.measuredUnitId ? data?.measuredUnitId : "---"}</div>
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("type.type"),
           accessor: (data: any) => (
-            // <ListUnitImport
-            //   data={data}
-            //   listProductImport={listProductImport}
-            //   setListProductImport={setListProductImport}
-            // />
-            <p className="truncate-2-line max-w-[100px]">
-              {data?.measuredUnitId}
+            <div>{data?.category ? data?.category : "---"}</div>
+          ),
+        },
+        {
+          Header: t("return_amount"),
+          accessor: (data: any) => (
+            <div>{data?.returnAmount ? data?.returnAmount : "---"}</div>
+          ),
+        },
+        {
+          Header: t("price"),
+          accessor: (data: any) => (
+            <p className="text-center">
+              {new BigNumber(data.price).toFormat(0)} đ
             </p>
           ),
         },
         {
-          Header: "SL trả",
+          Header: t("total_price"),
           accessor: (data: any) => (
-            <ListQuantitiveImport
-              data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
-            />
-          ),
-        },
-        {
-          Header: "Đơn giá",
-          accessor: (data: any) => (
-            <div className=" items-center ">
-              <ListPriceImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-              />
-            </div>
-          ),
-        },
-        {
-          Header: "Thành tiền",
-          accessor: (data: any) => (
-            <CountTotalPrice
-              data={data}
-              listProductImport={listProductImport}
-            />
-          ),
-        },
-        {
-          Header: " ",
-          accessor: (data: any, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
-                )
-                setListChosenProduct(result)
-              }}
-            >
-              <XIcons />
-            </div>
+            <p>{new BigNumber(data.costPrice).toFormat(0)} đ</p>
           ),
         },
       ],
     },
   ]
+
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
@@ -169,20 +139,6 @@ function CreateReturnReport() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const [loadingImage, setLoadingImage] = useState(false)
-  const [imageUploaded, setImageUploaded] = useState("")
-
-  const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    console.log("Run onsucces here")
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
-
   useEffect(() => {
     if (staffSelected) {
       setProductImportObject({
@@ -331,28 +287,55 @@ function CreateReturnReport() {
       },
     },
   ])
+  const handleClickCancelBtn = (event) => {
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
+    event?.preventDefault()
+    // cancelImportMutation.mutate(productImport?.importId)
+  }
+
+  const handleClickOutBtn = () => {
+    router.push("/manage-return-good")
+  }
+  const handleClickApproveBtn = async (event) => {
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
+    // event?.preventDefault()
+    // await approveImportMutation.mutate(productImport?.importId)
+    router.push("/return-report-detail/" + 2005)
+  }
   console.log(productImportObject)
 
   return (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols md: grid-cols-7525 gap-4">
         <div>
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-return-good")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
+            <div className="flex flex-wrap items-center gap-4">
+              <h1 className="text-2xl font-semibold">#TAHA201</h1>
+              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
+                {t("returning_status")}
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+                {t("exit")}
+              </SecondaryBtn>
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title={t("confirm_import")}
+                handleClickSaveBtn={handleClickApproveBtn}
+              >
+                {t("approve_return")}
+              </ConfirmPopup>
+            </div>
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
-            <SmallTitle>Thông tin đơn</SmallTitle>
-            <div className="mt-6">
+            <SmallTitle>Thông tin nhà cung cấp, mã đơn trả</SmallTitle>
+            <div className="mt-4">
               <AddChooseSupplierDropdown
                 title="Nhà cung cấp"
                 listDropdown={listNhaCungCap}
@@ -361,7 +344,7 @@ function CreateReturnReport() {
                 setShowing={setNhaCungCapSelected}
               />
             </div>
-            <div className="mt-6">
+            <div className="mt-4">
               <ChooseImportReportDropdown
                 title="Đơn trả"
                 listDropdown={import_fake}
@@ -379,8 +362,8 @@ function CreateReturnReport() {
           <div className="text-sm font-medium text-center text-gray">
             Ngày trả hàng: {format(Date.now(), "dd/MM/yyyy")}
           </div>
+          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <ChooseStaffDropdown
-            title="Nhân viên"
             listDropdown={listStaff}
             textDefault={"Chọn nhân viên"}
             showing={staffSelected}
@@ -397,13 +380,6 @@ function CreateReturnReport() {
               })
             }}
           />
-          <button
-            className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
-            // onClick={open}
-          >
-            <AddPlusIcon />
-            <p className="text-[#4794F8] text-base">{t("add_image")}</p>
-          </button>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
@@ -429,163 +405,9 @@ function CreateReturnReport() {
             Tổng giá trị đơn hàng: {new BigNumber(totalPriceSend).toFormat(0)} đ
           </div>
         </div>
-        <ConfirmPopup
-          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
-          handleClickSaveBtn={handleClickSaveBtn}
-        >
-          Tạo hóa đơn trả hàng
-        </ConfirmPopup>
       </div>
     </div>
   )
 }
 
-export default CreateReturnReport
-
-function ListQuantitiveImport({
-  data,
-  listProductImport,
-  setListProductImport,
-}) {
-  const [quantity, setQuantity] = useState()
-  const handleOnChangeAmount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, amount: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
-  )
-}
-
-function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState()
-
-  useEffect(() => {
-    if (data) {
-      setCostPrice(data?.costPrice)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (costPrice) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return { ...item, costPrice: costPrice }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [costPrice])
-
-  return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={costPrice ? costPrice : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCostPrice(e.target.value)
-      }}
-    />
-  )
-}
-
-function CountTotalPrice({ data, listProductImport }) {
-  const [price, setPrice] = useState<any>()
-  const handleSetPrice = () => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount || 0).multipliedBy(
-          item.costPrice || 0,
-        )
-        const discountPrice = new BigNumber(item.amount || 0)
-          .multipliedBy(item.costPrice || 0)
-          .multipliedBy(item.discount || 0)
-          .dividedBy(100)
-        if (item.discount) {
-          const afterPrice = totalPrice.minus(discountPrice)
-          setPrice(afterPrice)
-        } else {
-          setPrice(totalPrice)
-        }
-      }
-      return item
-    })
-  }
-
-  useEffect(() => {
-    handleSetPrice()
-  }, [listProductImport])
-
-  return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
-      {new BigNumber(price).toFormat(0)} đ
-    </div>
-  )
-}
-
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
-  const [listDropdown, setListDropdown] = useState([])
-  const [unitChosen, setUnitChosen] = useState<any>()
-  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-
-  useEffect(() => {
-    if (data) {
-      setListDropdown([
-        {
-          measuredUnitId: 0,
-          measuredUnitName: data?.defaultMeasuredUnit,
-        },
-        ...data?.measuredUnits,
-      ])
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (unitChosen) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return {
-            ...item,
-            measuredUnitId: unitChosen?.measuredUnitId,
-          }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [unitChosen])
-
-  return (
-    <ChooseUnitImport
-      listDropdown={listDropdown}
-      showing={unitChosen}
-      setShowing={setUnitChosen}
-      textDefault={defaultMeasuredUnit}
-    />
-  )
-}
+export default ReturnGoodPending

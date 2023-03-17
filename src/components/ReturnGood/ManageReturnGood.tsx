@@ -407,7 +407,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.status == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-report-detail/${data?.returnId}`}>
+        <Link href={`/return-good-pending/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>

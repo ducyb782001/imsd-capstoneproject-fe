@@ -376,7 +376,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.status == 1) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-customer-detail/${data?.returnId}`}>
+        <Link href={`/return-customer-pending/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -386,7 +386,7 @@ function DetailImportProduct({ data }) {
   } else if (data?.status == 2) {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-report-detail/${data?.returnId}`}>
+        <Link href={`/return-customer-detail/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
@@ -396,7 +396,7 @@ function DetailImportProduct({ data }) {
   } else {
     return (
       <div className="flex items-center gap-2">
-        <Link href={`/return-report-detail/${data?.returnId}`}>
+        <Link href={`/return-customer-detail/${data?.returnId}`}>
           <a className="w-full">
             <ShowDetailIcon />
           </a>
