@@ -137,9 +137,7 @@ function ImportReportSucceed() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Link
-                href={`/create-return-report/?importOrderId${productImport?.importId}`}
-              >
+              <Link href={`/create-return-report/?importOrderId=${importId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
                     Trả hàng
