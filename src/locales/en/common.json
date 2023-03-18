@@ -198,7 +198,7 @@
   "bill_create_user": "Return order creator",
   "return_date": "Return date",
   "return_title": "Return order list",
-  "search_return": "Search by return code, supplier name",
+  "search_return": "Search by return code, supplier name, user name",
   "in_return_progress": "In returning",
   "create_return_good": "Create return order",
   "return_report_detail": "Return order detail",

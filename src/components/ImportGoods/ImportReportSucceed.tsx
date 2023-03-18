@@ -11,6 +11,8 @@ import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
+import SecondaryBtn from "../SecondaryBtn"
+import Link from "next/link"
 
 function ImportReportSucceed() {
   const { t } = useTranslation()
@@ -92,7 +94,6 @@ function ImportReportSucceed() {
     },
   ]
 
-  useState<any>([])
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
@@ -120,10 +121,6 @@ function ImportReportSucceed() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
@@ -139,8 +136,22 @@ function ImportReportSucceed() {
                 {t("final")}
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+            <div className="flex items-center gap-4">
+              <Link
+                href={`/create-return-report/?importOrderId${productImport?.importId}`}
+              >
+                <a>
+                  <SecondaryBtn className="max-w-[120px]">
+                    Trả hàng
+                  </SecondaryBtn>
+                </a>
+              </Link>
+              <PrimaryBtn
+                onClick={() => {
+                  router.push("/manage-import-goods")
+                }}
+                className="w-[120px]"
+              >
                 {t("exit")}
               </PrimaryBtn>
             </div>

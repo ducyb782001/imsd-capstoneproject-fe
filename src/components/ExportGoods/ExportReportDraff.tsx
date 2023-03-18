@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
@@ -300,7 +300,15 @@ function ExportReportDraff() {
             Thông tin bổ sung
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
+            Ngày tạo đơn:{" "}
+            {format(
+              parseISO(
+                productImportObject?.createdDate
+                  ? productImportObject?.createdDate
+                  : new Date().toISOString(),
+              ),
+              "dd/MM/yyyy HH:mm",
+            )}
           </div>
           <PrimaryTextArea
             rows={7}

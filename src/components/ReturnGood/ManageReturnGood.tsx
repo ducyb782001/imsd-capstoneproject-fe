@@ -95,31 +95,12 @@ function ManageReturnGood() {
           accessor: (data: any) => <p>{data?.returnCode}</p>,
         },
         {
-          Header: t("return_cost"),
-          accessor: (data: any) => <p>{data?.returnCost}</p>,
-        },
-        {
           Header: t("supplier"),
           accessor: (data: any) => <p>{data?.supplier}</p>,
         },
         {
-          Header: t("status"),
-          accessor: (data: any) => (
-            <div className="flex justify-center">
-              <StatusDisplay data={data} />
-            </div>
-          ),
-        },
-        {
           Header: t("bill_create_user"),
           accessor: (data: any) => <p>{data?.create}</p>,
-        },
-        {
-          Header: t("created_report_import"),
-          accessor: (data: any) => (
-            <p>{format(data?.createDate, "dd/MM/yyyy HH:mm")}</p>
-            // <p>{format(parseISO(data?.createDate), "dd/MM/yyyy HH:mm")}</p>
-          ),
         },
         {
           Header: t("return_date"),
@@ -127,6 +108,10 @@ function ManageReturnGood() {
             // <p>{format(parseISO(data?.returnDate), "dd/MM/yyyy HH:mm")}</p>
             <p>{format(data?.returnDate, "dd/MM/yyyy HH:mm")}</p>
           ),
+        },
+        {
+          Header: t("return_cost"),
+          accessor: (data: any) => <p>{data?.returnCost}</p>,
         },
         {
           Header: " ",
@@ -289,19 +274,12 @@ function ManageReturnGood() {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_24%_24%] mb-4">
+          <div className="grid items-center justify-between w-full grid-cols-1 gap-1 mb-4 md:grid-cols-73">
             <SearchInput
               placeholder={t("search_return")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
-            <ChooseStatusDropdown
-              listDropdown={status}
-              textDefault={t("status")}
-              showing={statusSelected}
-              setShowing={setStatusSelected}
-            />
-
             <ChooseSupplierImportGoodDropdown
               listDropdown={listSupplier}
               textDefault={t("supplier")}

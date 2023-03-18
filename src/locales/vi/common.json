@@ -198,7 +198,7 @@
   "bill_create_user": "Người tạo đơn",
   "return_date": "Ngày trả hàng",
   "return_supplier_title": "Danh sách đơn trả hàng về nhà cung cấp",
-  "search_return": "Tìm theo mã đơn trả hàng, nhà cung cấp",
+  "search_return": "Tìm theo mã đơn trả hàng, nhà cung cấp, người tạo đơn",
   "in_return_progress": "Đang trả hàng",
   "create_return_good": "Tạo đơn trả hàng",
   "return_report_detail": "Chi tiết đơn trả hàng về nhà cung cấp",

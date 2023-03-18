@@ -118,7 +118,7 @@ function MainNav() {
     },
   ]
 
-  const mainMenuOwner = [
+  const mainMenu = [
     {
       id: 1,
       name: t("dashboard"),
@@ -202,15 +202,6 @@ function MainNav() {
         router.asPath.includes("/draff-check-good") ||
         router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
-    },
-    {
-      id: 7,
-      name: t("staff"),
-      icon: <UserIcon />,
-      isActive:
-        router.asPath.includes("/manage-staff") ||
-        router.asPath.includes("/create-staff"),
-      href: "/manage-staff",
     },
   ]
 
@@ -381,42 +372,31 @@ function MainNav() {
               </a>
             </Link>
           </div>
-
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
-            {userData?.roleId === 1
-              ? mainMenuOwner.map((i) => (
-                  <MenuItem
-                    key={i?.id}
-                    icon={i?.icon}
-                    name={i?.name}
-                    subMenuItem={i?.subMenu}
-                    href={i?.href}
-                    isActive={i?.isActive}
-                  />
-                ))
-              : userData?.roleId === 2
-              ? mainMenuStoreKeeper.map((i) => (
-                  <MenuItem
-                    key={i?.id}
-                    icon={i?.icon}
-                    name={i?.name}
-                    subMenuItem={i?.subMenu}
-                    href={i?.href}
-                    isActive={i?.isActive}
-                  />
-                ))
-              : userData?.roleId === 3 &&
-                mainMenuSeller.map((i) => (
-                  <MenuItem
-                    key={i?.id}
-                    icon={i?.icon}
-                    name={i?.name}
-                    subMenuItem={i?.subMenu}
-                    href={i?.href}
-                    isActive={i?.isActive}
-                  />
-                ))}
+            {mainMenu &&
+              mainMenu.map((i) => (
+                <MenuItem
+                  key={i?.id}
+                  icon={i?.icon}
+                  name={i?.name}
+                  subMenuItem={i?.subMenu}
+                  href={i?.href}
+                  isActive={i?.isActive}
+                />
+              ))}
+            {userData?.roleId === 1 && (
+              <MenuItem
+                key={7}
+                icon={<UserIcon />}
+                name={t("staff")}
+                href="/manage-staff"
+                isActive={
+                  router.asPath.includes("/manage-staff") ||
+                  router.asPath.includes("/create-staff")
+                }
+              />
+            )}
           </div>
         </div>
       </div>

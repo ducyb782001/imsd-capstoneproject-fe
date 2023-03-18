@@ -9,7 +9,7 @@ import PrimaryBtn from "../PrimaryBtn"
 import { getDetailExportProduct } from "../../apis/export-product-module"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import BigNumber from "bignumber.js"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 function ImportReportSucceed() {
   const columns = [
@@ -142,17 +142,29 @@ function ImportReportSucceed() {
           <div className="flex justify-center mt-6">
             <StepBar
               createdDate={format(
-                new Date(productImport?.created),
+                parseISO(
+                  productImport?.created
+                    ? productImport?.created
+                    : new Date().toISOString(),
+                ),
                 "dd/MM/yyyy HH:mm",
               )}
-              approvedDate={format(
-                new Date(productImport?.approved),
-                "dd/MM/yyyy HH:mm",
-              )}
-              succeededDate={format(
-                new Date(productImport?.completed),
-                "dd/MM/yyyy HH:mm",
-              )}
+              // approvedDate={format(
+              //   new Date(
+              //     productImport?.approved
+              //       ? productImport?.approved
+              //       : new Date().toISOString,
+              //   ),
+              //   "dd/MM/yyyy HH:mm",
+              // )}
+              // succeededDate={format(
+              //   new Date(
+              //     productImport?.completed
+              //       ? productImport?.completed
+              //       : new Date().toISOString,
+              //   ),
+              //   "dd/MM/yyyy HH:mm",
+              // )}
               status="succeed"
             />
           </div>
@@ -172,11 +184,14 @@ function ImportReportSucceed() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              (new Date(productImport?.created).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
+            {format(
+              parseISO(
+                productImport?.created
+                  ? productImport?.created
+                  : new Date().toISOString(),
+              ),
+              "dd/MM/yyyy HH:mm",
+            )}
           </div>
           <PrimaryTextArea
             rows={7}
