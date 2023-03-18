@@ -25,6 +25,7 @@ import SmallTitle from "../SmallTitle"
 import SecondaryBtn from "../SecondaryBtn"
 import { useTranslation } from "react-i18next"
 import AddPlusIcon from "../icons/AddPlusIcon"
+import PrimaryBtn from "../PrimaryBtn"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateReturnCustomer() {
@@ -119,7 +120,7 @@ function CreateReturnCustomer() {
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
-            <div className=" items-center ">
+            <div className="items-center ">
               <ListPriceImport
                 data={data}
                 listProductImport={listProductImport}
@@ -315,26 +316,22 @@ function CreateReturnCustomer() {
       },
     },
   ])
-  const handleClickOutBtn = () => {
-    router.push("/manage-return-customer")
-  }
-  console.log(productImportObject)
 
   return (
     <div>
       <div>
-        <div className="flex items-center justify-between w-full">
-          <h1 className="text-2xl font-semibold">
-            Tạo đơn khách hàng trả về kho
-          </h1>
-          <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+        <div className="flex items-center justify-end w-full">
+          <PrimaryBtn
+            className="w-[120px]"
+            onClick={() => router.push("/manage-return-customer")}
+          >
             {t("exit")}
-          </SecondaryBtn>
+          </PrimaryBtn>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <SmallTitle>Thông tin đơn trả</SmallTitle>
           <div className="grid gap-5 grid-cols md: grid-cols-[49%49%]">
-            <div className="  mt-4">
+            <div className="mt-4 ">
               <ChooseStaffDropdown
                 title="Nhân viên tạo đơn trả hàng"
                 listDropdown={listStaff}
@@ -343,7 +340,7 @@ function CreateReturnCustomer() {
                 setShowing={setStaffSelected}
               />
             </div>
-            <div className=" mt-4">
+            <div className="mt-4 ">
               <ChooseImportReportDropdown
                 title="Đơn trả"
                 listDropdown={import_fake}
@@ -353,7 +350,7 @@ function CreateReturnCustomer() {
               />
             </div>
           </div>
-          <div className=" mt-4">
+          <div className="mt-4 ">
             <PrimaryTextArea
               rows={4}
               className="mt-2"

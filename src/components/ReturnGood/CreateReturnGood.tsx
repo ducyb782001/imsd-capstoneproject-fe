@@ -1,64 +1,33 @@
 import BigNumber from "bignumber.js"
-import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { createImportProduct } from "../../apis/import-product-module"
-import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getDetailImportProduct,
+  getListImportProduct,
+} from "../../apis/import-product-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import Table from "../Table"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
-import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
-import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
-import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
-import AddPlusIcon from "../icons/AddPlusIcon"
 import { useTranslation } from "react-i18next"
-const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+import PrimaryBtn from "../PrimaryBtn"
+import ChooseFileReason from "../ChooseFileReason"
+import Loading from "../Loading"
+import { IKImage } from "imagekitio-react"
+import { createReturnGoods } from "../../apis/return-product-module"
+
+const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
+const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function CreateReturnReport() {
   const { t } = useTranslation()
 
-  const product_fake = [
-    {
-      productCode: "SP01",
-      productName: "Giỏ quà tết 2023",
-      measuredUnitId: "Giỏ",
-      measuredUnits: "Giỏ",
-      category: "Giỏ quà",
-      returnAmount: 200,
-      price: 10000,
-      costPrice: 2000000,
-    },
-    {
-      productCode: "SP01",
-      productName: "Giỏ quà tết 2023",
-      measuredUnitId: "Giỏ",
-      measuredUnits: "Giỏ",
-      category: "Giỏ quà",
-      returnAmount: 200,
-      price: 10000,
-      costPrice: 2000000,
-    },
-  ]
-  const import_fake = [
-    {
-      importCode: "NAHA01",
-    },
-    {
-      importCode: "NAHA02",
-    },
-    {
-      importCode: "NAHA03",
-    },
-  ]
   const columns = [
     {
       Header: " ",
@@ -71,7 +40,7 @@ function CreateReturnReport() {
           Header: "Ảnh",
           accessor: (data: any) => (
             <img
-              src={data?.image || "/images/default-product-image.jpg"}
+              src={data?.product?.image || "/images/default-product-image.jpg"}
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
@@ -80,22 +49,22 @@ function CreateReturnReport() {
         {
           Header: "Tên sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productName || "---"}
+            </p>
           ),
         },
         {
           Header: "Mã sản phẩm",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productCode}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productCode || "---"}
+            </p>
           ),
         },
         {
           Header: "Đơn vị",
-          accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">
-              {data?.measuredUnitId}
-            </p>
-          ),
+          accessor: (data: any) => <RenderUnit data={data} />,
         },
         {
           Header: "SL trả",
@@ -108,7 +77,13 @@ function CreateReturnReport() {
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: "Đơn giá gốc",
+          accessor: (data: any) => (
+            <p className="text-center text-blue">{data?.costPrice}</p>
+          ),
+        },
+        {
+          Header: "Đơn giá trả",
           accessor: (data: any) => (
             <div className="items-center ">
               <ListPriceImport
@@ -128,47 +103,36 @@ function CreateReturnReport() {
             />
           ),
         },
-        {
-          Header: " ",
-          accessor: (data: any, index) => (
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
-                )
-                setListChosenProduct(result)
-              }}
-            >
-              <XIcons />
-            </div>
-          ),
-        },
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
+  const [reportChosen, setReportChosen] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
+  const [listImportReport, setListImportReport] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [listChosenProduct, setListChosenProduct] = useState([])
-  const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])
-  const [listProductBySupplierImport, setListProductBySupplierImport] =
-    useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
 
+  const [productImport, setProductImport] = useState<any>()
+
   const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
+    toast.error("Upload image false")
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
-    console.log("Run onsucces here")
-    setImageUploaded(res.url)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
+    toast.success("Upload image success")
+    setImageUploaded(res?.url)
+    setProductImportObject({
+      ...productImportObject,
+      media: res.url,
+    })
     setLoadingImage(false)
   }
 
@@ -180,33 +144,10 @@ function CreateReturnReport() {
       })
     }
   }, [staffSelected])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
-  useEffect(() => {
-    if (productChosen) {
-      if (listChosenProduct.includes(productChosen)) {
-        return
-      }
-      setListChosenProduct([...listChosenProduct, productChosen])
-    }
-  }, [productChosen])
 
   useEffect(() => {
-    if (listChosenProduct.length > 0) {
+    if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
-          (i) => i.productId == item.productId,
-        )?.discount
         const amount = listProductImport.find(
           (i) => i.productId == item.productId,
         )?.amount
@@ -217,13 +158,8 @@ function CreateReturnReport() {
         return {
           productId: item.productId,
           amount: amount,
-          costPrice: costPrice,
-          discount: discount,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          price: costPrice,
+          measuredUnitId: item?.measuredUnitId ? item?.measuredUnitId : 0,
         }
       })
       setListProductImport(list)
@@ -249,22 +185,22 @@ function CreateReturnReport() {
       setTotalPriceSend(price)
       setProductImportObject({
         ...productImportObject,
-        importOrderDetails: listProductImport,
+        returnsOrderDetails: listProductImport,
         totalCost: new BigNumber(price).toFixed(),
       })
     }
   }, [listProductImport])
 
-  const createImportMutation = useMutation(
+  const createReturnMutation = useMutation(
     async (importProduct) => {
-      return await createImportProduct(importProduct)
+      return await createReturnGoods(importProduct)
     },
     {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn nhập hàng thành công")
-          router.push("/manage-import-goods")
+          toast.dismiss(TOAST_CREATED_RETURN_GOODS_ID)
+          toast.success("Trả hàng thành công")
+          router.push("/manage-return-good")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -283,147 +219,154 @@ function CreateReturnReport() {
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
     toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+      toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
-    createImportMutation.mutate(productImportObject)
+    createReturnMutation.mutate(productImportObject)
   }
+  console.log(productImportObject)
 
   const router = useRouter()
+  const { importId } = router.query
+
   useQueries([
+    {
+      queryKey: ["getDetailProductImport", importId, reportChosen?.importId],
+      queryFn: async () => {
+        const response = await getDetailImportProduct(
+          importId || reportChosen?.importId,
+        )
+        setProductImport(response?.data)
+        setListChosenProduct(response?.data?.importOrderDetails)
+        return response?.data
+      },
+      enabled: !!importId || !!reportChosen?.importId,
+    },
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
-        const staff = await getListStaff()
-        setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
-        return staff?.data?.data
+        const response = await getListStaff()
+        setListStaff(response?.data?.data)
+        return response?.data?.data
       },
     },
     {
-      queryKey: ["getListProductBySupplier", nhaCungCapSelected],
+      queryKey: ["getListImportReport"],
       queryFn: async () => {
-        if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
-          setProductImportObject({
-            ...productImportObject,
-            supplierId: nhaCungCapSelected.supplierId,
-            importId: 0,
-            state: 0,
-          })
-          setListProductBySupplierImport(response?.data)
-
-          return response?.data
-        }
+        const response = await getListImportProduct({
+          offset: 0,
+          limit: 100,
+        })
+        setListImportReport(response?.data)
+        return response?.data
       },
     },
   ])
-  console.log(productImportObject)
+
+  useEffect(() => {
+    if (productImport) {
+      setProductImportObject({
+        ...productImportObject,
+        importId: importId || reportChosen?.importId,
+        supplierId: productImport.supplierId,
+      })
+    }
+  }, [productImport])
 
   return (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
-        <div>
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-return-good")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
-          </div>
-          <div className="w-full p-6 mt-6 bg-white block-border">
-            <SmallTitle>Thông tin đơn</SmallTitle>
-            <div className="mt-6">
-              <AddChooseSupplierDropdown
-                title="Nhà cung cấp"
-                listDropdown={listNhaCungCap}
-                textDefault={"Nhà cung cấp"}
-                showing={nhaCungCapSelected}
-                setShowing={setNhaCungCapSelected}
-              />
+      <div className="flex items-center justify-end w-full">
+        <PrimaryBtn
+          className="w-[120px]"
+          onClick={() => router.push("/manage-return-customer")}
+        >
+          {t("exit")}
+        </PrimaryBtn>
+      </div>
+      <div className="w-full mt-6 bg-white block-border">
+        <SmallTitle>Thông tin đơn trả</SmallTitle>
+        <div className="grid grid-cols-1 gap-5 mt-4 md:grid-cols-2">
+          <ChooseImportReportDropdown
+            title={
+              <p>
+                Đơn trả <span className="text-red-500">*</span>
+              </p>
+            }
+            listDropdown={importId ? [] : listImportReport?.data}
+            textDefault={productImport?.importCode || "Chọn đơn trả"}
+            showing={reportChosen}
+            setShowing={setReportChosen}
+          />
+          <div>
+            <p className="mb-2 text-sm font-bold text-gray">Nhà cung cấp</p>
+            <div className="mt-2">
+              {productImport?.supplier?.supplierName} -{" "}
+              {productImport?.supplier?.supplierPhone}
             </div>
-            <div className="mt-6">
-              <ChooseImportReportDropdown
-                title="Đơn trả"
-                listDropdown={import_fake}
-                textDefault={"Mã đơn trả"}
-                showing={productChosen}
-                setShowing={setProductChosen}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white block-border">
-          <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
-          </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            Ngày trả hàng: {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <ChooseStaffDropdown
-            title="Nhân viên"
+            title="Nhân viên tạo đơn"
             listDropdown={listStaff}
             textDefault={"Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
           />
+        </div>
+        <div className="grid gap-5 mt-4 md:grid-cols-73">
           <PrimaryTextArea
             rows={4}
-            className="mt-2"
-            title="Ghi chú hóa đơn"
+            title="Lý do trả hàng"
             onChange={(e) => {
               setProductImportObject({
                 ...productImportObject,
                 note: e.target.value,
               })
             }}
+            className="w-full"
           />
-          <button
-            className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
-            // onClick={open}
-          >
-            <AddPlusIcon />
-            <p className="text-[#4794F8] text-base">{t("add_image")}</p>
-          </button>
+          <div>
+            <p className="mb-2 text-sm font-bold text-gray">Chọn lý do (ảnh)</p>
+            <ChooseFileReason
+              onError={onErrorUpload}
+              onSuccess={onSuccessUpload}
+              imageUploaded={imageUploaded}
+              loadingImage={loadingImage}
+              setLoadingImage={setLoadingImage}
+              toastLoadingId={TOAST_UPLOAD_IMAGE}
+            >
+              {loadingImage ? (
+                <div className="w-full h-[176px] flex items-center justify-center">
+                  <Loading />
+                </div>
+              ) : imageUploaded ? (
+                <IKImage src={imageUploaded} />
+              ) : (
+                ""
+              )}
+              {/* <SecondaryBtn className="w-[150px]">Chọn file</SecondaryBtn> */}
+            </ChooseFileReason>
+          </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
-        </h1>
-        <SearchProductImportDropdown
-          listDropdown={listProductBySupplierImport?.data}
-          textDefault={"Nhà cung cấp"}
-          showing={productChosen}
-          setShowing={setProductChosen}
-        />
+        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm trả</h1>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
             columns={columns}
-            // data={listChosenProduct}
-            data={product_fake}
+            data={listChosenProduct}
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
-            Tổng giá trị đơn hàng: {new BigNumber(totalPriceSend).toFormat(0)} đ
+            Tổng giá trị hàng trả: {new BigNumber(totalPriceSend).toFormat(0)} đ
           </div>
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
+          title="Bạn có chắc chắn muốn trả không?"
           handleClickSaveBtn={handleClickSaveBtn}
         >
-          Tạo hóa đơn trả hàng
+          Trả hàng
         </ConfirmPopup>
       </div>
     </div>
@@ -450,17 +393,25 @@ function ListQuantitiveImport({
   }
 
   return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
+    <div className="flex items-center gap-1">
+      <PrimaryInput
+        className="w-[60px] "
+        type="number"
+        placeholder="0"
+        value={quantity ? quantity : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          if (e.target.value > data?.amount) {
+            setQuantity(data?.amount)
+            handleOnChangeAmount(data?.amount, data)
+          } else {
+            setQuantity(e.target.value)
+            handleOnChangeAmount(e.target.value, data)
+          }
+        }}
+      />
+      <div>/ {data?.amount}</div>
+    </div>
   )
 }
 
@@ -493,8 +444,8 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       placeholder="---"
       value={costPrice ? costPrice : ""}
       onChange={(e) => {
-        e.stopPropagation()
         setCostPrice(e.target.value)
+        e.stopPropagation()
       }}
     />
   )
@@ -535,46 +486,14 @@ function CountTotalPrice({ data, listProductImport }) {
   )
 }
 
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
-  const [listDropdown, setListDropdown] = useState([])
-  const [unitChosen, setUnitChosen] = useState<any>()
-  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-
-  useEffect(() => {
-    if (data) {
-      setListDropdown([
-        {
-          measuredUnitId: 0,
-          measuredUnitName: data?.defaultMeasuredUnit,
-        },
-        ...data?.measuredUnits,
-      ])
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (unitChosen) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return {
-            ...item,
-            measuredUnitId: unitChosen?.measuredUnitId,
-          }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [unitChosen])
-
+function RenderUnit({ data }) {
   return (
-    <ChooseUnitImport
-      listDropdown={listDropdown}
-      showing={unitChosen}
-      setShowing={setUnitChosen}
-      textDefault={defaultMeasuredUnit}
-    />
+    <p className="truncate-2-line max-w-[100px]">
+      {data?.measuredUnitId
+        ? data?.product?.measuredUnits.filter(
+            (i) => i.measuredUnitId === data?.measuredUnitId,
+          )[0].measuredUnitName
+        : data?.defaultMeasuredUnit}
+    </p>
   )
 }

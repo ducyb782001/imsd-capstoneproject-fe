@@ -121,3 +121,7 @@ export const approveStockTakeUrl = `${baseUrl}/Stocktake/Stocktake`
 export const denyStockTakeUrl = `${baseUrl}/Stocktake/Cancel`
 
 export const updateStockTakeUrl = `${baseUrl}/Stocktake/Update`
+
+// Return
+
+export const returnGoodsUrl = `${baseUrl}/Returns`

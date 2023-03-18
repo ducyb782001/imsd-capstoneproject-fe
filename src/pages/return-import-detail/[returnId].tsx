@@ -1,16 +1,16 @@
 import React from "react"
 import Layout from "../../components/Layout"
-import DetailReturnReport from "../../components/ReturnGood/ReturnGoodDetail"
 import { useTranslation } from "react-i18next"
+import ReturnImportDetail from "../../components/ReturnGood/ReturnImportDetail"
 
-function returnGoodDetail() {
+function returnImportDetail() {
   const { t } = useTranslation()
 
   return (
     <Layout headTitle={t("return_report_detail")}>
-      <DetailReturnReport />
+      <ReturnImportDetail />
     </Layout>
   )
 }
 
-export default returnGoodDetail
+export default returnImportDetail

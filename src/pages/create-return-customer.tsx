@@ -2,9 +2,9 @@ import React from "react"
 import CreateReturnCustomer from "../components/ReturnGood/CreateReturnCustomer"
 import Layout from "../components/Layout"
 
-function createReturnCustomer(props) {
+function createReturnCustomer() {
   return (
-    <Layout headTitle="">
+    <Layout headTitle="Trả hàng về kho">
       <CreateReturnCustomer />
     </Layout>
   )

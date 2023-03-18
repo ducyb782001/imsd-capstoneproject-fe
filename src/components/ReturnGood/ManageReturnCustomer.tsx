@@ -106,26 +106,18 @@ function ManageReturnCustomer() {
           ),
         },
         {
-          Header: t("return_cost"),
+          Header: "Giá trị đơn trả",
           accessor: (data: any) => <p>{data?.returnCost}</p>,
+        },
+        {
+          Header: "Lý do",
+          accessor: (data: any) => <p>Trả hàng vì không thích mua nữa</p>,
         },
         {
           Header: " ",
           accessor: (data: any) => <DetailImportProduct data={data} />,
         },
       ],
-    },
-  ]
-
-  const status = [
-    { id: 0, status: t("in_progress") },
-    {
-      id: 1,
-      status: t("complete"),
-    },
-    {
-      id: 2,
-      status: t("cancelled"),
     },
   ]
 
@@ -261,29 +253,11 @@ function ManageReturnCustomer() {
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
-        <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full grid-cols-1 gap-1 mb-4 md:grid-cols-73">
-            <SearchInput
-              placeholder={t("search_return")}
-              onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full"
-            />
-            <ChooseSupplierImportGoodDropdown
-              listDropdown={listSupplier}
-              textDefault={t("supplier")}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
-            />
-          </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
-        </div>
+        <SearchInput
+          placeholder={t("search_return")}
+          onChange={(e) => setSearchParam(e.target.value)}
+          className="w-full"
+        />
         {isLoadingListExport ? (
           <TableSkeleton />
         ) : (

@@ -5,7 +5,7 @@ import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
 function ChooseStaffDropdown({
-  title = "",
+  title = null,
   listDropdown,
   showing,
   setShowing,

@@ -1,0 +1,37 @@
+.add-file input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.add-file img {
+  width: full;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.smaill-add-file input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.smaill-add-file img {
+  max-width: 112px;
+}
+
+.square-input input {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  display: none;
+}
+
+.square-input img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}

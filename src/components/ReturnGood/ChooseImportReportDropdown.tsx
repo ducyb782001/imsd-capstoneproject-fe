@@ -1,11 +1,11 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { searchName } from "../../lib/search"
+import { searchImportCode } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
 function ChooseImportReportDropdown({
-  title = "",
+  title = null,
   listDropdown,
   showing,
   setShowing,
@@ -14,7 +14,7 @@ function ChooseImportReportDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = searchName(searchInput, listDropdown)
+  const listResult = searchImportCode(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {
@@ -67,7 +67,9 @@ function ChooseImportReportDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
+        {title && (
+          <div className="mb-1 text-sm font-bold text-gray">{title}</div>
+        )}
 
         <div
           onClick={toggleOpenMenu}

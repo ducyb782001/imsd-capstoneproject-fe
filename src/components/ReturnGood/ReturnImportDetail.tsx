@@ -32,7 +32,7 @@ import PrimaryBtn from "../PrimaryBtn"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function DetailReturnReport() {
+function ReturnImportDetail() {
   const { t } = useTranslation()
 
   const fake_data = {
@@ -252,15 +252,8 @@ function DetailReturnReport() {
     approveExportMutation.mutate(productStockTakeObject?.stocktakeId)
   }
 
-  const handleClickCancelBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    denyExportMutation.mutate(productStockTakeObject?.stocktakeId)
-  }
   const handleClickOutBtn = (event) => {
-    router.push("/manage-return-good")
+    router.push("/manage-return-customer")
   }
 
   return isLoadingReport ? (
@@ -330,4 +323,4 @@ function ProductInfo({ title = "", data = "" }) {
     </>
   )
 }
-export default DetailReturnReport
+export default ReturnImportDetail
