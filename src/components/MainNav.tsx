@@ -55,7 +55,6 @@ function MainNav() {
     {
       id: 3,
       name: t("type.typeGoods"),
-      // Chua tao page
       href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
     },
@@ -92,9 +91,15 @@ function MainNav() {
   const subMenuReturnGoods = [
     {
       id: 1,
-      name: "Danh sách trả hàng",
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/return-goods-list"),
+      name: "Trả hàng về nhà cung cấp",
+      href: "/manage-return-good",
+      isActive: router.asPath.includes("/manage-return-good"),
+    },
+    {
+      id: 2,
+      name: "Khách trả",
+      href: "/manage-return-customer",
+      isActive: router.asPath.includes("/manage-return-customer"),
     },
   ]
   //indev
@@ -174,7 +179,17 @@ function MainNav() {
       name: t("return good"),
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
-      isActive: router.asPath.includes("/return-goods-list"),
+      isActive:
+        router.asPath.includes("/manage-return-good") ||
+        router.asPath.includes("/return-customer-draff") ||
+        router.asPath.includes("/return-report-detail") ||
+        router.asPath.includes("/return-customer-detail") ||
+        router.asPath.includes("/return-report-draff") ||
+        router.asPath.includes("/create-return-customer") ||
+        router.asPath.includes("/create-return-report") ||
+        router.asPath.includes("/edit-return-good") ||
+        router.asPath.includes("/edit-return-customer") ||
+        router.asPath.includes("/manage-return-customer"),
     },
     {
       id: 6,

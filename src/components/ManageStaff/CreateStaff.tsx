@@ -61,14 +61,9 @@ function CreateStaff() {
   }
 
   const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
     console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
-    // setStaffAccountObject({
-    //   ...staffAccountObject,
-    //   identity: res.url,
-    // })
   }
   const createStaffMutation = useMutation(
     async (importProduct) => {
@@ -180,6 +175,7 @@ function CreateStaff() {
                     password: e.target.value,
                   })
                 }}
+                placeholder={t("enter_password_placeholder")}
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">

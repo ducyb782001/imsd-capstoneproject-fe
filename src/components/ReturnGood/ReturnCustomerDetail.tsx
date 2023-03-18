@@ -26,10 +26,81 @@ import {
   getDetailStockTakeProduct,
 } from "../../apis/stocktake-product-module"
 import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
+import SmallTitle from "../SmallTitle"
+import { useTranslation } from "react-i18next"
+import PrimaryBtn from "../PrimaryBtn"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function DraffCheckReport() {
+function DetailReturnCustomer() {
+  const { t } = useTranslation()
+
+  const fake_data = {
+    returnCode: "TAHA2601",
+    returnCost: 160000,
+    supplier: "Tây Bắc",
+    status: 0,
+    create: "Kiểm kho Lâm",
+    createDate: Date.now(),
+    returnDate: Date.now(),
+    note: "Trả hàng lỗi về cho nhà sản xuất",
+  }
+  const product_fake = [
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+    {
+      productCode: "SP01",
+      productName: "Giỏ quà tết 2023",
+      measuredUnitId: "Giỏ",
+      category: "Giỏ quà",
+      returnAmount: 200,
+      price: 10000,
+      costPrice: 2000000,
+    },
+  ]
   const columns = [
     {
       Header: " ",
@@ -39,7 +110,7 @@ function DraffCheckReport() {
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -49,67 +120,50 @@ function DraffCheckReport() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product_code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
-              {data?.product?.productCode}
+              {/* {data?.product?.productCode} */}
+              {data?.productCode}
             </p>
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">
-              {data?.product?.productName}
+            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+          ),
+        },
+        {
+          Header: t("unit"),
+          accessor: (data: any) => (
+            <div>{data?.measuredUnitId ? data?.measuredUnitId : "---"}</div>
+          ),
+        },
+        {
+          Header: t("type.type"),
+          accessor: (data: any) => (
+            <div>{data?.category ? data?.category : "---"}</div>
+          ),
+        },
+        {
+          Header: t("return_amount"),
+          accessor: (data: any) => (
+            <div>{data?.returnAmount ? data?.returnAmount : "---"}</div>
+          ),
+        },
+        {
+          Header: t("price"),
+          accessor: (data: any) => (
+            <p className="text-center">
+              {new BigNumber(data.price).toFormat(0)} đ
             </p>
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("total_price"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={
-                data?.measuredUnitId
-                  ? data?.measuredUnit
-                  : data?.product?.defaultMeasuredUnit
-              }
-              className="w-16"
-              readOnly={true}
-            />
-          ),
-        },
-        {
-          Header: "Tồn chi nhánh",
-          accessor: (data: any) => (
-            <div className="flex items-center max-w-[70px]">
-              <PrimaryInput
-                value={data?.currentStock}
-                className="w-16"
-                readOnly={true}
-              />
-            </div>
-          ),
-        },
-        {
-          Header: "Tồn thực tế",
-          accessor: (data: any) => (
-            <div className="flex items-center max-w-[80px]">
-              <PrimaryInput
-                value={data?.actualStock}
-                className="w-16"
-                readOnly={true}
-              />
-            </div>
-          ),
-        },
-        {
-          Header: "Lệch",
-          accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amountDifferential}
-              className="w-16"
-              readOnly={true}
-            />
+            <p>{new BigNumber(data.costPrice).toFormat(0)} đ</p>
           ),
         },
       ],
@@ -120,18 +174,18 @@ function DraffCheckReport() {
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   const router = useRouter()
-  const { checkId } = router.query
+  const { returnId } = router.query
 
   useQueries([
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getDetailStockTakeProduct(checkId)
+        const response = await getDetailStockTakeProduct(returnId)
         setProductStockTakeObject(response?.data)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
-      enabled: !!checkId,
+      enabled: !!returnId,
     },
   ])
   console.log(productStockTakeObject)
@@ -198,15 +252,8 @@ function DraffCheckReport() {
     approveExportMutation.mutate(productStockTakeObject?.stocktakeId)
   }
 
-  const handleClickCancelBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    denyExportMutation.mutate(productStockTakeObject?.stocktakeId)
-  }
   const handleClickOutBtn = (event) => {
-    router.push("/manage-check-good")
+    router.push("/manage-return-customer")
   }
 
   return isLoadingReport ? (
@@ -215,98 +262,65 @@ function DraffCheckReport() {
     <div>
       <div>
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Chỉnh sửa kiểm hàng</h1>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-              Thoát
-            </SecondaryBtn>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
-              title="Bạn chắc chắn muốn hủy đơn kiểm hàng này?"
-              handleClickSaveBtn={handleClickCancelBtn}
-            >
-              Hủy
-            </ConfirmPopup>
-            <SecondaryBtn
-              className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
-              onClick={() => {
-                router.push(
-                  "/edit-check-good/" + productStockTakeObject?.stocktakeId,
-                )
-              }}
-            >
-              Sửa đơn
-            </SecondaryBtn>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Bạn chắc chắn muốn duyệt đơn kiểm hàng?"
-              handleClickSaveBtn={handleClickApproveBtn}
-            >
-              Duyệt đơn
-            </ConfirmPopup>
-          </div>
+          <div className="flex items-center justify-between gap-4"></div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-semibold">Thông tin đơn</h1>
-          </div>
-          <div className="mb-2 text-sm font-bold text-gray">
-            Ngày kiểm hàng: {format(Date.now(), "dd/MM/yyyy")}
-          </div>
-          <div className="w-64">
-            <div className="mb-2 text-sm font-bold text-gray">Nhân viên</div>
-            <div
-              className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
-              aria-readonly
-            >
-              {productStockTakeObject?.createdBy?.userName}
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4">
+              <SmallTitle>{t("product_infor")}</SmallTitle>
+
+              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
+                {t("final")}
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <PrimaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+                {t("exit")}
+              </PrimaryBtn>
             </div>
           </div>
+          <div className="grid mt-4 md:grid-cols-433">
+            <div className="grid grid-cols-2 gap-y-1">
+              <ProductInfo
+                title={t("return_code")}
+                data={fake_data?.returnCode}
+              />
+              <ProductInfo title={t("return_to")} data={fake_data?.supplier} />
+              <ProductInfo
+                title={t("return_date")}
+                data={format(fake_data?.createDate, "dd/MM/yyyy HH:mm")}
+              />
 
-          <PrimaryTextArea
-            rows={7}
-            className="mt-4"
-            title="Ghi chú hóa đơn"
-            value={productStockTakeObject?.note}
-            readOnly={true}
-          />
+              <ProductInfo
+                title={t("staff_created")}
+                data={fake_data?.create}
+              />
+              <ProductInfo title={t("note")} data={fake_data?.note} />
+            </div>
+          </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
+        <h1 className="mb-4 text-xl font-semibold">
+          {t("return_product_detail")}
+        </h1>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productStockTakeObject?.stocktakeNoteDetails}
+            data={product_fake}
           />
         </div>
       </div>
     </div>
   )
 }
-
-export default DraffCheckReport
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
+function ProductInfo({ title = "", data = "" }) {
   return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
+    <>
+      <div className="text-gray">{title}</div>
+      <div className="text-black">{data}</div>
+    </>
   )
 }
+export default DetailReturnCustomer

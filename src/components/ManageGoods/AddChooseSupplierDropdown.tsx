@@ -72,7 +72,7 @@ function AddChooseSupplierDropdown({
 
         <div
           onClick={toggleOpenMenu}
-          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
+          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-gray hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">

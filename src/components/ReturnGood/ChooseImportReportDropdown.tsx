@@ -4,7 +4,7 @@ import { searchName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
-function ChooseStaffDropdown({
+function ChooseImportReportDropdown({
   title = "",
   listDropdown,
   showing,
@@ -75,7 +75,7 @@ function ChooseStaffDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.userName || showing || textDefault}
+              {showing?.importCode || showing || textDefault}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -115,7 +115,7 @@ function ChooseStaffDropdown({
   )
 }
 
-export default ChooseStaffDropdown
+export default ChooseImportReportDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -123,7 +123,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.userName || data}
+      {data?.importCode || data}
     </div>
   )
 }

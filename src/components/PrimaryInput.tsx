@@ -32,7 +32,7 @@ function PrimaryInput({
           onChange={onChange}
           value={value}
           disabled={disabled}
-          className={`w-full text-sm py-3 rounded-md outline-none px-4 bg-transparent text-black border border-gray focus:border-primary hover:border-primary smooth-transform ${
+          className={`read-only:bg-[#7F7F7F30] w-full text-sm py-3 rounded-md outline-none px-4 bg-transparent text-black border border-gray focus:border-primary hover:border-primary smooth-transform ${
             accessoriesLeft && "pl-11"
           } ${accessoriesRight && "pr-11"}
             ${classNameInput}`}
