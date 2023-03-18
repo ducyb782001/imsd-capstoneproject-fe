@@ -8,13 +8,10 @@ import { getListExportProductBySupplier } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
-import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
@@ -22,9 +19,6 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
-import AddImage from "../AddImage"
-import { IKImage } from "imagekitio-react"
-import Loading from "../Loading"
 import AddPlusIcon from "../icons/AddPlusIcon"
 import { useTranslation } from "react-i18next"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
@@ -98,11 +92,6 @@ function CreateReturnReport() {
         {
           Header: "Đơn vị",
           accessor: (data: any) => (
-            // <ListUnitImport
-            //   data={data}
-            //   listProductImport={listProductImport}
-            //   setListProductImport={setListProductImport}
-            // />
             <p className="truncate-2-line max-w-[100px]">
               {data?.measuredUnitId}
             </p>
@@ -121,7 +110,7 @@ function CreateReturnReport() {
         {
           Header: "Đơn giá",
           accessor: (data: any) => (
-            <div className=" items-center ">
+            <div className="items-center ">
               <ListPriceImport
                 data={data}
                 listProductImport={listProductImport}
