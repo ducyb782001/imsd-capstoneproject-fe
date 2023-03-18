@@ -53,7 +53,7 @@ function ImportReportEdit() {
           Header: "Tên sản phẩm",
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
-              {data?.product?.productName}
+              {data?.product?.productName || data?.productName}
             </p>
           ),
         },
@@ -182,7 +182,6 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
-  console.log(listStaff)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -202,11 +201,9 @@ function ImportReportEdit() {
           amount: amount,
           price: price,
           discount: discount,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          measuredUnitId:
+            listProductImport.find((i) => i.productId == item.productId)
+              ?.measuredUnitId || 0,
         }
       })
       setListProductImport(list)
@@ -247,7 +244,6 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Cập nhật đơn xuất hàng thành công")
-          router.push("/export-report-draff/" + exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -358,7 +354,7 @@ function ImportReportEdit() {
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={""}
+              textDefault={productImportObject?.user?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />

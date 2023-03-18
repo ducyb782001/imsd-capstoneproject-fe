@@ -10,6 +10,8 @@ import { getDetailExportProduct } from "../../apis/export-product-module"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
+import Link from "next/link"
+import SecondaryBtn from "../SecondaryBtn"
 
 function ImportReportSucceed() {
   const columns = [
@@ -134,9 +136,13 @@ function ImportReportSucceed() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
-              </PrimaryBtn>
+              <Link href={`/create-return-customer/?exportOrderId=${exportId}`}>
+                <a>
+                  <SecondaryBtn className="max-w-[120px]">
+                    Hoàn hàng
+                  </SecondaryBtn>
+                </a>
+              </Link>
             </div>
           </div>
           <div className="flex justify-center mt-6">
