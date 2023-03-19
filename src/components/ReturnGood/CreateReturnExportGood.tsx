@@ -21,6 +21,11 @@ import ChooseFileReason from "../ChooseFileReason"
 import Loading from "../Loading"
 import { IKImage } from "imagekitio-react"
 import { createReturnGoods } from "../../apis/return-product-module"
+import {
+  getAllExportProduct,
+  getDetailExportProduct,
+} from "../../apis/export-product-module"
+import ChooseExportReportDropdown from "./ChooseExportReportDropdown"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -79,7 +84,9 @@ function CreateReturnReport() {
         {
           Header: "Đơn giá gốc",
           accessor: (data: any) => (
-            <p className="text-center text-blue">{data?.costPrice} đ</p>
+            <p className="text-center text-blue">
+              {new BigNumber(data?.price).toFormat(0)} đ
+            </p>
           ),
         },
         {
@@ -106,9 +113,10 @@ function CreateReturnReport() {
       ],
     },
   ]
+  const [userData, setUserData] = useState<any>()
   const [reportChosen, setReportChosen] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
-  const [listImportReport, setListImportReport] = useState<any>()
+  const [listExportReport, setListExportReport] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [listProductImport, setListProductImport] = useState<any>([])
@@ -199,7 +207,7 @@ function CreateReturnReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_RETURN_GOODS_ID)
           toast.success("Trả hàng thành công")
-          router.push("/manage-return-good")
+          router.push("/manage-return-export-good")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -217,27 +225,41 @@ function CreateReturnReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
-    createReturnMutation.mutate(productImportObject)
+    const submittedData = {
+      ...productImportObject,
+    }
+    if (!staffSelected) {
+      submittedData["userId"] = userData.userId
+    }
+    createReturnMutation.mutate(submittedData)
   }
 
   const router = useRouter()
-  const { importId } = router.query
+  const { exportId } = router.query
 
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const userData = localStorage.getItem("userData")
+      setUserData(JSON.parse(userData))
+    }
+  }, [])
+  console.log(productImportObject)
   useQueries([
     {
-      queryKey: ["getDetailProductImport", importId, reportChosen?.importId],
+      queryKey: ["getDetailProductExport", exportId, reportChosen?.exportId],
       queryFn: async () => {
-        const response = await getDetailImportProduct(
-          importId || reportChosen?.importId,
+        const response = await getDetailExportProduct(
+          exportId || reportChosen?.exportId,
         )
         setProductImport(response?.data)
-        setListChosenProduct(response?.data?.importOrderDetails)
+        setListChosenProduct(response?.data?.exportOrderDetails)
         return response?.data
       },
-      enabled: !!importId || !!reportChosen?.importId,
+      enabled: !!exportId || !!reportChosen?.exportId,
     },
     {
       queryKey: ["getListStaff"],
@@ -248,14 +270,14 @@ function CreateReturnReport() {
       },
     },
     {
-      queryKey: ["getListImportReport"],
+      queryKey: ["getListExportReport"],
       queryFn: async () => {
-        const response = await getListImportProduct({
+        const response = await getAllExportProduct({
           offset: 0,
           limit: 100,
           state: 2,
         })
-        setListImportReport(response?.data)
+        setListExportReport(response?.data)
         return response?.data
       },
     },
@@ -265,8 +287,7 @@ function CreateReturnReport() {
     if (productImport) {
       setProductImportObject({
         ...productImportObject,
-        importId: importId || reportChosen?.importId,
-        supplierId: productImport.supplierId,
+        exportId: exportId || reportChosen?.exportId,
       })
     }
   }, [productImport])
@@ -276,32 +297,25 @@ function CreateReturnReport() {
       <div className="flex items-center justify-end w-full">
         <PrimaryBtn
           className="w-[120px]"
-          onClick={() => router.push("/manage-return-good")}
+          onClick={() => router.push("/manage-return-export-good")}
         >
           {t("exit")}
         </PrimaryBtn>
       </div>
       <div className="w-full mt-6 bg-white block-border">
-        <SmallTitle>Thông tin đơn trả</SmallTitle>
+        <SmallTitle>Thông tin đơn hoàn</SmallTitle>
         <div className="grid grid-cols-1 gap-5 mt-4 md:grid-cols-2">
-          <ChooseImportReportDropdown
+          <ChooseExportReportDropdown
             title={
               <p>
                 Đơn trả <span className="text-red-500">*</span>
               </p>
             }
-            listDropdown={importId ? [] : listImportReport?.data}
-            textDefault={productImport?.importCode || "Chọn đơn trả"}
+            listDropdown={exportId ? [] : listExportReport?.data}
+            textDefault={productImport?.exportCode || "Chọn đơn trả"}
             showing={reportChosen}
             setShowing={setReportChosen}
           />
-          <div>
-            <p className="mb-2 text-sm font-bold text-gray">Nhà cung cấp</p>
-            <div className="mt-2">
-              {productImport?.supplier?.supplierName} -{" "}
-              {productImport?.supplier?.supplierPhone}
-            </div>
-          </div>
           <ChooseStaffDropdown
             title="Nhân viên tạo đơn"
             listDropdown={listStaff}
@@ -364,6 +378,7 @@ function CreateReturnReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn trả không?"
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={!productImportObject?.exportId}
         >
           Trả hàng
         </ConfirmPopup>
@@ -419,7 +434,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (data) {
-      setCostPrice(data?.costPrice)
+      setCostPrice(data?.price)
     }
   }, [data])
 

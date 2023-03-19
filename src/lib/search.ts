@@ -77,3 +77,19 @@ export function searchImportCode(searchInput: string, list: []) {
   }
   return result
 }
+
+export function searchExportCode(searchInput: string, list: []) {
+  let result
+  if (!searchInput) {
+    return list
+  }
+  if (searchInput) {
+    result = list.filter((i) =>
+      // @ts-ignore
+      i?.exportCode.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+  } else {
+    result = []
+  }
+  return result
+}

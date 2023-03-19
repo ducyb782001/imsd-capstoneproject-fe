@@ -14,3 +14,9 @@ export const getListReturnGoods = (queryObject) => {
     url: `${returnGoodsUrl}/Get${queryString}`,
   })
 }
+
+export const getDetailReturnImport = (returnId) => {
+  return requestAPI({
+    url: `${returnGoodsUrl}/GetReturnsDetail?returnId=${returnId}`,
+  })
+}

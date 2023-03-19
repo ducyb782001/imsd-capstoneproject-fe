@@ -188,77 +188,7 @@ function ReturnExportDetail() {
       enabled: !!returnId,
     },
   ])
-  console.log(productStockTakeObject)
 
-  const approveExportMutation = useMutation(
-    async (exportProduct) => {
-      return await approveStockTakeProduct(exportProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Duyệt đơn kiểm hàng thành công!")
-          router.push("/manage-check-good")
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                "Opps! Something went wrong...",
-            )
-          }
-        }
-      },
-    },
-  )
-
-  const denyExportMutation = useMutation(
-    async (exportProduct) => {
-      return await denyStockTakeProduct(exportProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Hủy đơn kiểm hàng thành công!")
-          router.push("/manage-check-good")
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                "Opps! Something went wrong...",
-            )
-          }
-        }
-      },
-    },
-  )
-
-  const handleClickApproveBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    approveExportMutation.mutate(productStockTakeObject?.stocktakeId)
-  }
-
-  const handleClickCancelBtn = (event) => {
-    event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    denyExportMutation.mutate(productStockTakeObject?.stocktakeId)
-  }
   const handleClickOutBtn = (event) => {
     router.push("/manage-return-good")
   }

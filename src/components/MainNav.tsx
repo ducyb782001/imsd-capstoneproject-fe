@@ -98,8 +98,8 @@ function MainNav() {
     {
       id: 2,
       name: "Khách trả",
-      href: "/manage-return-customer",
-      isActive: router.asPath.includes("/manage-return-customer"),
+      href: "/manage-return-export-good",
+      isActive: router.asPath.includes("/manage-return-export-good"),
     },
   ]
   //indev
@@ -187,9 +187,9 @@ function MainNav() {
         router.asPath.includes("/return-report-draff") ||
         router.asPath.includes("/create-return-customer") ||
         router.asPath.includes("/create-return-report") ||
-        router.asPath.includes("/edit-return-good") ||
-        router.asPath.includes("/edit-return-customer") ||
-        router.asPath.includes("/manage-return-customer"),
+        router.asPath.includes("/return-import-detail") ||
+        router.asPath.includes("/create-return-export-good") ||
+        router.asPath.includes("/manage-return-export-good"),
     },
     {
       id: 6,
