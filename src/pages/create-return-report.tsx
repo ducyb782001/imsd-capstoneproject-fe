@@ -2,9 +2,9 @@ import React from "react"
 import CreateReturnReport from "../components/ReturnGood/CreateReturnGood"
 import Layout from "../components/Layout"
 
-function createReturnReport(props) {
+function createReturnReport() {
   return (
-    <Layout headTitle="">
+    <Layout headTitle="Trả hàng về nhà cung cấp">
       <CreateReturnReport />
     </Layout>
   )

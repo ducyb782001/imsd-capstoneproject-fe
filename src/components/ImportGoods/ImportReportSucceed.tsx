@@ -137,7 +137,7 @@ function ImportReportSucceed() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Link href={`/create-return-report/?importOrderId=${importId}`}>
+              <Link href={`/create-return-report/?importId=${importId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
                     Trả hàng
@@ -175,7 +175,10 @@ function ImportReportSucceed() {
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">{t("supplier") + ": "}</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <PrimaryInput
+              readOnly={true}
+              value={productImport?.supplier?.supplierName}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
@@ -189,13 +192,14 @@ function ImportReportSucceed() {
             </div>
           )}
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
+          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
+            readOnly={true}
           />
         </div>
       </div>

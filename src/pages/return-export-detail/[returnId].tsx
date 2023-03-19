@@ -1,15 +1,15 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import Layout from "../../components/Layout"
-import DetailReturnCustomer from "../../components/ReturnGood/ReturnCustomerDetail"
+import ReturnExportDetail from "../../components/ReturnGood/ReturnExportDetail"
 
-function returnCustomerDetail() {
+function returnExportDetail() {
   const { t } = useTranslation()
   return (
     <Layout headTitle={t("return_customer_detail")}>
-      <DetailReturnCustomer />
+      <ReturnExportDetail />
     </Layout>
   )
 }
 
-export default returnCustomerDetail
+export default returnExportDetail

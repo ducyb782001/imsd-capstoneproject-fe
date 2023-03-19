@@ -1,10 +1,10 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { searchName } from "../../lib/search"
+import { searchExportCode } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
-function ChooseStaffDropdown({
+function ChooseExportReportDropdown({
   title = null,
   listDropdown,
   showing,
@@ -14,7 +14,7 @@ function ChooseStaffDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = searchName(searchInput, listDropdown)
+  const listResult = searchExportCode(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {
@@ -67,7 +67,9 @@ function ChooseStaffDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
+        {title && (
+          <div className="mb-1 text-sm font-bold text-gray">{title}</div>
+        )}
 
         <div
           onClick={toggleOpenMenu}
@@ -75,7 +77,7 @@ function ChooseStaffDropdown({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.userName || showing || textDefault}
+              {showing?.exportCode || showing || textDefault}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -115,7 +117,7 @@ function ChooseStaffDropdown({
   )
 }
 
-export default ChooseStaffDropdown
+export default ChooseExportReportDropdown
 
 function DropDownItem({ data, setShowing }) {
   return (
@@ -123,7 +125,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.userName || data}
+      {data?.exportCode || data}
     </div>
   )
 }

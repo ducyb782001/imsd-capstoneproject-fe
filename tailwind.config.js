@@ -57,6 +57,7 @@ module.exports = {
         7525: "75fr 25fr",
         73: "70fr 30fr",
         454510: "45fr 45fr 10fr",
+        502030: "50fr 20fr 30fr",
       },
       fontSize: {
         fontSize10px: "10px",

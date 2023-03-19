@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react"
-import DownloadIcon from "../icons/DownloadIcon"
+import React, { useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
-import UploadIcon from "../icons/UploadIcon"
 import PrimaryBtn from "../PrimaryBtn"
 import SearchInput from "../SearchInput"
-import ShowLabelBar from "../Filter/ShowLabelBar"
 import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import * as XLSX from "xlsx/xlsx"
 import { format, parseISO } from "date-fns"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
-import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListReturnGoods } from "../../apis/return-product-module"
 
-function ManageReturnGood() {
+function ManageReturnExportGoods() {
   const { t } = useTranslation()
 
   const columns = [
@@ -53,11 +47,7 @@ function ManageReturnGood() {
         },
         {
           Header: "Giá trị trả hàng",
-          accessor: (data: any) => <p>{data?.total} đ</p>,
-        },
-        {
-          Header: "Ghi chú",
-          accessor: (data: any) => <p>{data?.note}</p>,
+          accessor: (data: any) => <p>2000</p>,
         },
         {
           Header: " ",
@@ -67,17 +57,13 @@ function ManageReturnGood() {
     },
   ]
 
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
-  const [queryParams, setQueryParams] = useState<any>({})
   const debouncedSearchValue = useDebounce(searchParam, 500)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [listFilter, setListFilter] = useState([])
-  const [listSupplier, setListSupplier] = useState<any>()
 
   const [isLoadingListReturn, setIsLoadingListReturn] = useState(true)
-  const [listReturnImportGoods, setListReturnImportGoods] = useState<any>()
+  const [listReturnExportGoods, setListReturnExportGoods] = useState<any>()
 
   useQueries([
     {
@@ -86,14 +72,12 @@ function ManageReturnGood() {
         debouncedSearchValue,
         currentPage,
         pageSize,
-        queryParams,
       ],
       queryFn: async () => {
         const object = {
           offset: (currentPage - 1) * pageSize,
           limit: pageSize,
-          type: "import",
-          ...queryParams,
+          type: "export",
         }
         if (debouncedSearchValue) {
           object["code"] = debouncedSearchValue
@@ -102,50 +86,11 @@ function ManageReturnGood() {
         const response = await getListReturnGoods(object)
 
         setIsLoadingListReturn(response?.data?.isLoading)
-        setListReturnImportGoods(response?.data)
+        setListReturnExportGoods(response?.data)
         return response?.data
       },
     },
-    {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
-        const supplierList = await getListExportSupplier({})
-        setListSupplier(supplierList?.data?.data)
-        return supplierList?.data
-      },
-    },
   ])
-
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
-        {
-          key: "supId",
-          applied: t("supplier"),
-          value: nhaCungCapSelected?.supplierName,
-          id: nhaCungCapSelected?.supplierId,
-        },
-      ])
-    }
-  }, [nhaCungCapSelected])
-
-  //change queryParamsObj when change listFilter in one useEffect
-  useEffect(() => {
-    if (listFilter) {
-      const queryObj = listFilter.reduce(
-        (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
-        {},
-      )
-      setQueryParams(queryObj)
-    }
-  }, [listFilter])
-
-  const handleRemoveFilter = (itemIndex) => {
-    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
-    setListFilter(listRemove)
-  }
 
   // const handleExportProduct = () => {
   //   const dateTime = Date().toLocaleString() + ""
@@ -159,41 +104,23 @@ function ManageReturnGood() {
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2"></div>
-        <Link href={`/create-return-report`}>
+        <Link href={`/create-return-export-good`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              {t("create_return_good")}
+              Hoàn hàng
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
-        <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full grid-cols-1 gap-1 mb-4 md:grid-cols-73">
-            <SearchInput
-              placeholder={t("search_return")}
-              onChange={(e) => setSearchParam(e.target.value)}
-              className="w-full"
-            />
-            <ChooseSupplierImportGoodDropdown
-              listDropdown={listSupplier}
-              textDefault={t("supplier")}
-              showing={nhaCungCapSelected}
-              setShowing={setNhaCungCapSelected}
-            />
-          </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
-        </div>
+        <SearchInput
+          placeholder={t("search_return")}
+          onChange={(e) => setSearchParam(e.target.value)}
+          className="w-full mb-4"
+        />
         {isLoadingListReturn ? (
           <TableSkeleton />
         ) : (
@@ -202,7 +129,7 @@ function ManageReturnGood() {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listReturnImportGoods?.data}
+                data={listReturnExportGoods?.data}
               />
             </div>
             <Pagination
@@ -210,7 +137,7 @@ function ManageReturnGood() {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listReturnImportGoods?.total}
+              totalItems={listReturnExportGoods?.total}
             />
           </>
         )}
@@ -219,26 +146,7 @@ function ManageReturnGood() {
   )
 }
 
-export default ManageReturnGood
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
+export default ManageReturnExportGoods
 
 function DetailImportProduct({ data }) {
   return (

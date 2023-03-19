@@ -136,7 +136,7 @@ function ImportReportSucceed() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <Link href={`/create-return-customer/?importOrderId=${exportId}`}>
+              <Link href={`/create-return-customer/?exportId=${exportId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
                     Hoàn hàng
