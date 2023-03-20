@@ -185,10 +185,9 @@ function MainNav() {
         router.asPath.includes("/return-report-detail") ||
         router.asPath.includes("/return-customer-detail") ||
         router.asPath.includes("/return-report-draff") ||
-        router.asPath.includes("/create-return-customer") ||
+        router.asPath.includes("/create-return-export-good") ||
         router.asPath.includes("/create-return-report") ||
         router.asPath.includes("/return-import-detail") ||
-        router.asPath.includes("/create-return-export-good") ||
         router.asPath.includes("/manage-return-export-good"),
     },
     {

@@ -20,3 +20,10 @@ export const getDetailReturnImport = (returnId) => {
     url: `${returnGoodsUrl}/GetReturnsDetail?returnId=${returnId}`,
   })
 }
+
+export const getListProductAvailable = (queryObject) => {
+  const queryString = convertObjectToQueryString(queryObject)
+  return requestAPI({
+    url: `${returnGoodsUrl}/GetAvailable${queryString}`,
+  })
+}

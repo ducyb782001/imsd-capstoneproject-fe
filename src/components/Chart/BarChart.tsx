@@ -1,5 +1,8 @@
 import React from "react"
 import { Bar } from "react-chartjs-2"
+import Chart from "chart.js/auto"
+import { CategoryScale } from "chart.js"
+Chart.register(CategoryScale)
 
 const data = {
   labels: [
@@ -33,23 +36,23 @@ const data = {
 }
 
 const options = {
-  plugins: {
-    title: {
-      display: true,
-      text: "Largest Cities In Massachusetts",
-      padding: {
-        top: 30,
-        bottom: 10,
-      },
-    },
-    subtitle: {
-      display: true,
-      text: "Custom Chart Subtitle",
-    },
-    customCanvasBackgroundColor: {
-      color: "#000",
-    },
-  },
+  // plugins: {
+  //   title: {
+  //     display: true,
+  //     text: "Largest Cities In Massachusetts",
+  //     padding: {
+  //       top: 30,
+  //       bottom: 10,
+  //     },
+  //   },
+  //   subtitle: {
+  //     display: true,
+  //     text: "Custom Chart Subtitle",
+  //   },
+  //   customCanvasBackgroundColor: {
+  //     color: "#000",
+  //   },
+  // },
   scales: {
     x: {
       ticks: {
@@ -93,9 +96,10 @@ const options = {
   },
 }
 
-function BarChart(props) {
+function BarChart() {
   return (
-    <div className="w-full h-[500px] bg-white">
+    <div className="w-full bg-white">
+      <div className="flex justify-end">ABC</div>
       <Bar data={data} options={options} />
     </div>
   )

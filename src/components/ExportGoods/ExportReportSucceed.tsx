@@ -125,7 +125,7 @@ function ImportReportSucceed() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <Link href={`/create-return-customer/?exportId=${exportId}`}>
+              <Link href={`/create-return-export-good/?exportId=${exportId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
                     {t("complete")}
@@ -138,7 +138,7 @@ function ImportReportSucceed() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar
+            {/* <StepBar
               createdDate={format(
                 parseISO(
                   productImport?.createdDate
@@ -164,7 +164,7 @@ function ImportReportSucceed() {
                 "dd/MM/yyyy HH:mm",
               )}
               status="succeed"
-            />
+            /> */}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">

@@ -20,7 +20,10 @@ import PrimaryBtn from "../PrimaryBtn"
 import ChooseFileReason from "../ChooseFileReason"
 import Loading from "../Loading"
 import { IKImage } from "imagekitio-react"
-import { createReturnGoods } from "../../apis/return-product-module"
+import {
+  createReturnGoods,
+  getListProductAvailable,
+} from "../../apis/return-product-module"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -79,7 +82,7 @@ function CreateReturnReport() {
         {
           Header: "Đơn giá gốc",
           accessor: (data: any) => (
-            <p className="text-center text-blue">{data?.costPrice} đ</p>
+            <p className="text-center text-blue">{data?.price} đ</p>
           ),
         },
         {
@@ -118,6 +121,14 @@ function CreateReturnReport() {
   const [imageUploaded, setImageUploaded] = useState("")
 
   const [productImport, setProductImport] = useState<any>()
+
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const userData = localStorage.getItem("userData")
+      setUserData(JSON.parse(userData))
+    }
+  }, [])
 
   const onErrorUpload = (error: any) => {
     toast.dismiss(TOAST_UPLOAD_IMAGE)
@@ -220,13 +231,20 @@ function CreateReturnReport() {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
-    createReturnMutation.mutate(productImportObject)
+    const submittedData = {
+      ...productImportObject,
+    }
+    if (!staffSelected) {
+      submittedData["userId"] = userData.userId
+    }
+
+    createReturnMutation.mutate(submittedData)
   }
 
   const router = useRouter()
   const { importId } = router.query
 
-  useQueries([
+  const result = useQueries([
     {
       queryKey: ["getDetailProductImport", importId, reportChosen?.importId],
       queryFn: async () => {
@@ -234,7 +252,7 @@ function CreateReturnReport() {
           importId || reportChosen?.importId,
         )
         setProductImport(response?.data)
-        setListChosenProduct(response?.data?.importOrderDetails)
+        // setListChosenProduct(response?.data?.importOrderDetails)
         return response?.data
       },
       enabled: !!importId || !!reportChosen?.importId,
@@ -259,7 +277,21 @@ function CreateReturnReport() {
         return response?.data
       },
     },
+    {
+      queryKey: ["getListProductAvailable", importId, reportChosen?.importId],
+      queryFn: async () => {
+        const response = await getListProductAvailable({
+          importid: importId || reportChosen?.importId,
+        })
+
+        setListChosenProduct(response?.data)
+        return response?.data
+      },
+      enabled: !!importId || !!reportChosen?.importId,
+    },
   ])
+
+  const isLoadingListProduct = result[3].isLoading
 
   useEffect(() => {
     if (productImport) {
@@ -348,13 +380,22 @@ function CreateReturnReport() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm trả</h1>
-        <div className="mt-4 table-style">
-          <Table
-            pageSizePagination={10}
-            columns={columns}
-            data={listChosenProduct}
-          />
-        </div>
+        {isLoadingListProduct ? (
+          <div>
+            <div className="h-[60px] w-full skeleton-loading" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+          </div>
+        ) : (
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={10}
+              columns={columns}
+              data={listChosenProduct}
+            />
+          </div>
+        )}
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
             Tổng giá trị hàng trả: {new BigNumber(totalPriceSend).toFormat(0)} đ
@@ -364,6 +405,7 @@ function CreateReturnReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn trả không?"
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={!productImportObject?.importId}
         >
           Trả hàng
         </ConfirmPopup>
@@ -400,16 +442,16 @@ function ListQuantitiveImport({
         value={quantity ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
-          if (e.target.value > data?.amount) {
-            setQuantity(data?.amount)
-            handleOnChangeAmount(data?.amount, data)
+          if (e.target.value > data?.available) {
+            setQuantity(data?.available)
+            handleOnChangeAmount(data?.available, data)
           } else {
             setQuantity(e.target.value)
             handleOnChangeAmount(e.target.value, data)
           }
         }}
       />
-      <div>/ {data?.amount}</div>
+      <div>/ {data?.available}</div>
     </div>
   )
 }
@@ -419,7 +461,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (data) {
-      setCostPrice(data?.costPrice)
+      setCostPrice(data?.price)
     }
   }, [data])
 

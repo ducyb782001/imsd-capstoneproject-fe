@@ -149,7 +149,7 @@ function TestPage(props) {
           )}
         </AnimatePresence>
       </div>
-      {/* <BarChart /> */}
+      <BarChart />
       <p> Bar code: </p>
       {/* <input onChange={(e) => setSearchBarcode(e.target.value)} /> */}
       {searchBarCode ? <div>No barcode</div> : searchBarCode}
