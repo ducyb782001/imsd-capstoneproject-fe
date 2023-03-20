@@ -48,7 +48,7 @@ const options = {
 }
 function AvgPriceChart() {
   return (
-    <div className="max-w-[180px] w-full ">
+    <div className="w-full ">
       <Line data={data} options={options} />
     </div>
   )

@@ -2,10 +2,6 @@ import BigNumber from "bignumber.js"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import {
-  getDetailImportProduct,
-  getListImportProduct,
-} from "../../apis/import-product-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
@@ -13,14 +9,16 @@ import PrimaryTextArea from "../PrimaryTextArea"
 import Table from "../Table"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import { useRouter } from "next/router"
-import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
 import { useTranslation } from "react-i18next"
 import PrimaryBtn from "../PrimaryBtn"
 import ChooseFileReason from "../ChooseFileReason"
 import Loading from "../Loading"
 import { IKImage } from "imagekitio-react"
-import { createReturnGoods } from "../../apis/return-product-module"
+import {
+  createReturnGoods,
+  getListProductAvailable,
+} from "../../apis/return-product-module"
 import {
   getAllExportProduct,
   getDetailExportProduct,
@@ -247,8 +245,8 @@ function CreateReturnReport() {
       setUserData(JSON.parse(userData))
     }
   }, [])
-  console.log(productImportObject)
-  useQueries([
+
+  const result = useQueries([
     {
       queryKey: ["getDetailProductExport", exportId, reportChosen?.exportId],
       queryFn: async () => {
@@ -256,7 +254,6 @@ function CreateReturnReport() {
           exportId || reportChosen?.exportId,
         )
         setProductImport(response?.data)
-        setListChosenProduct(response?.data?.exportOrderDetails)
         return response?.data
       },
       enabled: !!exportId || !!reportChosen?.exportId,
@@ -281,7 +278,22 @@ function CreateReturnReport() {
         return response?.data
       },
     },
+    {
+      queryKey: ["getListProductAvailable", exportId, reportChosen?.exportId],
+      queryFn: async () => {
+        const response = await getListProductAvailable({
+          exportId: exportId || reportChosen?.exportId,
+        })
+
+        setListChosenProduct(response?.data)
+        return response?.data
+      },
+      enabled: !!exportId || !!reportChosen?.exportId,
+    },
   ])
+  // console.log(listChosenProduct)
+
+  const isLoadingListProduct = result[3].isLoading
 
   useEffect(() => {
     if (productImport) {
@@ -362,13 +374,22 @@ function CreateReturnReport() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm trả</h1>
-        <div className="mt-4 table-style">
-          <Table
-            pageSizePagination={10}
-            columns={columns}
-            data={listChosenProduct}
-          />
-        </div>
+        {isLoadingListProduct ? (
+          <div>
+            <div className="h-[60px] w-full skeleton-loading" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+            <div className="h-[60px] w-full skeleton-loading mt-2" />
+          </div>
+        ) : (
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={10}
+              columns={columns}
+              data={listChosenProduct}
+            />
+          </div>
+        )}
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
             Tổng giá trị hàng trả: {new BigNumber(totalPriceSend).toFormat(0)} đ
@@ -394,6 +415,8 @@ function ListQuantitiveImport({
   listProductImport,
   setListProductImport,
 }) {
+  console.log(data)
+
   const [quantity, setQuantity] = useState()
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
@@ -415,16 +438,16 @@ function ListQuantitiveImport({
         value={quantity ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
-          if (e.target.value > data?.amount) {
-            setQuantity(data?.amount)
-            handleOnChangeAmount(data?.amount, data)
+          if (e.target.value > data?.available) {
+            setQuantity(data?.available)
+            handleOnChangeAmount(data?.available, data)
           } else {
             setQuantity(e.target.value)
             handleOnChangeAmount(e.target.value, data)
           }
         }}
       />
-      <div>/ {data?.amount}</div>
+      <div>/ {data?.available}</div>
     </div>
   )
 }

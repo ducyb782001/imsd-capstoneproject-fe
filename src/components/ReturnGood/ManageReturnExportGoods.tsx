@@ -12,6 +12,7 @@ import { format, parseISO } from "date-fns"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 import { getListReturnGoods } from "../../apis/return-product-module"
+import BigNumber from "bignumber.js"
 
 function ManageReturnExportGoods() {
   const { t } = useTranslation()
@@ -47,7 +48,9 @@ function ManageReturnExportGoods() {
         },
         {
           Header: "Giá trị trả hàng",
-          accessor: (data: any) => <p>2000</p>,
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+          ),
         },
         {
           Header: " ",

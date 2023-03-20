@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next"
 import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListReturnGoods } from "../../apis/return-product-module"
+import BigNumber from "bignumber.js"
 
 function ManageReturnGood() {
   const { t } = useTranslation()
@@ -53,7 +54,9 @@ function ManageReturnGood() {
         },
         {
           Header: "Giá trị trả hàng",
-          accessor: (data: any) => <p>{data?.total} đ</p>,
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+          ),
         },
         {
           Header: "Ghi chú",
@@ -220,25 +223,6 @@ function ManageReturnGood() {
 }
 
 export default ManageReturnGood
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 
 function DetailImportProduct({ data }) {
   return (
