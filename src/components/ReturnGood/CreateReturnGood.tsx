@@ -228,6 +228,13 @@ function CreateReturnReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+    const check = listProductImport.filter((i) => i.amount !== "")
+
+    if (!totalPriceSend || check.length === 0) {
+      toast.error("Phải trả sản phẩm hoặc trả tiền")
+      return
+    }
+
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
@@ -237,7 +244,6 @@ function CreateReturnReport() {
     if (!staffSelected) {
       submittedData["userId"] = userData.userId
     }
-
     createReturnMutation.mutate(submittedData)
   }
 
@@ -485,8 +491,8 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       placeholder="---"
       value={costPrice ? costPrice : ""}
       onChange={(e) => {
-        setCostPrice(e.target.value)
         e.stopPropagation()
+        setCostPrice(e.target.value)
       }}
     />
   )

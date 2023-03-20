@@ -224,6 +224,13 @@ function CreateReturnReport() {
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
 
+    const check = listProductImport.filter((i) => i.amount !== "")
+
+    if (!totalPriceSend || check.length === 0) {
+      toast.error("Phải trả sản phẩm hoặc trả tiền")
+      return
+    }
+
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
