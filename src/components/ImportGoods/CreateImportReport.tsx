@@ -21,9 +21,12 @@ import ChooseUnitImport from "./ChooseUnitImport"
 import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
@@ -352,6 +355,7 @@ function CreateImportReport() {
         </h1>
         <SearchProductImportDropdown
           listDropdown={listProductBySupplierImport?.data}
+          placeholder={t("search.searchInGoods")}
           textDefault={"Nhà cung cấp"}
           showing={productChosen}
           setShowing={setProductChosen}

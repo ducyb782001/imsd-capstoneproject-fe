@@ -1,12 +1,15 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 
 function ReasonDropdown({ showing, setShowing, textDefault = "" }) {
+  const { t } = useTranslation()
+
   const listDropdown = [
-    { id: 1, value: "Khác" },
-    { id: 2, value: "Hư hỏng" },
-    { id: 3, value: "Trả hàng" },
+    { id: 1, value: t("other") },
+    { id: 2, value: t("damaged") },
+    { id: 3, value: t("return") },
   ]
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)

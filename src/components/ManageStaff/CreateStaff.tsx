@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Loading from "../Loading"
 import PasswordInput from "../PasswordInput"
-import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
@@ -24,18 +23,16 @@ const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateStaff() {
   const { t } = useTranslation()
   const [gender, setGender] = useState<any>()
-  const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
-  const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
     setStaffAccountObject({
       ...staffAccountObject,
       userId: 0,
       password: "123456aA@",
-      roleId: 1,
+      roleId: 3,
       status: true,
       gender: true,
     })

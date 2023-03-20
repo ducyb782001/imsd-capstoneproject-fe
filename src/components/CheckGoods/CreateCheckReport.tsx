@@ -1,11 +1,8 @@
-import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { createExportProduct } from "../../apis/export-product-module"
 import { getListExportProduct } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import XIcons from "../icons/XIcons"
@@ -17,23 +14,25 @@ import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
-import * as XLSX from "xlsx/xlsx"
 import { createStockTakeProduct } from "../../apis/stocktake-product-module"
 import ReasonDropdown from "./ReasonDropdown"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateCheckReport() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.image || "/images/default-product-image.jpg"}
@@ -43,29 +42,29 @@ function CreateCheckReport() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product_code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">{data?.productCode}</p>
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
             <ListUnitImport
               data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+              listProductCheck={listProductCheck}
+              setListProductCheck={setListProductCheck}
             />
           ),
         },
         {
-          Header: "Tồn chi nhánh",
+          Header: t("current_stock"),
           accessor: (data: any) => (
             <div className="flex items-center max-w-[70px]">
               {data?.inStock}
@@ -73,36 +72,33 @@ function CreateCheckReport() {
           ),
         },
         {
-          Header: "Tồn thực tế",
+          Header: t("actual_stock"),
           accessor: (data: any) => (
             <div className="flex items-center max-w-[100px]">
               <ListActualStock
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductCheck={listProductCheck}
+                setListProductCheck={setListProductCheck}
               />
             </div>
           ),
         },
         {
-          Header: "Lệch",
+          Header: t("deviated"),
           accessor: (data: any) => (
             <div className="w-[70px]">
-              <CountDeviated
-                data={data}
-                listProductImport={listProductImport}
-              />
+              <CountDeviated data={data} listProductCheck={listProductCheck} />
             </div>
           ),
         },
         {
-          Header: "Lí do",
+          Header: t("reason"),
           accessor: (data: any) => (
             <div className="flex items-center w-[150px]">
               <ListNote
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductCheck={listProductCheck}
+                setListProductCheck={setListProductCheck}
               />
             </div>
           ),
@@ -131,14 +127,14 @@ function CreateCheckReport() {
   const [listStaff, setListStaff] = useState<any>()
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
+  const [listProductCheck, setListProductCheck] = useState<any>([])
   const [listProductSearch, setListProductSearch] = useState<any>([])
-  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [productCheckObject, setProductCheckObject] = useState<any>()
 
   useEffect(() => {
     if (staffSelected) {
-      setProductStockTakeObject({
-        ...productStockTakeObject,
+      setProductCheckObject({
+        ...productCheckObject,
         createdId: staffSelected?.userId,
       })
     }
@@ -156,17 +152,17 @@ function CreateCheckReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const currentStock = listProductImport.find(
+        const currentStock = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.inStock
           ? undefined
           : item.inStock
-        const measuredUnitId = listProductImport.find(
+        const measuredUnitId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
           ? undefined
           : 0
-        const note = listProductImport.find(
+        const note = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.note
 
@@ -179,18 +175,18 @@ function CreateCheckReport() {
           note: note,
         }
       })
-      setListProductImport(list)
+      setListProductCheck(list)
     }
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
-      setProductStockTakeObject({
-        ...productStockTakeObject,
-        stocktakeNoteDetails: listProductImport,
+    if (listProductCheck) {
+      setProductCheckObject({
+        ...productCheckObject,
+        stocktakeNoteDetails: listProductCheck,
       })
     }
-  }, [listProductImport])
+  }, [listProductCheck])
 
   const router = useRouter()
   useQueries([
@@ -220,7 +216,7 @@ function CreateCheckReport() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn kiểm hàng thành công!")
+          toast.success(t("add_check_success"))
           router.push("/manage-check-good")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -241,11 +237,11 @@ function CreateCheckReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     createStockTakeMutation.mutate({
-      ...productStockTakeObject,
+      ...productCheckObject,
       stocktakeId: 0,
       stocktakeCode: "string",
     })
@@ -259,33 +255,35 @@ function CreateCheckReport() {
       <div>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Tạo phiếu kiểm hàng</h1>
+            <h1 className="text-2xl font-semibold">
+              {t("create_check_title")}
+            </h1>
           </div>
           <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
               classNameBtn="w-[190px]"
-              title="Bạn chắc chắn muốn duyệt đơn?"
+              title={t("confirm_import")}
               handleClickSaveBtn={handleClickSaveBtn}
             >
-              Tạo phiếu kiểm hàng
+              {t("create_check_title")}
             </ConfirmPopup>
             <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-              Thoát
+              {t("exit")}
             </SecondaryBtn>
           </div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-semibold">Thông tin đơn</h1>
+            <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">
-            Ngày kiểm hàng: {format(Date.now(), "dd/MM/yyyy")}
+            {t("check_date")}: {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={"Chọn nhân viên kiểm hàng"}
+              textDefault={t("choose_staff")}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -294,11 +292,11 @@ function CreateCheckReport() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú"
-            value={productStockTakeObject?.note}
+            title={t("note")}
+            value={productCheckObject?.note}
             onChange={(e) => {
-              setProductStockTakeObject({
-                ...productStockTakeObject,
+              setProductCheckObject({
+                ...productCheckObject,
                 note: e.target.value,
               })
             }}
@@ -306,10 +304,11 @@ function CreateCheckReport() {
         </div>
       </div>
       <div className="!pb-20 mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
+        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
         <SearchProductImportDropdown
           listDropdown={listProductSearch?.data}
-          textDefault={"Nhà cung cấp"}
+          placeholder={t("search.searchInGoods")}
+          textDefault={t("supplier")}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -327,17 +326,17 @@ function CreateCheckReport() {
 
 export default CreateCheckReport
 
-function ListActualStock({ data, listProductImport, setListProductImport }) {
-  const [actualStock, setActualStock] = useState()
+function ListActualStock({ data, listProductCheck, setListProductCheck }) {
+  const [actualStock, setActualStock] = useState(data?.actualStock)
   const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
+    const list = listProductCheck
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         return { ...item, actualStock: value }
       }
       return item
     })
-    setListProductImport(newList)
+    setListProductCheck(newList)
   }
 
   return (
@@ -355,10 +354,10 @@ function ListActualStock({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function CountDeviated({ data, listProductImport }) {
+function CountDeviated({ data, listProductCheck }) {
   const [deviated, setDeviated] = useState<any>(0)
   const handleSetPrice = () => {
-    const list = listProductImport
+    const list = listProductCheck
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         const deviatedAmount = item.currentStock - item.actualStock
@@ -371,7 +370,7 @@ function CountDeviated({ data, listProductImport }) {
 
   useEffect(() => {
     handleSetPrice()
-  }, [listProductImport])
+  }, [listProductCheck])
 
   return (
     <div className="py-2 text-center text-white rounded-md bg-successBtn">
@@ -380,7 +379,7 @@ function CountDeviated({ data, listProductImport }) {
   )
 }
 
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
+function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
@@ -394,14 +393,14 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (unitChosen) {
-      const list = listProductImport
+      const list = listProductCheck
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
           return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
         }
         return item
       })
-      setListProductImport(newList)
+      setListProductCheck(newList)
     }
   }, [unitChosen])
 
@@ -415,22 +414,21 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function ListNote({ data, listProductImport, setListProductImport }) {
+function ListNote({ data, listProductCheck, setListProductCheck }) {
   const [note, setNote] = useState<any>()
 
   useEffect(() => {
     if (note) {
-      const list = listProductImport
+      const list = listProductCheck
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
           return { ...item, note: note?.value }
         }
         return item
       })
-      setListProductImport(newList)
+      setListProductCheck(newList)
     }
   }, [note])
-  console.log(listProductImport)
 
   return <ReasonDropdown showing={note} setShowing={setNote} />
 }

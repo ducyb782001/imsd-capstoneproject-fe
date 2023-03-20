@@ -10,18 +10,21 @@ import { getDetailExportProduct } from "../../apis/export-product-module"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import { BigNumber } from "bignumber.js"
 import { format } from "date-fns"
+import { useTranslation } from "react-i18next"
 
 function ExportReportCanceled() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -31,7 +34,7 @@ function ExportReportCanceled() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -39,43 +42,29 @@ function ExportReportCanceled() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("export_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.price}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
+            <div>
+              <p className="text-center">{data?.price} đ</p>
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
+            <div>
+              <p className="text-center">{data?.discount} %</p>
             </div>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
               <p>
@@ -128,12 +117,12 @@ function ExportReportCanceled() {
                 #{productExport?.exportCode}
               </h1>
               <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-2xl">
-                Đã hủy
+                {t("cancelled")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
+                {t("exit")}
               </PrimaryBtn>
             </div>
           </div>
@@ -141,18 +130,18 @@ function ExportReportCanceled() {
             <StepBar
               status="deny"
               createdDate={format(
-                new Date(productExport?.created),
+                new Date(productExport?.createdDate),
                 "dd/MM/yyyy HH:mm",
               )}
               approvedDate={format(
-                new Date(productExport?.denied),
+                new Date(productExport?.deniedDate),
                 "dd/MM/yyyy HH:mm",
               )}
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên:</h1>
+              <h1 className="text-xl font-semibold">{t("staff")}:</h1>
             </div>
             <PrimaryInput
               value={productExport?.user?.userName}
@@ -162,16 +151,16 @@ function ExportReportCanceled() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {format(new Date(productExport?.created), "dd/MM/yyyy HH:mm")}
+            {t("date_create")}:{" "}
+            {format(new Date(productExport?.createdDate), "dd/MM/yyyy HH:mm")}
           </div>
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
+            title={t("additional_information")}
             placeholder={productExport?.note}
             value={productExport?.note}
             readOnly={true}
@@ -180,7 +169,7 @@ function ExportReportCanceled() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          {t("export_product_infor")}
         </h1>
         <div className="mt-4 table-style">
           <Table
@@ -190,8 +179,8 @@ function ExportReportCanceled() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productExport?.totalPrice} đ
+          <div className="text-base font-semibold">{t("price_overall")}</div>
+          {new BigNumber(productExport?.totalPrice).toFormat(0)} đ
         </div>
       </div>
     </div>

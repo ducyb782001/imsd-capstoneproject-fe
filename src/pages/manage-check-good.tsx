@@ -1,10 +1,13 @@
 import React from "react"
+import { useTranslation } from "react-i18next"
 import ManageCheckGoods from "../components/CheckGoods/ManageCheckGoods"
 import Layout from "../components/Layout"
 
 function manageCheckGood() {
+  const { t } = useTranslation()
+
   return (
-    <Layout headTitle="Danh sách phiếu kiểm hàng">
+    <Layout headTitle={t("list_check")}>
       <ManageCheckGoods />
     </Layout>
   )

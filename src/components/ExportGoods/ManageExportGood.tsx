@@ -18,6 +18,7 @@ import { getListImportProduct } from "../../apis/import-product-module"
 import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
+import BigNumber from "bignumber.js"
 
 function ManageExportGoods() {
   const { t } = useTranslation()
@@ -31,24 +32,26 @@ function ManageExportGoods() {
           accessor: (data: any) => <p>{data?.exportCode}</p>,
         },
         {
-          Header: "Ghi chú",
+          Header: t("note"),
           accessor: (data: any) => <p>{data?.note}</p>,
         },
         {
-          Header: "Tổng tiền",
-          accessor: (data: any) => <p>{data?.totalPrice}</p>,
+          Header: t("total_cost"),
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.totalPrice).toFormat(0)} đ</p>
+          ),
         },
         {
-          Header: "Trạng thái",
+          Header: t("status"),
           accessor: (data: any) => (
-            <div className="flex justify-center">
+            <div className="flex ">
               <StatusDisplay data={data} />
             </div>
           ),
         },
 
         {
-          Header: "Ngày xuất",
+          Header: t("export_date"),
           accessor: (data: any) => (
             <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
           ),
@@ -62,19 +65,19 @@ function ManageExportGoods() {
   ]
 
   const status = [
-    { id: 0, status: "Đang xử lý" },
+    { id: 0, status: t("in_progress") },
 
     {
       id: 1,
-      status: "Đang nhập hàng",
+      status: t("in_export"),
     },
     {
       id: 2,
-      status: "Hoàn thành",
+      status: t("complete"),
     },
     {
       id: 3,
-      status: "Đã hủy",
+      status: t("cancelled"),
     },
   ]
 
@@ -100,7 +103,7 @@ function ManageExportGoods() {
         ...listFilter,
         {
           key: "supId",
-          applied: "Nhà cung cấp",
+          applied: t("supplier"),
           value: nhaCungCapSelected?.supplierName,
           id: nhaCungCapSelected?.supplierId,
         },
@@ -114,7 +117,7 @@ function ManageExportGoods() {
         ...listFilter,
         {
           key: "state",
-          applied: "Trạng thái",
+          applied: t("status"),
           value: statusSelected?.status,
           id: statusSelected?.id,
         },
@@ -201,10 +204,10 @@ function ManageExportGoods() {
             onClick={handleExportProduct}
             accessoriesLeft={<DownloadIcon />}
           >
-            Xuất file
+            {t("export_file")}
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
+            {t("import_file")}
           </ImportExportButton>
         </div>
         <Link href={`/create-export-report`}>
@@ -222,14 +225,14 @@ function ManageExportGoods() {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn xuất, nhà cung cấp"
+              placeholder={t("search.searchInExport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={t("status")}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
@@ -281,7 +284,7 @@ function ImportExportButton({
     <button
       {...props}
       onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
+      className={`text-base text-primary max-w-[125px] px-2 py-3 flex gap-2 items-center ${className}`}
     >
       {accessoriesLeft && <div>{accessoriesLeft}</div>}
       {children}
@@ -290,28 +293,29 @@ function ImportExportButton({
 }
 
 function StatusDisplay({ data }) {
+  const { t } = useTranslation()
   if (data?.state == 0) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+        <h1 className="m-2 ml-3 text-orange-500">{t("in_progress")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
       <div className="w-32 mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
+        <h1 className="m-2 ml-3">{t("in_export")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+      <div className="w-32 mt-4 font-medium text-center items-center text-white border border-green-500 bg-green-50 rounded-2xl">
+        <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
-        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+        <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
   }
