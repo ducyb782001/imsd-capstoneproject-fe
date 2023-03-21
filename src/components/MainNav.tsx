@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next"
 import useGetMe from "../hooks/useGetMe"
 
 function MainNav() {
-  const [isLogin, setIsLogin] = useState(false)
   const router = useRouter()
   const { t } = useTranslation()
   // useEffect(() => {
@@ -30,14 +29,15 @@ function MainNav() {
   //     router.push("/login")
   //   }
   // }, [cookie])
+  const { data } = useGetMe()
+  const [userData, setUserData] = useState<any>()
 
-  // const [userDate, setUserDate] = useState<any>()
-  // useEffect(() => {
-  //   if (typeof window !== undefined) {
-  //     const userData = localStorage.getItem("userData")
-  //     setUserData(JSON.parse(userData))
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (data) {
+      setUserData(data)
+    }
+  }, [data])
+
   // use data?.role of useGetMe to show/hide menubar
   const subMenuManageGoods = [
     {
@@ -55,7 +55,6 @@ function MainNav() {
     {
       id: 3,
       name: t("type.typeGoods"),
-      // Chua tao page
       href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
     },
@@ -92,9 +91,15 @@ function MainNav() {
   const subMenuReturnGoods = [
     {
       id: 1,
-      name: "Danh sách trả hàng",
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/return-goods-list"),
+      name: "Trả hàng về nhà cung cấp",
+      href: "/manage-return-good",
+      isActive: router.asPath.includes("/manage-return-good"),
+    },
+    {
+      id: 2,
+      name: "Khách trả",
+      href: "/manage-return-export-good",
+      isActive: router.asPath.includes("/manage-return-export-good"),
     },
   ]
   //indev
@@ -174,6 +179,92 @@ function MainNav() {
       name: t("return good"),
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-return-good") ||
+        router.asPath.includes("/return-customer-draff") ||
+        router.asPath.includes("/return-report-detail") ||
+        router.asPath.includes("/return-customer-detail") ||
+        router.asPath.includes("/return-report-draff") ||
+        router.asPath.includes("/create-return-export-good") ||
+        router.asPath.includes("/create-return-report") ||
+        router.asPath.includes("/return-import-detail") ||
+        router.asPath.includes("/manage-return-export-good"),
+    },
+    {
+      id: 6,
+      name: t("check good"),
+      subMenu: subMenuCheckGoods,
+      icon: <CheckGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
+        router.asPath.includes("/create-check-report"),
+    },
+  ]
+
+  const mainMenuStoreKeeper = [
+    {
+      id: 1,
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
+    {
+      id: 2,
+      name: t("manageGoods"),
+      subMenu: subMenuManageGoods,
+      icon: <ManageGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-goods") ||
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
+        router.asPath.includes("/add-suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
+        router.asPath.includes("/add-product"),
+    },
+    {
+      id: 3,
+      name: t("import good"),
+      subMenu: subMenuImportGoods,
+      icon: <ImportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
+        router.asPath.includes("/create-import-report"),
+    },
+    {
+      id: 4,
+      name: t("export good"),
+      subMenu: subMenuExportGoods,
+      icon: <ExportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
+        router.asPath.includes("/create-export-report"),
+    },
+    // indev
+    {
+      id: 5,
+      name: t("return good"),
+      subMenu: subMenuReturnGoods,
+      icon: <ReturnGoodsIcon />,
       isActive: router.asPath.includes("/return-goods-list"),
     },
     {
@@ -188,14 +279,82 @@ function MainNav() {
         router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
     },
+  ]
+
+  const mainMenuSeller = [
     {
-      id: 7,
-      name: t("staff"),
-      icon: <UserIcon />,
+      id: 1,
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: <DashboardIcon />,
+      isActive: router.asPath.includes("/dashboard"),
+    },
+    {
+      id: 2,
+      name: t("manageGoods"),
+      subMenu: subMenuManageGoods,
+      icon: <ManageGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-staff") ||
-        router.asPath.includes("/create-staff"),
-      href: "/manage-staff",
+        router.asPath.includes("/manage-goods") ||
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
+        router.asPath.includes("/add-suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
+        router.asPath.includes("/add-product"),
+    },
+    {
+      id: 3,
+      name: t("import good"),
+      subMenu: subMenuImportGoods,
+      icon: <ImportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
+        router.asPath.includes("/create-import-report"),
+    },
+    {
+      id: 4,
+      name: t("export good"),
+      subMenu: subMenuExportGoods,
+      icon: <ExportGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
+        router.asPath.includes("/create-export-report"),
+    },
+    // indev
+    {
+      id: 5,
+      name: t("return good"),
+      subMenu: subMenuReturnGoods,
+      icon: <ReturnGoodsIcon />,
+      isActive: router.asPath.includes("/return-goods-list"),
+    },
+    {
+      id: 6,
+      name: t("check good"),
+      subMenu: subMenuCheckGoods,
+      icon: <CheckGoodsIcon />,
+      isActive:
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
+        router.asPath.includes("/create-check-report"),
     },
   ]
 
@@ -212,7 +371,6 @@ function MainNav() {
               </a>
             </Link>
           </div>
-
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
             {mainMenu &&
@@ -226,6 +384,18 @@ function MainNav() {
                   isActive={i?.isActive}
                 />
               ))}
+            {userData?.roleId === 1 && (
+              <MenuItem
+                key={7}
+                icon={<UserIcon />}
+                name={t("staff")}
+                href="/manage-staff"
+                isActive={
+                  router.asPath.includes("/manage-staff") ||
+                  router.asPath.includes("/create-staff")
+                }
+              />
+            )}
           </div>
         </div>
       </div>

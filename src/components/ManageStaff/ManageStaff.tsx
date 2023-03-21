@@ -24,19 +24,29 @@ function ManageStaff() {
       columns: [
         {
           Header: t("staff_code"),
-          accessor: (data: any) => <p>{data?.userCode}</p>,
+          accessor: (data: any) => <p>{data?.userCode || "---"}</p>,
         },
         {
           Header: t("image"),
-          accessor: (data: any) => <p>{data?.img}</p>,
+          accessor: (data: any) => (
+            <div className="w-[35px] h-[35px] rounded-xl">
+              <img
+                className="object-cover w-full h-full rounded-xl"
+                src={data?.img || "/images/default-product-image.jpg"}
+                alt="image-product"
+              />
+            </div>
+          ),
         },
         {
           Header: t("staff_name"),
-          accessor: (data: any) => <p>{data?.userName}</p>,
+          accessor: (data: any) => (
+            <p>{data?.userName ? data?.userName : "---"}</p>
+          ),
         },
         {
           Header: t("phone_number"),
-          accessor: (data: any) => <p>{data?.phone}</p>,
+          accessor: (data: any) => <p>{data?.phone || "---"}</p>,
         },
         {
           Header: t("staff_position"),
@@ -67,7 +77,7 @@ function ManageStaff() {
   ]
 
   const role = [
-    { id: 1, name: t("seller") },
+    { id: 3, name: t("seller") },
 
     {
       id: 2,
@@ -85,6 +95,7 @@ function ManageStaff() {
   const [listFilter, setListFilter] = useState([])
 
   const [listStaffs, setListStaffs] = useState<any>()
+  const [newList, setNewList] = useState([])
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
@@ -131,7 +142,17 @@ function ManageStaff() {
     const listRemove = listFilter.filter((i, index) => index !== itemIndex)
     setListFilter(listRemove)
   }
-  console.log(listStaffs)
+
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   useQueries([
     {
       queryKey: [
@@ -140,16 +161,18 @@ function ManageStaff() {
         currentPage,
         pageSize,
         queryParams,
+        userData,
       ],
       queryFn: async () => {
         if (debouncedSearchValue) {
           const response = await getAllStaff({
-            code: debouncedSearchValue,
+            search: debouncedSearchValue,
             offset: (currentPage - 1) * pageSize,
             limit: pageSize,
             ...queryParams,
           })
           setListStaffs(response?.data)
+          setNewList(response?.data?.data)
 
           return response?.data
         } else {
@@ -158,17 +181,21 @@ function ManageStaff() {
             limit: pageSize,
             ...queryParams,
           })
+          const listStaff = response?.data?.data
+          const newList = listStaff.filter((i) => userData?.email != i?.email)
+
           setListStaffs(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
-
+          setNewList(newList)
           //-----------
 
           return response?.data
         }
       },
+      enabled: !!userData,
     },
   ])
-
+  console.log(listStaffs)
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -224,7 +251,7 @@ function ManageStaff() {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listStaffs?.data}
+                data={newList}
               />
             </div>
             <Pagination
@@ -248,13 +275,19 @@ function RoleDisplay({ data }) {
   if (data?.roleId == 1) {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">{t("seller")}</h1>
+        <h1 className="m-2 ml-3">{t("owner")}</h1>
       </div>
     )
   } else if (data?.roleId == 2) {
     return (
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
+      </div>
+    )
+  } else if (data?.roleId == 3) {
+    return (
+      <div className="w-[150] mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+        <h1 className="m-2 ml-3">{t("seller")}</h1>
       </div>
     )
   }

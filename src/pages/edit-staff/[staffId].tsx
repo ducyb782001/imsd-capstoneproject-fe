@@ -1,11 +1,11 @@
 import React from "react"
 import Layout from "../../components/Layout"
-import EditStaff from "../../components/ManageStaff/DetailStaff"
+import DetailStaff from "../../components/ManageStaff/DetailStaff"
 
 function staffId(props) {
   return (
     <Layout headTitle="Chỉnh sửa nhân viên">
-      <EditStaff />
+      <DetailStaff />
     </Layout>
   )
 }

@@ -37,7 +37,6 @@ function ForgotPassword(props) {
             </div>
             <div className="mt-7 bg-white rounded-md w-96 h-40">
               <TextDescription className="mt-9 text-center">
-                Didn't receive the email?{" "}
                 <div
                   className="flex flex-col items-center justify-center mt-10"
                   onClick={handleLogin}

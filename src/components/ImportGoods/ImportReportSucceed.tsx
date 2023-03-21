@@ -11,6 +11,8 @@ import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
+import SecondaryBtn from "../SecondaryBtn"
+import Link from "next/link"
 
 function ImportReportSucceed() {
   const { t } = useTranslation()
@@ -92,7 +94,6 @@ function ImportReportSucceed() {
     },
   ]
 
-  useState<any>([])
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
@@ -120,10 +121,6 @@ function ImportReportSucceed() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
@@ -139,8 +136,20 @@ function ImportReportSucceed() {
                 {t("final")}
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+            <div className="flex items-center gap-4">
+              <Link href={`/create-return-report/?importId=${importId}`}>
+                <a>
+                  <SecondaryBtn className="max-w-[120px]">
+                    Trả hàng
+                  </SecondaryBtn>
+                </a>
+              </Link>
+              <PrimaryBtn
+                onClick={() => {
+                  router.push("/manage-import-goods")
+                }}
+                className="w-[120px]"
+              >
                 {t("exit")}
               </PrimaryBtn>
             </div>
@@ -166,7 +175,10 @@ function ImportReportSucceed() {
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">{t("supplier") + ": "}</h1>
             </div>
-            <PrimaryInput value={productImport?.supplier?.supplierName} />
+            <PrimaryInput
+              readOnly={true}
+              value={productImport?.supplier?.supplierName}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
@@ -180,13 +192,14 @@ function ImportReportSucceed() {
             </div>
           )}
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <PrimaryInput value={productImport?.user?.email} />
+          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
             title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
+            readOnly={true}
           />
         </div>
       </div>

@@ -9,80 +9,78 @@ import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
 import ShowDetailIcon from "../icons/ShowDetailIcon"
-import BigNumber from "bignumber.js"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
-import { getListExportProduct, getListProduct } from "../../apis/product-module"
 import * as XLSX from "xlsx/xlsx"
-import EditIcon from "../icons/EditIcon"
-import { da } from "date-fns/locale"
 import { format, parseISO } from "date-fns"
-import { getListExportTypeGood } from "../../apis/type-good-module"
-import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
+import { useTranslation } from "react-i18next"
+import BigNumber from "bignumber.js"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã đơn xuất",
-        accessor: (data: any) => <p>{data?.exportCode}</p>,
-      },
-      {
-        Header: "Ghi chú",
-        accessor: (data: any) => <p>{data?.note}</p>,
-      },
-      {
-        Header: "Tổng tiền",
-        accessor: (data: any) => <p>{data?.totalPrice}</p>,
-      },
-      {
-        Header: "Trạng thái",
-        accessor: (data: any) => (
-          <div className="flex justify-center">
-            <StatusDisplay data={data} />
-          </div>
-        ),
-      },
+function ManageExportGoods() {
+  const { t } = useTranslation()
 
-      {
-        Header: "Ngày xuất",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => <DetailImportProduct data={data} />,
-      },
-    ],
-  },
-]
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("export_code"),
+          accessor: (data: any) => <p>{data?.exportCode}</p>,
+        },
+        {
+          Header: t("note"),
+          accessor: (data: any) => <p>{data?.note}</p>,
+        },
+        {
+          Header: t("total_cost"),
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.totalPrice).toFormat(0)} đ</p>
+          ),
+        },
+        {
+          Header: t("status"),
+          accessor: (data: any) => (
+            <div className="flex ">
+              <StatusDisplay data={data} />
+            </div>
+          ),
+        },
 
-const status = [
-  { id: 0, status: "Đang xử lý" },
+        {
+          Header: t("export_date"),
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => <DetailImportProduct data={data} />,
+        },
+      ],
+    },
+  ]
 
-  {
-    id: 1,
-    status: "Đang nhập hàng",
-  },
-  {
-    id: 2,
-    status: "Hoàn thành",
-  },
-  {
-    id: 3,
-    status: "Đã hủy",
-  },
-]
+  const status = [
+    { id: 0, status: t("in_progress") },
 
-function ManageExportGoods({ ...props }) {
+    {
+      id: 1,
+      status: t("in_export"),
+    },
+    {
+      id: 2,
+      status: t("complete"),
+    },
+    {
+      id: 3,
+      status: t("cancelled"),
+    },
+  ]
+
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
@@ -105,7 +103,7 @@ function ManageExportGoods({ ...props }) {
         ...listFilter,
         {
           key: "supId",
-          applied: "Nhà cung cấp",
+          applied: t("supplier"),
           value: nhaCungCapSelected?.supplierName,
           id: nhaCungCapSelected?.supplierId,
         },
@@ -119,7 +117,7 @@ function ManageExportGoods({ ...props }) {
         ...listFilter,
         {
           key: "state",
-          applied: "Trạng thái",
+          applied: t("status"),
           value: statusSelected?.status,
           id: statusSelected?.id,
         },
@@ -197,7 +195,6 @@ function ManageExportGoods({ ...props }) {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
   }
-  console.log(listExportProduct)
 
   return (
     <div>
@@ -207,10 +204,10 @@ function ManageExportGoods({ ...props }) {
             onClick={handleExportProduct}
             accessoriesLeft={<DownloadIcon />}
           >
-            Xuất file
+            {t("export_file")}
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
+            {t("import_file")}
           </ImportExportButton>
         </div>
         <Link href={`/create-export-report`}>
@@ -219,7 +216,7 @@ function ManageExportGoods({ ...props }) {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo đơn xuất hàng
+              {t("create_export_report")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -228,14 +225,14 @@ function ManageExportGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã đơn xuất, nhà cung cấp"
+              placeholder={t("search.searchInExport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={t("status")}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
@@ -287,7 +284,7 @@ function ImportExportButton({
     <button
       {...props}
       onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
+      className={`text-base text-primary max-w-[125px] px-2 py-3 flex gap-2 items-center ${className}`}
     >
       {accessoriesLeft && <div>{accessoriesLeft}</div>}
       {children}
@@ -296,28 +293,29 @@ function ImportExportButton({
 }
 
 function StatusDisplay({ data }) {
+  const { t } = useTranslation()
   if (data?.state == 0) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">Đang Xử lý</h1>
+        <h1 className="m-2 ml-3 text-orange-500">{t("in_progress")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
       <div className="w-32 mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
-        <h1 className="m-2 ml-3">Đang nhập hàng</h1>
+        <h1 className="m-2 ml-3">{t("in_export")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+      <div className="w-32 mt-4 font-medium text-center items-center text-white border border-green-500 bg-green-50 rounded-2xl">
+        <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
-        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
+        <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
   }

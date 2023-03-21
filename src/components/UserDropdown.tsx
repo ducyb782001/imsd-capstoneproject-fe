@@ -105,7 +105,7 @@ function UserDropdown() {
         ref={node}
       >
         <AvatarIcon />
-        <p className="text-grayDark">Thủ kho Đức</p>
+        <p className="text-grayDark">{data?.userName}</p>
         <ArrowDownIcon color="#373737" />
       </div>
 

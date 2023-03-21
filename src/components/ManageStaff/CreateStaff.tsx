@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Loading from "../Loading"
 import PasswordInput from "../PasswordInput"
-import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
@@ -24,18 +23,16 @@ const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateStaff() {
   const { t } = useTranslation()
   const [gender, setGender] = useState<any>()
-  const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
-  const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
     setStaffAccountObject({
       ...staffAccountObject,
       userId: 0,
       password: "123456aA@",
-      roleId: 1,
+      roleId: 3,
       status: true,
       gender: true,
     })
@@ -61,14 +58,9 @@ function CreateStaff() {
   }
 
   const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
     console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
-    // setStaffAccountObject({
-    //   ...staffAccountObject,
-    //   identity: res.url,
-    // })
   }
   const createStaffMutation = useMutation(
     async (importProduct) => {
@@ -180,6 +172,7 @@ function CreateStaff() {
                     password: e.target.value,
                   })
                 }}
+                placeholder={t("enter_password_placeholder")}
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">

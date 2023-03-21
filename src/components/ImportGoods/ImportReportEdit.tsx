@@ -407,6 +407,7 @@ function ImportReportEdit() {
         </h1>
         <SearchProductImportDropdown
           listDropdown={listProductBySupplierImport?.data}
+          placeholder={t("search.searchInGoods")}
           textDefault={t("supplier")}
           showing={productChosen}
           setShowing={setProductChosen}
@@ -555,7 +556,7 @@ function CountTotalPrice({ data, listProductImport }) {
 }
 
 function ListUnitImport({ data, listProductImport, setListProductImport }) {
-  // console.log(data)
+  console.log(data)
 
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()

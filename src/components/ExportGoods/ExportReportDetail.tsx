@@ -15,19 +15,22 @@ import {
 } from "../../apis/export-product-module"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
+import { useTranslation } from "react-i18next"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ExportReportDetail() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -37,7 +40,7 @@ function ExportReportDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -45,43 +48,29 @@ function ExportReportDetail() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("export_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
-          ),
-        },
-        {
-          Header: "Đơn giá",
-          accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.price}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
+            <div className="text-center">
+              {data?.amount ? data?.amount : "---"}
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
-            </div>
+            <p className="text-center">{data?.price ? data?.price : "---"} đ</p>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("discount"),
+          accessor: (data: any) => (
+            <p className="text-center">
+              {data?.discount ? data?.discount : "---"} %
+            </p>
+          ),
+        },
+        {
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
               <p>
@@ -140,7 +129,7 @@ function ExportReportDetail() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Hoàn thành đơn nhập hàng thành công")
+          toast.success(t("complete_export_alert"))
           router.push("/export-report-succeed/" + productImport?.exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -159,7 +148,7 @@ function ExportReportDetail() {
 
   const handleClickApproveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     exportExportMutation.mutate(productImport?.exportId)
@@ -177,20 +166,20 @@ function ExportReportDetail() {
                 #{productImport?.exportCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                Chờ xuất hàng
+                {t("waiting_for_export")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                Thoát
+                {t("exit")}
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn duyệt đơn?"
+                title={t("confirm_import")}
                 handleClickSaveBtn={handleClickApproveBtn}
               >
-                Xuẩt hàng
+                {t("export")}
               </ConfirmPopup>
             </div>
           </div>
@@ -199,11 +188,11 @@ function ExportReportDetail() {
               <StepBar
                 status="approved"
                 createdDate={format(
-                  new Date(productImport?.created),
+                  new Date(productImport?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
                 approvedDate={format(
-                  new Date(productImport?.approved),
+                  new Date(productImport?.approvedDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -211,7 +200,7 @@ function ExportReportDetail() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên</h1>
+              <h1 className="text-xl font-semibold">{t("staff")}</h1>
             </div>
             <div
               className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
@@ -223,18 +212,18 @@ function ExportReportDetail() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           {productImport && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
-              {format(new Date(productImport?.created), "dd/MM/yyyy HH:mm")}
+              {t("created_report_import")}:{" "}
+              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             value={productImport?.note}
             readOnly={true}
           />
@@ -242,7 +231,7 @@ function ExportReportDetail() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          {t("export_product_infor")}
         </h1>
         <div className="mt-4 table-style">
           <Table
@@ -252,7 +241,7 @@ function ExportReportDetail() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          <div className="text-base font-semibold">{t("price_overall")}</div>
           {productImport?.totalPrice}
         </div>
       </div>

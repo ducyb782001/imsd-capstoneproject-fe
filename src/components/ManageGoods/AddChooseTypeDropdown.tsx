@@ -5,6 +5,7 @@ import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddTypePopup from "./ManageTypeGoods/AddTypePopup"
 import { useTranslation } from "react-i18next"
+import AddTypeProductPopup from "./ManageTypeGoods/AddTypeProductPopup"
 function AddChooseTypeDropdown({
   title = "",
   listDropdown,
@@ -70,7 +71,7 @@ function AddChooseTypeDropdown({
 
         <div
           onClick={toggleOpenMenu}
-          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
+          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-gray hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
@@ -109,7 +110,7 @@ function AddChooseTypeDropdown({
             <DropDownItem key={index} data={i} setShowing={setShowing} />
           ))}
         </div>
-        <AddTypePopup />
+        <AddTypeProductPopup />
       </motion.div>
     </motion.div>
   )

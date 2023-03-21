@@ -30,21 +30,21 @@ function Signup() {
   }
 
   const handleSignUp = (event) => {
+    event.preventDefault()
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    event.preventDefault()
-    if (
-      userPassword == userPassword2 &&
-      passRegex.test(userPassword) &&
-      emailRegex.test(userEmail)
-    ) {
-      // @ts-ignore
-      signUpMutation.mutate({
-        email: userEmail,
-        password: userPassword,
-      })
-    }
+    // if (
+    //   userPassword == userPassword2 &&
+    //   passRegex.test(userPassword) &&
+    //   emailRegex.test(userEmail)
+    // ) {
+    // @ts-ignore
+    signUpMutation.mutate({
+      email: userEmail,
+      password: userPassword,
+    })
+    // }
   }
   const signUpMutation = useMutation(
     (account) => {
@@ -108,8 +108,8 @@ function Signup() {
                         <div>
                           Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
                           <h1>
-                            Phải bao gồm chữ in hoa, in thường, số, không được
-                            để trống
+                            Phải bao gồm chữ in hoa, in thường, số, kí tự đặc
+                            biệt
                           </h1>
                         </div>
                       }
@@ -144,7 +144,7 @@ function Signup() {
               />
             </div>
             <PrimaryBtn
-              disabled={disabled}
+              // disabled={disabled}
               className="mt-11"
               onClick={handleSignUp}
             >

@@ -1,11 +1,8 @@
-import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { createExportProduct } from "../../apis/export-product-module"
 import { getListExportProduct } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import XIcons from "../icons/XIcons"
@@ -17,27 +14,29 @@ import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
-import DownloadIcon from "../icons/DownloadIcon"
-import UploadIcon from "../icons/UploadIcon"
-import * as XLSX from "xlsx/xlsx"
 import {
   getDetailStockTakeProduct,
   updateStockTakeProduct,
 } from "../../apis/stocktake-product-module"
+import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
+import { useTranslation } from "react-i18next"
+import ReasonDropdown from "./ReasonDropdown"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function EditCheckReport() {
+function EditCheckGood() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.image || "/images/default-product-image.jpg"}
@@ -47,64 +46,71 @@ function EditCheckReport() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product_code"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productCode}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productCode || data?.productCode}
+            </p>
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
+            <p className="truncate-2-line max-w-[100px]">
+              {data?.product?.productName || data?.productName}
+            </p>
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
             <ListUnitImport
-              data={data}
-              listProductImport={listProductStockTake}
-              setListProductImport={setListProductStockTake}
+              data={data?.product}
+              listProductCheck={listProductCheck}
+              setListProductCheck={setListProductCheck}
             />
           ),
         },
         {
-          Header: "Tồn chi nhánh",
+          Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[70px]">
-              <ListStock
-                data={data}
-                listProductImport={listProductStockTake}
-                setListProductImport={setListProductStockTake}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
+            <div className="flex items-center max-w-[80px]">
+              <PrimaryInput
+                value={data?.currentStock || data?.inStock}
+                className="w-16"
+                readOnly={true}
               />
             </div>
           ),
         },
         {
-          Header: "Tồn thực tế",
+          Header: t("actual_stock"),
           accessor: (data: any) => (
             <div className="flex items-center max-w-[80px]">
               <ListActualStock
                 data={data}
-                listProductImport={listProductStockTake}
-                setListProductImport={setListProductStockTake}
-                autoUpdatePrice={autoUpdatePrice}
-                setAutoUpdatePrice={setAutoUpdatePrice}
+                listProductCheck={listProductCheck}
+                setListProductCheck={setListProductCheck}
               />
             </div>
           ),
         },
         {
-          Header: "Lệch",
+          Header: t("deviated"),
           accessor: (data: any) => (
-            <CountDeviated
-              data={data}
-              listProductImport={listProductStockTake}
-              setListProductImport={setListProductStockTake}
-              autoUpdatePrice={autoUpdatePrice}
-            />
+            <CountDeviated data={data} listProductCheck={listProductCheck} />
+          ),
+        },
+        {
+          Header: t("reason"),
+          accessor: (data: any) => (
+            <div className="flex items-center w-[150px]">
+              <ListNote
+                data={data}
+                listProductCheck={listProductCheck}
+                setListProductCheck={setListProductCheck}
+              />
+            </div>
           ),
         },
         {
@@ -117,10 +123,6 @@ function EditCheckReport() {
                   (i, ind) => ind !== index,
                 )
                 setListChosenProduct(result)
-                // let listProduct = listProductImport?.filter(
-                //   (i, ind) => ind !== index,
-                // )
-                // setListProductImport(listProduct)
               }}
             >
               <XIcons />
@@ -135,17 +137,14 @@ function EditCheckReport() {
   const [listStaff, setListStaff] = useState<any>()
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
-  const [listProductStockTake, setListProductStockTake] = useState<any>([])
-  const [listProductStockTakeCurrent, setListProductStockTakeCurrent] =
-    useState<any>([])
-  const [listProductExport, setListProductExport] = useState<any>([])
-  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
+  const [listProductCheck, setListProductCheck] = useState<any>([])
+  const [listProduct, setListProduct] = useState<any>([])
+  const [productCheckObject, setProductCheckObject] = useState<any>()
 
   useEffect(() => {
     if (staffSelected) {
-      setProductStockTakeObject({
-        ...productStockTakeObject,
+      setProductCheckObject({
+        ...productCheckObject,
         userId: staffSelected?.userId,
       })
     }
@@ -163,51 +162,47 @@ function EditCheckReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const currentStock = listProductStockTake.find(
+        const currentStock = listProductCheck.find(
           (i) => i.productId == item.productId,
-        )?.inStock
-          ? undefined
-          : item.inStock
-        const measuredUnitId = listProductStockTake.find(
+        )?.currentStock
+        const measuredUnitId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
-          ? undefined
-          : 0
-        const stocktakeId = listProductStockTake.find(
+        const stocktakeId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.actualStock
-          ? undefined
-          : 0
+        const note = listProductCheck.find(
+          (i) => i.productId == item.productId,
+        )?.note
+        const actualStock = listProductCheck.find(
+          (i) => i.productId == item.productId,
+        )?.actualStock
 
-        const currentStockTake = listProductStockTakeCurrent.map((a) => {
-          if (a.productId == item.productId) {
-            return a.actualStock
-          }
-        })
         return {
           stocktakeId: stocktakeId,
           productId: item.productId,
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
-          actualStock: currentStockTake[0],
-          note: "",
+          actualStock: actualStock,
+          note: note,
         }
       })
-      setListProductStockTake(list)
+      setListProductCheck(list)
     }
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductStockTake) {
-      setProductStockTakeObject({
-        ...productStockTakeObject,
-        stocktakeNoteDetails: listProductStockTake,
+    if (listProductCheck) {
+      setProductCheckObject({
+        ...productCheckObject,
+        stocktakeNoteDetails: listProductCheck,
       })
     }
-  }, [listProductStockTake])
+  }, [listProductCheck])
 
   const router = useRouter()
   const { checkId } = router.query
+  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   useQueries([
     {
@@ -222,7 +217,7 @@ function EditCheckReport() {
       queryKey: ["getListProduct"],
       queryFn: async () => {
         const response = await getListExportProduct()
-        setListProductExport(response?.data)
+        setListProduct(response?.data)
         return response?.data
       },
     },
@@ -230,19 +225,18 @@ function EditCheckReport() {
       queryKey: ["getDetailStockTake"],
       queryFn: async () => {
         const response = await getDetailStockTakeProduct(checkId)
-        setProductStockTakeObject(response?.data)
-        setListProductStockTakeCurrent(response?.data?.stocktakeNoteDetails)
+        setProductCheckObject(response?.data)
         const list = response?.data?.stocktakeNoteDetails.map((item) => {
           return item.product
         })
-        setListChosenProduct(list)
-        setListProductStockTake(response?.data?.stocktakeNoteDetails)
+        setListChosenProduct(response?.data?.stocktakeNoteDetails)
+        setListProductCheck(response?.data?.stocktakeNoteDetails)
+        setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
       enabled: !!checkId,
     },
   ])
-  console.log(productStockTakeObject)
 
   const updateStockTakeMutation = useMutation(
     async (exportProduct) => {
@@ -252,7 +246,7 @@ function EditCheckReport() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Chỉnh sửa đơn kiểm hàng thành công!")
+          toast.success(t("approve_check"))
           router.push("/draff-check-good/" + checkId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -273,51 +267,44 @@ function EditCheckReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    updateStockTakeMutation.mutate(productStockTakeObject)
+    updateStockTakeMutation.mutate(productCheckObject)
   }
   const handleClickOutBtn = (event) => {
     router.push("/manage-check-good")
   }
-  const handleExportCheckProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(
-      productStockTakeObject?.listProductImport,
-    )
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
 
-  return (
+  return isLoadingReport ? (
+    <StockTakeSkeleton />
+  ) : (
     <div>
       <div>
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Chỉnh sửa kiểm hàng</h1>
+            <h1 className="text-2xl font-semibold">{t("edit_check")}</h1>
           </div>
           <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
               classNameBtn="w-[180px]"
-              title="Bạn chắc chắn muốn duyệt đơn?"
+              title={t("save_report")}
               handleClickSaveBtn={handleClickSaveBtn}
             >
-              Lưu
+              {t("save")}
             </ConfirmPopup>
             <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-              Thoát
+              {t("exit")}
             </SecondaryBtn>
           </div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-semibold">Thông tin phiếu</h1>
+            <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="text-sm font-medium text-left text-gray mb-3">
-            <p className="mb-3">Ngày kiểm hàng: </p>
+            <p className="mb-3">{t("check_date")}: </p>
             <PrimaryInput
               value={format(Date.now(), "dd/MM/yyyy HH:mm")}
               className="w-[150px] text-sm font-normal text-gray"
@@ -325,12 +312,12 @@ function EditCheckReport() {
             />
           </div>
           <p className="text-sm font-medium text-left text-gray mb-3">
-            Nhân viên
+            {t("staff")}
           </p>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={productStockTakeObject?.createdBy?.userName}
+              textDefault={productCheckObject?.createdBy?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -339,11 +326,11 @@ function EditCheckReport() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
-            value={productStockTakeObject?.note}
+            title={t("note")}
+            value={productCheckObject?.note}
             onChange={(e) => {
-              setProductStockTakeObject({
-                ...productStockTakeObject,
+              setProductCheckObject({
+                ...productCheckObject,
                 note: e.target.value,
               })
             }}
@@ -351,10 +338,11 @@ function EditCheckReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
+        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
         <SearchProductImportDropdown
-          listDropdown={listProductExport?.data}
-          textDefault={"Nhà cung cấp"}
+          placeholder={t("search.searchInGoods")}
+          listDropdown={listProduct?.data}
+          textDefault={t("supplier")}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -370,137 +358,93 @@ function EditCheckReport() {
   )
 }
 
-export default EditCheckReport
+export default EditCheckGood
 
-function ListStock({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [currentStock, setCurrentStock] = useState()
-
-  useEffect(() => {
-    if (data) {
-      // Bug chua su dung duoc gia co san de tinh toan
-      setCurrentStock(data?.inStock)
-    }
-  }, [data])
-
-  const handleOnChangePrice = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, currentStock: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={currentStock ? currentStock : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCurrentStock(e.target.value)
-        handleOnChangePrice(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
-}
-
-function ListActualStock({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [actualStock, setActualStock] = useState()
+function ListActualStock({ data, listProductCheck, setListProductCheck }) {
+  const [actualStock, setActualStock] = useState(data?.actualStock)
   const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
+    const list = listProductCheck
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         return { ...item, actualStock: value }
       }
       return item
     })
-    setListProductImport(newList)
+    setListProductCheck(newList)
   }
 
   return (
     <PrimaryInput
       className="w-[70px]"
       type="number"
+      placeholder="--"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()
         setActualStock(e.target.value)
         handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
       }}
     />
   )
 }
 
-function CountDeviated({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-}) {
+function CountDeviated({ data, listProductCheck }) {
   const [deviated, setDeviated] = useState<any>()
-  const handleSetPrice = () => {
-    const list = listProductImport
+  const handleCountDeviated = () => {
+    const list = listProductCheck
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const deviatedAmount = item.currentStock - item.actualStock
+        const deviatedAmount = item.actualStock - item.currentStock
         setDeviated(deviatedAmount)
         return { ...item, amountDifferential: deviatedAmount }
       }
       return item
     })
-    setListProductImport(newList)
   }
-
+  useEffect(() => {
+    handleCountDeviated()
+  }, [listProductCheck])
   return (
-    <div
-      className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12"
-      onClick={handleSetPrice}
-    >
+    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12">
       {deviated}
     </div>
   )
 }
 
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
+function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
 
   useEffect(() => {
     if (data) {
-      setListDropdown(data?.measuredUnits)
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
+      const list = listProductCheck
+      setListDropdown([
+        {
+          measuredUnitId: 0,
+          measuredUnitName: data?.defaultMeasuredUnit,
+        },
+        ...data?.measuredUnits,
+      ])
+      const test = list.filter((i) => i?.productId === data?.productId)
+      if (test[0].measuredUnitId) {
+        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
+      } else {
+        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit)
+      }
     }
   }, [data])
 
   useEffect(() => {
     if (unitChosen) {
-      const list = listProductImport
+      const list = listProductCheck
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
           return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
         }
         return item
       })
-      setListProductImport(newList)
+      setListProductCheck(newList)
     }
   }, [unitChosen])
 
@@ -513,56 +457,21 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
     />
   )
 }
+function ListNote({ data, listProductCheck, setListProductCheck }) {
+  const [note, setNote] = useState<any>()
 
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
+  useEffect(() => {
+    if (note) {
+      const list = listProductCheck
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, note: note?.value }
+        }
+        return item
+      })
+      setListProductCheck(newList)
+    }
+  }, [note])
 
-function ListNote({
-  data,
-  listProductImport,
-  setListProductImport,
-  autoUpdatePrice,
-  setAutoUpdatePrice,
-}) {
-  const [note, setNote] = useState("")
-  const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, note: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
-
-  return (
-    <PrimaryInput
-      className="w-[50px]"
-      placeholder="Ghi chú"
-      value={note ? note : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setNote(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
-        setAutoUpdatePrice(!autoUpdatePrice)
-      }}
-    />
-  )
+  return <ReasonDropdown showing={note} setShowing={setNote} />
 }

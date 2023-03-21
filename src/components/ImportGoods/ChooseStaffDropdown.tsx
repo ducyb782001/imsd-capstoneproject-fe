@@ -1,13 +1,11 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
-import DemoPopup from "../DemoPopup"
-import AddPlusIcon from "../icons/AddPlusIcon"
+import { searchName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 
 function ChooseStaffDropdown({
-  title = "",
+  title = null,
   listDropdown,
   showing,
   setShowing,
@@ -16,7 +14,7 @@ function ChooseStaffDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+  const listResult = searchName(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {
@@ -73,7 +71,7 @@ function ChooseStaffDropdown({
 
         <div
           onClick={toggleOpenMenu}
-          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
+          className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-gray hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
@@ -92,9 +90,6 @@ function ChooseStaffDropdown({
         variants={subMenuAnimate}
         className={`absolute right-0 w-full shadow-md mt-2`}
         style={{
-          // position: "absolute",
-          // top: 40,
-          // right: 0,
           borderRadius: 5,
           backgroundColor: "#ECF1F4",
           transformOrigin: "50% -30px",
