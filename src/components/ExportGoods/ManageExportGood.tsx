@@ -36,12 +36,6 @@ function ManageExportGoods() {
           accessor: (data: any) => <p>{data?.note}</p>,
         },
         {
-          Header: t("total_cost"),
-          accessor: (data: any) => (
-            <p>{new BigNumber(data?.totalPrice).toFormat(0)} đ</p>
-          ),
-        },
-        {
           Header: t("status"),
           accessor: (data: any) => (
             <div className="flex ">
@@ -54,6 +48,12 @@ function ManageExportGoods() {
           Header: t("export_date"),
           accessor: (data: any) => (
             <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: t("total_cost"),
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.totalPrice).toFormat(0)} đ</p>
           ),
         },
         {
@@ -308,7 +308,7 @@ function StatusDisplay({ data }) {
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center items-center text-white border border-green-500 bg-green-50 rounded-2xl">
+      <div className="items-center w-32 mt-4 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )

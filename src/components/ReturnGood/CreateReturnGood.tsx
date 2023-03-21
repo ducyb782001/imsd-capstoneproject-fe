@@ -173,6 +173,7 @@ function CreateReturnReport() {
           measuredUnitId: item?.measuredUnitId ? item?.measuredUnitId : 0,
         }
       })
+
       setListProductImport(list)
     }
   }, [listChosenProduct])
@@ -234,6 +235,8 @@ function CreateReturnReport() {
       toast.error("Phải trả sản phẩm hoặc trả tiền")
       return
     }
+    // Bug khi chua edit thi se k update amount
+    console.log(totalPriceSend, 123, check)
 
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
@@ -291,6 +294,8 @@ function CreateReturnReport() {
         })
 
         setListChosenProduct(response?.data)
+        setListProductImport(response?.data)
+
         return response?.data
       },
       enabled: !!importId || !!reportChosen?.importId,
@@ -463,7 +468,7 @@ function ListQuantitiveImport({
 }
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState()
+  const [costPrice, setCostPrice] = useState(data?.price)
 
   useEffect(() => {
     if (data) {

@@ -17,7 +17,7 @@ function PrimaryTextArea({
       <textarea
         {...props}
         onChange={onChange}
-        className={`w-full h-full bg-subBg rounded-lg border text-sm px-4 py-3 smooth-transform outline-none  border-gray text-black focus:border-primary hover:border-primary smooth-transform ${classNameTextArea}`}
+        className={`read-only:bg-[#7F7F7F15] w-full h-full bg-subBg rounded-lg border text-sm px-4 py-3 smooth-transform outline-none  border-gray text-black focus:border-primary hover:border-primary smooth-transform ${classNameTextArea}`}
         // name="input-requirement"
         id={id}
         cols={30}

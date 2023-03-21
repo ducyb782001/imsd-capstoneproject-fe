@@ -55,6 +55,10 @@ function ManageImportGoods() {
           ),
         },
         {
+          Header: t("total_cost"),
+          accessor: (data: any) => <p>{data?.totalCost}</p>,
+        },
+        {
           Header: " ",
           accessor: (data: any) => <DetailImportProduct data={data} />,
         },
@@ -230,7 +234,7 @@ function ManageImportGoods() {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder={t("searchInImport")}
+              placeholder={t("search.searchInImport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />

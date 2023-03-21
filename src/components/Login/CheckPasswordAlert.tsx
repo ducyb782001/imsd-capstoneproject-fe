@@ -8,15 +8,8 @@ import ArrowLeftIcon from "../icons/ArrowLeftIcon"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { LeftBlock } from "./Login"
 
-function CheckPasswordAlert(props) {
+function CheckPasswordAlert() {
   const router = useRouter()
-
-  const handleLogin = (event) => {
-    router.push("/login")
-  }
-  const handleResend = (event) => {
-    router.push("/signup")
-  }
 
   return (
     <div className="relative">
@@ -37,20 +30,17 @@ function CheckPasswordAlert(props) {
                 Chúng tôi đã gửi tin nhắn cài lại mật khẩu đến hòm thư của bạn.
               </TextDescription>
             </div>
-            <div className="h-40 bg-white rounded-md mt-7 w-96">
+            <div className="h-24 bg-white rounded-md mt-7 w-96">
               <TextDescription className="text-center mt-9">
-                <UnderlineText className="font-medium" onClick={handleResend}>
-                  Nhấn để quay lại
-                </UnderlineText>
-                <br />
                 <div
                   className="flex flex-col items-center justify-center mt-10"
-                  onClick={handleLogin}
+                  onClick={() => {
+                    router.push("/login")
+                  }}
                 >
                   <ArrowLeftIcon
                     accessoriesRight={
                       <UnderlineText className="font-medium">
-                        {" "}
                         Quay lại đăng nhập
                       </UnderlineText>
                     }

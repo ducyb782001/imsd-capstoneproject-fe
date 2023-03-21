@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next"
 import PrimaryBtn from "../PrimaryBtn"
 import { getDetailReturnImport } from "../../apis/return-product-module"
 import { useQueries } from "react-query"
+import ReturnTitleIcon from "../icons/ReturnTitleIcon"
+import GeneralInformationIcon from "../icons/GeneralInformationIcon"
 
 function ReturnImportDetail() {
   const { t } = useTranslation()
@@ -105,7 +107,10 @@ function ReturnImportDetail() {
     <div>
       <div className="w-full p-6 mt-6 bg-white block-border">
         <div className="flex items-center justify-between w-full">
-          <SmallTitle>{t("product_infor")}</SmallTitle>
+          <div className="flex items-center gap-2">
+            <GeneralInformationIcon />
+            <SmallTitle>{t("product_infor")}</SmallTitle>
+          </div>
           <div className="flex items-center justify-between gap-4">
             <PrimaryBtn
               className="w-[120px]"
@@ -161,9 +166,12 @@ function ReturnImportDetail() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("return_product_detail")}
-        </h1>
+        <div className="flex items-center gap-2 mb-4">
+          <ReturnTitleIcon />
+          <h1 className="text-xl font-semibold">
+            {t("return_product_detail")}
+          </h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
