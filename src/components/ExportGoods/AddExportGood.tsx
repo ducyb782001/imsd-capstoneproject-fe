@@ -4,39 +4,34 @@ import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { createExportProduct } from "../../apis/export-product-module"
-import {
-  getListExportProduct,
-  getListExportProductBySupplier,
-} from "../../apis/product-module"
+import { getListExportProduct } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
-import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import Tooltip from "../ToolTip"
-import AddProductPopup from "../ImportGoods/AddProductPopup"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
+import { useTranslation } from "react-i18next"
 import { useRouter } from "next/router"
-import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function CreateExportReport() {
+function AddExportGood() {
+  const { t } = useTranslation()
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.image || "/images/default-product-image.jpg"}
@@ -46,63 +41,63 @@ function CreateExportReport() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("export_number"),
           accessor: (data: any) => (
-            <ListQuantitiveImport
+            <ListQuantitiveExport
               data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+              listProductExport={listProductExport}
+              setListProductExport={setListProductExport}
             />
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
-            <ListUnitImport
+            <ListUnitExport
               data={data}
-              listProductImport={listProductImport}
-              setListProductImport={setListProductImport}
+              listProductExport={listProductExport}
+              setListProductExport={setListProductExport}
             />
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <ListPriceImport
+              <ListPriceExport
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductExport={listProductExport}
+                setListProductExport={setListProductExport}
               />
               <p>đ</p>
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <ListDiscountImport
+              <ListDiscountExport
                 data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
+                listProductExport={listProductExport}
+                setListProductExport={setListProductExport}
               />
               <p>%</p>
             </div>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <CountTotalPrice
               data={data}
-              listProductImport={listProductImport}
+              listProductExport={listProductExport}
             />
           ),
         },
@@ -132,8 +127,8 @@ function CreateExportReport() {
   const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
-  const [listProductImport, setListProductImport] = useState<any>([])
   const [listProductExport, setListProductExport] = useState<any>([])
+  const [listProduct, setListProduct] = useState<any>([])
   const [productExportObject, setProductExportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
 
@@ -170,15 +165,15 @@ function CreateExportReport() {
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
       const list = listChosenProduct.map((item) => {
-        const discount = listProductImport.find(
+        const discount = listProductExport.find(
           (i) => i.productId == item.productId,
         )?.discount
           ? undefined
           : 0
-        const amount = listProductImport.find(
+        const amount = listProductExport.find(
           (i) => i.productId == item.productId,
         )?.amount
-        const price = listProductImport.find(
+        const price = listProductExport.find(
           (i) => i.productId == item.productId,
         )?.price
 
@@ -187,20 +182,20 @@ function CreateExportReport() {
           amount: amount,
           discount: discount,
           price: price,
-          measuredUnitId: listProductImport.find(
+          measuredUnitId: listProductExport.find(
             (i) => i.productId == item.productId,
           )?.measuredUnitId
             ? undefined
             : 0,
         }
       })
-      setListProductImport(list)
+      setListProductExport(list)
     }
   }, [listChosenProduct])
 
   useEffect(() => {
-    if (listProductImport) {
-      const price = listProductImport.reduce((accumulator, currentProduct) => {
+    if (listProductExport) {
+      const price = listProductExport.reduce((accumulator, currentProduct) => {
         const cost = new BigNumber(currentProduct.price || 0).times(
           currentProduct.amount || 0,
         )
@@ -217,11 +212,11 @@ function CreateExportReport() {
       setTotalPriceSend(price)
       setProductExportObject({
         ...productExportObject,
-        exportOrderDetails: listProductImport,
+        exportOrderDetails: listProductExport,
         totalPrice: new BigNumber(price).toFixed(),
       })
     }
-  }, [listProductImport])
+  }, [listProductExport])
 
   const router = useRouter()
   useQueries([
@@ -245,7 +240,7 @@ function CreateExportReport() {
           state: 0,
           exportCode: "string",
         })
-        setListProductExport(response?.data)
+        setListProduct(response?.data)
         return response?.data
       },
     },
@@ -260,7 +255,7 @@ function CreateExportReport() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn xuất hàng thành công!")
+          toast.success(t("toast_add_export_success"))
           router.push("/manage-export-goods")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -279,7 +274,7 @@ function CreateExportReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     createExportMutation.mutate(productExportObject)
@@ -290,16 +285,16 @@ function CreateExportReport() {
       <div className="grid gap-5 grid-cols md: grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn xuất hàng</h1>
+            <h1 className="text-2xl font-semibold">{t("add_export_title")}</h1>
             <ConfirmPopup
               className="!w-fit"
               classNameBtn="w-[120px] bg-white border-white"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
+              title={t("exit_alert_popup")}
               handleClickSaveBtn={() => {
                 router.push("/manage-export-goods")
               }}
             >
-              Thoát
+              {t("exit")}
             </ConfirmPopup>
           </div>
           <div className="flex justify-center mt-6">
@@ -308,12 +303,12 @@ function CreateExportReport() {
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">
-                Thông tin nhân viên tạo phiếu xuất kho
+                {t("staff_create_export")}
               </h1>
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={"Chọn nhân viên"}
+              textDefault={t("choose_staff")}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -321,15 +316,15 @@ function CreateExportReport() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
+            {t("created_report_import")} {format(Date.now(), "dd/MM/yyyy")}
           </div>
           <PrimaryTextArea
             rows={8}
             className="mt-5"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             onChange={(e) => {
               setProductExportObject({
                 ...productExportObject,
@@ -340,10 +335,13 @@ function CreateExportReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm kiểm</h1>
+        <h1 className="mb-4 text-xl font-semibold">
+          {t("export_product_infor")}
+        </h1>
         <SearchProductImportDropdown
-          listDropdown={listProductExport?.data}
-          textDefault={"Nhà cung cấp"}
+          listDropdown={listProduct?.data}
+          textDefault={t("supplier")}
+          placeholder={t("search.searchInGoods")}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -356,38 +354,38 @@ function CreateExportReport() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
-            Tổng giá trị đơn hàng: {new BigNumber(totalPriceSend).toFormat(0)} đ
+            {t("price_overall")} {new BigNumber(totalPriceSend).toFormat(0)} đ
           </div>
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
+          title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
         >
-          Tạo hóa đơn xuất hàng
+          {t("add_export_title")}
         </ConfirmPopup>
       </div>
     </div>
   )
 }
 
-export default CreateExportReport
+export default AddExportGood
 
-function ListQuantitiveImport({
+function ListQuantitiveExport({
   data,
-  listProductImport,
-  setListProductImport,
+  listProductExport,
+  setListProductExport,
 }) {
   const [quantity, setQuantity] = useState(0)
   const handleOnChangeAmount = (value, data) => {
-    const list = listProductImport
+    const list = listProductExport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         return { ...item, amount: value }
       }
       return item
     })
-    setListProductImport(newList)
+    setListProductExport(newList)
   }
 
   return (
@@ -405,7 +403,7 @@ function ListQuantitiveImport({
   )
 }
 
-function ListPriceImport({ data, listProductImport, setListProductImport }) {
+function ListPriceExport({ data, listProductExport, setListProductExport }) {
   const [costPrice, setCostPrice] = useState()
 
   useEffect(() => {
@@ -416,14 +414,14 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (costPrice) {
-      const list = listProductImport
+      const list = listProductExport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
           return { ...item, price: costPrice }
         }
         return item
       })
-      setListProductImport(newList)
+      setListProductExport(newList)
     }
   }, [costPrice])
 
@@ -441,17 +439,17 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function ListDiscountImport({ data, listProductImport, setListProductImport }) {
+function ListDiscountExport({ data, listProductExport, setListProductExport }) {
   const [discount, setDiscount] = useState()
   const handleOnChangeDiscount = (value, data) => {
-    const list = listProductImport
+    const list = listProductExport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         return { ...item, discount: value }
       }
       return item
     })
-    setListProductImport(newList)
+    setListProductExport(newList)
   }
 
   return (
@@ -469,10 +467,10 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
   )
 }
 
-function CountTotalPrice({ data, listProductImport }) {
+function CountTotalPrice({ data, listProductExport }) {
   const [price, setPrice] = useState<any>()
   const handleSetPrice = () => {
-    const list = listProductImport
+    const list = listProductExport
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
         const totalPrice = new BigNumber(item.amount || 0).multipliedBy(
@@ -494,7 +492,7 @@ function CountTotalPrice({ data, listProductImport }) {
   }
   useEffect(() => {
     handleSetPrice()
-  }, [listProductImport])
+  }, [listProductExport])
 
   return (
     <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
@@ -503,7 +501,7 @@ function CountTotalPrice({ data, listProductImport }) {
   )
 }
 
-function ListUnitImport({ data, listProductImport, setListProductImport }) {
+function ListUnitExport({ data, listProductExport, setListProductExport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
@@ -523,7 +521,7 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (unitChosen) {
-      const list = listProductImport
+      const list = listProductExport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
           return {
@@ -533,7 +531,7 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
         }
         return item
       })
-      setListProductImport(newList)
+      setListProductExport(newList)
     }
   }, [unitChosen])
 

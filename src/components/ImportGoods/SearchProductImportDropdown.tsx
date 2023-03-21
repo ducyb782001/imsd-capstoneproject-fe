@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import { motion } from "framer-motion"
+import { appWithTranslation } from "next-i18next"
 import React, { useEffect, useRef, useState } from "react"
 import useScanDetection from "../../hooks/useScanDetection"
 import { searchProduct } from "../../lib/search"
@@ -11,6 +12,7 @@ function SearchProductImportDropdown({
   showing,
   setShowing,
   textDefault,
+  placeholder,
 }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
@@ -89,7 +91,11 @@ function SearchProductImportDropdown({
           <input
             type="text"
             className="w-full py-3 pl-10 pr-3 border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
-            placeholder="Tìm kiếm theo tên sản phẩm hoặc quét mã barcode"
+            placeholder={
+              placeholder
+                ? placeholder
+                : "Tìm kiếm theo tên sản phẩm hoặc quét mã barcode"
+            }
             value={searchInput ? searchInput : ""}
             onChange={(e) => {
               setSearchInput(e.target.value)

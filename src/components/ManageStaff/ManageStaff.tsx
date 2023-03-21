@@ -24,19 +24,29 @@ function ManageStaff() {
       columns: [
         {
           Header: t("staff_code"),
-          accessor: (data: any) => <p>{data?.userCode}</p>,
+          accessor: (data: any) => <p>{data?.userCode || "---"}</p>,
         },
         {
           Header: t("image"),
-          accessor: (data: any) => <p>{data?.img}</p>,
+          accessor: (data: any) => (
+            <div className="w-[35px] h-[35px] rounded-xl">
+              <img
+                className="object-cover w-full h-full rounded-xl"
+                src={data?.img || "/images/default-product-image.jpg"}
+                alt="image-product"
+              />
+            </div>
+          ),
         },
         {
           Header: t("staff_name"),
-          accessor: (data: any) => <p>{data?.userName}</p>,
+          accessor: (data: any) => (
+            <p>{data?.userName ? data?.userName : "---"}</p>
+          ),
         },
         {
           Header: t("phone_number"),
-          accessor: (data: any) => <p>{data?.phone}</p>,
+          accessor: (data: any) => <p>{data?.phone || "---"}</p>,
         },
         {
           Header: t("staff_position"),
@@ -67,7 +77,7 @@ function ManageStaff() {
   ]
 
   const role = [
-    { id: 1, name: t("seller") },
+    { id: 3, name: t("seller") },
 
     {
       id: 2,

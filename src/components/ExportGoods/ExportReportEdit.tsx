@@ -3,11 +3,7 @@ import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import {
-  getListExportProduct,
-  getListExportProductBySupplier,
-} from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import { getListExportProduct } from "../../apis/product-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
@@ -27,20 +23,23 @@ import {
   getDetailExportProduct,
   updateExportProduct,
 } from "../../apis/export-product-module"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ImportReportEdit() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -50,15 +49,15 @@ function ImportReportEdit() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
-              {data?.product?.productName}
+              {data?.product?.productName || data?.productName}
             </p>
           ),
         },
         {
-          Header: "SL xuất",
+          Header: t("export_number"),
           accessor: (data: any) => (
             <ListQuantitiveImport
               data={data}
@@ -78,7 +77,7 @@ function ImportReportEdit() {
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <ListPriceImport
@@ -91,7 +90,7 @@ function ImportReportEdit() {
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
               <ListDiscountImport
@@ -104,7 +103,7 @@ function ImportReportEdit() {
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <CountTotalPrice
               data={data}
@@ -182,7 +181,6 @@ function ImportReportEdit() {
       setListChosenProduct([...listChosenProduct, productChosen])
     }
   }, [productChosen])
-  console.log(listStaff)
 
   useEffect(() => {
     if (listChosenProduct) {
@@ -202,11 +200,9 @@ function ImportReportEdit() {
           amount: amount,
           price: price,
           discount: discount,
-          measuredUnitId: listProductImport.find(
-            (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          measuredUnitId:
+            listProductImport.find((i) => i.productId == item.productId)
+              ?.measuredUnitId || 0,
         }
       })
       setListProductImport(list)
@@ -246,8 +242,7 @@ function ImportReportEdit() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Cập nhật đơn xuất hàng thành công")
-          router.push("/export-report-draff/" + exportId)
+          toast.success(t("export_edit_success"))
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -266,12 +261,11 @@ function ImportReportEdit() {
   )
 
   const handleClickUpdateBtn = async (event) => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     event?.preventDefault()
     await updateImportMutation.mutate(productImportObject)
-    // await approveImportMutation.mutate(productImportObject?.importId)
   }
 
   const handleClickOutBtn = (event) => {
@@ -321,20 +315,20 @@ function ImportReportEdit() {
                 #{productImportObject?.exportCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                Chờ duyệt đơn
+                {t("wait_accept_import")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                Quay lại
+                {t("exit")}
               </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title="Bạn chắc chắn muốn cập nhật?"
+                title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
               >
-                Cập nhật
+                {t("update")}
               </ConfirmPopup>
             </div>
           </div>
@@ -351,14 +345,14 @@ function ImportReportEdit() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Chọn nhân viên</h1>
-              <Tooltip content="Chọn nhà cung cấp để hiển thị mặt hàng tương ứng">
+              <h1 className="text-xl font-semibold">{t("choose_staff")}</h1>
+              <Tooltip content={t("choose_supplier_product")}>
                 <InfoIcon />
               </Tooltip>
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={""}
+              textDefault={productImportObject?.user?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
             />
@@ -366,11 +360,11 @@ function ImportReportEdit() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           {productImportObject?.created && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
+              {t("created_report_import")}:{" "}
               {format(
                 new Date(productImportObject?.created),
                 "dd/MM/yyyy HH:mm",
@@ -380,7 +374,7 @@ function ImportReportEdit() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             value={productImportObject?.note}
             onChange={(e) => {
               setProductImportObject({
@@ -393,11 +387,12 @@ function ImportReportEdit() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
+          {t("export_product_infor")}
         </h1>
         <SearchProductImportDropdown
           listDropdown={listProduct?.data}
-          textDefault={"Nhà cung cấp"}
+          textDefault={t("supplier")}
+          placeholder={t("search.searchInGoods")}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -409,7 +404,7 @@ function ImportReportEdit() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
+          <div className="text-base font-semibold">{t("price_overall")}</div>
           {new BigNumber(totalPriceSend).toFormat(0)} đ
         </div>
       </div>

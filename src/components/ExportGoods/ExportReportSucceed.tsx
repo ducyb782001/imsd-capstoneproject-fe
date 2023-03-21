@@ -12,18 +12,21 @@ import BigNumber from "bignumber.js"
 import { format, parseISO } from "date-fns"
 import Link from "next/link"
 import SecondaryBtn from "../SecondaryBtn"
+import { useTranslation } from "react-i18next"
 
 function ImportReportSucceed() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -33,7 +36,7 @@ function ImportReportSucceed() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -41,43 +44,29 @@ function ImportReportSucceed() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("export_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.price}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
+              <p className="text-center">{data?.price} đ</p>
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
+            <div>
+              <p className="text-center">{data?.discount} %</p>
             </div>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
               <p>
@@ -132,19 +121,19 @@ function ImportReportSucceed() {
                 #{productImport?.exportCode}
               </h1>
               <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
-                Hoàn thành
+                {t("complete")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <Link href={`/create-return-export-good/?exportId=${exportId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
-                    Hoàn hàng
+                    {t("complete")}
                   </SecondaryBtn>
                 </a>
               </Link>
               <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
+                {t("exit")}
               </PrimaryBtn>
             </div>
           </div>
@@ -152,24 +141,24 @@ function ImportReportSucceed() {
             {/* <StepBar
               createdDate={format(
                 parseISO(
-                  productImport?.created
-                    ? productImport?.created
+                  productImport?.createdDate
+                    ? productImport?.createdDate
                     : new Date().toISOString(),
                 ),
                 "dd/MM/yyyy HH:mm",
               )}
               approvedDate={format(
                 new Date(
-                  productImport?.approved
-                    ? productImport?.approved
+                  productImport?.approvedDate
+                    ? productImport?.approvedDate
                     : new Date().toISOString,
                 ),
                 "dd/MM/yyyy HH:mm",
               )}
               succeededDate={format(
                 new Date(
-                  productImport?.completed
-                    ? productImport?.completed
+                  productImport?.completedDate
+                    ? productImport?.completedDate
                     : new Date().toISOString,
                 ),
                 "dd/MM/yyyy HH:mm",
@@ -179,7 +168,7 @@ function ImportReportSucceed() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên:</h1>
+              <h1 className="text-xl font-semibold">{t("staff")}:</h1>
             </div>
             <PrimaryInput
               value={productImport?.user?.userName}
@@ -189,23 +178,23 @@ function ImportReportSucceed() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
-            {/* {format(
+            {t("created_report_import")}:{" "}
+            {format(
               parseISO(
-                productImport?.created
-                  ? productImport?.created
+                productImport?.createdDate
+                  ? productImport?.createdDate
                   : new Date().toISOString(),
               ),
               "dd/MM/yyyy HH:mm",
-            )} */}
+            )}
           </div>
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
             readOnly={true}
@@ -214,7 +203,7 @@ function ImportReportSucceed() {
       </div>
       <div className="mt-4 bg-white block-border">
         <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm xuất đi
+          {t("export_product_infor")}
         </h1>
         <div className="mt-4 table-style">
           <Table
@@ -224,8 +213,8 @@ function ImportReportSucceed() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalPrice}
+          <div className="text-base font-semibold">{t("price_overall")}</div>
+          {new BigNumber(productImport?.totalPrice).toFormat(0)} đ
         </div>
       </div>
     </div>

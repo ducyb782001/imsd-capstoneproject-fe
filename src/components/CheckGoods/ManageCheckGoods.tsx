@@ -16,74 +16,83 @@ import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { getListStockTakeProduct } from "../../apis/stocktake-product-module"
 import { format, parseISO } from "date-fns"
+import { useTranslation } from "react-i18next"
 
-const columns = [
-  {
-    Header: " ",
-    columns: [
-      {
-        Header: "Mã phiếu kiểm hàng",
-        accessor: (data: any) => <p>{data?.stocktakeCode}</p>,
-      },
+function ManageCheckGoods() {
+  const { t } = useTranslation()
 
-      {
-        Header: "Nhân viên tạo",
-        accessor: (data: any) => <p>Kiểm kho {data?.createdBy?.userName}</p>,
-      },
-      {
-        Header: "Ngày tạo phiếu",
-        accessor: (data: any) => (
-          <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
-        ),
-      },
-      {
-        Header: "Nhân viên kiểm",
-        accessor: (data: any) => (
-          <p>
-            {data?.updatedBy ? "Kiểm kho " + data?.updatedBy?.userName : ""}
-          </p>
-        ),
-      },
+  const columns = [
+    {
+      Header: " ",
+      columns: [
+        {
+          Header: t("check_code"),
+          accessor: (data: any) => <p>{data?.stocktakeCode}</p>,
+        },
 
-      {
-        Header: "Ngày kiểm hàng",
-        accessor: (data: any) => (
-          <p>
-            {data?.updated
-              ? format(parseISO(data?.updated), "dd/MM/yyyy HH:mm")
-              : ""}
-          </p>
-        ),
-      },
-      {
-        Header: "Trạng thái",
-        accessor: (data: any) => (
-          <div className="flex justify-center">
-            <StatusDisplay data={data} />
-          </div>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: (data: any) => <DetailImportProduct data={data} />,
-      },
-    ],
-  },
-]
+        {
+          Header: t("staff_created"),
+          accessor: (data: any) => (
+            <p>
+              {t("store_keeper")} {data?.createdBy?.userName}
+            </p>
+          ),
+        },
+        {
+          Header: t("created_report_check"),
+          accessor: (data: any) => (
+            <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: t("check_staff"),
+          accessor: (data: any) => (
+            <p>
+              {data?.updatedBy
+                ? t("store_keeper") + data?.updatedBy?.userName
+                : "---"}
+            </p>
+          ),
+        },
 
-const status = [
-  { id: 0, status: "Đang kiểm hàng" },
-  {
-    id: 1,
-    status: "Hoàn thành",
-  },
-  {
-    id: 2,
-    status: "Đã hủy",
-  },
-]
+        {
+          Header: t("check_date"),
+          accessor: (data: any) => (
+            <p>
+              {data?.updated
+                ? format(parseISO(data?.updated), "dd/MM/yyyy HH:mm")
+                : "---"}
+            </p>
+          ),
+        },
+        {
+          Header: t("status"),
+          accessor: (data: any) => (
+            <div className="flex">
+              <StatusDisplay data={data} />
+            </div>
+          ),
+        },
+        {
+          Header: " ",
+          accessor: (data: any) => <DetailImportProduct data={data} />,
+        },
+      ],
+    },
+  ]
 
-function ManageCheckGoods({ ...props }) {
+  const status = [
+    { id: 0, status: t("checking_status") },
+    {
+      id: 1,
+      status: t("complete"),
+    },
+    {
+      id: 2,
+      status: t("cancelled"),
+    },
+  ]
+
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
   const [queryParams, setQueryParams] = useState<any>({})
@@ -92,9 +101,9 @@ function ManageCheckGoods({ ...props }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [listFilter, setListFilter] = useState([])
 
-  const [listStockTakeProduct, setListStockTakeProduct] = useState<any>()
+  const [listCheckProduct, setListCheckProduct] = useState<any>()
 
-  const [listImportProductExport, setListImportProductExport] = useState<any>()
+  const [listCheckProductExport, setListCheckProductExport] = useState<any>()
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
   useEffect(() => {
@@ -104,7 +113,7 @@ function ManageCheckGoods({ ...props }) {
         ...listFilter,
         {
           key: "state",
-          applied: "Trạng thái",
+          applied: t("status"),
           value: statusSelected?.status,
           id: statusSelected?.id,
         },
@@ -131,7 +140,7 @@ function ManageCheckGoods({ ...props }) {
   useQueries([
     {
       queryKey: [
-        "getListExportProduct",
+        "getListCheckProduct",
         debouncedSearchValue,
         currentPage,
         pageSize,
@@ -145,7 +154,7 @@ function ManageCheckGoods({ ...props }) {
             limit: pageSize,
             ...queryParams,
           })
-          setListStockTakeProduct(response?.data)
+          setListCheckProduct(response?.data)
 
           //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListStockTakeProduct({
@@ -154,7 +163,7 @@ function ManageCheckGoods({ ...props }) {
             limit: 1000,
             ...queryParams,
           })
-          setListImportProductExport(exportFile?.data)
+          setListCheckProductExport(exportFile?.data)
           //-----------
 
           return response?.data
@@ -164,7 +173,7 @@ function ManageCheckGoods({ ...props }) {
             limit: pageSize,
             ...queryParams,
           })
-          setListStockTakeProduct(response?.data)
+          setListCheckProduct(response?.data)
           setIsLoadingListExport(response?.data?.isLoading)
 
           //-----------
@@ -177,7 +186,7 @@ function ManageCheckGoods({ ...props }) {
 
   const handleExportProduct = () => {
     const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
+    const worksheet = XLSX.utils.json_to_sheet(listCheckProductExport?.data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
     XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
@@ -191,10 +200,10 @@ function ManageCheckGoods({ ...props }) {
             onClick={handleExportProduct}
             accessoriesLeft={<DownloadIcon />}
           >
-            Xuất file
+            {t("export_file")}
           </ImportExportButton>
           <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
+            {t("import_file")}
           </ImportExportButton>
         </div>
         <Link href={`/create-check-report`}>
@@ -203,7 +212,7 @@ function ManageCheckGoods({ ...props }) {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Tạo phiếu kiểm hàng
+              {t("create_check_good")}
             </PrimaryBtn>
           </a>
         </Link>
@@ -212,14 +221,14 @@ function ManageCheckGoods({ ...props }) {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder="Tìm theo mã phiếu kiểm hàng"
+              placeholder={t("search.searchInCheck")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
 
             <ChooseStatusDropdown
               listDropdown={status}
-              textDefault={"Trạng thái"}
+              textDefault={t("status")}
               showing={statusSelected}
               setShowing={setStatusSelected}
             />
@@ -241,7 +250,7 @@ function ManageCheckGoods({ ...props }) {
               <Table
                 pageSizePagination={pageSize}
                 columns={columns}
-                data={listStockTakeProduct?.data}
+                data={listCheckProduct?.data}
               />
             </div>
             <Pagination
@@ -249,7 +258,7 @@ function ManageCheckGoods({ ...props }) {
               setPageSize={setPageSize}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              totalItems={listStockTakeProduct?.total}
+              totalItems={listCheckProduct?.total}
             />
           </>
         )}
@@ -280,22 +289,24 @@ function ImportExportButton({
 }
 
 function StatusDisplay({ data }) {
+  const { t } = useTranslation()
+
   if (data?.state == 0) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">Đang kiểm hàng</h1>
+        <h1 className="m-2 ml-3 text-orange-500">{t("checking_status")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
-        <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
+        <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
       <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
-        <h1 className="m-2 ml-3 text-red-500">Đã hủy</h1>
+        <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
   }

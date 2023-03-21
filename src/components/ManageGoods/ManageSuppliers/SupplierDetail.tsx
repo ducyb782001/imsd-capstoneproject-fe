@@ -205,7 +205,7 @@ function SupplierDetail() {
         <div className="flex flex-col gap-4 mt-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder={t("searchByProduct")}
+              placeholder={t("search.searchByProduct")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full col-span-3"
             />
