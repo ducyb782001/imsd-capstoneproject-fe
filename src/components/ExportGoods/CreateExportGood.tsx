@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next"
 import { useRouter } from "next/router"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function AddExportGood() {
+function CreateExportGood() {
   const { t } = useTranslation()
   const columns = [
     {
@@ -369,7 +369,7 @@ function AddExportGood() {
   )
 }
 
-export default AddExportGood
+export default CreateExportGood
 
 function ListQuantitiveExport({
   data,
