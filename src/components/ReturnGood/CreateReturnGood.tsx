@@ -24,6 +24,7 @@ import {
   createReturnGoods,
   getListProductAvailable,
 } from "../../apis/return-product-module"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -229,14 +230,12 @@ function CreateReturnReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    const check = listProductImport.filter((i) => i.amount !== "")
+    const count = countUndefinedOrEmptyAmount(listProductImport)
 
-    if (!totalPriceSend || check.length === 0) {
+    if (!totalPriceSend || count === listProductImport.length) {
       toast.error("Phải trả sản phẩm hoặc trả tiền")
       return
     }
-    // Bug khi chua edit thi se k update amount
-    console.log(totalPriceSend, 123, check)
 
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
@@ -532,7 +531,7 @@ function CountTotalPrice({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+    <div className="py-2 text-center text-white rounded-md bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )

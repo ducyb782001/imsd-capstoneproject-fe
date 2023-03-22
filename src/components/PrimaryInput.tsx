@@ -34,7 +34,7 @@ function PrimaryInput({
           disabled={disabled}
           className={`read-only:bg-[#7F7F7F15] w-full text-sm py-3 rounded-md outline-none px-4 bg-transparent text-black border border-gray focus:border-primary hover:border-primary smooth-transform ${
             accessoriesLeft && "pl-11"
-          } ${accessoriesRight && "pr-11"}
+          } ${accessoriesRight && "pr-7"}
             ${classNameInput}`}
         />
         <span className="form-message">{message}</span>

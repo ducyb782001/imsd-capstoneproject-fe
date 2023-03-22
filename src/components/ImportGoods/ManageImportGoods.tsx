@@ -19,6 +19,7 @@ import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown
 import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
+import BigNumber from "bignumber.js"
 
 function ManageImportGoods() {
   const { t } = useTranslation()
@@ -56,7 +57,9 @@ function ManageImportGoods() {
         },
         {
           Header: t("total_cost"),
-          accessor: (data: any) => <p>{data?.totalCost}</p>,
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.totalCost).toFormat()} đ</p>
+          ),
         },
         {
           Header: " ",
