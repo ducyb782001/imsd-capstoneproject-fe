@@ -16,7 +16,7 @@ import KeyIcon from "../icons/KeyIcon"
 import { emailRegex } from "../../constants/constants"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function InputEmailForgot(props) {
+function InputEmailForgot() {
   const [userEmail, setUserEmail] = useState("")
   const [disabled, setDisabled] = useState(false)
 
@@ -103,10 +103,9 @@ function InputEmailForgot(props) {
                   onClick={handleLogin}
                 >
                   <ArrowLeftIcon
-                    className="mt-4"
+                    // className="mt-4"
                     accessoriesRight={
                       <UnderlineText className="font-medium">
-                        {" "}
                         Quay lại đăng nhập
                       </UnderlineText>
                     }

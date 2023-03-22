@@ -26,10 +26,6 @@ function ManageReturnExportGoods() {
           accessor: (data: any) => <p>{data?.returnsCode}</p>,
         },
         {
-          Header: t("supplier"),
-          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
-        },
-        {
           Header: t("bill_create_user"),
           accessor: (data: any) => <p>{data?.user?.userName}</p>,
         },

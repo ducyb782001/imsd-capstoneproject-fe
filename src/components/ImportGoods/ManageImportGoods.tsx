@@ -19,6 +19,7 @@ import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown
 import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
+import BigNumber from "bignumber.js"
 
 function ManageImportGoods() {
   const { t } = useTranslation()
@@ -52,6 +53,12 @@ function ManageImportGoods() {
           Header: t("created_date"),
           accessor: (data: any) => (
             <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: t("total_cost"),
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.totalCost).toFormat()} đ</p>
           ),
         },
         {
@@ -230,7 +237,7 @@ function ManageImportGoods() {
         <div className="flex flex-col">
           <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder={t("searchInImport")}
+              placeholder={t("search.searchInImport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />

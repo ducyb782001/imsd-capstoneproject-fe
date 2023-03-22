@@ -24,6 +24,7 @@ import {
   getDetailExportProduct,
 } from "../../apis/export-product-module"
 import ChooseExportReportDropdown from "./ChooseExportReportDropdown"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -224,9 +225,9 @@ function CreateReturnReport() {
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
 
-    const check = listProductImport.filter((i) => i.amount !== "")
+    const count = countUndefinedOrEmptyAmount(listProductImport)
 
-    if (!totalPriceSend || check.length === 0) {
+    if (!totalPriceSend || count === listProductImport.length) {
       toast.error("Phải trả sản phẩm hoặc trả tiền")
       return
     }
@@ -293,12 +294,13 @@ function CreateReturnReport() {
         })
 
         setListChosenProduct(response?.data)
+        setListProductImport(response?.data)
+
         return response?.data
       },
       enabled: !!exportId || !!reportChosen?.exportId,
     },
   ])
-  // console.log(listChosenProduct)
 
   const isLoadingListProduct = result[3].isLoading
 
@@ -487,6 +489,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       type="number"
       placeholder="---"
       value={costPrice ? costPrice : ""}
+      accessoriesRight="đ"
       onChange={(e) => {
         setCostPrice(e.target.value)
         e.stopPropagation()
@@ -524,7 +527,7 @@ function CountTotalPrice({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+    <div className="py-2 text-center text-white rounded-md bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )

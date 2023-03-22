@@ -556,8 +556,6 @@ function CountTotalPrice({ data, listProductImport }) {
 }
 
 function ListUnitImport({ data, listProductImport, setListProductImport }) {
-  console.log(data)
-
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
