@@ -266,7 +266,7 @@ function CreateImportReport() {
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
-        const response = await getListExportSupplier()
+        const response = await getListExportSupplier({})
         setListNhaCungCap(response?.data?.data)
         return response?.data
       },
