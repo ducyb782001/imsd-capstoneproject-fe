@@ -1,9 +1,25 @@
 import BigNumber from "bignumber.js"
 import React, { useState } from "react"
+import { useQueries, useQuery } from "react-query"
+import {
+  getDashboardByTime,
+  getDashboardChartData,
+  getDashBoardData,
+} from "../../apis/dashboard-module"
+import ExportDashboardIcon from "../icons/ExportDashboardIcon"
+import ExportReturnDashboardIcon from "../icons/ExportReturnDashboardIcon"
+import GainDashboardIcon from "../icons/GainDashboardIcon"
+import ImportDashboardIcon from "../icons/ImportDashboardIcon"
+import ImportReturnDashboardIcon from "../icons/ImportReturnDashboardIcon"
+import ProductDashboardIcon from "../icons/ProductDashboardIcon"
+import SpentDashboardIcon from "../icons/SpentDashboardIcon"
+import UserDasboardIcon from "../icons/UserDasboardIcon"
 import UserIcon from "../icons/UserIcon"
+import InfoDashboardCard from "./InfoDashboardCard"
 import InventoryChart from "./InventoryChart"
 import SaleChart from "./SaleChart"
 import SubMenu from "./SubMenu"
+import SummaryRevenue from "./SummaryRevenue"
 
 const listSubMenu = [
   { id: "sale", label: "Doanh thu bán hàng" },
@@ -13,33 +29,29 @@ const listSubMenu = [
 function Dashboard() {
   const [activeTab, setActiveTab] = useState<string>("sale")
 
+  const { data, isLoading } = useQuery(
+    {
+      queryKey: ["getDashBoardData"],
+      queryFn: async () => {
+        const response = await getDashBoardData()
+        return response?.data
+      },
+    },
+    // {
+    //   queryKey: ["getDashboardChartData"],
+    //   queryFn: async () => {
+    //     const response = await getDashboardChartData({
+    //       year: 2023,
+    //     })
+    //     setDashboardData(response?.data)
+    //     return response?.data
+    //   },
+    // },
+  )
+
   return (
     <div>
-      <div className="grid items-center grid-cols-1 gap-3 bg-white block-border md:grid-cols-37">
-        <div className="flex items-center gap-3">
-          <img
-            className="object-cover w-16 h-16 rounded-full"
-            alt="avatar-user"
-            src="/images/image-default.png"
-          />
-          <div>
-            <p className="text-xl font-semibold text-black">Thùy Dung</p>
-            <p className="mt-2 text-sm font-medium text-[#343434]">Thủ kho</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <UserInfoIcon />
-          <UserInfoIcon />
-          <UserInfoIcon />
-          <UserInfoIcon />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-6 mt-6 md:grid-cols-4">
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-      </div>
+      <SummaryRevenue />
       <SubMenu
         setActiveTab={setActiveTab}
         activeTab={activeTab}
@@ -47,41 +59,52 @@ function Dashboard() {
       />
       {activeTab === "sale" && <SaleChart />}
       {activeTab === "inventoryEachYear" && <InventoryChart />}
-      <div className="grid grid-cols-2 gap-6 mt-6 md:grid-cols-4">
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
-        <InfoCard />
+      <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-4">
+        <InfoDashboardCard
+          title="Nhân viên hiện tại"
+          value={data?.staff}
+          icon={<UserDasboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Số mặt hàng trong kho"
+          value={data?.product}
+          icon={<ProductDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Tổng tiền thu"
+          value={data?.gain}
+          token={true}
+          icon={<GainDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Tổng tiền chi"
+          value={data?.spent}
+          token={true}
+          icon={<SpentDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Tổng số đơn nhập hàng"
+          value={data?.import}
+          icon={<ImportDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Số đơn trả nhà cung cấp"
+          value={data?.importReturn}
+          icon={<ImportReturnDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Tổng số đơn xuất hàng"
+          value={data?.export}
+          icon={<ExportDashboardIcon />}
+        />
+        <InfoDashboardCard
+          title="Số đơn khách trả"
+          value={data?.exportReturn}
+          icon={<ExportReturnDashboardIcon />}
+        />
       </div>
     </div>
   )
 }
 
 export default Dashboard
-
-function InfoCard() {
-  return (
-    <div className="p-3 font-semibold bg-white border rounded-xl border-grayLight drop-shadow-md">
-      <p className="text-lg">Nhân viên hiện tại</p>
-      <div className="flex items-center justify-between mt-2">
-        <p className="text-[#28A745] text-2xl">
-          {new BigNumber(10).toFormat()}
-        </p>
-        <UserIcon />
-      </div>
-    </div>
-  )
-}
-
-function UserInfoIcon() {
-  return (
-    <div className="flex items-center">
-      <p className="text-sm font-normal text-gray">Giới tính:</p>
-      <p className="text-sm font-medium text-[#343434] ml-3">Nữ</p>
-    </div>
-  )
-}

@@ -88,13 +88,6 @@ function UserDropdown() {
 
   const { data, isLoading } = useGetMe()
 
-  // useEffect(() => {
-  //   if (typeof window !== undefined && data) {
-  //     const userData = localStorage.getItem("userData")
-  //     setUserData(JSON.parse(userData))
-  //   }
-  // }, [data])
-
   const { t } = useTranslation()
 
   return (

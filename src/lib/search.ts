@@ -93,3 +93,19 @@ export function searchExportCode(searchInput: string, list: []) {
   }
   return result
 }
+
+export function searchBySupplierName(searchInput: string, list: []) {
+  let result
+  if (!searchInput) {
+    return list
+  }
+  if (searchInput) {
+    result = list.filter((i) =>
+      // @ts-ignore
+      i?.supplierName.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+  } else {
+    result = []
+  }
+  return result
+}

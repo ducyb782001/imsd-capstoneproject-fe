@@ -22,7 +22,7 @@ export const signUpUrl = `${baseUrl}/Authentication/SignUp`
 
 export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail?token=`
 
-export const logoutUrl = `${baseUrl}/logout`
+export const logoutUrl = `/logout`
 
 export const meUrl = `${baseUrl}/Users/GetUserDetail`
 
@@ -125,3 +125,11 @@ export const updateStockTakeUrl = `${baseUrl}/Stocktake/Update`
 // Return
 
 export const returnGoodsUrl = `${baseUrl}/Returns`
+
+// Dashboard
+
+export const getDashboardDataUrl = `${baseUrl}/Dashboard/GetData`
+
+export const getDashboardChartDataUrl = `${baseUrl}/Dashboard/GetChartData`
+
+export const getDashboardDataByTimeUrl = `${baseUrl}/Dashboard/GetDataByTimePeriod`

@@ -259,9 +259,16 @@ function CreateImportReport() {
       queryFn: async () => {
         const staff = await getListStaff()
         setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
+
         return staff?.data?.data
+      },
+    },
+    {
+      queryKey: ["getListSupplier"],
+      queryFn: async () => {
+        const response = await getListExportSupplier()
+        setListNhaCungCap(response?.data?.data)
+        return response?.data
       },
     },
     {
@@ -284,7 +291,6 @@ function CreateImportReport() {
       },
     },
   ])
-  console.log(productImportObject)
 
   return (
     <div>

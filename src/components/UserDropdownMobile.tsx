@@ -84,8 +84,7 @@ function UserDropdownMobile(props) {
                   onClick={close}
                 />
                 <p className="font-semibold text-center text-grayDark py-[18px]">
-                  {/* {data?.firstName} {data?.lastName} */}
-                  Thủ kho Đức
+                  {data?.userName}
                 </p>
                 <Line />
                 <div className="px-6">

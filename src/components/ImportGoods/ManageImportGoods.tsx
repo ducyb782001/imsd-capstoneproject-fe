@@ -20,6 +20,7 @@ import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
+import ShowDetail from "../ShowDetail"
 
 function ManageImportGoods() {
   const { t } = useTranslation()
@@ -41,15 +42,6 @@ function ManageImportGoods() {
           accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
         },
         {
-          Header: t("status"),
-          accessor: (data: any) => (
-            <div className="flex justify-center">
-              <StatusDisplay data={data} />
-            </div>
-          ),
-        },
-
-        {
           Header: t("created_date"),
           accessor: (data: any) => (
             <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
@@ -59,6 +51,14 @@ function ManageImportGoods() {
           Header: t("total_cost"),
           accessor: (data: any) => (
             <p>{new BigNumber(data?.totalCost).toFormat()} đ</p>
+          ),
+        },
+        {
+          Header: t("status"),
+          accessor: (data: any) => (
+            <div className="flex justify-center">
+              <StatusDisplay data={data} />
+            </div>
           ),
         },
         {
@@ -225,7 +225,7 @@ function ManageImportGoods() {
         <Link href={`/create-import-report`}>
           <a>
             <PrimaryBtn
-              className="min-w-[230px]"
+              className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
               {t("create_import_report")}
@@ -235,9 +235,9 @@ function ManageImportGoods() {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[50%_23%_23%] mb-4">
+          <div className="grid grid-cols-1 items-center justify-between w-full gap-2 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder={t("search.searchInImport")}
+              placeholder={"Tìm theo mã đơn nhập, tên NCC"}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
@@ -343,40 +343,40 @@ function StatusDisplay({ data }) {
 function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/import-report-draff/${data?.importId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/import-report-detail/${data?.importId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/import-report-succeed/${data?.importId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/import-report-canceled/${data?.importId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
