@@ -141,6 +141,7 @@ function ImportReportEdit() {
   const [listProductImport, setListProductImport] = useState<any>([])
   const [listProduct, setListProduct] = useState<any>([])
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   // cai de gui di de update
   const [productImportObject, setProductImportObject] = useState<any>()
@@ -288,8 +289,11 @@ function ImportReportEdit() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsLoadingStaff(true)
         const response = await getListStaff()
         setListStaff(response?.data?.data)
+        setIsLoadingStaff(false)
+
         return response?.data?.data
       },
     },
@@ -355,6 +359,7 @@ function ImportReportEdit() {
               textDefault={productImportObject?.user?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
+              isLoadingStaff={isLoadingStaff}
             />
           </div>
         </div>

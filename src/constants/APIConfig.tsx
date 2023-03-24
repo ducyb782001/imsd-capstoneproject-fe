@@ -22,7 +22,7 @@ export const signUpUrl = `${baseUrl}/Authentication/SignUp`
 
 export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail?token=`
 
-export const logoutUrl = `/logout`
+export const logoutUrl = `${baseUrl}/Logout`
 
 export const meUrl = `${baseUrl}/Users/GetUserDetail`
 

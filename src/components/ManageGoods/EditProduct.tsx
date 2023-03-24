@@ -21,6 +21,10 @@ import { toast } from "react-toastify"
 import { getListExportTypeGood } from "../../apis/type-good-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { useTranslation } from "react-i18next"
+import defaultProductImage from "../images/default-product-image.jpg"
+import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
+import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
+
 interface Product {
   productId: number
   productName: string
@@ -38,6 +42,7 @@ interface Product {
   status: boolean
   supplier: any
   category: any
+  barcode: string
 }
 
 const TOAST_EDIT_PRODUCT_TYPE_ID = "toast-edit-product-type-id"
@@ -62,6 +67,8 @@ function EditProduct() {
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
 
+  const [isLoadingSupplier, setIsLoadingSupplier] = useState(true)
+
   const handleAddNewUnit = () => {
     if (newType && newDetail) {
       setListUnits([
@@ -75,12 +82,13 @@ function EditProduct() {
       setNewDetail("")
     }
   }
-  useEffect(() => {
-    if (nhaCungCapSelected == undefined || typeProduct == undefined) {
-      setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
-      setTypeProduct(detailProduct?.category?.categoryName)
-    }
-  })
+  // useEffect(() => {
+  //   if (nhaCungCapSelected == undefined || typeProduct == undefined) {
+  //     setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
+  //     setTypeProduct(detailProduct?.category?.categoryName)
+  //   }
+  // })
+
   useEffect(() => {
     if (listUnits) {
       setDetailProduct({
@@ -128,9 +136,11 @@ function EditProduct() {
         if (productId) {
           const response = await getProductDetail(productId)
           setDetailProduct(response?.data)
+          setIsEnabled(response?.data?.status)
           return response?.data
         }
       },
+      enabled: !!productId,
     },
     {
       queryKey: ["getListTypeGood"],
@@ -143,12 +153,16 @@ function EditProduct() {
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
+        setIsLoadingSupplier(true)
         const response = await getListExportSupplier({})
         await setListNhaCungCap(response?.data?.data)
+        setIsLoadingSupplier(false)
+
         return response?.data
       },
     },
   ])
+
   useEffect(() => {
     if (imageUploaded) {
       setDetailProduct({
@@ -222,7 +236,7 @@ function EditProduct() {
                 {t("product_name")} <span className="text-red-500">*</span>
               </p>
             }
-            value={detailProduct?.productName}
+            value={detailProduct?.productName ? detailProduct?.productName : ""}
             onChange={(e) => {
               setDetailProduct({
                 ...detailProduct,
@@ -230,10 +244,57 @@ function EditProduct() {
               })
             }}
           />
-          <div className="grid grid-cols-2 mt-4 gap-7">
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <div className="mb-2 text-sm font-bold text-gray">
+                {t("supplier")}
+                <span className="text-red-500"> *</span>
+              </div>
+              <AddChooseSupplierDropdown
+                listDropdown={listNhaCungCap}
+                textDefault={
+                  `${detailProduct?.supplier?.supplierName} - ${detailProduct?.supplier?.supplierPhone}` ||
+                  t("choose_supplier")
+                }
+                showing={nhaCungCapSelected}
+                setShowing={setNhaCungCapSelected}
+                isLoadingSupplier={isLoadingSupplier}
+              />
+            </div>
+            <div>
+              <div className="mb-2 text-sm font-bold text-gray">
+                {t("type.typeGoods")}
+                <span className="text-red-500"> *</span>
+              </div>
+              <AddChooseTypeDropdown
+                listDropdown={listTypeProduct}
+                textDefault={
+                  detailProduct?.category?.categoryName || t("choose_type")
+                }
+                showing={typeProduct}
+                setShowing={setTypeProduct}
+              />
+            </div>
+
             <PrimaryInput
-              title={t("product code")}
-              value={detailProduct?.productCode}
+              title={
+                <div className="flex gap-1">
+                  <p>{t("product code")}</p>
+                  <Tooltip
+                    content={
+                      <div>
+                        {t("product_can_not_duplicate")}
+                        <p>{t("head_of_product_code")}</p>
+                      </div>
+                    }
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                </div>
+              }
+              value={
+                detailProduct?.productCode ? detailProduct?.productCode : ""
+              }
               onChange={(e) => {
                 setDetailProduct({
                   ...detailProduct,
@@ -242,8 +303,19 @@ function EditProduct() {
               }}
             />
             <PrimaryInput
+              title="Mã barcode"
+              value={detailProduct?.barcode ? detailProduct?.barcode : ""}
+              onChange={(e) => {
+                setDetailProduct({ ...detailProduct, barcode: e.target.value })
+              }}
+            />
+            <PrimaryInput
               title={t("product_unit")}
-              value={detailProduct?.defaultMeasuredUnit}
+              value={
+                detailProduct?.defaultMeasuredUnit
+                  ? detailProduct?.defaultMeasuredUnit
+                  : ""
+              }
               onChange={(e) => {
                 setDetailProduct({
                   ...detailProduct,
@@ -251,21 +323,24 @@ function EditProduct() {
                 })
               }}
             />
+            <div className="hidden md:block" />
             <PrimaryInput
               title={t("cost_price")}
-              type="number"
-              value={new BigNumber(detailProduct?.costPrice).toFormat()}
+              value={detailProduct?.costPrice ? detailProduct?.costPrice : 0}
               onChange={(e) => {
                 setDetailProduct({
                   ...detailProduct,
                   costPrice: e.target.value,
                 })
               }}
+              accessoriesRight="đ"
             />
             <PrimaryInput
               title={t("sell_price")}
-              type="number"
-              value={new BigNumber(detailProduct?.sellingPrice).toFormat()}
+              accessoriesRight="đ"
+              value={
+                detailProduct?.sellingPrice ? detailProduct?.sellingPrice : 0
+              }
               onChange={(e) => {
                 setDetailProduct({
                   ...detailProduct,
@@ -276,7 +351,8 @@ function EditProduct() {
           </div>
           <PrimaryTextArea
             title={t("note_product")}
-            value={detailProduct?.description}
+            className="mt-5"
+            value={detailProduct?.description ? detailProduct?.description : ""}
             onChange={(e) => {
               setDetailProduct({
                 ...detailProduct,
@@ -321,13 +397,15 @@ function EditProduct() {
                   <ReadOnlyField
                     title={t("in_stock_first")}
                     type="number"
-                    value={new BigNumber(detailProduct?.inStock).toFormat()}
+                    value={detailProduct?.inStock ? detailProduct?.inStock : ""}
                   />
 
                   <ReadOnlyField
                     title={t("cost_price")}
                     type="number"
-                    value={new BigNumber(detailProduct?.stockPrice)}
+                    value={
+                      detailProduct?.stockPrice ? detailProduct?.stockPrice : ""
+                    }
                   />
                 </motion.div>
               )}
@@ -430,9 +508,7 @@ function EditProduct() {
 }
 
 export default EditProduct
-import defaultProductImage from "../images/default-product-image.jpg"
-import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
-import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
+
 function RightSideProductDetail({
   imageUploaded,
   onErrorUpload,
@@ -489,20 +565,6 @@ function RightSideProductDetail({
       <div className="mt-4 bg-white block-border">
         <SmallTitle>{t("additional_information")}</SmallTitle>
 
-        <p className="mt-4">{t("supplier")}</p>
-        <AddChooseSupplierDropdown
-          listDropdown={listNhaCungCap}
-          textDefault={t("choose_supplier")}
-          showing={nhaCungCapSelected}
-          setShowing={setNhaCungCapSelected}
-        />
-        <p className="mt-4">{t("type.typeGoods")}</p>
-        <AddChooseTypeDropdown
-          listDropdown={listTypeProduct}
-          textDefault={t("choose_type")}
-          showing={typeProduct}
-          setShowing={setTypeProduct}
-        />
         <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
           <p className="text-gray">{t("can_sale")}</p>
@@ -584,14 +646,14 @@ function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder={t("carton")}
         title={t("unit_same")}
-        value={data?.measuredUnitName}
+        value={data?.measuredUnitName ? data?.measuredUnitName : ""}
         readOnly
       />
       <PrimaryInput
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
         title={t("number_in_unit")}
-        value={data?.measuredUnitValue}
+        value={data?.measuredUnitValue ? data?.measuredUnitValue : 0}
         type="number"
         readOnly
       />

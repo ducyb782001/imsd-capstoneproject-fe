@@ -35,6 +35,7 @@ module.exports = {
         cancelBtn: "#ED5B55",
         greenDark: "#029F6B",
         cancelDark: "#B4294E",
+        dangerous: "#E92837",
       },
       textColor: {
         // gray: "#777692",

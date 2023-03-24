@@ -58,7 +58,7 @@ function StepBar({
           }`}
         ></div>
         <div
-          className={`h-[2px] w-[220px] absolute left-1/2 top-4 z-10 ${
+          className={`h-[2px] w-[190px] md:w-[220px] absolute left-1/2 top-4 z-10 ${
             status == "succeed" || status == "approved"
               ? "bg-primary"
               : "bg-[#D6DDE8]"

@@ -19,6 +19,7 @@ import { getAllExportProduct } from "../../apis/export-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
+import ShowDetail from "../ShowDetail"
 
 function ManageExportGoods() {
   const { t } = useTranslation()
@@ -223,7 +224,7 @@ function ManageExportGoods() {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
+          <div className="grid grid-cols-1 items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
               placeholder={t("search.searchInExport")}
               onChange={(e) => setSearchParam(e.target.value)}
@@ -296,25 +297,25 @@ function StatusDisplay({ data }) {
   const { t } = useTranslation()
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="w-32 mt-4 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">{t("in_progress")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center rounded-2xl bg-orange-50 border border-[#D69555] text-[#D69555]">
+      <div className="w-32 mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">{t("in_export")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="items-center w-32 mt-4 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
+      <div className="items-center w-32 mt-4 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-2xl bg-red-50">
+      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
@@ -324,40 +325,40 @@ function StatusDisplay({ data }) {
 function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/export-report-draff/${data?.exportId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/export-report-detail/${data?.exportId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/export-report-succeed/${data?.exportId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/export-report-canceled/${data?.exportId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>

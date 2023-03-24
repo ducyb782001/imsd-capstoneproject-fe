@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { searchName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
+import LoadingBlockSkeleton from "../Skeleton/LoadingBlockSkeleton"
 
 function ChooseStaffDropdown({
   title = null,
@@ -10,6 +11,7 @@ function ChooseStaffDropdown({
   showing,
   setShowing,
   textDefault,
+  isLoadingStaff = true,
 }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
@@ -96,20 +98,26 @@ function ChooseStaffDropdown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder="Tìm kiếm theo tên"
-        />
-        <div
-          id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
-        >
-          {listResult?.map((i, index) => (
-            <DropDownItem key={index} data={i} setShowing={setShowing} />
-          ))}
-        </div>
+        {isLoadingStaff ? (
+          <LoadingBlockSkeleton />
+        ) : (
+          <>
+            <DropdownSearch
+              onClick={toggleOpenMenu}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className=""
+              placeholder="Tìm kiếm theo tên"
+            />
+            <div
+              id="list-dropdown"
+              className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
+            >
+              {listResult?.map((i, index) => (
+                <DropDownItem key={index} data={i} setShowing={setShowing} />
+              ))}
+            </div>
+          </>
+        )}
       </motion.div>
     </motion.div>
   )

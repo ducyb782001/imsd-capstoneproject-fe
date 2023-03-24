@@ -148,12 +148,20 @@ function DropDownItem({ data, setShowing }) {
         />
         <div>
           <p>{data?.productName}</p>
-          <p className="text-gray">{data?.productCode}</p>
+          <p className="text-gray">
+            {data?.productCode} ĐVT:
+            <span className="text-blue"> {data?.defaultMeasuredUnit}</span>
+          </p>
         </div>
       </div>
-      <div>
-        Giá nhập:{" "}
-        {data?.costPrice ? new BigNumber(data?.costPrice).toFormat() : "0"} đ
+      <div className="text-end">
+        <p>
+          Giá nhập:{" "}
+          {data?.costPrice ? new BigNumber(data?.costPrice).toFormat(0) : "0"} đ
+        </p>
+        <p className="text-blue">
+          Tồn: {data?.inStock ? new BigNumber(data?.inStock).toFormat(0) : "0"}
+        </p>
       </div>
     </div>
   )

@@ -42,6 +42,8 @@ function AddProductPopup({ className = "" }) {
   const close = () => setShowDialog(false)
   const queryClient = useQueryClient()
 
+  const [isLoadingSupplier, setIsLoadingSupplier] = useState(true)
+
   const addNewProductMutation = useMutation(
     async (newProduct) => {
       return await addNewProduct(newProduct)
@@ -110,8 +112,11 @@ function AddProductPopup({ className = "" }) {
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
+        setIsLoadingSupplier(true)
         const response = await getListExportSupplier({})
         await setListNhaCungCap(response?.data?.data)
+        setIsLoadingSupplier(false)
+
         return response?.data
       },
     },
@@ -242,6 +247,7 @@ function AddProductPopup({ className = "" }) {
                         textDefault={"Chọn nhà cung cấp"}
                         showing={nhaCungCapSelected}
                         setShowing={setNhaCungCapSelected}
+                        isLoadingSupplier={isLoadingSupplier}
                       />
                     </div>
                     <div>

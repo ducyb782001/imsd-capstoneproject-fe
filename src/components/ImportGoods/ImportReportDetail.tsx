@@ -156,17 +156,14 @@ function ImportReportDetail() {
     })
     importImportMutation.mutate(productImport?.importId)
   }
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
@@ -176,9 +173,6 @@ function ImportReportDetail() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                {t("exit")}
-              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="min-w-[120px]"

@@ -103,7 +103,7 @@ function ExportReportDetail() {
     }
   }, [productImport])
   const { exportId } = router.query
-  console.log(productImport)
+
   useQueries([
     {
       queryKey: ["getDetailProductExport", exportId],

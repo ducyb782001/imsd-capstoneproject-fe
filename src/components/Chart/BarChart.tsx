@@ -50,7 +50,7 @@ function BarChart({ dashboardData, selectedYear, setSelectedYear, listYear }) {
       const chartColor = chartDataNumber?.map((i) =>
         new BigNumber(i).isGreaterThanOrEqualTo(BigNumber(0))
           ? "#696CFF70"
-          : "#F13535",
+          : "#F1353560",
       )
 
       setChartData({

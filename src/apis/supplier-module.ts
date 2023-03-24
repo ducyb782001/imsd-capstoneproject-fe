@@ -31,9 +31,7 @@ export const getSupplierDetail = (supplierId) => {
 }
 
 export const getListExportSupplier = (searchObj) => {
-  return requestAPI({
-    url: `${allSupplierUrl}?offset=0&limit=1000`,
-  })
+  return requestAPI({ url: `${allSupplierUrl}?offset=0&limit=1000` })
 }
 
 export const updateSupplier = (editedSupplier) =>

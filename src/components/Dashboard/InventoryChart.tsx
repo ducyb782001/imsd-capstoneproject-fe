@@ -9,13 +9,17 @@ function InventoryChart() {
     { key: 1, value: 2023 },
     { key: 2, value: 2022 },
   ]
+  const [isLoading, setIsLoading] = useState(true)
 
   const { data } = useQuery({
     queryKey: ["getDashboardChartData", selectedYear],
     queryFn: async () => {
+      setIsLoading(true)
       const response = await getDashboardChartData({
         year: selectedYear?.value,
       })
+      setIsLoading(false)
+
       return response?.data
     },
     enabled: !!selectedYear,
@@ -23,6 +27,7 @@ function InventoryChart() {
 
   return (
     <div className="bg-white block-border !rounded-b-lg !rounded-t-none">
+      {isLoading && <div className="w-full h-[600px] skeleton-loading" />}
       <AvgPriceChart
         dashboardData={data}
         selectedYear={selectedYear}

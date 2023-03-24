@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
@@ -18,6 +18,7 @@ import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
 import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useTranslation } from "react-i18next"
 import { useRouter } from "next/router"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateExportGood() {
@@ -131,6 +132,18 @@ function CreateExportGood() {
   const [listProduct, setListProduct] = useState<any>([])
   const [productExportObject, setProductExportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true)
+
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (staffSelected) {
@@ -140,6 +153,7 @@ function CreateExportGood() {
       })
     }
   }, [staffSelected])
+
   useEffect(() => {
     if (nhaCungCapSelected) {
       setProductExportObject({
@@ -168,8 +182,6 @@ function CreateExportGood() {
         const discount = listProductExport.find(
           (i) => i.productId == item.productId,
         )?.discount
-          ? undefined
-          : 0
         const amount = listProductExport.find(
           (i) => i.productId == item.productId,
         )?.amount
@@ -184,9 +196,7 @@ function CreateExportGood() {
           price: price,
           measuredUnitId: listProductExport.find(
             (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          )?.measuredUnitId,
         }
       })
       setListProductExport(list)
@@ -223,10 +233,12 @@ function CreateExportGood() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsLoadingStaff(true)
         const staff = await getListStaff()
         setListStaff(staff?.data?.data)
         const supplier = await getListExportSupplier({})
         setListNhaCungCap(supplier?.data?.data)
+        setIsLoadingStaff(false)
         return staff?.data?.data
       },
     },
@@ -245,7 +257,6 @@ function CreateExportGood() {
       },
     },
   ])
-  console.log(productExportObject)
 
   const createExportMutation = useMutation(
     async (exportProduct) => {
@@ -274,10 +285,27 @@ function CreateExportGood() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+    const count = countUndefinedOrEmptyAmount(listProductExport)
+
+    if (count > 0) {
+      toast.error(
+        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
+      )
+      return
+    }
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createExportMutation.mutate(productExportObject)
+
+    const submittedData = {
+      ...productExportObject,
+    }
+    if (!staffSelected) {
+      submittedData["userId"] = userData.userId
+    }
+
+    createExportMutation.mutate(submittedData)
   }
 
   return (
@@ -298,7 +326,12 @@ function CreateExportGood() {
             </ConfirmPopup>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
+            <StepBar
+              createdDate={format(
+                parseISO(new Date().toISOString()),
+                "dd/MM/yyyy HH:mm",
+              )}
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -308,9 +341,10 @@ function CreateExportGood() {
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={t("choose_staff")}
+              textDefault={userData?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
+              isLoadingStaff={isLoadingStaff}
             />
           </div>
         </div>

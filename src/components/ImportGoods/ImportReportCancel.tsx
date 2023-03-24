@@ -110,15 +110,11 @@ function ImportReportCanceled() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-import-goods")
-  }
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 grid-cols md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
@@ -128,11 +124,6 @@ function ImportReportCanceled() {
               <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-2xl">
                 {t("cancelled")}
               </div>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                {t("exit")}
-              </PrimaryBtn>
             </div>
           </div>
           <div className="flex justify-center mt-6">

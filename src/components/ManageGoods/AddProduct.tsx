@@ -40,9 +40,10 @@ interface Product {
   image: string
   measuredUnits: any
   status: boolean
+  barcode: string
 }
 
-function AddProduct(props) {
+function AddProduct() {
   const [product, setProduct] = useState<Product>()
   const [isCreateWarehouse, setIsCreateWarehouse] = useState(false)
   const [isAdditionalUnit, setIsAdditionalUnit] = useState(false)
@@ -53,9 +54,9 @@ function AddProduct(props) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
-  const [isImageNull, setIsImageNull] = useState(true)
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
+  const [isLoadingSupplier, setIsLoadingSupplier] = useState(true)
   const { t } = useTranslation()
 
   const handleAddNewUnit = () => {
@@ -77,7 +78,6 @@ function AddProduct(props) {
         ...product,
         image: imageUploaded,
       })
-      setIsImageNull(false)
     }
   }, [imageUploaded])
 
@@ -120,8 +120,11 @@ function AddProduct(props) {
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
+        setIsLoadingSupplier(true)
         const response = await getListExportSupplier({})
         await setListNhaCungCap(response?.data?.data)
+        setIsLoadingSupplier(false)
+
         return response?.data
       },
     },
@@ -134,13 +137,6 @@ function AddProduct(props) {
       status: true,
     })
   }, [isEnabled])
-
-  useEffect(() => {
-    setProduct({
-      ...product,
-      image: `https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`,
-    })
-  }, [])
 
   const addNewProductMutation = useMutation(
     async (newProduct) => {
@@ -194,7 +190,32 @@ function AddProduct(props) {
               setProduct({ ...product, productName: e.target.value })
             }}
           />
-          <div className="grid grid-cols-2 mt-4 gap-7">
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <div className="mb-2 text-sm font-bold text-gray">
+                {t("supplier")}
+                <span className="text-red-500"> *</span>
+              </div>
+              <AddChooseSupplierDropdown
+                listDropdown={listNhaCungCap}
+                textDefault={t("choose_supplier")}
+                showing={nhaCungCapSelected}
+                setShowing={setNhaCungCapSelected}
+                isLoadingSupplier={isLoadingSupplier}
+              />
+            </div>
+            <div>
+              <div className="mb-2 text-sm font-bold text-gray">
+                {t("type.typeGoods")}
+                <span className="text-red-500"> *</span>
+              </div>
+              <AddChooseTypeDropdown
+                listDropdown={listTypeProduct}
+                textDefault={t("choose_type")}
+                showing={typeProduct}
+                setShowing={setTypeProduct}
+              />
+            </div>
             <PrimaryInput
               title={
                 <div className="flex gap-1">
@@ -216,33 +237,35 @@ function AddProduct(props) {
               }}
             />
             <PrimaryInput
+              title="Mã barcode"
+              onChange={(e) => {
+                setProduct({ ...product, barcode: e.target.value })
+              }}
+            />
+            <PrimaryInput
               title={t("product_unit")}
               onChange={(e) => {
                 setProduct({ ...product, defaultMeasuredUnit: e.target.value })
               }}
             />
+            <div className="hidden md:block" />
             <PrimaryInput
               title={t("cost_price")}
               type="number"
               onChange={(e) => {
                 setProduct({ ...product, costPrice: e.target.value })
               }}
+              accessoriesRight="đ"
             />
             <PrimaryInput
               title={t("sell_price")}
               type="number"
+              accessoriesRight="đ"
               onChange={(e) => {
                 setProduct({ ...product, sellingPrice: e.target.value })
               }}
             />
           </div>
-          <PrimaryTextArea
-            className="mt-7"
-            title={t("note_product")}
-            onChange={(e) => {
-              setProduct({ ...product, description: e.target.value })
-            }}
-          />
         </div>
         <div className="mt-4 bg-white block-border">
           <div className="flex items-center gap-2">
@@ -371,14 +394,10 @@ function AddProduct(props) {
         imageUploaded={imageUploaded}
         setImageUploaded={setImageUploaded}
         nhaCungCapSelected={nhaCungCapSelected}
-        setNhaCungCapSelected={setNhaCungCapSelected}
         typeProduct={typeProduct}
-        setTypeProduct={setTypeProduct}
         handleAddProduct={handleAddNewProduct}
         isEnabled={isEnabled}
         setIsEnabled={setIsEnabled}
-        listNhaCungCap={listNhaCungCap}
-        listTypeProduct={listTypeProduct}
       />
     </div>
   )
@@ -392,14 +411,10 @@ function RightSideProductDetail({
   imageUploaded,
   setImageUploaded,
   nhaCungCapSelected,
-  setNhaCungCapSelected,
   typeProduct,
-  setTypeProduct,
   handleAddProduct,
   isEnabled,
   setIsEnabled,
-  listNhaCungCap,
-  listTypeProduct,
 }) {
   const [disabled, setDisabled] = useState(true)
   const [loadingImage, setLoadingImage] = useState(false)
@@ -456,25 +471,35 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>
-          {t("additional_information")}
-          <span className="text-red-500">*</span>
-        </SmallTitle>
+        <SmallTitle>{t("additional_information")}</SmallTitle>
+        <div className="mt-4 mb-2 text-sm font-bold text-gray">Ngưỡng tồn</div>
+        <div className="flex items-center w-full gap-2">
+          <PrimaryInput
+            placeholder="Min"
+            type="number"
+            onChange={(e) => {
+              setProduct({ ...product, minStock: e.target.value })
+            }}
+          />
+          <p>-</p>
+          <PrimaryInput
+            placeholder="Max"
+            type="number"
+            onChange={(e) => {
+              setProduct({ ...product, maxStock: e.target.value })
+            }}
+          />
+        </div>
 
-        <p className="mt-4">{t("supplier")}</p>
-        <AddChooseSupplierDropdown
-          listDropdown={listNhaCungCap}
-          textDefault={t("choose_supplier")}
-          showing={nhaCungCapSelected}
-          setShowing={setNhaCungCapSelected}
+        <PrimaryTextArea
+          rows={4}
+          className="mt-5"
+          title={t("note_product")}
+          onChange={(e) => {
+            setProduct({ ...product, description: e.target.value })
+          }}
         />
-        <p className="mt-4">{t("type.typeGoods")}</p>
-        <AddChooseTypeDropdown
-          listDropdown={listTypeProduct}
-          textDefault={t("choose_type")}
-          showing={typeProduct}
-          setShowing={setTypeProduct}
-        />
+
         <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
           <p className="text-gray">{t("can_sale")}</p>

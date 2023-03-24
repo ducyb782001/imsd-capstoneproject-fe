@@ -1,11 +1,14 @@
 import BigNumber from "bignumber.js"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { createImportProduct } from "../../apis/import-product-module"
 import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getListExportSupplier,
+  getListSupplier,
+} from "../../apis/supplier-module"
 import { getListStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
@@ -22,6 +25,7 @@ import SearchProductImportDropdown from "./SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import { useTranslation } from "react-i18next"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
@@ -136,6 +140,20 @@ function CreateImportReport() {
     useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
+
+  const [isLoadingSupplier, setIsloadingSupplier] = useState(true)
+
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   useEffect(() => {
     if (staffSelected) {
       setProductImportObject({
@@ -144,6 +162,7 @@ function CreateImportReport() {
       })
     }
   }, [staffSelected])
+
   useEffect(() => {
     if (nhaCungCapSelected) {
       setProductImportObject({
@@ -156,6 +175,7 @@ function CreateImportReport() {
       })
     }
   }, [nhaCungCapSelected])
+
   useEffect(() => {
     if (productChosen) {
       if (listChosenProduct.includes(productChosen)) {
@@ -246,29 +266,48 @@ function CreateImportReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+
+    const count = countUndefinedOrEmptyAmount(listProductImport)
+
+    if (count > 0) {
+      toast.error(
+        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
+      )
+      return
+    }
+
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createImportMutation.mutate(productImportObject)
+
+    const submittedData = {
+      ...productImportObject,
+    }
+    if (!staffSelected) {
+      submittedData["userId"] = userData.userId
+    }
+
+    createImportMutation.mutate(submittedData)
   }
 
   const router = useRouter()
+
   useQueries([
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsloadingSupplier(true)
         const staff = await getListStaff()
         setListStaff(staff?.data?.data)
 
-        return staff?.data?.data
-      },
-    },
-    {
-      queryKey: ["getListSupplier"],
-      queryFn: async () => {
-        const response = await getListExportSupplier({})
+        const response = await getListSupplier({
+          offset: 0,
+          limit: 1000,
+        })
+
         setListNhaCungCap(response?.data?.data)
-        return response?.data
+        setIsloadingSupplier(false)
+        return staff?.data?.data
       },
     },
     {
@@ -294,24 +333,16 @@ function CreateImportReport() {
 
   return (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title="Dữ liệu bạn vừa nhập sẽ không được lưu, bạn muốn thoát không?"
-              handleClickSaveBtn={() => {
-                router.push("/manage-import-goods")
-              }}
-            >
-              Thoát
-            </ConfirmPopup>
-            {/* <SecondaryBtn onClick={} className="max-w-[120px]">Thoát</SecondaryBtn> */}
-          </div>
+          <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
           <div className="flex justify-center mt-6">
-            <StepBar createdDate={format(Date.now(), "dd/MM/yyyy HH:mm")} />
+            <StepBar
+              createdDate={format(
+                parseISO(new Date().toISOString()),
+                "dd/MM/yyyy HH:mm",
+              )}
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -325,6 +356,7 @@ function CreateImportReport() {
               textDefault={"Nhà cung cấp"}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
+              isLoadingSupplier={isLoadingSupplier}
             />
           </div>
         </div>
@@ -338,9 +370,10 @@ function CreateImportReport() {
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <ChooseStaffDropdown
             listDropdown={listStaff}
-            textDefault={"Chọn nhân viên"}
+            textDefault={userData?.userName || "Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
+            isLoadingStaff={isLoadingSupplier}
           />
           <PrimaryTextArea
             rows={4}
@@ -398,6 +431,8 @@ function ListQuantitiveImport({
   listProductImport,
   setListProductImport,
 }) {
+  console.log(data)
+
   const [quantity, setQuantity] = useState()
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
@@ -411,17 +446,24 @@ function ListQuantitiveImport({
   }
 
   return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
+    <div className="w-[100px]">
+      <PrimaryInput
+        className="w-[60px]"
+        type="number"
+        placeholder="0"
+        value={quantity ? quantity : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          setQuantity(e.target.value)
+          handleOnChangeAmount(e.target.value, data)
+        }}
+      />
+      {new BigNumber(quantity)
+        .plus(data?.inStock ? data?.inStock : 0)
+        .isGreaterThan(data?.maxStock) && (
+        <p className="text-xs text-dangerous">Số lượng nhập vượt định mức</p>
+      )}
+    </div>
   )
 }
 
@@ -519,7 +561,7 @@ function CountTotalPrice({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+    <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer md:px-auto bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )

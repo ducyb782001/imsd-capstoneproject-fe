@@ -1,12 +1,8 @@
 import { DialogOverlay } from "@reach/dialog"
-import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries, useQueryClient } from "react-query"
-import { addTypeGoodUrl } from "../../../constants/APIConfig"
-import AddPlusIcon from "../../icons/AddPlusIcon"
 import CloseDialogIcon from "../../icons/CloseDialogIcon"
-import PlusIcon from "../../icons/PlusIcon"
 import MotionDialogContent from "../../MotionDialogContent"
 import PrimaryBtn from "../../PrimaryBtn"
 import PrimaryInput from "../../PrimaryInput"
@@ -22,8 +18,6 @@ import {
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function EditTypePopup({ className = "", id }) {
-  const router = useRouter()
-  const [disabled, setDisabled] = useState(true)
   const queryClient = useQueryClient()
 
   const [showDialog, setShowDialog] = useState(false)
@@ -75,19 +69,11 @@ function EditTypePopup({ className = "", id }) {
     },
   )
 
-  useEffect(() => {
-    if (typeName.trim() !== "" && description.trim() !== "") {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  })
-
   return (
     <div className={`${className}`}>
-      <a>
-        <EditIcon onClick={open} className="cursor-pointer" />
-      </a>
+      <div onClick={open}>
+        <EditIcon className="cursor-pointer" />
+      </div>
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay
@@ -115,15 +101,20 @@ function EditTypePopup({ className = "", id }) {
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
-                    title="Tên loại sản phẩm"
-                    value={typeName}
+                    title={
+                      <div>
+                        Tên loại sản phẩm{" "}
+                        <span className="text-red-500">*</span>
+                      </div>
+                    }
+                    value={typeName ? typeName : ""}
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
                     title="Mô tả loại sản phẩm"
-                    value={description}
+                    value={description ? description : ""}
                     onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
@@ -132,7 +123,7 @@ function EditTypePopup({ className = "", id }) {
                   <PrimaryBtn
                     className="w-[200px]"
                     onClick={handleSaveBtn}
-                    disabled={disabled}
+                    disabled={!typeName}
                   >
                     Lưu
                   </PrimaryBtn>

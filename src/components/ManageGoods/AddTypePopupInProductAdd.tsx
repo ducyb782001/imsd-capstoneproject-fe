@@ -86,7 +86,12 @@ function AddTypePopupInProductAdd({ className = "" }) {
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <PrimaryInput
-                    title="Tên loại sản phẩm"
+                    title={
+                      <div>
+                        Tên loại sản phẩm{" "}
+                        <span className="text-red-500">*</span>
+                      </div>
+                    }
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>

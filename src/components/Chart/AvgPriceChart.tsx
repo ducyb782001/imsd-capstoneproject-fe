@@ -68,7 +68,7 @@ function AvgPriceChart({
         labels: chartLabels,
         datasets: [
           {
-            label: "Doanh thu",
+            label: "Tồn kho",
             backgroundColor: "#696CFF30",
             borderColor: "#696CFF",
             data: chartDataNumber,
