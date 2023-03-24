@@ -189,8 +189,6 @@ function ExportReportDraff() {
     router.push("/manage-export-goods")
   }
 
-  console.log(productImportObject)
-
   return isLoadingReport ? (
     <ExportReportSkeleton />
   ) : (

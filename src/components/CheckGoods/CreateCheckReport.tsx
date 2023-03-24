@@ -130,6 +130,7 @@ function CreateCheckReport() {
   const [listProductCheck, setListProductCheck] = useState<any>([])
   const [listProductSearch, setListProductSearch] = useState<any>([])
   const [productCheckObject, setProductCheckObject] = useState<any>()
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
@@ -193,8 +194,11 @@ function CreateCheckReport() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsLoadingStaff(true)
         const staff = await getListStaff()
         setListStaff(staff?.data?.data)
+        setIsLoadingStaff(false)
+
         return staff?.data?.data
       },
     },
@@ -286,6 +290,7 @@ function CreateCheckReport() {
               textDefault={t("choose_staff")}
               showing={staffSelected}
               setShowing={setStaffSelected}
+              isLoadingStaff={isLoadingStaff}
             />
           </div>
 

@@ -5,7 +5,7 @@ function Tooltip({ content = null, children }) {
 
   return (
     <div
-      className="tooltip smooth-transform"
+      className="text-sm font-light tooltip smooth-transform"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >

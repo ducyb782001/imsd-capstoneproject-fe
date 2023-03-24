@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useState } from "react"
 import { variants } from "../lib/constants"
-import BarChart from "./Chart/BarChart"
 import DemoDropDown from "./DemoDropDown"
 import DemoPopup from "./DemoPopup"
 import PlusIcon from "./icons/PlusIcon"
@@ -149,7 +148,6 @@ function TestPage(props) {
           )}
         </AnimatePresence>
       </div>
-      <BarChart />
       <p> Bar code: </p>
       {/* <input onChange={(e) => setSearchBarcode(e.target.value)} /> */}
       {searchBarCode ? <div>No barcode</div> : searchBarCode}

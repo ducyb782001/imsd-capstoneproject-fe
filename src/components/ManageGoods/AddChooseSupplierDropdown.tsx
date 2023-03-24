@@ -1,10 +1,11 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
+import { search, searchBySupplierName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddSupplierPopup from "./AddSupplierPopup"
 import { useTranslation } from "react-i18next"
+import LoadingBlockSkeleton from "../Skeleton/LoadingBlockSkeleton"
 
 function AddChooseSupplierDropdown({
   title = "",
@@ -12,11 +13,12 @@ function AddChooseSupplierDropdown({
   showing,
   setShowing,
   textDefault,
+  isLoadingSupplier = true,
 }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+  const listResult = searchBySupplierName(searchInput, listDropdown)
   const { t } = useTranslation()
 
   const toggleOpenMenu = () => {
@@ -75,9 +77,16 @@ function AddChooseSupplierDropdown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-gray hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">
-              {showing?.supplierName || showing || textDefault}
-            </p>
+            <div className="text-gray">
+              {showing ? (
+                <>
+                  {showing?.supplierName}
+                  {showing?.supplierPhone && ` - ${showing?.supplierPhone}`}
+                </>
+              ) : (
+                <p>{textDefault}</p>
+              )}
+            </div>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
             <ArrowDownIcon color="#373737" />
@@ -97,21 +106,29 @@ function AddChooseSupplierDropdown({
           zIndex: 1,
         }}
       >
-        <DropdownSearch
-          onClick={toggleOpenMenu}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className=""
-          placeholder={t("search.searchAdd")}
-        />
-        <div
-          id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
-        >
-          {listResult?.map((i, index) => (
-            <DropDownItem key={index} data={i} setShowing={setShowing} />
-          ))}
-        </div>
-        <AddSupplierPopup />
+        {isLoadingSupplier ? (
+          <LoadingBlockSkeleton />
+        ) : (
+          <>
+            <DropdownSearch
+              onClick={toggleOpenMenu}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className=""
+              placeholder={"Tìm theo tên hoặc SĐT"}
+            />
+
+            <div
+              id="list-dropdown"
+              className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
+            >
+              {listResult?.map((i, index) => (
+                <DropDownItem key={index} data={i} setShowing={setShowing} />
+              ))}
+            </div>
+
+            <AddSupplierPopup />
+          </>
+        )}
       </motion.div>
     </motion.div>
   )
@@ -125,7 +142,8 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.supplierName || data}
+      {data?.supplierName || ""}
+      {data?.supplierPhone && ` - ${data?.supplierPhone}`}
     </div>
   )
 }

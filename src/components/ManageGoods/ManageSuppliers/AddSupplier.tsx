@@ -168,7 +168,6 @@ function AddSupplier() {
       setDisabled(true)
     }
   })
-  console.log(supplier)
   return (
     <div className="">
       <div>
@@ -209,7 +208,7 @@ function AddSupplier() {
             />
           </div>
 
-          <div className="grid grid-cols-3 mt-4 gap-7">
+          <div className="grid grid-cols-1 mt-4 md:grid-cols-3 gap-x-7 gap-y-4">
             <CityDropDown
               title={
                 <div className="flex gap-1">
@@ -255,27 +254,23 @@ function AddSupplier() {
               setSupplier({ ...supplier, note: e.target.value })
             }}
           />
-          <div className="flex items-center mt-6 absolute-right">
-            <div className="flex flex-col gap-4">
-              <div className="grid items-center justify-between w-full gap-4 fle md:grid-cols-2 ">
-                <ConfirmPopup
-                  classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-                  title={t("cancel_confirm_supplier")}
-                  handleClickSaveBtn={handleCancelAddNewSupplier}
-                >
-                  {t("cancel")}
-                </ConfirmPopup>
+          <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row md:w-1/2">
+            <ConfirmPopup
+              classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark"
+              title={t("cancel_confirm_supplier")}
+              handleClickSaveBtn={handleCancelAddNewSupplier}
+            >
+              {t("cancel")}
+            </ConfirmPopup>
 
-                <ConfirmPopup
-                  classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-                  title={t("add_confirm_supplier")}
-                  handleClickSaveBtn={handleAddNewSupplier}
-                  disabled={disabled}
-                >
-                  {t("add_new_supplier")}
-                </ConfirmPopup>
-              </div>
-            </div>
+            <ConfirmPopup
+              classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
+              title={t("add_confirm_supplier")}
+              handleClickSaveBtn={handleAddNewSupplier}
+              disabled={disabled}
+            >
+              {t("add_new_supplier")}
+            </ConfirmPopup>
           </div>
         </div>
       </div>

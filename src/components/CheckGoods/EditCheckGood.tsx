@@ -140,6 +140,7 @@ function EditCheckGood() {
   const [listProductCheck, setListProductCheck] = useState<any>([])
   const [listProduct, setListProduct] = useState<any>([])
   const [productCheckObject, setProductCheckObject] = useState<any>()
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   useEffect(() => {
     if (staffSelected) {
@@ -208,8 +209,11 @@ function EditCheckGood() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsLoadingStaff(true)
         const staff = await getListStaff()
         setListStaff(staff?.data?.data)
+        setIsLoadingStaff(false)
+
         return staff?.data?.data
       },
     },
@@ -303,7 +307,7 @@ function EditCheckGood() {
           <div className="flex items-center gap-2 mb-4">
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
-          <div className="text-sm font-medium text-left text-gray mb-3">
+          <div className="mb-3 text-sm font-medium text-left text-gray">
             <p className="mb-3">{t("check_date")}: </p>
             <PrimaryInput
               value={format(Date.now(), "dd/MM/yyyy HH:mm")}
@@ -311,7 +315,7 @@ function EditCheckGood() {
               readOnly={true}
             />
           </div>
-          <p className="text-sm font-medium text-left text-gray mb-3">
+          <p className="mb-3 text-sm font-medium text-left text-gray">
             {t("staff")}
           </p>
           <div className="w-64">
@@ -320,6 +324,7 @@ function EditCheckGood() {
               textDefault={productCheckObject?.createdBy?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
+              isLoadingStaff={isLoadingStaff}
             />
           </div>
 
@@ -405,7 +410,7 @@ function CountDeviated({ data, listProductCheck }) {
     handleCountDeviated()
   }, [listProductCheck])
   return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn h-12">
+    <div className="h-12 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {deviated}
     </div>
   )

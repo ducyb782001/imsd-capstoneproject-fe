@@ -190,9 +190,9 @@ function ImportReportDraff() {
     <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4 md:flex-nowrap">
             <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
@@ -202,19 +202,16 @@ function ImportReportDraff() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                {t("exit")}
-              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
-                classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
+                classNameBtn="w-[100px] !bg-transparent text-dangerous !border-dangerous hover:!bg-[#E9283730]"
                 title={t("cancel_confirm_import")}
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                {t("cancel")}
+                Hủy đơn
               </ConfirmPopup>
               <SecondaryBtn
-                className="w-[100px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
+                className="w-[100px]"
                 onClick={() => {
                   router.push("/import-report-edit/" + productImport?.importId)
                 }}

@@ -18,6 +18,7 @@ function Table({
   fontSize = 14,
   columnSize = "",
   pageSizePagination,
+  headerTextAlightRight = [],
 }) {
   const {
     getTableProps,
@@ -54,7 +55,6 @@ function Table({
 
   const firstPageRows = rows.slice(0, pageSize)
   const { t } = useTranslation()
-  const headerTextAlightRight = []
 
   const headerTextAlignCenter = [
     "Trạng thái",

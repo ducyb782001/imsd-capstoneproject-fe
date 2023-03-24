@@ -19,12 +19,10 @@ import { useTranslation } from "react-i18next"
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function AddTypePopup({ className = "" }) {
-  const router = useRouter()
   const { t } = useTranslation()
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-  const [disabled, setDisabled] = useState(true)
 
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
@@ -41,14 +39,6 @@ function AddTypePopup({ className = "" }) {
     })
     close()
   }
-
-  useEffect(() => {
-    if (typeName.trim() !== "" && description.trim() !== "") {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  })
 
   const addTypeMutation = useMutation(
     (type) => {
@@ -100,7 +90,11 @@ function AddTypePopup({ className = "" }) {
 
                 <div className="px-6  text-base text-[#4F4F4F] pt-5">
                   <PrimaryInput
-                    title={t("name_type")}
+                    title={
+                      <div>
+                        {t("name_type")} <span className="text-red-500">*</span>
+                      </div>
+                    }
                     onChange={(event) => setTypeName(event.target.value)}
                   />
                 </div>
@@ -115,7 +109,7 @@ function AddTypePopup({ className = "" }) {
                   <PrimaryBtn
                     className="w-[200px]"
                     onClick={handleSaveBtn}
-                    disabled={disabled}
+                    disabled={!typeName}
                   >
                     {t("save")}
                   </PrimaryBtn>

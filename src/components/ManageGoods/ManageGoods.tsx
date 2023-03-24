@@ -23,6 +23,8 @@ import { getListExportSupplier } from "../../apis/supplier-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import useScanDetection from "../../hooks/useScanDetection"
 import { useTranslation } from "react-i18next"
+import ShowDetail from "../ShowDetail"
+import EditDetail from "../EditDetail"
 
 function ManageGoods({ ...props }) {
   const { t } = useTranslation()
@@ -61,7 +63,7 @@ function ManageGoods({ ...props }) {
         {
           Header: t("in_stock"),
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.inStock).toFormat()}</p>
+            <p>{data?.inStock ? new BigNumber(data?.inStock).toFormat() : 0}</p>
           ),
         },
         {
@@ -78,15 +80,15 @@ function ManageGoods({ ...props }) {
           Header: " ",
           accessor: (data: any) => {
             return (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center w-full gap-2">
                 <Link href={`/edit-product/${data?.productId}`}>
-                  <a>
-                    <EditIcon />
+                  <a className="w-full">
+                    <EditDetail />
                   </a>
                 </Link>
                 <Link href={`/product-detail/${data?.productId}`}>
                   <a className="w-full">
-                    <ShowDetailIcon />
+                    <ShowDetail />
                   </a>
                 </Link>
               </div>
@@ -268,7 +270,7 @@ function ManageGoods({ ...props }) {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 md:grid-cols-602020">
+          <div className="grid items-center justify-between w-full grid-cols-1 gap-4 md:grid-cols-602020">
             <SearchInput
               placeholder={t("search.searchInGoods")}
               value={searchParam ? searchParam : ""}

@@ -120,6 +120,7 @@ function CreateReturnReport() {
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   const [productImport, setProductImport] = useState<any>()
 
@@ -268,8 +269,11 @@ function CreateReturnReport() {
     {
       queryKey: ["getListStaff"],
       queryFn: async () => {
+        setIsLoadingStaff(true)
         const response = await getListStaff()
         setListStaff(response?.data?.data)
+        setIsLoadingStaff(false)
+
         return response?.data?.data
       },
     },
@@ -350,6 +354,7 @@ function CreateReturnReport() {
             textDefault={"Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
+            isLoadingStaff={isLoadingStaff}
           />
         </div>
         <div className="grid gap-5 mt-4 md:grid-cols-73">

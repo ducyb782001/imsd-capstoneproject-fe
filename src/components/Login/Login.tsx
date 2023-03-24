@@ -28,7 +28,6 @@ function Login() {
     {
       onSuccess: (data, error, variables) => {
         if (typeof window !== "undefined") {
-          console.log(data)
           const token = data?.data?.accessToken
           const maxAge = data?.data?.expiresIn
           localStorage.setItem("token", token)

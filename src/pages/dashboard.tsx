@@ -2,9 +2,9 @@ import React from "react"
 import Dashboard from "../components/Dashboard/Dashboard"
 import Layout from "../components/Layout"
 
-function dashboard(props) {
+function dashboard() {
   return (
-    <Layout>
+    <Layout headTitle="Tổng quan">
       <Dashboard />
     </Layout>
   )

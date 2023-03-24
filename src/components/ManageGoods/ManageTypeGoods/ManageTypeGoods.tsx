@@ -13,7 +13,6 @@ import {
 import * as XLSX from "xlsx/xlsx"
 import AddTypePopup from "./AddTypePopup"
 import EditTypePopup from "./EditTypePopup"
-import DetailTypePopup from "./DetailTypePopup"
 import TableSkeleton from "../../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 
@@ -39,17 +38,22 @@ function ManageTypeGoods() {
           Header: t("name_type"),
           accessor: (data: any) => (
             <div>
-              <p>{data?.categoryName}</p>
+              <p>{data?.categoryName ? data?.categoryName : "---"}</p>
             </div>
           ),
         },
         {
-          Header: t("action"),
+          Header: "Mô tả",
+          accessor: (data: any) => {
+            return <div>{data?.description ? data?.description : "---"}</div>
+          },
+        },
+        {
+          Header: "Chỉnh sửa",
           accessor: (data: any) => {
             return (
-              <div className="flex items-center col-span-2 gap-2">
+              <div className="flex items-center gap-2">
                 <EditTypePopup id={data?.categoryId} />
-                <DetailTypePopup id={data?.description} />
               </div>
             )
           },

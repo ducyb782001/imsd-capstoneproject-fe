@@ -151,6 +151,8 @@ function ImportReportEdit() {
   const [isLoadingReport, setIsLoadingReport] = useState(true)
   const [detailResponse, setDetailResponse] = useState<any>()
 
+  const [isLoadingSupplier, setIsLoadingSupplier] = useState(true)
+
   useEffect(() => {
     if (nhaCungCapSelected) {
       setProductImportObject({
@@ -189,9 +191,7 @@ function ImportReportEdit() {
           discount: discount,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          )?.measuredUnitId,
         }
       })
       setListProductImport(list)
@@ -231,6 +231,7 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("update_import_success"))
+          router.push("/import-report-draff/" + importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -258,11 +259,7 @@ function ImportReportEdit() {
     })
   }
 
-  const handleClickOutBtn = () => {
-    router.push("/import-report-draff/" + importId)
-  }
-
-  useQueries([
+  const result = useQueries([
     {
       queryKey: ["getDetailProductImport", importId],
       queryFn: async () => {
@@ -288,8 +285,11 @@ function ImportReportEdit() {
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
+        setIsLoadingSupplier(true)
         const response = await getListExportSupplier({})
         setListNhaCungCap(response?.data?.data)
+        setIsLoadingSupplier(false)
+
         return response?.data
       },
     },
@@ -311,14 +311,15 @@ function ImportReportEdit() {
       },
     },
   ])
+  const data = result[0]
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4">
             <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.importCode}
@@ -328,7 +329,12 @@ function ImportReportEdit() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+              <SecondaryBtn
+                className="w-[120px]"
+                onClick={() => {
+                  router.push("/import-report-draff/" + importId)
+                }}
+              >
                 {t("back")}
               </SecondaryBtn>
               <ConfirmPopup
@@ -342,11 +348,11 @@ function ImportReportEdit() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            {productImportObject?.created && (
+            {data?.data?.createdDate && (
               <StepBar
                 status="pending"
                 createdDate={format(
-                  new Date(productImportObject?.created),
+                  new Date(data?.data?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -364,6 +370,7 @@ function ImportReportEdit() {
               textDefault={productImportObject?.supplier?.supplierName}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
+              isLoadingSupplier={isLoadingSupplier}
             />
           </div>
         </div>
@@ -549,7 +556,7 @@ function CountTotalPrice({ data, listProductImport }) {
   }, [listProductImport])
 
   return (
-    <div className="py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+    <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {new BigNumber(price).toFormat(0)} đ
     </div>
   )
