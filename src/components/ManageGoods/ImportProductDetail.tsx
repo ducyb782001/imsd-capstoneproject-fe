@@ -141,7 +141,7 @@ function ImportProductDetail() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <StepBar
+            {/* <StepBar
               createdDate={format(
                 new Date(productImport?.createdDate),
                 "dd/MM/yyyy HH:mm",
@@ -155,7 +155,7 @@ function ImportProductDetail() {
                 "dd/MM/yyyy HH:mm",
               )}
               status="succeed"
-            />
+            /> */}
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -168,12 +168,12 @@ function ImportProductDetail() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {productImport?.createdDate && (
+          {/* {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
               Ngày tạo đơn:{" "}
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
-          )}
+          )} */}
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea

@@ -26,6 +26,7 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import { useTranslation } from "react-i18next"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import SecondaryBtn from "../SecondaryBtn"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
@@ -114,7 +115,7 @@ function CreateImportReport() {
           Header: " ",
           accessor: (data: any, index) => (
             <div
-              className="cursor-pointer"
+              className="w-full cursor-pointer"
               onClick={() => {
                 let result = listChosenProduct?.filter(
                   (i, ind) => ind !== index,
@@ -122,7 +123,12 @@ function CreateImportReport() {
                 setListChosenProduct(result)
               }}
             >
-              <XIcons />
+              <div className="hidden md:block">
+                <XIcons />
+              </div>
+              <div className="block md:hidden">
+                <SecondaryBtn>Delete</SecondaryBtn>
+              </div>
             </div>
           ),
         },
@@ -444,7 +450,7 @@ function ListQuantitiveImport({
   }
 
   return (
-    <div className="w-[100px] relative">
+    <div className="relative">
       <PrimaryInput
         className="w-[60px]"
         type="number"

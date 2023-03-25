@@ -16,7 +16,7 @@ import { resetPassword } from "../../constants/APIConfig"
 import { passRegex } from "../../constants/constants"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
-import { checkPassword } from "../../lib/check-password"
+import { checkPassword, checkSamePassword } from "../../lib/check-password"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function SetPassword() {
@@ -59,15 +59,8 @@ function SetPassword() {
     },
   )
 
-  // useEffect(() => {
-  //   if (userPassword == userPassword2) {
-  //     setDisabled(false)
-  //   } else {
-  //     setDisabled(true)
-  //   }
-  // })
-
-  const canChangePassword = checkPassword(userPassword, userPassword2)
+  const canChangePassword = checkPassword(userPassword)
+  const confirmChange = checkSamePassword(userPassword, userPassword2)
 
   return (
     <div className="relative">
@@ -111,6 +104,13 @@ function SetPassword() {
                   }
                   onChange={(event) => setUserPassword(event.target.value)}
                 />
+                {!canChangePassword && userPassword && (
+                  <p className="mt-1 text-sm text-red-500">
+                    * Password must be at least 8 characters with at least 1
+                    Upper Case, 1 lower case, 1 special character and 1 numeric
+                    character
+                  </p>
+                )}
                 <PasswordInput
                   title={
                     <div className="flex gap-1">
@@ -120,16 +120,15 @@ function SetPassword() {
                   onChange={(event) => setUserPassword2(event.target.value)}
                   placeholder="Xác nhận lại mật khẩu"
                 />
-                {!canChangePassword && userPassword && (
+                {!confirmChange && userPassword2 && (
                   <p className="mt-1 text-sm text-red-500">
-                    * Password must be at least 8 characters with at least 1
-                    Upper Case, 1 lower case, 1 special character and 1 numeric
-                    character
+                    Mật khẩu phải trùng nhau
                   </p>
                 )}
+
                 <PrimaryBtn
                   onClick={handleChangePass}
-                  disabled={!canChangePassword}
+                  disabled={!confirmChange || !canChangePassword}
                   className="mt-1"
                 >
                   Cài lại mật khẩu

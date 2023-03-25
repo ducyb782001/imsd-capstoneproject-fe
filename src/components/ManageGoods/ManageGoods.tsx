@@ -245,18 +245,7 @@ function ManageGoods({ ...props }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
+      <div className="flex items-center justify-end">
         <Link href={`/add-product`}>
           <a>
             <PrimaryBtn

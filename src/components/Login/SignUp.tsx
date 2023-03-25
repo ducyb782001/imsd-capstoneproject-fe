@@ -17,7 +17,7 @@ import { emailRegex } from "../../constants/constants"
 import InfoIcon from "../icons/InfoIcon"
 import Tooltip from "../ToolTip"
 import { isValidGmail } from "../../hooks/useValidator"
-import { checkPassword } from "../../lib/check-password"
+import { checkPassword, checkSamePassword } from "../../lib/check-password"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function Signup() {
@@ -64,7 +64,8 @@ function Signup() {
     },
   )
 
-  const canChangePassword = checkPassword(userPassword, userPassword2)
+  const canChangePassword = checkPassword(userPassword)
+  const confirmChange = checkSamePassword(userPassword, userPassword2)
 
   return (
     <div className="relative">
@@ -111,12 +112,6 @@ function Signup() {
                 }
                 onChange={(event) => setUserPassword(event.target.value)}
               />
-              <PasswordInput
-                className="mt-6"
-                title={<h1>Xác nhận mật khẩu</h1>}
-                onChange={(event) => setUserPassword2(event.target.value)}
-                placeholder="Xác nhận mật khẩu của bạn"
-              />
               {!canChangePassword && userPassword && (
                 <p className="mt-1 text-sm text-red-500">
                   * Password must be at least 8 characters with at least 1 Upper
@@ -124,12 +119,25 @@ function Signup() {
                   character
                 </p>
               )}
+              <PasswordInput
+                className="mt-6"
+                title={<h1>Xác nhận mật khẩu</h1>}
+                onChange={(event) => setUserPassword2(event.target.value)}
+                placeholder="Xác nhận mật khẩu của bạn"
+              />
+              {!confirmChange && userPassword2 && (
+                <p className="mt-1 text-sm text-red-500">
+                  Mật khẩu phải trùng nhau
+                </p>
+              )}
             </div>
             <PrimaryBtn
               className="mt-11"
               onClick={handleSignUp}
               disabled={
-                !canChangePassword || (userEmail && !!!isValidGmail(userEmail))
+                !confirmChange ||
+                !canChangePassword ||
+                (userEmail && !!!isValidGmail(userEmail))
               }
             >
               Đăng kí

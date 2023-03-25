@@ -18,27 +18,28 @@ import { useTranslation } from "react-i18next"
 function MobileNav() {
   const { t } = useTranslation()
   const router = useRouter()
+
   const subMenuManageGoods = [
     {
       id: 1,
-      name: "Sản phẩm",
+      name: t("product"),
       href: "/manage-goods",
       isActive: router.asPath.includes("/manage-goods"),
     },
     {
       id: 2,
-      name: "Nhà cung cấp",
+      name: t("supplier"),
       href: "/manage-suppliers",
       isActive: router.asPath.includes("/manage-suppliers"),
     },
     {
       id: 3,
-      name: "Loại sản phẩm",
-      // Chua tao page
+      name: t("type.typeGoods"),
       href: "/manage-type-goods",
       isActive: router.asPath.includes("/manage-type-goods"),
     },
   ]
+
   const subMenuImportGoods = [
     {
       id: 1,
@@ -53,6 +54,7 @@ function MobileNav() {
       isActive: router.asPath.includes("/create-import-report"),
     },
   ]
+
   const subMenuExportGoods = [
     {
       id: 1,
@@ -67,15 +69,22 @@ function MobileNav() {
       isActive: router.asPath.includes("/create-export-report"),
     },
   ]
-  //indev
+
   const subMenuReturnGoods = [
     {
       id: 1,
-      name: "Danh sách trả hàng",
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/return-goods-list"),
+      name: "Trả hàng về nhà cung cấp",
+      href: "/manage-return-good",
+      isActive: router.asPath.includes("/manage-return-good"),
+    },
+    {
+      id: 2,
+      name: "Khách trả",
+      href: "/manage-return-export-good",
+      isActive: router.asPath.includes("/manage-return-export-good"),
     },
   ]
+
   const subMenuCheckGoods = [
     {
       id: 1,
@@ -104,19 +113,33 @@ function MobileNav() {
       name: t("manageGoods"),
       subMenu: subMenuManageGoods,
       icon: <ManageGoodsIcon />,
-      href: "/manage-goods",
       isActive:
         router.asPath.includes("/manage-goods") ||
-        router.asPath.includes("/suppliers"),
+        router.asPath.includes("/manage-suppliers") ||
+        router.asPath.includes("/manage-type-goods") ||
+        router.asPath.includes("/add-suppliers") ||
+        router.asPath.includes("/product-detail") ||
+        router.asPath.includes("/supplier-detail") ||
+        router.asPath.includes("/edit-product") ||
+        router.asPath.includes("/add-supplier") ||
+        router.asPath.includes("/edit-supplier") ||
+        router.asPath.includes("/export-product-detail") ||
+        router.asPath.includes("/check-product-detail") ||
+        router.asPath.includes("/import-product-detail") ||
+        router.asPath.includes("/add-product"),
     },
     {
       id: 3,
       name: t("import good"),
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
-      href: "/manage-import-goods",
       isActive:
         router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/import-report-detail") ||
+        router.asPath.includes("/import-report-succeed") ||
+        router.asPath.includes("/import-report-canceled") ||
+        router.asPath.includes("/import-report-draff") ||
+        router.asPath.includes("/import-report-edit") ||
         router.asPath.includes("/create-import-report"),
     },
     {
@@ -124,9 +147,12 @@ function MobileNav() {
       name: t("export good"),
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
-      href: "/manage-export-goods",
       isActive:
         router.asPath.includes("/manage-export-goods") ||
+        router.asPath.includes("/export-report-canceled") ||
+        router.asPath.includes("/export-report-detail") ||
+        router.asPath.includes("/export-report-draff") ||
+        router.asPath.includes("/export-report-succeed") ||
         router.asPath.includes("/create-export-report"),
     },
     // indev
@@ -135,28 +161,31 @@ function MobileNav() {
       name: t("return good"),
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/return-goods-list"),
+      isActive:
+        router.asPath.includes("/manage-return-good") ||
+        router.asPath.includes("/return-customer-draff") ||
+        router.asPath.includes("/return-report-detail") ||
+        router.asPath.includes("/return-customer-detail") ||
+        router.asPath.includes("/return-report-draff") ||
+        router.asPath.includes("/create-return-export-good") ||
+        router.asPath.includes("/create-return-report") ||
+        router.asPath.includes("/return-import-detail") ||
+        router.asPath.includes("/manage-return-export-good"),
     },
-    // indev
     {
       id: 6,
       name: t("check good"),
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
-      href: "/return-goods-list",
-      isActive: router.asPath.includes("/xyz"),
-    },
-    {
-      id: 7,
-      name: t("staff"),
-      icon: <UserIcon />,
       isActive:
-        router.asPath.includes("/manage-staff") ||
-        router.asPath.includes("/create-staff"),
-      href: "/manage-staff",
+        router.asPath.includes("/manage-check-good") ||
+        router.asPath.includes("/edit-check-good") ||
+        router.asPath.includes("/draff-check-good") ||
+        router.asPath.includes("/check-good-detail") ||
+        router.asPath.includes("/create-check-report"),
     },
   ]
+
   const node = useRef()
   const [isHover, toggleHover] = useState(false)
 

@@ -16,7 +16,7 @@ import router, { useRouter } from "next/router"
 import { format } from "date-fns"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 import { useTranslation } from "react-i18next"
-import { checkPassword } from "../../lib/check-password"
+import { checkPassword, checkSamePassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import Switch from "react-switch"
 import DetailStaffSkeleton from "./DetailStaffSkeleton"
@@ -122,6 +122,7 @@ function DetailStaff() {
     // @ts-ignore
     updateStaffMutation.mutate(staffAccountObject)
   }
+
   const changePasswordMutation = useMutation(
     async (password) => {
       return await changePassword(password)
@@ -140,6 +141,7 @@ function DetailStaff() {
       },
     },
   )
+
   const handleChangePassword = () => {
     if (staffId != undefined) {
       // @ts-ignore
@@ -149,9 +151,11 @@ function DetailStaff() {
       })
     }
   }
+
   const handleChangeStatus = () => {}
 
-  const canChangePassword = checkPassword(newPassword, confirmPassword)
+  const canChangePassword = checkPassword(newPassword)
+  const confirmChange = checkSamePassword(newPassword, confirmPassword)
 
   return isLoadingReport ? (
     <DetailStaffSkeleton />
@@ -339,26 +343,36 @@ function DetailStaff() {
       <div className="mt-10 bg-white block-border">
         <SmallTitle>{t("update_password")}</SmallTitle>
         <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
-          <PasswordInput
-            title={t("new_password")}
-            placeholder={t("enter_new_password")}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <PasswordInput
-            title={t("re_password")}
-            placeholder={t("enter_re_password")}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <div>
+            <PasswordInput
+              title={t("new_password")}
+              placeholder={t("enter_new_password")}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            {!canChangePassword && newPassword && (
+              <p className="mt-1 text-sm text-red-500">
+                * Password must be at least 8 characters with at least 1 Upper
+                Case, 1 lower case, 1 special character and 1 numeric character
+              </p>
+            )}
+          </div>
+          <div>
+            <PasswordInput
+              title={t("re_password")}
+              placeholder={t("enter_re_password")}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            {!confirmChange && confirmPassword && (
+              <p className="mt-1 text-sm text-red-500">
+                Mật khẩu phải trùng nhau
+              </p>
+            )}
+          </div>
         </div>
-        <p className="h-6 mt-1 text-sm text-red-500">
-          {!canChangePassword &&
-            newPassword &&
-            "* Password must be at least 8 characters with at least 1 Upper Case, 1 lower case, 1 special character and 1 numeric character"}
-        </p>
         <PrimaryBtn
           className="max-w-[182px] mt-6"
           onClick={() => handleChangePassword()}
-          disabled={!canChangePassword}
+          disabled={!confirmChange || !canChangePassword}
         >
           {t("save")}
         </PrimaryBtn>

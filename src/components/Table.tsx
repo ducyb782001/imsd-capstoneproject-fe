@@ -62,6 +62,9 @@ function Table({
     "Số lượng tồn kho",
     t("price"),
     t("discount"),
+    t("current_stock"),
+    t("deviated"),
+    t("actual_stock"),
   ]
 
   return (

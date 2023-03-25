@@ -1,5 +1,5 @@
 import { format } from "date-fns"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import ConfirmPopup from "../ConfirmPopup"
@@ -68,30 +68,45 @@ function DraffCheckGood() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div>{data?.currentStock ? data?.currentStock : "---"}</div>
+            <div className="text-center">
+              {data?.currentStock ? data?.currentStock : "---"}
+            </div>
           ),
         },
         {
           Header: t("actual_stock"),
           accessor: (data: any) => (
-            <div>{data?.actualStock ? data?.actualStock : "---"}</div>
+            <div className="text-center">
+              {data?.actualStock ? data?.actualStock : "---"}
+            </div>
           ),
         },
         {
           Header: t("deviated"),
           accessor: (data: any) => (
-            <div>
+            <div className="text-center">
               {data?.amountDifferential ? data?.amountDifferential : "---"}
             </div>
           ),
         },
         {
           Header: t("reason"),
-          accessor: (data: any) => <NoteProduct data={data} />,
+          accessor: (data: any) => <div>{data?.note ? data?.note : "---"}</div>,
         },
       ],
     },
   ]
+
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
 
   const [productCheckObject, setProductCheckObject] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
@@ -111,7 +126,6 @@ function DraffCheckGood() {
       enabled: !!checkId,
     },
   ])
-  console.log(productCheckObject)
 
   const approveExportMutation = useMutation(
     async (exportProduct) => {
@@ -182,33 +196,27 @@ function DraffCheckGood() {
     })
     denyExportMutation.mutate(productCheckObject?.stocktakeId)
   }
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-check-good")
-  }
 
   return isLoadingReport ? (
     <StockTakeSkeleton />
   ) : (
     <div>
       <div>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col justify-between w-full gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-semibold">{t("edit_check")}</h1>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-              {t("exit")}
-            </SecondaryBtn>
             <ConfirmPopup
               className="!w-fit"
-              classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
+              classNameBtn="w-[100px] !bg-transparent text-dangerous !border-dangerous hover:!bg-[#E9283730]"
               title={t("deny_alert")}
               handleClickSaveBtn={handleClickCancelBtn}
             >
-              {t("cancel")}
+              Hủy đơn
             </ConfirmPopup>
             <SecondaryBtn
-              className="w-[115px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
+              className="w-[100px]"
               onClick={() => {
                 router.push(
                   "/edit-check-good/" + productCheckObject?.stocktakeId,
@@ -217,14 +225,16 @@ function DraffCheckGood() {
             >
               {t("edit_import")}
             </SecondaryBtn>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px]"
-              title={t("approve_alert")}
-              handleClickSaveBtn={handleClickApproveBtn}
-            >
-              {t("approve")}
-            </ConfirmPopup>
+            {(userData?.roleId === 1 || userData?.roleId === 2) && (
+              <ConfirmPopup
+                className="!w-fit"
+                classNameBtn="w-[120px]"
+                title={t("approve_alert")}
+                handleClickSaveBtn={handleClickApproveBtn}
+              >
+                {t("approve")}
+              </ConfirmPopup>
+            )}
           </div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">

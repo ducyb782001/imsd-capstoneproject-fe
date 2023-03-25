@@ -102,6 +102,17 @@ function ExportReportDraff() {
     },
   ]
 
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   const [productImportObject, setProductImportObject] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
@@ -185,9 +196,6 @@ function ExportReportDraff() {
       },
     },
   ])
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
-  }
 
   return isLoadingReport ? (
     <ExportReportSkeleton />
@@ -205,19 +213,16 @@ function ExportReportDraff() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-                {t("exit")}
-              </SecondaryBtn>
               <ConfirmPopup
                 className="!w-fit"
-                classNameBtn="w-[60px] !bg-transparent text-cancelBtn !border-cancelBtn hover:!bg-[#ED5B5530]"
+                classNameBtn="w-[100px] !bg-transparent text-dangerous !border-dangerous hover:!bg-[#E9283730]"
                 title={t("cancel_confirm_import")}
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                {t("cancel")}
+                Hủy đơn
               </ConfirmPopup>
               <SecondaryBtn
-                className="w-[115px] !border-blue hover:bg-[#3388F730] text-blue active:bg-blueDark active:border-blueDark "
+                className="w-[100px]"
                 onClick={() => {
                   router.push(
                     "/export-report-edit/" + productImportObject?.exportId,
@@ -226,14 +231,16 @@ function ExportReportDraff() {
               >
                 {t("edit_import")}
               </SecondaryBtn>
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="w-[120px]"
-                title={t("approve_export_alert")}
-                handleClickSaveBtn={handleClickApproveBtn}
-              >
-                {t("approve")}
-              </ConfirmPopup>
+              {(userData?.roleId === 1 || userData?.roleId === 2) && (
+                <ConfirmPopup
+                  className="!w-fit"
+                  classNameBtn="w-[120px]"
+                  title={t("approve_export_alert")}
+                  handleClickSaveBtn={handleClickApproveBtn}
+                >
+                  {t("approve")}
+                </ConfirmPopup>
+              )}
             </div>
           </div>
           <div className="flex justify-center mt-6">

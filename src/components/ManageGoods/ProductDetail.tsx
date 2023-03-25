@@ -10,6 +10,7 @@ import ProductDetailSkeleton from "../Skeleton/ProductDetailSkeleton"
 import { format } from "date-fns"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
+import PrimaryBtn from "../PrimaryBtn"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
@@ -35,17 +36,29 @@ function ProductDetail() {
     <ProductDetailSkeleton />
   ) : (
     <div>
-      <div className="flex flex-wrap items-center gap-4">
-        <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
-        {detailProduct?.status ? (
-          <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
-            <h1 className="m-2 ml-3 text-green-500">Đang giao dịch</h1>
-          </div>
-        ) : (
-          <div className="font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
-            <h1 className="m-2 ml-3 text-red-500">Ngừng giao dịch</h1>
-          </div>
-        )}
+      <div className="flex flex-col justify-between gap-4 md:items-center md:flex-row">
+        <div className="flex flex-wrap items-center gap-4">
+          <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
+          {detailProduct?.status ? (
+            <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
+              <h1 className="m-2 ml-3 text-green-500">Đang giao dịch</h1>
+            </div>
+          ) : (
+            <div className="font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
+              <h1 className="m-2 ml-3 text-red-500">Ngừng giao dịch</h1>
+            </div>
+          )}
+        </div>
+        <div>
+          <PrimaryBtn
+            onClick={() =>
+              router.push(`/edit-product/${detailProduct?.productId}`)
+            }
+            className="bg-successBtn border-successBtn active:bg-greenDark"
+          >
+            Chỉnh sửa sản phẩm
+          </PrimaryBtn>
+        </div>
       </div>
       <div className="mt-4 bg-white block-border">
         <SmallTitle>{t("product_infor")}</SmallTitle>

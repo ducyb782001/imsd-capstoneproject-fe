@@ -160,7 +160,6 @@ function SupplierDetail() {
           </div>
           <div className="float-right">
             <PrimaryBtn
-              href={`/edit-supplier/${supplier?.supplierId}`}
               onClick={handleEditSupplier}
               className="bg-successBtn border-successBtn active:bg-greenDark"
             >

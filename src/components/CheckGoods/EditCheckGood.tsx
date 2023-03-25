@@ -308,12 +308,7 @@ function EditCheckGood() {
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">
-            <p className="mb-3">{t("check_date")}: </p>
-            <PrimaryInput
-              value={format(Date.now(), "dd/MM/yyyy HH:mm")}
-              className="w-[150px] text-sm font-normal text-gray"
-              readOnly={true}
-            />
+            {t("check_date")}: {format(Date.now(), "dd/MM/yyyy HH:MM")}
           </div>
           <p className="mb-3 text-sm font-medium text-left text-gray">
             {t("staff")}

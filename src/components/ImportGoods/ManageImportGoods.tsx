@@ -210,18 +210,7 @@ function ManageImportGoods() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
+      <div className="flex items-center justify-end">
         <Link href={`/create-import-report`}>
           <a>
             <PrimaryBtn
@@ -315,25 +304,25 @@ function StatusDisplay({ data }) {
   const { t } = useTranslation()
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
+      <div className="w-32 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">{t("in_progress")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
+      <div className="w-32 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">{t("in_import")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
+      <div className="w-32 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
+      <div className="w-32 font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )

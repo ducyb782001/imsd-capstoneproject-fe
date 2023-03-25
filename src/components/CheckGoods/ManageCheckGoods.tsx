@@ -17,6 +17,7 @@ import TableSkeleton from "../Skeleton/TableSkeleton"
 import { getListStockTakeProduct } from "../../apis/stocktake-product-module"
 import { format, parseISO } from "date-fns"
 import { useTranslation } from "react-i18next"
+import ShowDetail from "../ShowDetail"
 
 function ManageCheckGoods() {
   const { t } = useTranslation()
@@ -32,11 +33,7 @@ function ManageCheckGoods() {
 
         {
           Header: t("staff_created"),
-          accessor: (data: any) => (
-            <p>
-              {t("store_keeper")} {data?.createdBy?.userName}
-            </p>
-          ),
+          accessor: (data: any) => <p>{data?.createdBy?.userName || "---"}</p>,
         },
         {
           Header: t("created_report_check"),
@@ -46,13 +43,7 @@ function ManageCheckGoods() {
         },
         {
           Header: t("check_staff"),
-          accessor: (data: any) => (
-            <p>
-              {data?.updatedBy
-                ? t("store_keeper") + data?.updatedBy?.userName
-                : "---"}
-            </p>
-          ),
+          accessor: (data: any) => <p>{data?.updatedBy?.userName || "---"}</p>,
         },
 
         {
@@ -68,7 +59,7 @@ function ManageCheckGoods() {
         {
           Header: t("status"),
           accessor: (data: any) => (
-            <div className="flex">
+            <div className="flex justify-center">
               <StatusDisplay data={data} />
             </div>
           ),
@@ -194,18 +185,7 @@ function ManageCheckGoods() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            {t("export_file")}
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            {t("import_file")}
-          </ImportExportButton>
-        </div>
+      <div className="flex items-center justify-end">
         <Link href={`/create-check-report`}>
           <a>
             <PrimaryBtn
@@ -219,7 +199,7 @@ function ManageCheckGoods() {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
+          <div className="grid grid-cols-1 items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
               placeholder={t("search.searchInCheck")}
               onChange={(e) => setSearchParam(e.target.value)}
@@ -293,19 +273,19 @@ function StatusDisplay({ data }) {
 
   if (data?.state == 0) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">{t("checking_status")}</h1>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+      <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-red-50 border border-red-500">
+      <div className="font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
         <h1 className="m-2 ml-3 text-red-500">{t("cancelled")}</h1>
       </div>
     )
@@ -315,30 +295,30 @@ function StatusDisplay({ data }) {
 function DetailImportProduct({ data }) {
   if (data?.state == 0) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/draff-check-good/${data?.stocktakeId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 1) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/check-good-detail/${data?.stocktakeId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
     )
   } else if (data?.state == 2) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center w-full gap-2">
         <Link href={`/check-good-detail/${data?.stocktakeId}`}>
           <a className="w-full">
-            <ShowDetailIcon />
+            <ShowDetail />
           </a>
         </Link>
       </div>
