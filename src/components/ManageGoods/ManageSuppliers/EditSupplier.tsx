@@ -21,13 +21,14 @@ import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
 import { useTranslation } from "react-i18next"
 import Switch from "react-switch"
+import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
   supplierId: number
   supplierName: string
-  supplierPhone: number
+  supplierPhone: string
   city: any
   district: any
   ward: any
@@ -40,7 +41,7 @@ interface Supplier {
 function EditSupplier() {
   const [supplier, setSupplier] = useState<Supplier>()
   const [supplierStatus, setSupplierStatus] = useState(true)
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(false)
 
   const [citySelected, setCitySelected] = useState<any>()
   const [districtSelected, setDistrictSelected] = useState<any>()
@@ -146,8 +147,10 @@ function EditSupplier() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("update_supplier_success"))
+          setDisabled(false)
           router.push("/manage-suppliers")
         } else {
+          setDisabled(false)
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
@@ -172,6 +175,8 @@ function EditSupplier() {
   }, [supplierStatus])
 
   const handleEditSupplier = () => {
+    setDisabled(true)
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
@@ -183,22 +188,6 @@ function EditSupplier() {
   const handleCancelEditSupplier = (event) => {
     router.push("/manage-suppliers")
   }
-
-  useEffect(() => {
-    if (
-      emailRegex.test(supplier?.supplierEmail) &&
-      supplier.supplierName.trim() !== "" &&
-      phoneRegex.test(supplier.supplierPhone.toString()) &&
-      districtSelected != undefined &&
-      citySelected != undefined &&
-      wardSelected != undefined
-    ) {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  })
-  console.log(supplier)
 
   const { t } = useTranslation()
   return (
@@ -236,24 +225,36 @@ function EditSupplier() {
       </div>
 
       <div className="grid grid-cols-2 mt-4 gap-7">
-        <PrimaryInput
-          title={
-            <div>
-              {t("phone_number")} <span className="text-red-500">*</span>
-            </div>
-          }
-          value={supplier?.supplierPhone}
-          onChange={(e) => {
-            setSupplier({ ...supplier, supplierPhone: e.target.value })
-          }}
-        />
-        <PrimaryInput
-          title="Email"
-          value={supplier?.supplierEmail}
-          onChange={(e) => {
-            setSupplier({ ...supplier, supplierEmail: e.target.value })
-          }}
-        />
+        <div>
+          <PrimaryInput
+            title={
+              <div>
+                {t("phone_number")} <span className="text-red-500">*</span>
+              </div>
+            }
+            value={supplier?.supplierPhone}
+            onChange={(e) => {
+              setSupplier({ ...supplier, supplierPhone: e.target.value })
+            }}
+          />
+          {supplier?.supplierPhone &&
+            !!!isValidPhoneNumber(supplier?.supplierPhone) && (
+              <p className="text-red-500">Sai định dạng</p>
+            )}
+        </div>
+        <div>
+          <PrimaryInput
+            title="Email"
+            value={supplier?.supplierEmail}
+            onChange={(e) => {
+              setSupplier({ ...supplier, supplierEmail: e.target.value })
+            }}
+          />
+          {supplier?.supplierEmail &&
+            !!!isValidGmail(supplier?.supplierEmail) && (
+              <p className="text-red-500">Sai định dạng</p>
+            )}
+        </div>
       </div>
 
       <div className="grid grid-cols-3 mt-4 gap-7">
@@ -310,7 +311,15 @@ function EditSupplier() {
               classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
               title={t("confirm_update_spplier")}
               handleClickSaveBtn={handleEditSupplier}
-              // disabled={disabled}
+              disabled={
+                disabled ||
+                (supplier?.supplierPhone &&
+                  !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
+                (supplier?.supplierEmail &&
+                  !!!isValidGmail(supplier?.supplierEmail)) ||
+                !!!supplier?.supplierPhone ||
+                !!!supplier?.supplierName
+              }
             >
               {t("edit")}
             </ConfirmPopup>

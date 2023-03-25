@@ -129,7 +129,7 @@ function ProductDetail() {
                 <img
                   className="object-cover w-[150px] h-[150px] rounded-md"
                   alt="product-image"
-                  src={detailProduct?.image || `/images/no-image.svg`}
+                  src={detailProduct?.image || `/images/image-default.png`}
                 />
               </>
             ) : (
@@ -137,7 +137,7 @@ function ProductDetail() {
                 <img
                   className="object-cover w-[100px] h-[100px] rounded-md"
                   alt="product-image"
-                  src="/images/no-image.svg"
+                  src="/images/image-default.png"
                 />
                 <p>Sản phẩm chưa có ảnh</p>
               </>

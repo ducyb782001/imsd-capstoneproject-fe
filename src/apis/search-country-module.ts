@@ -1,12 +1,6 @@
 import { provinceUrl } from "../constants/APIConfig"
 import { requestAPI } from "../lib/api"
 
-// export const getListCity = () => {
-//   return requestAPI({
-//     url: `${countryUrl}/p`,
-//   })
-// }
-
 export const getListDistrictByCode = (code) => {
   return requestAPI({
     url: `${provinceUrl}/districts/getByProvince?provinceCode=${code}&limit=-1`,

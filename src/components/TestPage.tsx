@@ -11,11 +11,7 @@ import PrimaryInputCheckbox from "./PrimaryInputCheckbox"
 import PrimaryTextArea from "./PrimaryTextArea"
 import SecondaryBtn from "./SecondaryBtn"
 import { useQueries } from "react-query"
-import {
-  getListCity,
-  getListDistrictByCode,
-  getListWardByCode,
-} from "../apis/search-country-module"
+
 import CountryDropDown from "./CountryDropDown"
 import useScanDetection from "../hooks/useScanDetection"
 import { useTranslation } from "react-i18next"
@@ -40,37 +36,6 @@ function TestPage(props) {
   const [listCity, setListCity] = useState([])
   const [listDistrict, setListDistrict] = useState([])
   const [listWard, setListWard] = useState([])
-
-  useQueries([
-    {
-      queryKey: ["getListCity"],
-      queryFn: async () => {
-        const response = await getListCity()
-        setListCity(response?.data)
-        return response?.data
-      },
-    },
-    {
-      queryKey: ["getListDistrict", citySelected],
-      queryFn: async () => {
-        if (citySelected) {
-          const response = await getListDistrictByCode(citySelected?.code)
-          setListDistrict(response?.data?.districts)
-          return response?.data
-        }
-      },
-    },
-    {
-      queryKey: ["getListWards", districtSelected],
-      queryFn: async () => {
-        if (districtSelected) {
-          const response = await getListWardByCode(districtSelected?.code)
-          setListWard(response?.data?.wards)
-          return response?.data
-        }
-      },
-    },
-  ])
 
   useEffect(() => {
     setDistrictSelected(undefined)

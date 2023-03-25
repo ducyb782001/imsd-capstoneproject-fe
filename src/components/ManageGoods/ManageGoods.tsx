@@ -42,7 +42,7 @@ function ManageGoods({ ...props }) {
             <div className="w-[35px] h-[35px] rounded-xl">
               <img
                 className="object-cover w-full h-full rounded-xl"
-                src={data?.image}
+                src={data?.image ? data?.image : "/images/image-default.png"}
                 alt="image-product"
               />
             </div>
