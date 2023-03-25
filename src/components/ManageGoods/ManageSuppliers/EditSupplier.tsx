@@ -9,7 +9,7 @@ import CityDropDown from "../../CityDropDown"
 import WardDropDown from "../../WardDropDown"
 import DistrictDropDown from "../../DistrictDropDown"
 import {
-  getListCity,
+  getAllProvinces,
   getListDistrictByCode,
   getListWardByCode,
 } from "../../../apis/search-country-module"
@@ -20,6 +20,7 @@ import {
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
 import { useTranslation } from "react-i18next"
+import Switch from "react-switch"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -36,19 +37,18 @@ interface Supplier {
   status: boolean
 }
 
-function EditSupplier(props) {
+function EditSupplier() {
   const [supplier, setSupplier] = useState<Supplier>()
-  const [isEnabled, setIsEnabled] = useState(true)
+  const [supplierStatus, setSupplierStatus] = useState(true)
   const [disabled, setDisabled] = useState(true)
 
   const [citySelected, setCitySelected] = useState<any>()
   const [districtSelected, setDistrictSelected] = useState<any>()
   const [wardSelected, setWardSelected] = useState<any>()
 
-  const [listCity, setListCity] = useState([])
-  const [listDistrict, setListDistrict] = useState([])
-  const [listWard, setListWard] = useState([])
-  const [isAddressChanged, setIsAddressChanged] = useState(false)
+  const [listCity, setListCity] = useState<any>()
+  const [listDistrict, setListDistrict] = useState<any>()
+  const [listWard, setListWard] = useState<any>()
 
   const router = useRouter()
   const { supplierId } = router.query
@@ -60,36 +60,50 @@ function EditSupplier(props) {
         if (supplierId) {
           const response = await getSupplierDetail(supplierId)
           setSupplier(response?.data)
+
+          setCitySelected(response?.data?.city)
+          setDistrictSelected(response?.dasta?.district)
+          setWardSelected(response?.dasta?.ward)
+
+          setSupplierStatus(response?.data?.status)
           return response?.data
         }
       },
     },
     {
-      queryKey: ["getListCity"],
+      queryKey: ["getAllProvinces"],
       queryFn: async () => {
-        const response = await getListCity()
-        setListCity(response?.data)
-        return response?.data
+        const response = await getAllProvinces()
+        setListCity(response?.data?.data?.data)
+
+        return response?.data?.data
       },
     },
     {
       queryKey: ["getListDistrict", citySelected],
       queryFn: async () => {
-        const response = await getListDistrictByCode(citySelected?.id)
-        setListDistrict(response?.data?.districts)
-        return response?.data
+        if (citySelected) {
+          const response = await getListDistrictByCode(citySelected?.code)
+          setListDistrict(response?.data?.data?.data)
+          return response?.data?.data
+        }
       },
+      enabled: !!citySelected,
     },
     {
       queryKey: ["getListWards", districtSelected],
       queryFn: async () => {
-        const response = await getListWardByCode(districtSelected?.id)
-        setListWard(response?.data?.wards)
-        return response?.data
+        if (districtSelected) {
+          const response = await getListWardByCode(districtSelected?.code)
+          setListWard(response?.data?.data?.data)
+
+          return response?.data?.data
+        }
       },
+      enabled: !!districtSelected,
     },
   ])
-  console.log(supplier)
+
   useEffect(() => {
     setDistrictSelected(undefined)
     setWardSelected(undefined)
@@ -101,6 +115,7 @@ function EditSupplier(props) {
       },
     })
   }, [citySelected])
+
   useEffect(() => {
     setWardSelected(undefined)
     setSupplier({
@@ -111,6 +126,7 @@ function EditSupplier(props) {
       },
     })
   }, [districtSelected])
+
   useEffect(() => {
     setSupplier({
       ...supplier,
@@ -151,9 +167,9 @@ function EditSupplier(props) {
   useEffect(() => {
     setSupplier({
       ...supplier,
-      status: true,
+      status: supplierStatus,
     })
-  }, [isEnabled])
+  }, [supplierStatus])
 
   const handleEditSupplier = () => {
     toast.loading(t("operation_process"), {
@@ -182,26 +198,50 @@ function EditSupplier(props) {
       setDisabled(true)
     }
   })
+  console.log(supplier)
+
   const { t } = useTranslation()
   return (
     <div className="w-full bg-white block-border">
       <SmallTitle>{t("general_information")}</SmallTitle>
-      <PrimaryInput
-        className="mt-6"
-        placeholder={t("fill_supplier_name")}
-        title={
-          <h1>
-            {t("supplier_name")} <span className="text-red-500">*</span>
-          </h1>
-        }
-        value={supplier?.supplierName}
-        onChange={(e) => {
-          setSupplier({ ...supplier, supplierName: e.target.value })
-        }}
-      />
+      <div className="grid mt-6 grid-cols-73 gap-7">
+        <PrimaryInput
+          placeholder={t("fill_supplier_name")}
+          title={
+            <h1>
+              {t("supplier_name")} <span className="text-red-500">*</span>
+            </h1>
+          }
+          value={supplier?.supplierName}
+          onChange={(e) => {
+            setSupplier({ ...supplier, supplierName: e.target.value })
+          }}
+        />
+        <div>
+          <div className="mb-2 text-sm font-bold text-gray">
+            Trạng thái giao dịch
+          </div>
+          <Switch
+            onChange={() => setSupplierStatus(!supplierStatus)}
+            checked={supplierStatus}
+            width={44}
+            height={24}
+            className="ml-2 !opacity-100"
+            uncheckedIcon={null}
+            checkedIcon={null}
+            offColor="#CBCBCB"
+            onColor="#6A44D2"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 mt-4 gap-7">
         <PrimaryInput
-          title={t("phone_number")}
+          title={
+            <div>
+              {t("phone_number")} <span className="text-red-500">*</span>
+            </div>
+          }
           value={supplier?.supplierPhone}
           onChange={(e) => {
             setSupplier({ ...supplier, supplierPhone: e.target.value })
@@ -220,21 +260,21 @@ function EditSupplier(props) {
         <CityDropDown
           title={t("city")}
           listDropdown={listCity}
-          textDefault={supplier?.city?.name}
+          textDefault={supplier?.city?.name || "Chọn tỉnh"}
           showing={citySelected}
           setShowing={setCitySelected}
         />
         <DistrictDropDown
           title={t("district")}
           listDropdown={listDistrict}
-          textDefault={supplier?.district?.name}
+          textDefault={supplier?.district?.name || "Chọn thành phố"}
           showing={districtSelected}
           setShowing={setDistrictSelected}
         />
         <WardDropDown
           title={t("ward")}
           listDropdown={listWard}
-          textDefault={supplier?.ward?.name}
+          textDefault={supplier?.ward?.name || "Chọn xã"}
           showing={wardSelected}
           setShowing={setWardSelected}
         />
@@ -270,7 +310,7 @@ function EditSupplier(props) {
               classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
               title={t("confirm_update_spplier")}
               handleClickSaveBtn={handleEditSupplier}
-              disabled={disabled}
+              // disabled={disabled}
             >
               {t("edit")}
             </ConfirmPopup>

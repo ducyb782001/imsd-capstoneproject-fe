@@ -1,20 +1,26 @@
-import { countryUrl } from "../constants/APIConfig"
+import { provinceUrl } from "../constants/APIConfig"
 import { requestAPI } from "../lib/api"
 
-export const getListCity = () => {
-  return requestAPI({
-    url: `${countryUrl}/p`,
-  })
-}
+// export const getListCity = () => {
+//   return requestAPI({
+//     url: `${countryUrl}/p`,
+//   })
+// }
 
 export const getListDistrictByCode = (code) => {
   return requestAPI({
-    url: `${countryUrl}/p/${code}?depth=2`,
+    url: `${provinceUrl}/districts/getByProvince?provinceCode=${code}&limit=-1`,
   })
 }
 
 export const getListWardByCode = (code) => {
   return requestAPI({
-    url: `${countryUrl}/d/${code}?depth=2`,
+    url: `${provinceUrl}/wards/getByDistrict?districtCode=${code}&limit=-1`,
+  })
+}
+
+export const getAllProvinces = () => {
+  return requestAPI({
+    url: `${provinceUrl}/provinces/getAll?limit=-1`,
   })
 }

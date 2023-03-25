@@ -15,10 +15,10 @@ import StepBar from "../StepBar"
 import Table from "../Table"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
-import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useTranslation } from "react-i18next"
 import { useRouter } from "next/router"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import SearchProductExportDropdown from "./SearchProductExportDropdown"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateExportGood() {
@@ -135,6 +135,7 @@ function CreateExportGood() {
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   const [userData, setUserData] = useState<any>()
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -178,6 +179,7 @@ function CreateExportGood() {
 
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
+      // setSubmitted(false)
       const list = listChosenProduct.map((item) => {
         const discount = listProductExport.find(
           (i) => i.productId == item.productId,
@@ -199,7 +201,24 @@ function CreateExportGood() {
           )?.measuredUnitId,
         }
       })
+
       setListProductExport(list)
+
+      // for (let index = 0; index < list.length; index++) {
+      //   if (
+      //     new BigNumber(
+      //       list[index]?.amount ? list[index]?.amount : 0,
+      //     ).isGreaterThan(
+      //       listChosenProduct[index].inStock
+      //         ? listChosenProduct[index].inStock
+      //         : 0,
+      //     )
+      //   ) {
+      //     setSubmitted(true)
+      //     return
+      //   }
+      // }
+      // setSubmitted(false)
     }
   }, [listChosenProduct])
 
@@ -225,6 +244,24 @@ function CreateExportGood() {
         exportOrderDetails: listProductExport,
         totalPrice: new BigNumber(price).toFixed(),
       })
+      for (let index = 0; index < listProductExport.length; index++) {
+        if (
+          new BigNumber(
+            listProductExport[index]?.amount
+              ? listProductExport[index]?.amount
+              : 0,
+          ).isGreaterThan(
+            listChosenProduct[index].inStock
+              ? listChosenProduct[index].inStock
+              : 0,
+          )
+        ) {
+          setSubmitted(true)
+          return
+        }
+      }
+      setSubmitted(false)
+      // console.log(listProductExport, 123, listChosenProduct)
     }
   }, [listProductExport])
 
@@ -267,8 +304,10 @@ function CreateExportGood() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("toast_add_export_success"))
+          setSubmitted(false)
           router.push("/manage-export-goods")
         } else {
+          setSubmitted(false)
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
           } else {
@@ -298,6 +337,7 @@ function CreateExportGood() {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
 
+    setSubmitted(true)
     const submittedData = {
       ...productExportObject,
     }
@@ -372,7 +412,7 @@ function CreateExportGood() {
         <h1 className="mb-4 text-xl font-semibold">
           {t("export_product_infor")}
         </h1>
-        <SearchProductImportDropdown
+        <SearchProductExportDropdown
           listDropdown={listProduct?.data}
           textDefault={t("supplier")}
           placeholder={t("search.searchInGoods")}
@@ -395,6 +435,7 @@ function CreateExportGood() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={submitted}
         >
           {t("add_export_title")}
         </ConfirmPopup>
@@ -423,17 +464,26 @@ function ListQuantitiveExport({
   }
 
   return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
+    <div className="w-[100px] relative">
+      <PrimaryInput
+        className="w-[60px]"
+        type="number"
+        placeholder="0"
+        value={quantity ? quantity : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          setQuantity(e.target.value)
+          handleOnChangeAmount(e.target.value, data)
+        }}
+      />
+      {new BigNumber(quantity).isGreaterThan(
+        data?.inStock ? data?.inStock : 0,
+      ) && (
+        <p className="absolute text-xs text-dangerous">
+          Số lượng xuất lớn hơn số lượng tồn
+        </p>
+      )}
+    </div>
   )
 }
 

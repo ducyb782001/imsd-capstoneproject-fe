@@ -58,3 +58,10 @@ export const updateStaff = (updatedStaff) => {
     data: updatedStaff,
   })
 }
+
+export const updateProfile = (updatedStaff) => {
+  return patchAPI({
+    url: `${updateStaffUrl}`,
+    data: updatedStaff,
+  })
+}

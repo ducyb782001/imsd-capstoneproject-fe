@@ -431,8 +431,6 @@ function ListQuantitiveImport({
   listProductImport,
   setListProductImport,
 }) {
-  console.log(data)
-
   const [quantity, setQuantity] = useState()
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
@@ -446,7 +444,7 @@ function ListQuantitiveImport({
   }
 
   return (
-    <div className="w-[100px]">
+    <div className="w-[100px] relative">
       <PrimaryInput
         className="w-[60px]"
         type="number"
@@ -461,7 +459,9 @@ function ListQuantitiveImport({
       {new BigNumber(quantity)
         .plus(data?.inStock ? data?.inStock : 0)
         .isGreaterThan(data?.maxStock) && (
-        <p className="text-xs text-dangerous">Số lượng nhập vượt định mức</p>
+        <p className="absolute text-xs text-dangerous">
+          Số lượng nhập vượt định mức
+        </p>
       )}
     </div>
   )

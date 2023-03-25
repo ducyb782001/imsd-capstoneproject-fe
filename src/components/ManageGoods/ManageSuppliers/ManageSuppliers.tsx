@@ -44,6 +44,23 @@ function ManageSuppliers({ ...props }) {
           accessor: (data: any) => <p>{data?.address}</p>,
         },
         {
+          Header: "Trạng thái",
+          accessor: (data: any) =>
+            data?.status ? (
+              <div className="flex justify-center">
+                <div className="px-3 py-2 font-bold text-center text-white bg-green-500 rounded-md w-fit">
+                  {t("on_sale")}
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center">
+                <div className="px-2 py-2 font-bold text-center text-white rounded-md bg-gray w-fit">
+                  {t("off_sale")}
+                </div>
+              </div>
+            ),
+        },
+        {
           Header: t("action"),
           accessor: (data: any) => {
             return (
@@ -148,18 +165,7 @@ function ManageSuppliers({ ...props }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportProduct}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
+      <div className="flex items-center justify-end">
         <Link href={`/add-supplier`}>
           <a>
             <PrimaryBtn
@@ -185,7 +191,7 @@ function ManageSuppliers({ ...props }) {
         {isLoadingListSupplier ? (
           <TableSkeleton />
         ) : (
-          <>
+          <div>
             <div className="mt-4 table-style">
               <Table
                 pageSizePagination={pageSize}
@@ -200,7 +206,7 @@ function ManageSuppliers({ ...props }) {
               setCurrentPage={setCurrentPage}
               totalItems={listSupplier?.total}
             />
-          </>
+          </div>
         )}
       </div>
     </div>

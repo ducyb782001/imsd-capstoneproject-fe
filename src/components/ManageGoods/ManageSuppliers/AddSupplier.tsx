@@ -9,7 +9,7 @@ import CityDropDown from "../../CityDropDown"
 import WardDropDown from "../../WardDropDown"
 import DistrictDropDown from "../../DistrictDropDown"
 import {
-  getListCity,
+  getAllProvinces,
   getListDistrictByCode,
   getListWardByCode,
 } from "../../../apis/search-country-module"
@@ -17,13 +17,14 @@ import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { emailRegex, phoneRegex } from "../../../constants/constants"
 import { useTranslation } from "react-i18next"
+import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 interface Supplier {
   supplierId: number
   supplierName: string
-  supplierPhone: number
+  supplierPhone: string
   city: any
   district: any
   ward: any
@@ -37,23 +38,24 @@ function AddSupplier() {
   const { t } = useTranslation()
   const [supplier, setSupplier] = useState<Supplier>()
   const [isEnabled, setIsEnabled] = useState(true)
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(false)
 
   const [citySelected, setCitySelected] = useState<any>()
   const [districtSelected, setDistrictSelected] = useState<any>()
   const [wardSelected, setWardSelected] = useState<any>()
 
-  const [listCity, setListCity] = useState([])
-  const [listDistrict, setListDistrict] = useState([])
-  const [listWard, setListWard] = useState([])
+  const [listCity, setListCity] = useState<any>()
+  const [listDistrict, setListDistrict] = useState<any>()
+  const [listWard, setListWard] = useState<any>()
 
   useQueries([
     {
-      queryKey: ["getListCity"],
+      queryKey: ["getAllProvinces"],
       queryFn: async () => {
-        const response = await getListCity()
-        setListCity(response?.data)
-        return response?.data
+        const response = await getAllProvinces()
+        setListCity(response?.data?.data?.data)
+
+        return response?.data?.data
       },
     },
     {
@@ -61,20 +63,23 @@ function AddSupplier() {
       queryFn: async () => {
         if (citySelected) {
           const response = await getListDistrictByCode(citySelected?.code)
-          setListDistrict(response?.data?.districts)
-          return response?.data
+          setListDistrict(response?.data?.data?.data)
+          return response?.data?.data
         }
       },
+      enabled: !!citySelected,
     },
     {
       queryKey: ["getListWards", districtSelected],
       queryFn: async () => {
         if (districtSelected) {
           const response = await getListWardByCode(districtSelected?.code)
-          setListWard(response?.data?.wards)
-          return response?.data
+          setListWard(response?.data?.data?.data)
+
+          return response?.data?.data
         }
       },
+      enabled: !!districtSelected,
     },
   ])
 
@@ -89,6 +94,7 @@ function AddSupplier() {
       },
     })
   }, [citySelected])
+
   useEffect(() => {
     setWardSelected(undefined)
     setSupplier({
@@ -99,6 +105,7 @@ function AddSupplier() {
       },
     })
   }, [districtSelected])
+
   useEffect(() => {
     setSupplier({
       ...supplier,
@@ -119,8 +126,10 @@ function AddSupplier() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("add_supplier_success"))
+          setDisabled(false)
           router.push("/manage-suppliers")
         } else {
+          setDisabled(false)
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
@@ -145,6 +154,8 @@ function AddSupplier() {
   }, [isEnabled])
 
   const handleAddNewSupplier = () => {
+    setDisabled(true)
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
@@ -153,21 +164,7 @@ function AddSupplier() {
       ...supplier,
     })
   }
-  const handleCancelAddNewSupplier = (event) => {
-    router.push("/manage-suppliers")
-  }
 
-  useEffect(() => {
-    if (
-      emailRegex.test(supplier?.supplierEmail) &&
-      supplier?.supplierName.trim() !== "" &&
-      phoneRegex.test(supplier?.supplierPhone.toString())
-    ) {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  })
   return (
     <div className="">
       <div>
@@ -186,26 +183,39 @@ function AddSupplier() {
             }}
           />
           <div className="grid grid-cols-2 mt-4 gap-7">
-            <PrimaryInput
-              placeholder={t("enter_number")}
-              title={
-                <div className="flex gap-1">
-                  <h1>
-                    {t("phone_number")} <span className="text-red-500">*</span>
-                  </h1>
-                </div>
-              }
-              onChange={(e) => {
-                setSupplier({ ...supplier, supplierPhone: e.target.value })
-              }}
-            />
-            <PrimaryInput
-              title="Email"
-              placeholder={t("enter_email")}
-              onChange={(e) => {
-                setSupplier({ ...supplier, supplierEmail: e.target.value })
-              }}
-            />
+            <div>
+              <PrimaryInput
+                placeholder={t("enter_number")}
+                title={
+                  <div className="flex gap-1">
+                    <h1>
+                      {t("phone_number")}{" "}
+                      <span className="text-red-500">*</span>
+                    </h1>
+                  </div>
+                }
+                onChange={(e) => {
+                  setSupplier({ ...supplier, supplierPhone: e.target.value })
+                }}
+              />
+              {supplier?.supplierPhone &&
+                !!!isValidPhoneNumber(supplier?.supplierPhone) && (
+                  <p className="text-red-500">Sai định dạng</p>
+                )}
+            </div>
+            <div>
+              <PrimaryInput
+                title="Email"
+                placeholder={t("enter_email")}
+                onChange={(e) => {
+                  setSupplier({ ...supplier, supplierEmail: e.target.value })
+                }}
+              />
+              {supplier?.supplierEmail &&
+                !!!isValidGmail(supplier?.supplierEmail) && (
+                  <p className="text-red-500">Sai định dạng</p>
+                )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 mt-4 md:grid-cols-3 gap-x-7 gap-y-4">
@@ -254,20 +264,29 @@ function AddSupplier() {
               setSupplier({ ...supplier, note: e.target.value })
             }}
           />
-          <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row md:w-1/2">
+          <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">
             <ConfirmPopup
+              className="md:w-[200px]"
               classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark"
               title={t("cancel_confirm_supplier")}
-              handleClickSaveBtn={handleCancelAddNewSupplier}
+              handleClickSaveBtn={() => router.push("/manage-suppliers")}
             >
               {t("cancel")}
             </ConfirmPopup>
 
             <ConfirmPopup
-              classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
+              classNameBtn="bg-successBtn border-successBtn active:bg-greenDark md:w-[200px]"
               title={t("add_confirm_supplier")}
               handleClickSaveBtn={handleAddNewSupplier}
-              disabled={disabled}
+              disabled={
+                disabled ||
+                (supplier?.supplierPhone &&
+                  !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
+                (supplier?.supplierEmail &&
+                  !!!isValidGmail(supplier?.supplierEmail)) ||
+                !!!supplier?.supplierPhone ||
+                !!!supplier?.supplierName
+              }
             >
               {t("add_new_supplier")}
             </ConfirmPopup>
