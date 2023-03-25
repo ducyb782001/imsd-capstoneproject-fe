@@ -15,11 +15,10 @@ import {
 } from "../../../apis/search-country-module"
 import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
-import { emailRegex, phoneRegex } from "../../../constants/constants"
 import { useTranslation } from "react-i18next"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
 
-const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created- product-type-id"
 
 interface Supplier {
   supplierId: number

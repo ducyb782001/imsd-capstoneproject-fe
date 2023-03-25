@@ -9,11 +9,10 @@ import CheckedIcon from "../icons/CheckedIcon"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { LeftBlock } from "./Login"
 
-function ResetSuccessful(props) {
+function ResetSuccessful() {
   const router = useRouter()
 
-  const handleContinue = (event) => {}
-  const handleLogin = (event) => {
+  const handleLogin = () => {
     router.push("/login")
   }
 
@@ -37,11 +36,8 @@ function ResetSuccessful(props) {
                 magically.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-8/12 h-1/4 flex flex-col items-center justify-center">
-              <PrimaryBtn onClick={handleContinue} className="w-4/6 ">
-                Continue
-              </PrimaryBtn>
-              <div className="mt-8" onClick={handleLogin}>
+            <div className="flex flex-col items-center justify-center w-8/12 h-32 bg-white rounded-md mt-7">
+              <div onClick={handleLogin}>
                 <ArrowLeftIcon
                   accessoriesRight={
                     <UnderlineText className="font-medium">

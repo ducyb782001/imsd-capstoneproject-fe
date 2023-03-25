@@ -9,11 +9,13 @@ import { LeftBlock } from "./Login"
 import { useMutation } from "react-query"
 import axios from "axios"
 import { notMeUrl } from "../../constants/APIConfig"
+import ArrowLeftIcon from "../icons/ArrowLeftIcon"
+import UnderlineText from "../UnderlineText"
 
-function VerifySuccessful(props) {
+function VerifySuccessful() {
   const router = useRouter()
 
-  const handleLogin = (event) => {
+  const handleLogin = () => {
     router.push("/login")
   }
   const { token } = router.query
@@ -46,10 +48,20 @@ function VerifySuccessful(props) {
                 Bạn đã hủy mã thay đổi mật khẩu thành công. Xin mời đăng nhập.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-8/12 h-40 flex flex-col items-center justify-center">
-              <PrimaryBtn onClick={handleLogin} className="w-4/6 ">
-                Đăng nhập
-              </PrimaryBtn>
+            <div className="flex flex-col items-center justify-center w-8/12 h-40 bg-white rounded-md mt-7">
+              <div
+                className="flex flex-col items-center justify-center"
+                onClick={handleLogin}
+              >
+                <ArrowLeftIcon
+                  // className="mt-4"
+                  accessoriesRight={
+                    <UnderlineText className="font-medium">
+                      Quay lại đăng nhập
+                    </UnderlineText>
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>

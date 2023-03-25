@@ -18,7 +18,6 @@ import {
   updateSupplier,
 } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
-import { emailRegex, phoneRegex } from "../../../constants/constants"
 import { useTranslation } from "react-i18next"
 import Switch from "react-switch"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"

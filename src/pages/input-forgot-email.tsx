@@ -1,7 +1,7 @@
 import React from "react"
 import InputEmailForgot from "../components/Login/InputEmailForgot"
 
-function inputEmailForgot(props) {
+function inputEmailForgot() {
   return <InputEmailForgot />
 }
 
