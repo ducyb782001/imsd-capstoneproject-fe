@@ -16,19 +16,19 @@ import { resetPassword } from "../../constants/APIConfig"
 import { passRegex } from "../../constants/constants"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
+import { checkPassword } from "../../lib/check-password"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function SetPassword(props) {
+function SetPassword() {
   const [userPassword, setUserPassword] = useState("")
   const [userPassword2, setUserPassword2] = useState("")
-  const [disabled, setDisabled] = useState(true)
 
   const router = useRouter()
 
-  const handleLogin = (event) => {
+  const handleLogin = () => {
     router.push("/login")
   }
-  const handleChangePass = (event) => {
+  const handleChangePass = () => {
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
@@ -46,7 +46,6 @@ function SetPassword(props) {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
         toast.success("Cài lại mật khẩu thành công!")
-        setDisabled(false)
         setTimeout(() => {
           router.push("/login")
         }, 300)
@@ -60,13 +59,15 @@ function SetPassword(props) {
     },
   )
 
-  useEffect(() => {
-    if (userPassword == userPassword2) {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  })
+  // useEffect(() => {
+  //   if (userPassword == userPassword2) {
+  //     setDisabled(false)
+  //   } else {
+  //     setDisabled(true)
+  //   }
+  // })
+
+  const canChangePassword = checkPassword(userPassword, userPassword2)
 
   return (
     <div className="relative">
@@ -87,8 +88,8 @@ function SetPassword(props) {
                 Mật khẩu của bạn phải khác với những mật khẩu đã dùng trước đây.
               </TextDescription>
             </div>
-            <div className="w-7/12 bg-white rounded-md mt-7 h-3/6">
-              <div className="flex flex-col w-4/5 gap-6 mt-16 ml-16 ">
+            <div className="w-3/4 bg-white rounded-md mt-7">
+              <div className="flex flex-col gap-6 px-10 py-6">
                 <PasswordInput
                   title={
                     <div className="flex gap-1">
@@ -114,27 +115,21 @@ function SetPassword(props) {
                   title={
                     <div className="flex gap-1">
                       <h1>Nhập lại mật khẩu</h1>
-                      <Tooltip
-                        content={
-                          <div>
-                            Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
-                            <h1>
-                              Phải bao gồm chữ in hoa, in thường, số, không được
-                              để trống
-                            </h1>
-                          </div>
-                        }
-                      >
-                        <InfoIcon />
-                      </Tooltip>
                     </div>
                   }
                   onChange={(event) => setUserPassword2(event.target.value)}
                   placeholder="Xác nhận lại mật khẩu"
                 />
+                {!canChangePassword && userPassword && (
+                  <p className="mt-1 text-sm text-red-500">
+                    * Password must be at least 8 characters with at least 1
+                    Upper Case, 1 lower case, 1 special character and 1 numeric
+                    character
+                  </p>
+                )}
                 <PrimaryBtn
                   onClick={handleChangePass}
-                  disabled={disabled}
+                  disabled={!canChangePassword}
                   className="mt-1"
                 >
                   Cài lại mật khẩu
@@ -146,7 +141,6 @@ function SetPassword(props) {
                   <ArrowLeftIcon
                     accessoriesRight={
                       <UnderlineText className="font-medium">
-                        {" "}
                         Quay lại đăng nhập
                       </UnderlineText>
                     }

@@ -18,7 +18,6 @@ function Login() {
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [disabled, setDisabled] = useState(true)
-  const [paramLogin, setParamLogin] = useState("")
   const router = useRouter()
 
   const loginMutation = useMutation(
@@ -99,8 +98,8 @@ function Login() {
             <p className="mt-4">Chào mừng quay trở lại! Xin mời đăng nhập!</p>
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
-                title="Email"
-                placeholder="Nhập email của bạn"
+                title="Tên đăng nhập"
+                placeholder="Nhập tên đăng nhập"
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput

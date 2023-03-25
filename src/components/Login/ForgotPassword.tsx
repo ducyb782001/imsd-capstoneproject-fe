@@ -8,7 +8,7 @@ import ArrowLeftIcon from "../icons/ArrowLeftIcon"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { LeftBlock } from "./Login"
 
-function ForgotPassword(props) {
+function ForgotPassword() {
   const router = useRouter()
 
   const handleLogin = (event) => {
@@ -30,13 +30,13 @@ function ForgotPassword(props) {
               </div>
               <Title>Kiểm tra hòm thư điện tử của bạn</Title>
               <TextDescription className="mt-4 text-center">
-                Vui lòng kiểm tra thư xác minh trong hòm thư đến.
+                Vui lòng kiểm tra thư xác minh trong hòm thư đến và nhấn
                 <br />
                 vào đường dẫn trong email để xác nhận địa chỉ email của bạn.
               </TextDescription>
             </div>
-            <div className="mt-7 bg-white rounded-md w-96 h-40">
-              <TextDescription className="mt-9 text-center">
+            <div className="bg-white rounded-md h-28 mt-7 w-96">
+              <TextDescription className="text-center mt-9">
                 <div
                   className="flex flex-col items-center justify-center mt-10"
                   onClick={handleLogin}

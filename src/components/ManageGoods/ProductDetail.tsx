@@ -58,6 +58,10 @@ function ProductDetail() {
               }
             />
             <ProductInfo
+              title={"Mã barcode"}
+              data={detailProduct?.barcode ? detailProduct?.barcode : "---"}
+            />
+            <ProductInfo
               title={t("supplier")}
               data={
                 detailProduct?.supplier?.supplierName

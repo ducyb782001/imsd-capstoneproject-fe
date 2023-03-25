@@ -14,6 +14,7 @@ import { toast } from "react-toastify"
 import { LeftBlock } from "./Login"
 import KeyIcon from "../icons/KeyIcon"
 import { emailRegex } from "../../constants/constants"
+
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function InputEmailForgot() {
@@ -84,7 +85,7 @@ function InputEmailForgot() {
                 Nhập tài khoản hòm thư đã liên kết với tài khoản của bạn!
               </TextDescription>
             </div>
-            <div className="w-7/12 bg-white rounded-md mt-7 h-1/3">
+            <div className="w-7/12 bg-white rounded-md mt-7 h-2/5">
               <div className="flex flex-col w-4/5 gap-6 mt-12 ml-16 ">
                 <PrimaryInput
                   title="Email"
