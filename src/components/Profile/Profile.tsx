@@ -71,7 +71,11 @@ function Profile() {
     },
   )
 
+  console.log(staffAccountObject)
+
   const handleChangeProfile = () => {
+    // Change profile validate
+
     // @ts-ignore
     updateProfileMutation.mutate(staffAccountObject)
   }

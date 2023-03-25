@@ -7,8 +7,8 @@ export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
 
 // export const baseUrl = `https://localhost:7265/api`
 
-// City, district, ward
-export const countryUrl = `https://provinces.open-api.vn/api`
+// New city, district API
+export const provinceUrl = `https://vn-public-apis.fpo.vn`
 
 //auth url
 
@@ -67,6 +67,8 @@ export const deactiveStaffUrl = `${baseUrl}/Users/Deactivate`
 export const createStaffUrl = `${baseUrl}/Users/CreateStaff`
 
 export const updateStaffUrl = `${baseUrl}/Users/UpdateStaff`
+
+export const updateProfileUrl = `${baseUrl}/Users/UpdateProfile`
 
 export const changePasswordUrl = `${baseUrl}/Users/ChangePassword`
 

@@ -48,7 +48,7 @@ function AddTypePopup({ className = "" }) {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success(t("add_type_success"))
-        queryClient.refetchQueries("getListStaffs")
+        queryClient.refetchQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)

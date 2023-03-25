@@ -121,28 +121,9 @@ function ManageTypeGoods() {
     },
   ])
 
-  const handleExportTypeGood = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listTypeGoodExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
-          <ImportExportButton
-            onClick={handleExportTypeGood}
-            accessoriesLeft={<DownloadIcon />}
-          >
-            Xuất file
-          </ImportExportButton>
-          <ImportExportButton accessoriesLeft={<UploadIcon />}>
-            Nhập file
-          </ImportExportButton>
-        </div>
+      <div className="flex items-center justify-end">
         <AddTypePopup className="max-w-[250px]" />
       </div>
       <div className="mt-2 bg-white block-border">
@@ -158,13 +139,12 @@ function ManageTypeGoods() {
         {isLoadingListType ? (
           <TableSkeleton />
         ) : (
-          <>
+          <div>
             <div className="mt-4 table-style">
               <Table
                 pageSizePagination={pageSize}
                 columns={column}
                 data={listTypeGood?.data}
-                columnSize="w-1"
               />
             </div>
             <Pagination
@@ -174,7 +154,7 @@ function ManageTypeGoods() {
               setCurrentPage={setCurrentPage}
               totalItems={listTypeGood?.total}
             />
-          </>
+          </div>
         )}
       </div>
     </div>
