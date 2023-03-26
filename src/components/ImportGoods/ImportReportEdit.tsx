@@ -254,8 +254,6 @@ function ImportReportEdit() {
     event?.preventDefault()
     await updateImportMutation.mutate({
       ...productImportObject,
-      state: 0,
-      userId: 1,
     })
   }
 
