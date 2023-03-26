@@ -30,17 +30,22 @@ export const getProductDetail = (productId) => {
   })
 }
 
-export const getListExportProduct = () => {
+export const getListExportProduct = (queryObject) => {
+  const queryString = convertObjectToQueryString(queryObject)
+
   return requestAPI({
-    url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=0`,
+    url: `${allProductUrl}${queryString}`,
   })
 }
 
-export const getListExportProductBySupplier = (supId) => {
+export const getListExportProductBySupplier = (queryObject) => {
+  const queryString = convertObjectToQueryString(queryObject)
+
   return requestAPI({
-    url: `${allProductUrl}?offset=0&limit=1000&catId=0&supId=${supId}`,
+    url: `${allProductUrl}${queryString}`,
   })
 }
+
 export const updateProduct = (editedProduct) =>
   patchAPI({
     url: editProductUrl,

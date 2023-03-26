@@ -123,7 +123,6 @@ function ManageSuppliers({ ...props }) {
           })
           setListSupplier(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportSupplier({
             search: debouncedSearchValue,
             offset: 0,
@@ -143,7 +142,6 @@ function ManageSuppliers({ ...props }) {
           setListSupplier(response?.data)
           setIsLoadingListSupplier(response?.data?.isLoading)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportSupplier({})
           setListSupplierExport(exportFile?.data)
 

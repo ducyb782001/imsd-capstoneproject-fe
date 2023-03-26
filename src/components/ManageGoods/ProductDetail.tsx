@@ -11,6 +11,8 @@ import { format } from "date-fns"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import PrimaryBtn from "../PrimaryBtn"
+import GeneralIcon from "../icons/GeneralIcon"
+import HistoryIcon from "../icons/HistoryIcon"
 
 function ProductDetail() {
   const [detailProduct, setDetailProduct] = useState<any>()
@@ -61,7 +63,10 @@ function ProductDetail() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>{t("product_infor")}</SmallTitle>
+        <div className="flex items-center gap-3">
+          <GeneralIcon />
+          <SmallTitle>{t("product_infor")}</SmallTitle>
+        </div>
         <div className="grid mt-4 md:grid-cols-433">
           <div className="grid grid-cols-2 gap-y-1">
             <ProductInfo
@@ -231,7 +236,10 @@ function HistoryProduct({ data }) {
 
   return (
     <div className="mt-4 bg-white block-border">
-      <SmallTitle>{t("history")}</SmallTitle>
+      <div className="flex items-center gap-3">
+        <HistoryIcon />
+        <SmallTitle>{t("history")}</SmallTitle>
+      </div>
       <div className="mt-4 table-style">
         <Table
           pageSizePagination={10}

@@ -21,6 +21,9 @@ import {
 import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
 import ReasonDropdown from "./ReasonDropdown"
+import GeneralIcon from "../icons/GeneralIcon"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
+import DeleteDetail from "../DeleteDetail"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -74,19 +77,13 @@ function EditCheckGood() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[80px]">
-              <PrimaryInput
-                value={data?.currentStock || data?.inStock}
-                className="w-16"
-                readOnly={true}
-              />
-            </div>
+            <div className="text-center">{data?.currentStock}</div>
           ),
         },
         {
           Header: t("actual_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[80px]">
+            <div className="flex items-center justify-center">
               <ListActualStock
                 data={data}
                 listProductCheck={listProductCheck}
@@ -117,7 +114,7 @@ function EditCheckGood() {
           Header: " ",
           accessor: (data: any, index) => (
             <div
-              className="cursor-pointer"
+              className="w-full cursor-pointer"
               onClick={() => {
                 let result = listChosenProduct?.filter(
                   (i, ind) => ind !== index,
@@ -125,7 +122,7 @@ function EditCheckGood() {
                 setListChosenProduct(result)
               }}
             >
-              <XIcons />
+              <DeleteDetail />
             </div>
           ),
         },
@@ -220,7 +217,11 @@ function EditCheckGood() {
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getListExportProduct()
+        const response = await getListExportProduct({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListProduct(response?.data)
         return response?.data
       },
@@ -285,7 +286,7 @@ function EditCheckGood() {
   ) : (
     <div>
       <div>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col justify-between w-full gap-4 md:items-center md:flex-row">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-semibold">{t("edit_check")}</h1>
           </div>
@@ -298,13 +299,12 @@ function EditCheckGood() {
             >
               {t("save")}
             </ConfirmPopup>
-            <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
-              {t("exit")}
-            </SecondaryBtn>
+            <SecondaryBtn onClick={handleClickOutBtn}>{t("exit")}</SecondaryBtn>
           </div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-3 mb-4">
+            <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">
@@ -338,7 +338,10 @@ function EditCheckGood() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
+        </div>
         <SearchProductImportDropdown
           placeholder={t("search.searchInGoods")}
           listDropdown={listProduct?.data}
@@ -405,7 +408,7 @@ function CountDeviated({ data, listProductCheck }) {
     handleCountDeviated()
   }, [listProductCheck])
   return (
-    <div className="h-12 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
+    <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {deviated}
     </div>
   )

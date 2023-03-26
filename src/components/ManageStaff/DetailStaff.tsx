@@ -20,6 +20,8 @@ import { checkPassword, checkSamePassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import Switch from "react-switch"
 import DetailStaffSkeleton from "./DetailStaffSkeleton"
+import GeneralIcon from "../icons/GeneralIcon"
+import PasswordIcon from "../icons/PasswordIcon"
 
 function DetailStaff() {
   const { t } = useTranslation()
@@ -162,7 +164,10 @@ function DetailStaff() {
   ) : (
     <div>
       <div className="bg-white block-border">
-        <SmallTitle>{t("profile_detail")}</SmallTitle>
+        <div className="flex items-center gap-3">
+          <GeneralIcon />
+          <SmallTitle>{t("profile_detail")}</SmallTitle>
+        </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
@@ -341,7 +346,10 @@ function DetailStaff() {
         </PrimaryBtn>
       </div>
       <div className="mt-10 bg-white block-border">
-        <SmallTitle>{t("update_password")}</SmallTitle>
+        <div className="flex items-center gap-3">
+          <PasswordIcon />
+          <SmallTitle>{t("update_password")}</SmallTitle>
+        </div>
         <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
           <div>
             <PasswordInput

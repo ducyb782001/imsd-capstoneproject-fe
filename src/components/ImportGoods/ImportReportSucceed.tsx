@@ -216,7 +216,7 @@ function ImportReportSucceed() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">{t("price_overall")}</div>
-          {new BigNumber(productImport?.totalCost || 0).toFormat()}
+          {new BigNumber(productImport?.totalCost || 0).toFormat()} đ
         </div>
       </div>
     </div>

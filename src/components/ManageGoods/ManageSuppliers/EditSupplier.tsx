@@ -21,6 +21,7 @@ import ConfirmPopup from "../../ConfirmPopup"
 import { useTranslation } from "react-i18next"
 import Switch from "react-switch"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
+import GeneralIcon from "../../icons/GeneralIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -191,7 +192,10 @@ function EditSupplier() {
   const { t } = useTranslation()
   return (
     <div className="w-full bg-white block-border">
-      <SmallTitle>{t("general_information")}</SmallTitle>
+      <div className="flex items-center gap-3">
+        <GeneralIcon />
+        <SmallTitle>{t("general_information")}</SmallTitle>
+      </div>
       <div className="grid mt-6 grid-cols-73 gap-7">
         <PrimaryInput
           placeholder={t("fill_supplier_name")}
@@ -256,7 +260,7 @@ function EditSupplier() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 mt-4 gap-7">
+      <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-3">
         <CityDropDown
           title={t("city")}
           listDropdown={listCity}
@@ -295,35 +299,32 @@ function EditSupplier() {
           setSupplier({ ...supplier, note: e.target.value })
         }}
       />
-      <div className="flex items-center mt-6 absolute-right">
-        <div className="flex flex-col gap-4">
-          <div className="grid items-center justify-between w-full gap-4 fle md:grid-cols-4 ">
-            <ConfirmPopup
-              classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark w-52"
-              title={t("cancel_update_supplier")}
-              handleClickSaveBtn={handleCancelEditSupplier}
-            >
-              {t("cancel")}
-            </ConfirmPopup>
+      <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">
+        <ConfirmPopup
+          className="md:w-[200px]"
+          classNameBtn="bg-cancelBtn border-cancelBtn active:bg-cancelDark"
+          title={t("cancel_update_supplier")}
+          handleClickSaveBtn={handleCancelEditSupplier}
+        >
+          {t("cancel")}
+        </ConfirmPopup>
 
-            <ConfirmPopup
-              classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-              title={t("confirm_update_spplier")}
-              handleClickSaveBtn={handleEditSupplier}
-              disabled={
-                disabled ||
-                (supplier?.supplierPhone &&
-                  !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
-                (supplier?.supplierEmail &&
-                  !!!isValidGmail(supplier?.supplierEmail)) ||
-                !!!supplier?.supplierPhone ||
-                !!!supplier?.supplierName
-              }
-            >
-              {t("edit")}
-            </ConfirmPopup>
-          </div>
-        </div>
+        <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark md:w-[200px]"
+          title={t("confirm_update_spplier")}
+          handleClickSaveBtn={handleEditSupplier}
+          disabled={
+            disabled ||
+            (supplier?.supplierPhone &&
+              !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
+            (supplier?.supplierEmail &&
+              !!!isValidGmail(supplier?.supplierEmail)) ||
+            !!!supplier?.supplierPhone ||
+            !!!supplier?.supplierName
+          }
+        >
+          {t("edit")}
+        </ConfirmPopup>
       </div>
     </div>
   )

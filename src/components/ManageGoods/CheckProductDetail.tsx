@@ -2,24 +2,15 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import { createExportProduct } from "../../apis/export-product-module"
-import { getListExportProduct } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
-import XIcons from "../icons/XIcons"
-import PrimaryInput from "../PrimaryInput"
 import Table from "../Table"
 import { useRouter } from "next/router"
-import DownloadIcon from "../icons/DownloadIcon"
-import UploadIcon from "../icons/UploadIcon"
-import * as XLSX from "xlsx/xlsx"
-import PrimaryBtn from "../PrimaryBtn"
 import {
   getDetailStockTakeProduct,
   getProductDetailStockTakeProduct,
 } from "../../apis/stocktake-product-module"
 import { useTranslation } from "react-i18next"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import GeneralIcon from "../icons/GeneralIcon"
 
 function CheckProductDetail() {
   const { t } = useTranslation()
@@ -112,10 +103,6 @@ function CheckProductDetail() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.back()
-  }
-
   return (
     <div>
       <div>
@@ -123,7 +110,8 @@ function CheckProductDetail() {
           <div className="flex items-center justify-between gap-4"></div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center gap-4 mb-10">
+          <div className="flex items-center gap-3 mb-10">
+            <GeneralIcon />
             <h1 className="text-2xl font-semibold">Thông tin đơn</h1>
             <StatusDisplay data={productStockTakeObject?.state} />
           </div>
@@ -163,7 +151,10 @@ function CheckProductDetail() {
       </div>
 
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        <div className="flex items-center gap-3">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

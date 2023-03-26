@@ -90,7 +90,7 @@ function ManageTypeGoods() {
             ...queryParams,
           })
           setListTypeGood(response?.data)
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
+
           const exportFile = await getListExportTypeGood({
             search: debouncedSearchValue,
             offset: 0,
@@ -109,7 +109,6 @@ function ManageTypeGoods() {
           })
           setListTypeGood(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListExportTypeGood({})
           setListTypeGoodExport(exportFile?.data)
           setIsLoadingListType(response?.data?.isLoading)

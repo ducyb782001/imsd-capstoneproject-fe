@@ -13,6 +13,7 @@ import {
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
 function ExportProductDetail() {
   const columns = [
@@ -125,7 +126,7 @@ function ExportProductDetail() {
     <ExportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
@@ -144,18 +145,30 @@ function ExportProductDetail() {
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
-              createdDate={format(
-                new Date(productImport?.created),
-                "dd/MM/yyyy HH:mm",
-              )}
-              approvedDate={format(
-                new Date(productImport?.approved),
-                "dd/MM/yyyy HH:mm",
-              )}
-              succeededDate={format(
-                new Date(productImport?.completed),
-                "dd/MM/yyyy HH:mm",
-              )}
+              createdDate={
+                productImport?.createdDate
+                  ? format(
+                      new Date(productImport?.createdDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
+              approvedDate={
+                productImport?.approvedDate
+                  ? format(
+                      new Date(productImport?.approvedDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
+              succeededDate={
+                productImport?.succeededDate
+                  ? format(
+                      new Date(productImport?.succeededDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
               status="succeed"
             />
           </div>
@@ -175,11 +188,9 @@ function ExportProductDetail() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             Ngày tạo đơn:{" "}
-            {new Date(productImport?.created).getDate() +
-              "/" +
-              (new Date(productImport?.created).getMonth() + 1) +
-              "/" +
-              new Date(productImport?.created).getFullYear()}
+            {productImport?.createdDate
+              ? format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")
+              : format(new Date(), "dd/MM/yyyy HH:mm")}
           </div>
           <PrimaryTextArea
             rows={7}
@@ -192,9 +203,10 @@ function ExportProductDetail() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm xuất đi
-        </h1>
+        <div className="flex items-center gap-3">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm xuất đi</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

@@ -147,7 +147,6 @@ function ManageCheckGoods() {
           })
           setListCheckProduct(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListStockTakeProduct({
             code: debouncedSearchValue,
             offset: 0,

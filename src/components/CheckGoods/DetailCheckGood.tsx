@@ -7,6 +7,8 @@ import PrimaryBtn from "../PrimaryBtn"
 import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
 import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
+import GeneralIcon from "../icons/GeneralIcon"
 
 function DetailCheckGood() {
   const { t } = useTranslation()
@@ -109,8 +111,9 @@ function DetailCheckGood() {
   ) : (
     <div>
       <div className="w-full p-6 mt-6 bg-white block-border">
-        <div className="flex items-center justify-between w-full mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-between w-full gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <GeneralIcon />
             <h1 className="text-2xl font-semibold">{t("report_infor")}</h1>
             <StatusDisplay data={productCheckObject?.state} />
           </div>
@@ -154,7 +157,10 @@ function DetailCheckGood() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
+        <div className="flex items-center gap-3">
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
@@ -173,44 +179,14 @@ function StatusDisplay({ data }) {
   const { t } = useTranslation()
   if (data == 2) {
     return (
-      <div className="w-32 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
+      <div className="font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">{t("cancelled")}</h1>
       </div>
     )
   } else if (data == 1) {
     return (
-      <div className="w-32 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
+      <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
-      </div>
-    )
-  }
-}
-
-function NoteProduct({ data }) {
-  const { t } = useTranslation()
-
-  if (data.id == 1) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("other")}</p>
-      </div>
-    )
-  } else if (data.id == 2) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("damaged")}</p>
-      </div>
-    )
-  } else if (data.id == 3) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("return")}</p>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">---</p>
       </div>
     )
   }

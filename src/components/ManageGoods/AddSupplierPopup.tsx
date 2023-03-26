@@ -9,15 +9,63 @@ import PrimaryInput from "../PrimaryInput"
 import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import { useTranslation } from "react-i18next"
+import { isValidPhoneNumber } from "../../hooks/useValidator"
+import { toast } from "react-toastify"
+import { addNewSupplier } from "../../apis/supplier-module"
+import { useMutation, useQueryClient } from "react-query"
+
+const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created- product-type-id"
 
 function AddSupplierPopup({ className = "" }) {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-  const handleSaveBtn = () => {
-    close()
-  }
+
   const { t } = useTranslation()
+
+  const [supplier, setSupplier] = useState<any>()
+
+  const handleAddNewSupplier = () => {
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
+    // @ts-ignore
+    addNewSupplierMutation.mutate({
+      ...supplier,
+    })
+  }
+
+  const queryClient = useQueryClient()
+
+  const addNewSupplierMutation = useMutation(
+    async (newProduct) => {
+      return await addNewSupplier(newProduct)
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+          toast.success(t("add_supplier_success"))
+          queryClient.invalidateQueries("getListStaff")
+          queryClient.invalidateQueries("getListSupplier")
+          close()
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                t("error_occur"),
+            )
+          }
+        }
+      },
+    },
+  )
+
   return (
     <div className={`${className}`}>
       <button
@@ -48,16 +96,56 @@ function AddSupplierPopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>{t("add_new_supplier")}</SmallTitle>
+                  <SmallTitle>Thêm nhanh nhà cung cấp</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
-                <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput title={t("supplier_name")} />
+                <div className="px-6 mt-3 text-base text-[#4F4F4F]">
+                  <PrimaryInput
+                    title={
+                      <div>
+                        {t("supplier_name")}{" "}
+                        <span className="text-red-500">*</span>
+                      </div>
+                    }
+                    placeholder={t("fill_supplier_name")}
+                    onChange={(e) => {
+                      setSupplier({ ...supplier, supplierName: e.target.value })
+                    }}
+                  />
+                </div>
+                <div className="px-6 mt-6 text-base text-[#4F4F4F]">
+                  <PrimaryInput
+                    title={
+                      <div>
+                        Số điện thoại <span className="text-red-500">*</span>
+                      </div>
+                    }
+                    onChange={(e) => {
+                      setSupplier({
+                        ...supplier,
+                        supplierPhone: e.target.value,
+                      })
+                    }}
+                    placeholder={t("enter_number")}
+                  />
+                  {supplier?.supplierPhone &&
+                    !!!isValidPhoneNumber(supplier?.supplierPhone) && (
+                      <p className="text-red-500">Sai định dạng</p>
+                    )}
                 </div>
 
-                <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
-                  <PrimaryBtn className="w-[200px]">
+                <div className="flex items-center justify-end gap-4 px-6 mt-8 mb-4">
+                  <PrimaryBtn
+                    className="w-[200px]"
+                    disabled={
+                      (supplier?.supplierPhone &&
+                        !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
+                      !!!supplier?.supplierPhone ||
+                      !!!supplier?.supplierName
+                    }
+                    onClick={handleAddNewSupplier}
+                  >
                     {t("add_new_supplier")}
                   </PrimaryBtn>
                   <SecondaryBtn onClick={close} className="w-[70px]">

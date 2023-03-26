@@ -66,9 +66,7 @@ function ExportReportDraff() {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <p className="text-center">{data?.price} đ</p>
-            </div>
+            <p className="text-center">{data?.price} đ</p>
           ),
         },
         {

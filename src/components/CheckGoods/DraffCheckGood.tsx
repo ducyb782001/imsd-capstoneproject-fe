@@ -15,6 +15,8 @@ import {
 } from "../../apis/stocktake-product-module"
 import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
+import GeneralIcon from "../icons/GeneralIcon"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -239,6 +241,7 @@ function DraffCheckGood() {
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
+            <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-2 text-sm font-bold text-gray">
@@ -264,7 +267,10 @@ function DraffCheckGood() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
+        <div className="flex items-center gap-3">
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

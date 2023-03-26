@@ -213,7 +213,11 @@ function CreateCheckReport() {
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getListExportProduct()
+        const response = await getListExportProduct({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListProductSearch(response?.data)
         return response?.data
       },

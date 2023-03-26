@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
-import React, { useState } from "react"
+import { useRouter } from "next/router"
+import React, { useEffect, useState } from "react"
 import { useQueries, useQuery } from "react-query"
 import {
   getDashboardByTime,
@@ -27,27 +28,34 @@ const listSubMenu = [
 ]
 
 function Dashboard() {
+  const router = useRouter()
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        const user = JSON.parse(userData)
+        setUserData(user)
+      }
+    }
+  }, [])
+
+  // useEffect(() => {
+  //   if (userData && userData?.roleId !== 1) {
+  //     router.push("/manage-goods")
+  //   }
+  // }, [userData])
+
   const [activeTab, setActiveTab] = useState<string>("sale")
 
-  const { data, isLoading } = useQuery(
-    {
-      queryKey: ["getDashBoardData"],
-      queryFn: async () => {
-        const response = await getDashBoardData()
-        return response?.data
-      },
+  const { data, isLoading } = useQuery({
+    queryKey: ["getDashBoardData"],
+    queryFn: async () => {
+      const response = await getDashBoardData()
+      return response?.data
     },
-    // {
-    //   queryKey: ["getDashboardChartData"],
-    //   queryFn: async () => {
-    //     const response = await getDashboardChartData({
-    //       year: 2023,
-    //     })
-    //     setDashboardData(response?.data)
-    //     return response?.data
-    //   },
-    // },
-  )
+  })
 
   return (
     <div>

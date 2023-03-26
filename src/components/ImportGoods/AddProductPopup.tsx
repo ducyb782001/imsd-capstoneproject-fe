@@ -44,6 +44,21 @@ function AddProductPopup({ className = "" }) {
 
   const [isLoadingSupplier, setIsLoadingSupplier] = useState(true)
 
+  const [disabled, setDisabled] = useState(true)
+
+  useEffect(() => {
+    if (
+      nhaCungCapSelected == null ||
+      typeProduct == null ||
+      product.productName?.trim() == "" ||
+      product.productName == null
+    ) {
+      setDisabled(true)
+    } else {
+      setDisabled(false)
+    }
+  })
+
   const addNewProductMutation = useMutation(
     async (newProduct) => {
       return await addNewProduct(newProduct)
@@ -78,6 +93,7 @@ function AddProductPopup({ className = "" }) {
     // @ts-ignore
     addNewProductMutation.mutate({
       ...product,
+      status: true,
     })
     close()
   }
@@ -169,6 +185,31 @@ function AddProductPopup({ className = "" }) {
                     }}
                   />
                   <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <p className="mb-2 text-sm font-bold text-gray">
+                        Nhà cung cấp <span className="text-red-500">*</span>
+                      </p>
+                      <AddChooseSupplierDropdown
+                        listDropdown={listNhaCungCap}
+                        textDefault={"Chọn nhà cung cấp"}
+                        showing={nhaCungCapSelected}
+                        setShowing={setNhaCungCapSelected}
+                        isLoadingSupplier={isLoadingSupplier}
+                      />
+                    </div>
+                    <div>
+                      <p className="mb-2 text-sm font-bold text-gray">
+                        Loại sản phẩm <span className="text-red-500">*</span>
+                      </p>
+                      <AddChooseTypeDropdown
+                        listDropdown={listTypeProduct}
+                        textDefault={"Chọn loại sản phẩm"}
+                        showing={typeProduct}
+                        setShowing={setTypeProduct}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
                     <PrimaryInput
                       title={
                         <div className="flex gap-1">
@@ -222,12 +263,14 @@ function AddProductPopup({ className = "" }) {
                         })
                       }}
                     />
+                    <div className="hidden md:block" />
                     <PrimaryInput
                       title="Giá nhập"
                       type="number"
                       onChange={(e) => {
                         setProduct({ ...product, costPrice: e.target.value })
                       }}
+                      accessoriesRight="đ"
                     />
                     <PrimaryInput
                       title="Giá bán"
@@ -235,37 +278,17 @@ function AddProductPopup({ className = "" }) {
                       onChange={(e) => {
                         setProduct({ ...product, sellingPrice: e.target.value })
                       }}
+                      accessoriesRight="đ"
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <p className="mb-2 text-sm font-bold text-gray">
-                        Nhà cung cấp
-                      </p>
-                      <AddChooseSupplierDropdown
-                        listDropdown={listNhaCungCap}
-                        textDefault={"Chọn nhà cung cấp"}
-                        showing={nhaCungCapSelected}
-                        setShowing={setNhaCungCapSelected}
-                        isLoadingSupplier={isLoadingSupplier}
-                      />
-                    </div>
-                    <div>
-                      <p className="mb-2 text-sm font-bold text-gray">
-                        Loại sản phẩm
-                      </p>
-                      <AddChooseTypeDropdown
-                        listDropdown={listTypeProduct}
-                        textDefault={"Chọn loại sản phẩm"}
-                        showing={typeProduct}
-                        setShowing={setTypeProduct}
-                      />
-                    </div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
-                  <PrimaryBtn className="w-[200px]" onClick={handleSaveBtn}>
+                  <PrimaryBtn
+                    className="w-[200px]"
+                    onClick={handleSaveBtn}
+                    disabled={disabled}
+                  >
                     Thêm sản phẩm
                   </PrimaryBtn>
                   <SecondaryBtn className="w-[70px]" onClick={close}>

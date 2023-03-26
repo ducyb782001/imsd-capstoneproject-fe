@@ -190,7 +190,6 @@ function ManageGoods({ ...props }) {
           })
           setListProduct(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListProduct({
             search: debouncedSearchValue,
             offset: 0,
@@ -209,8 +208,10 @@ function ManageGoods({ ...props }) {
           })
           setListProduct(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
-          const exportFile = await getListExportProduct()
+          const exportFile = await getListExportProduct({
+            offset: 0,
+            limit: 1000,
+          })
           setListProductExport(exportFile?.data)
           setIsLoadingListProducts(response?.data?.isLoading)
           //-----------

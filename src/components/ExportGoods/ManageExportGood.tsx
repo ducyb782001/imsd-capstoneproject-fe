@@ -160,7 +160,6 @@ function ManageExportGoods() {
           })
           setListExportProduct(response?.data)
 
-          //fix cứng, sẽ sửa lại sau khi BE sửa api
           const exportFile = await getListImportProduct({
             code: debouncedSearchValue,
             offset: 0,

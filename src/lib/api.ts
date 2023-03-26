@@ -37,7 +37,7 @@ export const convertObjectToQueryString = (
     .map((key: string) => {
       let value = parameters[key]
 
-      if (typeof value === "boolean") value = value ? 1 : 0
+      // if (typeof value === "boolean") value = value ? 1 : 0
 
       return encodeURIComponent(key) + "=" + encodeURIComponent(value)
     })
