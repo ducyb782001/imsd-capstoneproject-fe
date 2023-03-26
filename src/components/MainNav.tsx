@@ -195,9 +195,11 @@ function MainNav({ userName = "", roleId = 3 }) {
           <div className="flex justify-center">
             <Link href="/">
               <a className="text-base">
-                {/* <img src="/images/menu-logo.svg" alt="menu-logo" /> */}
-                <div className="w-10 h-10">Logo</div>
-                Warehouse Management System
+                <img
+                  className="w-[250px] h-[150px] object-cover"
+                  src="/images/big-logo.png"
+                  alt="menu-logo"
+                />
               </a>
             </Link>
           </div>

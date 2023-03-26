@@ -12,6 +12,7 @@ import cookie from "cookie"
 import { loginUrl } from "../../constants/APIConfig"
 import LeftBlockBackground from "./LeftBlockBackground"
 import { emailRegex } from "../../constants/constants"
+import Link from "next/link"
 const TOAST_LOGIN = "toast-created-product-type-id"
 
 function Login() {
@@ -138,7 +139,15 @@ export function LeftBlock() {
   return (
     <div className="relative hidden w-full h-full md:block">
       <div className="pt-16 pl-16 cursor-pointer">
-        <p className="text-3xl text-white">IMSD</p>
+        <Link href="/">
+          <a className="text-base">
+            <img
+              className="w-[250px] h-[150px] object-cover"
+              src="/images/login-logo.png"
+              alt="menu-logo"
+            />
+          </a>
+        </Link>
       </div>
       <div className="absolute bottom-0 left-[64px] right-0">
         <img

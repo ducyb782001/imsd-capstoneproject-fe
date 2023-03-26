@@ -276,8 +276,11 @@ function MobileNav() {
                 <div className="flex items-center justify-between">
                   <Link href="/">
                     <a>
-                      Logo
-                      {/* <img src="/logo-mobile.svg" className="min-w-[131px]" /> */}
+                      <img
+                        className="object-cover w-10 h-10"
+                        src="/images/mobile-logo.png"
+                        alt="menu-logo"
+                      />
                     </a>
                   </Link>
                   <IconCloseDialog onClick={toggleHoverMenu} />
