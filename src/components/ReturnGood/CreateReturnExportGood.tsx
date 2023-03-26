@@ -128,6 +128,13 @@ function CreateReturnReport() {
 
   const [productImport, setProductImport] = useState<any>()
 
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const userData = localStorage.getItem("userData")
+      setUserData(JSON.parse(userData))
+    }
+  }, [])
+
   const onErrorUpload = (error: any) => {
     toast.dismiss(TOAST_UPLOAD_IMAGE)
     toast.error("Upload image false")
@@ -249,13 +256,6 @@ function CreateReturnReport() {
   const router = useRouter()
   const { exportId } = router.query
 
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      const userData = localStorage.getItem("userData")
-      setUserData(JSON.parse(userData))
-    }
-  }, [])
-
   const result = useQueries([
     {
       queryKey: ["getDetailProductExport", exportId, reportChosen?.exportId],
@@ -345,7 +345,7 @@ function CreateReturnReport() {
           <ChooseStaffDropdown
             title="Nhân viên tạo đơn"
             listDropdown={listStaff}
-            textDefault={"Chọn nhân viên"}
+            textDefault={userData?.userName || "Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
             isLoadingStaff={isLoadingStaff}

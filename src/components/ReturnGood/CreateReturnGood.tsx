@@ -82,9 +82,7 @@ function CreateReturnReport() {
         },
         {
           Header: "Đơn giá gốc",
-          accessor: (data: any) => (
-            <p className="text-center text-blue">{data?.price} đ</p>
-          ),
+          accessor: (data: any) => <p className="text-blue">{data?.price} đ</p>,
         },
         {
           Header: "Đơn giá trả",

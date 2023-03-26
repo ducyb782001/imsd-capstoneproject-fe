@@ -61,9 +61,7 @@ function ReturnImportDetail() {
         },
         {
           Header: "Đơn giá trả",
-          accessor: (data: any) => (
-            <div className="text-center">{data?.price}</div>
-          ),
+          accessor: (data: any) => <p>{data?.price}</p>,
         },
         {
           Header: "Thành tiền",
@@ -112,10 +110,7 @@ function ReturnImportDetail() {
             <SmallTitle>{t("product_infor")}</SmallTitle>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <PrimaryBtn
-              className="w-[120px]"
-              onClick={() => router.push("/manage-return-good")}
-            >
+            <PrimaryBtn className="w-[120px]" onClick={() => router.back()}>
               {t("exit")}
             </PrimaryBtn>
           </div>

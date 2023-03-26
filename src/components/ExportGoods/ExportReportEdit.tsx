@@ -24,6 +24,7 @@ import {
   updateExportProduct,
 } from "../../apis/export-product-module"
 import { useTranslation } from "react-i18next"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -337,9 +338,9 @@ function ImportReportEdit() {
     <ImportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4">
             <div className="flex flex-wrap items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImportObject?.exportCode}
@@ -418,9 +419,10 @@ function ImportReportEdit() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("export_product_infor")}
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
+        </div>
         <SearchProductImportDropdown
           listDropdown={listProduct?.data}
           textDefault={t("supplier")}

@@ -13,6 +13,7 @@ import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
 import SecondaryBtn from "../SecondaryBtn"
 import Link from "next/link"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 function ImportReportSucceed() {
   const { t } = useTranslation()
@@ -204,9 +205,10 @@ function ImportReportSucceed() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("import_product_list")}
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ImportGoodIcon />
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
