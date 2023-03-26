@@ -145,7 +145,6 @@ function ImportReportEdit() {
 
   // cai de gui di de update
   const [productImportObject, setProductImportObject] = useState<any>()
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
   const [detailResponse, setDetailResponse] = useState<any>()
 
@@ -159,22 +158,6 @@ function ImportReportEdit() {
       })
     }
   }, [staffSelected])
-
-  useEffect(() => {
-    setNhaCungCapSelected(productImportObject?.supplier)
-  }, [productImportObject])
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductImportObject({
-        ...productImportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
-        state: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
 
   useEffect(() => {
     if (productChosen) {
@@ -305,9 +288,20 @@ function ImportReportEdit() {
       queryKey: ["getDetailProductExport", exportId],
       queryFn: async () => {
         const response = await getDetailExportProduct(exportId)
+        const detailReport = response?.data
         setListChosenProduct(response?.data?.exportOrderDetails)
         setListProductImport(response?.data?.exportOrderDetails)
-        setProductImportObject(response?.data)
+
+        setProductImportObject({
+          exportId: detailReport?.exportId,
+          exportCode: detailReport?.exportCode,
+          userId: detailReport?.user?.userId,
+          exportOrderDetails: detailReport?.exportOrderDetails,
+          note: detailReport?.note,
+        })
+
+        // setProductImportObject(response?.data)
+        setDetailResponse(response?.data)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
       },
@@ -370,11 +364,11 @@ function ImportReportEdit() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            {productImportObject?.created && (
+            {detailResponse?.createdDate && (
               <StepBar
                 status="pending"
                 createdDate={format(
-                  new Date(productImportObject?.created),
+                  new Date(detailResponse?.createdDate),
                   "dd/MM/yyyy HH:mm",
                 )}
               />
@@ -389,7 +383,7 @@ function ImportReportEdit() {
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={productImportObject?.user?.userName}
+              textDefault={detailResponse?.user?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
               isLoadingStaff={isLoadingStaff}
@@ -400,11 +394,11 @@ function ImportReportEdit() {
           <h1 className="text-xl font-semibold text-center">
             {t("additional_information")}
           </h1>
-          {productImportObject?.created && (
+          {detailResponse?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
               {t("created_report_import")}:{" "}
               {format(
-                new Date(productImportObject?.created),
+                new Date(detailResponse?.createdDate),
                 "dd/MM/yyyy HH:mm",
               )}
             </div>
