@@ -7,10 +7,9 @@ import AvatarIcon from "./icons/AvatarIcon"
 import { useMutation, useQuery } from "react-query"
 import { getUserData, logout } from "../apis/auth"
 import { browserRedirectToIndexAfterSignOut } from "../lib/redirect"
-import useGetMe from "../hooks/useGetMe"
 import { useTranslation } from "react-i18next"
 
-function UserDropdown() {
+function UserDropdown({ userName = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
@@ -86,8 +85,6 @@ function UserDropdown() {
     browserRedirectToIndexAfterSignOut()
   }
 
-  const { data, isLoading } = useGetMe()
-
   const { t } = useTranslation()
 
   return (
@@ -98,7 +95,7 @@ function UserDropdown() {
         ref={node}
       >
         <AvatarIcon />
-        <p className="text-grayDark">{data?.userName}</p>
+        <p className="text-grayDark">{userName}</p>
         <ArrowDownIcon color="#373737" />
       </div>
 

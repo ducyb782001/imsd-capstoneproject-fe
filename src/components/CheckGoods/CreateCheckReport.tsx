@@ -66,9 +66,7 @@ function CreateCheckReport() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[70px]">
-              {data?.inStock}
-            </div>
+            <div className="text-center">{data?.inStock}</div>
           ),
         },
         {
@@ -131,6 +129,16 @@ function CreateCheckReport() {
   const [listProductSearch, setListProductSearch] = useState<any>([])
   const [productCheckObject, setProductCheckObject] = useState<any>()
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
+
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (staffSelected) {
@@ -205,7 +213,11 @@ function CreateCheckReport() {
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getListExportProduct()
+        const response = await getListExportProduct({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListProductSearch(response?.data)
         return response?.data
       },
@@ -250,14 +262,14 @@ function CreateCheckReport() {
       stocktakeCode: "string",
     })
   }
-  const handleClickOutBtn = (event) => {
+  const handleClickOutBtn = () => {
     router.push("/manage-check-good")
   }
 
   return (
     <div>
       <div>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col justify-between w-full gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-semibold">
               {t("create_check_title")}
@@ -272,7 +284,7 @@ function CreateCheckReport() {
             >
               {t("create_check_title")}
             </ConfirmPopup>
-            <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+            <SecondaryBtn className="" onClick={handleClickOutBtn}>
               {t("exit")}
             </SecondaryBtn>
           </div>
@@ -282,12 +294,12 @@ function CreateCheckReport() {
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">
-            {t("check_date")}: {format(Date.now(), "dd/MM/yyyy")}
+            {t("check_date")}: {format(Date.now(), "dd/MM/yyyy HH:MM")}
           </div>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
-              textDefault={t("choose_staff")}
+              textDefault={userData?.userName || t("choose_staff")}
               showing={staffSelected}
               setShowing={setStaffSelected}
               isLoadingStaff={isLoadingStaff}
@@ -361,6 +373,7 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
 
 function CountDeviated({ data, listProductCheck }) {
   const [deviated, setDeviated] = useState<any>(0)
+
   const handleSetPrice = () => {
     const list = listProductCheck
     const newList = list.map((item) => {
@@ -378,7 +391,7 @@ function CountDeviated({ data, listProductCheck }) {
   }, [listProductCheck])
 
   return (
-    <div className="py-2 text-center text-white rounded-md bg-successBtn">
+    <div className="px-2 py-2 text-center text-white rounded-md bg-successBtn">
       {deviated}
     </div>
   )

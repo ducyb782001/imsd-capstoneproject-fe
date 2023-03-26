@@ -70,7 +70,7 @@ function CreateExportGood() {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <ListPriceExport
                 data={data}
                 listProductExport={listProductExport}
@@ -83,7 +83,7 @@ function CreateExportGood() {
         {
           Header: t("discount"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center justify-center gap-1">
               <ListDiscountExport
                 data={data}
                 listProductExport={listProductExport}
@@ -203,22 +203,6 @@ function CreateExportGood() {
       })
 
       setListProductExport(list)
-
-      // for (let index = 0; index < list.length; index++) {
-      //   if (
-      //     new BigNumber(
-      //       list[index]?.amount ? list[index]?.amount : 0,
-      //     ).isGreaterThan(
-      //       listChosenProduct[index].inStock
-      //         ? listChosenProduct[index].inStock
-      //         : 0,
-      //     )
-      //   ) {
-      //     setSubmitted(true)
-      //     return
-      //   }
-      // }
-      // setSubmitted(false)
     }
   }, [listChosenProduct])
 
@@ -244,24 +228,33 @@ function CreateExportGood() {
         exportOrderDetails: listProductExport,
         totalPrice: new BigNumber(price).toFixed(),
       })
+
       for (let index = 0; index < listProductExport.length; index++) {
-        if (
-          new BigNumber(
-            listProductExport[index]?.amount
-              ? listProductExport[index]?.amount
-              : 0,
-          ).isGreaterThan(
-            listChosenProduct[index].inStock
-              ? listChosenProduct[index].inStock
-              : 0,
-          )
-        ) {
-          setSubmitted(true)
-          return
+        const product = listProductExport[index]
+        if (!product.measuredUnitId) {
+          if (
+            new BigNumber(listProductExport[index]?.amount).isGreaterThan(
+              listChosenProduct[index].inStock,
+            )
+          ) {
+            setSubmitted(true)
+            return
+          }
+        } else {
+          const eachProduct = listChosenProduct[index].measuredUnits.filter(
+            (i) => i.measuredUnitId === listProductExport[index].measuredUnitId,
+          )[0]
+          if (
+            new BigNumber(listProductExport[index].amount).isGreaterThan(
+              eachProduct.inStock,
+            )
+          ) {
+            setSubmitted(true)
+            return
+          }
         }
       }
       setSubmitted(false)
-      // console.log(listProductExport, 123, listChosenProduct)
     }
   }, [listProductExport])
 
@@ -282,7 +275,12 @@ function CreateExportGood() {
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getListExportProduct()
+        const response = await getListExportProduct({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
+
         setProductExportObject({
           ...productExportObject,
           exportId: 0,
@@ -452,6 +450,8 @@ function ListQuantitiveExport({
   setListProductExport,
 }) {
   const [quantity, setQuantity] = useState(0)
+  const [inStockData, setInStockData] = useState<any>()
+
   const handleOnChangeAmount = (value, data) => {
     const list = listProductExport
     const newList = list.map((item) => {
@@ -463,22 +463,40 @@ function ListQuantitiveExport({
     setListProductExport(newList)
   }
 
+  useEffect(() => {
+    if (listProductExport) {
+      const product = listProductExport.filter(
+        (i) => i.productId === data?.productId,
+      )
+
+      if (!product[0]?.measuredUnitId) {
+        setInStockData(data?.inStock)
+      } else {
+        const inStockUnit = data?.measuredUnits?.filter(
+          (i) => i.measuredUnitId === product[0].measuredUnitId,
+        )
+        setInStockData(inStockUnit[0].inStock)
+      }
+    }
+  }, [listProductExport])
+
   return (
     <div className="w-[100px] relative">
-      <PrimaryInput
-        className="w-[60px]"
-        type="number"
-        placeholder="0"
-        value={quantity ? quantity : ""}
-        onChange={(e) => {
-          e.stopPropagation()
-          setQuantity(e.target.value)
-          handleOnChangeAmount(e.target.value, data)
-        }}
-      />
-      {new BigNumber(quantity).isGreaterThan(
-        data?.inStock ? data?.inStock : 0,
-      ) && (
+      <div className="flex items-center gap-1">
+        <PrimaryInput
+          className="w-[60px]"
+          type="number"
+          placeholder="0"
+          value={quantity ? quantity : ""}
+          onChange={(e) => {
+            e.stopPropagation()
+            setQuantity(e.target.value)
+            handleOnChangeAmount(e.target.value, data)
+          }}
+        />
+        <p>/{inStockData}</p>
+      </div>
+      {new BigNumber(quantity).isGreaterThan(inStockData ? inStockData : 0) && (
         <p className="absolute text-xs text-dangerous">
           Số lượng xuất lớn hơn số lượng tồn
         </p>
@@ -510,16 +528,25 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
   }, [costPrice])
 
   return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={costPrice ? costPrice : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCostPrice(e.target.value)
-      }}
-    />
+    <div className="w-[100px] relative">
+      <PrimaryInput
+        className="w-[100px]"
+        type="number"
+        placeholder="---"
+        value={costPrice ? costPrice : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          setCostPrice(e.target.value)
+        }}
+      />
+      {new BigNumber(costPrice).isLessThan(
+        data?.costPrice ? data?.costPrice : 0,
+      ) && (
+        <p className="absolute text-xs text-dangerous">
+          Giá xuất nhỏ hơn giá nhập
+        </p>
+      )}
+    </div>
   )
 }
 

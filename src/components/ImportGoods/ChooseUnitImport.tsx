@@ -75,7 +75,7 @@ function ChooseUnitImport({
         >
           <div className="flex items-center gap-1">
             <p className="text-gray">
-              {showing?.measuredUnitName || textDefault}
+              {showing?.measuredUnitName || textDefault || "---"}
             </p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
@@ -117,7 +117,7 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.measuredUnitName || data}
+      {data?.measuredUnitName || data || "---"}
     </div>
   )
 }

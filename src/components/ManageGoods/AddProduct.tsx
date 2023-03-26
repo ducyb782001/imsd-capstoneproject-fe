@@ -22,6 +22,8 @@ import { getListExportSupplier } from "../../apis/supplier-module"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import { useTranslation } from "react-i18next"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
+import GeneralIcon from "../icons/GeneralIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -178,7 +180,10 @@ function AddProduct() {
     <div className="grid gap-4 md:grid-cols-73">
       <div>
         <div className="bg-white block-border">
-          <SmallTitle>{t("general_information")}</SmallTitle>
+          <div className="flex items-center gap-3">
+            <GeneralIcon />
+            <SmallTitle>{t("general_information")}</SmallTitle>
+          </div>
           <PrimaryInput
             className="mt-6"
             title={
@@ -443,6 +448,7 @@ function RightSideProductDetail({
       setDisabled(false)
     }
   })
+
   const { t } = useTranslation()
   return (
     <div className="">
@@ -471,7 +477,10 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>{t("additional_information")}</SmallTitle>
+        <div className="flex items-center gap-3">
+          <ImportGoodIcon />
+          <SmallTitle>{t("additional_information")}</SmallTitle>
+        </div>
         <div className="mt-4 mb-2 text-sm font-bold text-gray">Ngưỡng tồn</div>
         <div className="flex items-center w-full gap-2">
           <PrimaryInput

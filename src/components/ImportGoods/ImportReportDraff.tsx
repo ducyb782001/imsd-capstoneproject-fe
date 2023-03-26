@@ -98,6 +98,16 @@ function ImportReportDraff() {
       ],
     },
   ]
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData) {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
 
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
@@ -218,14 +228,16 @@ function ImportReportDraff() {
               >
                 {t("edit_import")}
               </SecondaryBtn>
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="w-[120px]"
-                title={t("confirm_import")}
-                handleClickSaveBtn={handleClickApproveBtn}
-              >
-                {t("approve")}
-              </ConfirmPopup>
+              {(userData?.roleId === 1 || userData?.roleId === 2) && (
+                <ConfirmPopup
+                  className="!w-fit"
+                  classNameBtn="w-[120px]"
+                  title={t("confirm_import")}
+                  handleClickSaveBtn={handleClickApproveBtn}
+                >
+                  {t("approve")}
+                </ConfirmPopup>
+              )}
             </div>
           </div>
           <div className="flex justify-center mt-6">

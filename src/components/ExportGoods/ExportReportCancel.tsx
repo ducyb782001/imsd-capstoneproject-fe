@@ -11,6 +11,7 @@ import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import { BigNumber } from "bignumber.js"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
 function ExportReportCanceled() {
   const { t } = useTranslation()
@@ -109,7 +110,7 @@ function ExportReportCanceled() {
     <ExportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
@@ -129,14 +130,22 @@ function ExportReportCanceled() {
           <div className="flex justify-center mt-6">
             <StepBar
               status="deny"
-              createdDate={format(
-                new Date(productExport?.createdDate),
-                "dd/MM/yyyy HH:mm",
-              )}
-              approvedDate={format(
-                new Date(productExport?.deniedDate),
-                "dd/MM/yyyy HH:mm",
-              )}
+              createdDate={
+                productExport?.createdDate
+                  ? format(
+                      new Date(productExport?.createdDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
+              approvedDate={
+                productExport?.deniedDate
+                  ? format(
+                      new Date(productExport?.deniedDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
             />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
@@ -155,7 +164,9 @@ function ExportReportCanceled() {
           </h1>
           <div className="text-sm font-medium text-center text-gray">
             {t("date_create")}:{" "}
-            {format(new Date(productExport?.createdDate), "dd/MM/yyyy HH:mm")}
+            {productExport?.createdDate
+              ? format(new Date(productExport?.createdDate), "dd/MM/yyyy HH:mm")
+              : format(new Date(), "dd/MM/yyyy HH:mm")}
           </div>
           <PrimaryTextArea
             rows={7}
@@ -168,9 +179,10 @@ function ExportReportCanceled() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("export_product_infor")}
-        </h1>
+        <div className="flex items-center gap-3">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

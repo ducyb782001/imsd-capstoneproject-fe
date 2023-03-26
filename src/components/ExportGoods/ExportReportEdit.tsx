@@ -149,6 +149,8 @@ function ImportReportEdit() {
   const [isLoadingReport, setIsLoadingReport] = useState(true)
   const [detailResponse, setDetailResponse] = useState<any>()
 
+  const [submitted, setSubmitted] = useState(false)
+
   useEffect(() => {
     if (staffSelected) {
       setProductImportObject({
@@ -232,6 +234,30 @@ function ImportReportEdit() {
         exportOrderDetails: listProductImport,
         totalPrice: new BigNumber(price).toFixed(),
       })
+
+      for (let index = 0; index < listProductImport.length; index++) {
+        const product = listProductImport[index]
+        if (!product.measuredUnitId) {
+          if (
+            listProductImport[index]?.amount >
+            listChosenProduct[index].product.inStock
+          ) {
+            setSubmitted(true)
+            return
+          }
+        } else {
+          const eachProduct = listChosenProduct[
+            index
+          ]?.product?.measuredUnits.filter(
+            (i) => i.measuredUnitId === listProductImport[index].measuredUnitId,
+          )[0]
+          if (listProductImport[index].amount > eachProduct.inStock) {
+            setSubmitted(true)
+            return
+          }
+        }
+      }
+      setSubmitted(false)
     }
   }, [listProductImport])
 
@@ -244,6 +270,7 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("export_edit_success"))
+          router.push("/export-report-draff/" + exportId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -269,7 +296,7 @@ function ImportReportEdit() {
     await updateImportMutation.mutate(productImportObject)
   }
 
-  const handleClickOutBtn = (event) => {
+  const handleClickOutBtn = () => {
     router.push("/export-report-draff/" + exportId)
   }
 
@@ -300,7 +327,12 @@ function ImportReportEdit() {
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
-        const response = await getListExportProduct()
+        const response = await getListExportProduct({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
+
         setListProduct(response?.data)
         return response?.data?.data
       },
@@ -331,6 +363,7 @@ function ImportReportEdit() {
                 classNameBtn="w-[120px]"
                 title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
+                disabled={submitted}
               >
                 {t("update")}
               </ConfirmPopup>
@@ -425,6 +458,8 @@ function ListQuantitiveImport({
   setListProductImport,
 }) {
   const [quantity, setQuantity] = useState(data?.amount)
+  const [inStockData, setInStockData] = useState<any>()
+
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
     const newList = list.map((item) => {
@@ -436,18 +471,46 @@ function ListQuantitiveImport({
     setListProductImport(newList)
   }
 
+  useEffect(() => {
+    if (listProductImport) {
+      const product = listProductImport.filter(
+        (i) => i.productId === data?.productId,
+      )
+
+      if (!product[0]?.measuredUnitId) {
+        const inStock = data?.product?.inStock
+        setInStockData(inStock)
+      } else {
+        const inStockUnit = data?.product?.measuredUnits?.filter(
+          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+        )
+        setInStockData(inStockUnit[0].inStock)
+      }
+    }
+  }, [listProductImport])
+
   return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
+    <div className="w-[100px] relative">
+      <div className="flex items-center gap-1">
+        <PrimaryInput
+          className="w-[60px]"
+          type="number"
+          placeholder="0"
+          value={quantity ? quantity : ""}
+          onChange={(e) => {
+            e.stopPropagation()
+            setQuantity(e.target.value)
+            handleOnChangeAmount(e.target.value, data)
+          }}
+        />
+        <p>/{inStockData}</p>
+      </div>
+      {new BigNumber(quantity).isGreaterThan(inStockData ? inStockData : 0) && (
+        <p className="absolute text-xs text-dangerous">
+          Số lượng xuất lớn hơn số lượng tồn
+        </p>
+      )}
+    </div>
   )
 }
 

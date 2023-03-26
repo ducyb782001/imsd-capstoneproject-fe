@@ -19,6 +19,7 @@ import ChooseSupplierImportGoodDropdown from "../ImportGoods/ChooseSupplierImpor
 import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListReturnGoods } from "../../apis/return-product-module"
 import BigNumber from "bignumber.js"
+import ShowDetail from "../ShowDetail"
 
 function ManageReturnGood() {
   const { t } = useTranslation()
@@ -226,10 +227,10 @@ export default ManageReturnGood
 
 function DetailImportProduct({ data }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center w-full gap-2">
       <Link href={`/return-import-detail/${data?.returnsId}`}>
         <a className="w-full">
-          <ShowDetailIcon />
+          <ShowDetail />
         </a>
       </Link>
     </div>

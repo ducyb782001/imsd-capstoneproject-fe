@@ -297,9 +297,12 @@ function ImportReportEdit() {
       queryKey: ["getListProductBySupplier", nhaCungCapSelected],
       queryFn: async () => {
         if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
+          const response = await getListExportProductBySupplier({
+            offSet: 0,
+            limit: 1000,
+            supId: nhaCungCapSelected.supplierId,
+            status: true,
+          })
           setProductImportObject({
             ...productImportObject,
             supplierId: nhaCungCapSelected.supplierId,

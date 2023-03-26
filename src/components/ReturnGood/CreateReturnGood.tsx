@@ -351,7 +351,7 @@ function CreateReturnReport() {
           <ChooseStaffDropdown
             title="Nhân viên tạo đơn"
             listDropdown={listStaff}
-            textDefault={"Chọn nhân viên"}
+            textDefault={userData?.userName || "Chọn nhân viên"}
             showing={staffSelected}
             setShowing={setStaffSelected}
             isLoadingStaff={isLoadingStaff}

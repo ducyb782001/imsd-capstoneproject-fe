@@ -7,6 +7,8 @@ import PrimaryBtn from "../PrimaryBtn"
 import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
 import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
+import GeneralIcon from "../icons/GeneralIcon"
 
 function DetailCheckGood() {
   const { t } = useTranslation()
@@ -59,30 +61,24 @@ function DetailCheckGood() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <p className="text-center">{data?.currentStock}</p>
-            </div>
+            <p className="text-center">{data?.currentStock}</p>
           ),
         },
         {
           Header: t("actual_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <p className="text-center">{data?.actualStock}</p>
-            </div>
+            <p className="text-center">{data?.actualStock}</p>
           ),
         },
         {
           Header: t("deviated"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <p className="text-center">{data?.amountDifferential}</p>
-            </div>
+            <p className="text-center">{data?.amountDifferential}</p>
           ),
         },
         {
           Header: t("reason"),
-          accessor: (data: any) => <NoteProduct data={data} />,
+          accessor: (data: any) => <p>{data?.note}</p>,
         },
       ],
     },
@@ -114,58 +110,57 @@ function DetailCheckGood() {
     <StockTakeSkeleton />
   ) : (
     <div>
-      <div>
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center justify-between gap-4"></div>
-        </div>
-        <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center justify-between w-full mb-10">
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold">{t("report_infor")}</h1>
-              <StatusDisplay data={productCheckObject?.state} />
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                {t("exit")}
-              </PrimaryBtn>
-            </div>
+      <div className="w-full p-6 mt-6 bg-white block-border">
+        <div className="flex flex-wrap items-center justify-between w-full gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <GeneralIcon />
+            <h1 className="text-2xl font-semibold">{t("report_infor")}</h1>
+            <StatusDisplay data={productCheckObject?.state} />
           </div>
-          <div className="grid gap-5 grid-cols md: grid-cols-5">
-            <div>
-              <p className="font-bold mb-1">{t("check_code")}:</p>
-              <p className="font-bold mb-1">{t("created_report_import")}:</p>
-              <p className="font-bold mb-1">{t("staff_created")}:</p>
-              <p className="font-bold mb-1">{t("check_date")}:</p>
-              <p className="font-bold mb-1">{t("check_staff")}:</p>
-              <p className="font-bold mb-1">{t("note")}:</p>
-            </div>
-            <div>
-              <p className="mb-1">{productCheckObject?.stocktakeCode}</p>
-              <p className="mb-1">
-                {productCheckObject?.created
-                  ? format(
-                      new Date(productCheckObject?.created),
-                      "dd/MM/yyyy HH:mm",
-                    )
-                  : ""}
-              </p>
-              <p className="mb-1">{productCheckObject?.createdBy?.userName}</p>
-              <p className="mb-1">
-                {productCheckObject?.updated
-                  ? format(
-                      new Date(productCheckObject?.updated),
-                      "dd/MM/yyyy HH:mm",
-                    )
-                  : ""}
-              </p>
-              <p className="mb-1">{productCheckObject?.updatedBy?.userName}</p>
-              <p className="mb-1">{productCheckObject?.note}</p>
-            </div>
+          <div className="flex items-center justify-between gap-4">
+            <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+              {t("exit")}
+            </PrimaryBtn>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+          <div className="flex flex-col gap-1">
+            <p>{t("check_code")}:</p>
+            <p>{t("created_report_import")}:</p>
+            <p>{t("staff_created")}:</p>
+            <p>{t("check_date")}:</p>
+            <p>{t("check_staff")}:</p>
+            <p>{t("note")}:</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p>{productCheckObject?.stocktakeCode}</p>
+            <p>
+              {productCheckObject?.created
+                ? format(
+                    new Date(productCheckObject?.created),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : ""}
+            </p>
+            <p>{productCheckObject?.createdBy?.userName}</p>
+            <p>
+              {productCheckObject?.updated
+                ? format(
+                    new Date(productCheckObject?.updated),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : ""}
+            </p>
+            <p>{productCheckObject?.updatedBy?.userName}</p>
+            <p>{productCheckObject?.note}</p>
           </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
+        <div className="flex items-center gap-3">
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
@@ -184,44 +179,14 @@ function StatusDisplay({ data }) {
   const { t } = useTranslation()
   if (data == 2) {
     return (
-      <div className="w-32 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">{t("cancelled")}</h1>
       </div>
     )
   } else if (data == 1) {
     return (
-      <div className="w-32 font-medium text-center text-white border border-green-500 bg-green-50 rounded-2xl">
+      <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">{t("complete")}</h1>
-      </div>
-    )
-  }
-}
-
-function NoteProduct({ data }) {
-  const { t } = useTranslation()
-
-  if (data.id == 1) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("other")}</p>
-      </div>
-    )
-  } else if (data.id == 2) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("damaged")}</p>
-      </div>
-    )
-  } else if (data.id == 3) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("return")}</p>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">---</p>
       </div>
     )
   }

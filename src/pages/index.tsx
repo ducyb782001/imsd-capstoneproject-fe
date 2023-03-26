@@ -1,13 +1,20 @@
-import React from "react"
-import Layout from "../components/Layout"
-import Dashboard from "../components/Dashboard/Dashboard"
+import React, { useEffect } from "react"
+import { useRouter } from "next/router"
+import cookie from "cookie"
 
 function index() {
-  return (
-    <Layout>
-      <Dashboard />
-    </Layout>
-  )
+  const router = useRouter()
+
+  useEffect(() => {
+    const cookies = cookie.parse(window.document.cookie)
+    if (!cookies.token) {
+      router.push("/login")
+    } else {
+      router.push("/dashboard")
+    }
+  }, [cookie])
+
+  return <p className="p-5">Redirecting...</p>
 }
 
 export default index

@@ -2,35 +2,29 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import { createExportProduct } from "../../apis/export-product-module"
-import { getListExportProduct } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
-import XIcons from "../icons/XIcons"
-import PrimaryInput from "../PrimaryInput"
 import Table from "../Table"
 import { useRouter } from "next/router"
-import DownloadIcon from "../icons/DownloadIcon"
-import UploadIcon from "../icons/UploadIcon"
-import * as XLSX from "xlsx/xlsx"
-import PrimaryBtn from "../PrimaryBtn"
 import {
   getDetailStockTakeProduct,
   getProductDetailStockTakeProduct,
 } from "../../apis/stocktake-product-module"
+import { useTranslation } from "react-i18next"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import GeneralIcon from "../icons/GeneralIcon"
 
 function CheckProductDetail() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -40,7 +34,7 @@ function CheckProductDetail() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product_code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productCode}
@@ -48,7 +42,7 @@ function CheckProductDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -56,58 +50,38 @@ function CheckProductDetail() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={
-                data?.measuredUnitId
-                  ? data?.measuredUnit
-                  : data?.product?.defaultMeasuredUnit
-              }
-              className="w-16"
-              readOnly={true}
-            />
-          ),
-        },
-        {
-          Header: "Tồn chi nhánh",
-          accessor: (data: any) => (
-            <div className="flex items-center max-w-[70px]">
-              <PrimaryInput
-                value={data?.currentStock}
-                className="w-16"
-                readOnly={true}
-              />
+            <div className="flex items-center gap-2">
+              <p className="text-center">
+                {data?.measuredUnitId
+                  ? data?.measuredUnit.measuredUnitName
+                  : data?.product?.defaultMeasuredUnit}
+              </p>
             </div>
           ),
         },
         {
-          Header: "Tồn thực tế",
+          Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[80px]">
-              <PrimaryInput
-                value={data?.actualStock}
-                className="w-16"
-                readOnly={true}
-              />
-            </div>
+            <p className="text-center">{data?.currentStock}</p>
           ),
         },
         {
-          Header: "Lệch",
+          Header: t("actual_stock"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amountDifferential}
-              className="w-16"
-              readOnly={true}
-            />
+            <p className="text-center">{data?.actualStock}</p>
           ),
         },
         {
-          Header: "Ghi chú",
+          Header: t("deviated"),
           accessor: (data: any) => (
-            <PrimaryInput value={data?.note} className="w-16" readOnly={true} />
+            <p className="text-center">{data?.amountDifferential}</p>
           ),
+        },
+        {
+          Header: t("reason"),
+          accessor: (data: any) => <p>{data?.note}</p>,
         },
       ],
     },
@@ -116,7 +90,7 @@ function CheckProductDetail() {
   const router = useRouter()
   const { detailCode } = router.query
   const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
-  console.log(productStockTakeObject)
+
   useQueries([
     {
       queryKey: ["getListProduct"],
@@ -129,10 +103,6 @@ function CheckProductDetail() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.back()
-  }
-
   return (
     <div>
       <div>
@@ -140,60 +110,51 @@ function CheckProductDetail() {
           <div className="flex items-center justify-between gap-4"></div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center justify-between w-full mb-10">
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold">Thông tin đơn</h1>
-              <StatusDisplay data={productStockTakeObject?.state} />
+          <div className="flex items-center gap-3 mb-10">
+            <GeneralIcon />
+            <h1 className="text-2xl font-semibold">Thông tin đơn</h1>
+            <StatusDisplay data={productStockTakeObject?.state} />
+          </div>
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+            <div className="flex flex-col gap-1">
+              <p>{t("check_code")}:</p>
+              <p>{t("created_report_import")}:</p>
+              <p>{t("staff_created")}:</p>
+              <p>{t("check_date")}:</p>
+              <p>{t("check_staff")}:</p>
+              <p>{t("note")}:</p>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
-              </PrimaryBtn>
+            <div className="flex flex-col gap-1">
+              <p>{productStockTakeObject?.stocktakeCode}</p>
+              <p>
+                {productStockTakeObject?.created
+                  ? format(
+                      new Date(productStockTakeObject?.created),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : ""}
+              </p>
+              <p>{productStockTakeObject?.createdBy?.userName}</p>
+              <p>
+                {productStockTakeObject?.updated
+                  ? format(
+                      new Date(productStockTakeObject?.updated),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : ""}
+              </p>
+              <p>{productStockTakeObject?.updatedBy?.userName}</p>
+              <p>{productStockTakeObject?.note || "---"}</p>
             </div>
-          </div>
-
-          <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Mã đơn kiểm hàng:</p>
-            <p>{productStockTakeObject?.stocktakeCode}</p>
-          </div>
-          <div className="flex items-center gap-20 text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Ngày tạo đơn:</p>
-            <p>
-              {productStockTakeObject?.created
-                ? format(
-                    new Date(productStockTakeObject?.created),
-                    "dd/MM/yyyy HH:mm",
-                  )
-                : ""}
-            </p>
-          </div>
-          <div className="flex items-center gap-12 text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Nhân viên tạo đơn:</p>
-            <p>{productStockTakeObject?.createdBy?.userName}</p>
-          </div>
-          <div className="flex items-center gap-[72px] text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Ngày cân bằng:</p>
-            <p>
-              {productStockTakeObject?.updated
-                ? format(
-                    new Date(productStockTakeObject?.updated),
-                    "dd/MM/yyyy HH:mm",
-                  )
-                : ""}
-            </p>
-          </div>
-          <div className="flex items-center gap-10 text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Nhân viên cân bằng:</p>
-            <p>{productStockTakeObject?.updatedBy?.userName}</p>
-          </div>
-          <div className="flex items-center gap-[120px] text-sm font-medium text-left text-gray mb-3">
-            <p className="font-bold">Ghi chú:</p>
-            <p>{productStockTakeObject?.note}</p>
           </div>
         </div>
       </div>
+
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        <div className="flex items-center gap-3">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
@@ -211,13 +172,13 @@ export default CheckProductDetail
 function StatusDisplay({ data }) {
   if (data == 2) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white rounded-2xl bg-orange-50 border border-[#D69555]">
+      <div className="w-32 font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
         <h1 className="m-2 ml-3 text-orange-500">Đã hủy</h1>
       </div>
     )
   } else if (data == 1) {
     return (
-      <div className="w-32 mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-2xl">
+      <div className="w-32 font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
         <h1 className="m-2 ml-3 text-green-500">Hoàn thành</h1>
       </div>
     )

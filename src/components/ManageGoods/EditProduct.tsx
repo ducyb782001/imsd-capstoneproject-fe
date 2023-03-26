@@ -24,6 +24,8 @@ import { useTranslation } from "react-i18next"
 import defaultProductImage from "../images/default-product-image.jpg"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
+import GeneralIcon from "../icons/GeneralIcon"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 interface Product {
   productId: number
@@ -82,12 +84,6 @@ function EditProduct() {
       setNewDetail("")
     }
   }
-  // useEffect(() => {
-  //   if (nhaCungCapSelected == undefined || typeProduct == undefined) {
-  //     setNhaCungCapSelected(detailProduct?.supplier?.supplierName)
-  //     setTypeProduct(detailProduct?.category?.categoryName)
-  //   }
-  // })
 
   useEffect(() => {
     if (listUnits) {
@@ -171,6 +167,7 @@ function EditProduct() {
       })
     }
   }, [imageUploaded])
+
   useEffect(() => {
     if (detailProduct) {
       setImageUploaded(detailProduct?.image)
@@ -228,7 +225,10 @@ function EditProduct() {
     <div className="grid gap-4 md:grid-cols-73">
       <div>
         <div className="bg-white block-border">
-          <SmallTitle>{t("general_information")}</SmallTitle>
+          <div className="flex items-center gap-3">
+            <GeneralIcon />
+            <SmallTitle>{t("general_information")}</SmallTitle>
+          </div>
           <PrimaryInput
             className="mt-6"
             title={
@@ -349,17 +349,6 @@ function EditProduct() {
               }}
             />
           </div>
-          <PrimaryTextArea
-            title={t("note_product")}
-            className="mt-5"
-            value={detailProduct?.description ? detailProduct?.description : ""}
-            onChange={(e) => {
-              setDetailProduct({
-                ...detailProduct,
-                description: e.target.value,
-              })
-            }}
-          />
         </div>
         <div className="mt-4 bg-white block-border">
           <div className="flex items-center gap-2">
@@ -493,15 +482,11 @@ function EditProduct() {
         onSuccessUpload={onSuccessUpload}
         setLoadingImage={setLoadingImage}
         loadingImage={loadingImage}
-        nhaCungCapSelected={nhaCungCapSelected}
-        setNhaCungCapSelected={setNhaCungCapSelected}
-        typeProduct={typeProduct}
-        setTypeProduct={setTypeProduct}
         setIsEnabled={setIsEnabled}
         isEnabled={isEnabled}
         handleClickSaveBtn={handleClickSaveBtn}
-        listNhaCungCap={listNhaCungCap}
-        listTypeProduct={listTypeProduct}
+        setProduct={setDetailProduct}
+        product={detailProduct}
       />
     </div>
   )
@@ -515,17 +500,22 @@ function RightSideProductDetail({
   onSuccessUpload,
   setLoadingImage,
   loadingImage,
-  nhaCungCapSelected,
-  setNhaCungCapSelected,
-  typeProduct,
-  setTypeProduct,
   setIsEnabled,
   isEnabled,
   handleClickSaveBtn,
-  listNhaCungCap,
-  listTypeProduct,
-  ...props
+  setProduct,
+  product,
 }) {
+  const [disabled, setDisabled] = useState(true)
+
+  useEffect(() => {
+    if (product?.productName?.trim() == "" || product?.productName == null) {
+      setDisabled(true)
+    } else {
+      setDisabled(false)
+    }
+  })
+
   const { t } = useTranslation()
   return (
     <div className="">
@@ -563,7 +553,41 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <SmallTitle>{t("additional_information")}</SmallTitle>
+        <div className="flex items-center gap-3">
+          <ImportGoodIcon />
+          <SmallTitle>{t("additional_information")}</SmallTitle>
+        </div>
+
+        <div className="mt-4 mb-2 text-sm font-bold text-gray">Ngưỡng tồn</div>
+        <div className="flex items-center w-full gap-2">
+          <PrimaryInput
+            placeholder="Min"
+            type="number"
+            value={product?.minStock ? product?.minStock : ""}
+            onChange={(e) => {
+              setProduct({ ...product, minStock: e.target.value })
+            }}
+          />
+          <p>-</p>
+          <PrimaryInput
+            placeholder="Max"
+            type="number"
+            value={product?.maxStock ? product?.maxStock : ""}
+            onChange={(e) => {
+              setProduct({ ...product, maxStock: e.target.value })
+            }}
+          />
+        </div>
+
+        <PrimaryTextArea
+          rows={4}
+          className="mt-5"
+          title={t("note_product")}
+          value={product?.description ? product?.description : ""}
+          onChange={(e) => {
+            setProduct({ ...product, description: e.target.value })
+          }}
+        />
 
         <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
@@ -588,6 +612,7 @@ function RightSideProductDetail({
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
           title="Bạn có chắc chắn muốn chỉnh sửa sản phẩm không?"
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={disabled}
         >
           {t("save_product")}
         </ConfirmPopup>

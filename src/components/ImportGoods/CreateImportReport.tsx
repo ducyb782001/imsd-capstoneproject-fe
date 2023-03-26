@@ -26,6 +26,9 @@ import { useRouter } from "next/router"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import { useTranslation } from "react-i18next"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import SecondaryBtn from "../SecondaryBtn"
+import DeleteDetail from "../DeleteDetail"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
@@ -91,7 +94,7 @@ function CreateImportReport() {
         {
           Header: "Chiết khấu",
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center justify-center gap-1">
               <ListDiscountImport
                 data={data}
                 listProductImport={listProductImport}
@@ -114,7 +117,7 @@ function CreateImportReport() {
           Header: " ",
           accessor: (data: any, index) => (
             <div
-              className="cursor-pointer"
+              className="w-full cursor-pointer"
               onClick={() => {
                 let result = listChosenProduct?.filter(
                   (i, ind) => ind !== index,
@@ -122,7 +125,7 @@ function CreateImportReport() {
                 setListChosenProduct(result)
               }}
             >
-              <XIcons />
+              <DeleteDetail />
             </div>
           ),
         },
@@ -314,9 +317,12 @@ function CreateImportReport() {
       queryKey: ["getListProductBySupplier", nhaCungCapSelected],
       queryFn: async () => {
         if (nhaCungCapSelected) {
-          const response = await getListExportProductBySupplier(
-            nhaCungCapSelected.supplierId,
-          )
+          const response = await getListExportProductBySupplier({
+            offSet: 0,
+            limit: 1000,
+            supId: nhaCungCapSelected.supplierId,
+            status: true,
+          })
           setProductImportObject({
             ...productImportObject,
             supplierId: nhaCungCapSelected.supplierId,
@@ -389,9 +395,10 @@ function CreateImportReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ImportGoodIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+        </div>
         <SearchProductImportDropdown
           listDropdown={listProductBySupplierImport?.data}
           placeholder={t("search.searchInGoods")}
@@ -444,7 +451,7 @@ function ListQuantitiveImport({
   }
 
   return (
-    <div className="w-[100px] relative">
+    <div className="relative">
       <PrimaryInput
         className="w-[60px]"
         type="number"
@@ -600,6 +607,8 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
       setListProductImport(newList)
     }
   }, [unitChosen])
+
+  console.log(listDropdown)
 
   return (
     <ChooseUnitImport
