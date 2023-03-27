@@ -15,6 +15,7 @@ import ChooseRoleDropdown from "./ChooseRoleDropDown"
 import { getAllStaff } from "../../apis/user-module"
 import SetStatusPopup from "./SetStatusPopup"
 import { useTranslation } from "react-i18next"
+import ShowDetail from "../ShowDetail"
 
 function ManageStaff() {
   const { t } = useTranslation()
@@ -212,7 +213,7 @@ function ManageStaff() {
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col">
-          <div className="grid items-center justify-between w-full gap-1 md:grid-cols-[60%_18%_22%] mb-4">
+          <div className="grid grid-cols-1 items-center justify-between w-full gap-1 md:grid-cols-[60%_18%_22%] mb-4">
             <SearchInput
               placeholder={t("search.searchStaff")}
               onChange={(e) => setSearchParam(e.target.value)}
@@ -293,11 +294,13 @@ function RoleDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
+  console.log(data)
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center w-full gap-2">
       <Link href={`/edit-staff/${data?.userId}`}>
         <a className="w-full">
-          <ShowDetailIcon />
+          <ShowDetail />
         </a>
       </Link>
     </div>

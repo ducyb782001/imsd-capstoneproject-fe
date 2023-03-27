@@ -24,6 +24,7 @@ import ReasonDropdown from "./ReasonDropdown"
 import GeneralIcon from "../icons/GeneralIcon"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import DeleteDetail from "../DeleteDetail"
+import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -77,7 +78,10 @@ function EditCheckGood() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="text-center">{data?.currentStock}</div>
+            <RenderCurrentStock
+              data={data}
+              listProductCheck={listProductCheck}
+            />
           ),
         },
         {
@@ -363,6 +367,27 @@ function EditCheckGood() {
 
 export default EditCheckGood
 
+function RenderCurrentStock({ data, listProductCheck }) {
+  const [inStockData, setInStockData] = useState<any>()
+
+  useEffect(() => {
+    if (listProductCheck) {
+      const product = listProductCheck.filter(
+        (i) => i.productId === data?.productId,
+      )
+
+      if (!product[0]?.measuredUnitId) {
+        setInStockData(data?.currentStock)
+      } else {
+        const currentStockUnit = data?.measuredUnit?.inStock
+        setInStockData(currentStockUnit)
+      }
+    }
+  }, [listProductCheck])
+
+  return <div className="text-center">{inStockData}</div>
+}
+
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
   const [actualStock, setActualStock] = useState(data?.actualStock)
   const handleOnChangeDiscount = (value, data) => {
@@ -392,21 +417,37 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
 }
 
 function CountDeviated({ data, listProductCheck }) {
-  const [deviated, setDeviated] = useState<any>()
+  const [deviated, setDeviated] = useState<any>(0)
+
   const handleCountDeviated = () => {
     const list = listProductCheck
+
+    let inStockData = 0
+    const product = listProductCheck.filter(
+      (i) => i.productId === data?.productId,
+    )
+
+    if (!product[0]?.measuredUnitId) {
+      inStockData = data?.currentStock
+    } else {
+      inStockData = data?.measuredUnit?.inStock
+    }
+
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const deviatedAmount = item.actualStock - item.currentStock
+        const deviatedAmount = item.actualStock - inStockData
+
         setDeviated(deviatedAmount)
         return { ...item, amountDifferential: deviatedAmount }
       }
       return item
     })
   }
+
   useEffect(() => {
     handleCountDeviated()
   }, [listProductCheck])
+
   return (
     <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
       {deviated}
@@ -433,7 +474,7 @@ function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
       if (test[0].measuredUnitId) {
         setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
       } else {
-        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit)
+        setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
       }
     }
   }, [data])

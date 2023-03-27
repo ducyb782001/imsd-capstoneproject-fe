@@ -25,6 +25,8 @@ import {
 } from "../../apis/export-product-module"
 import ChooseExportReportDropdown from "./ChooseExportReportDropdown"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import ReturnGoodIcon from "../icons/ReturnGoodIcon"
+import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -329,7 +331,10 @@ function CreateReturnReport() {
         </PrimaryBtn>
       </div>
       <div className="w-full mt-6 bg-white block-border">
-        <SmallTitle>Thông tin đơn hoàn</SmallTitle>
+        <div className="flex items-center gap-3 mb-4">
+          <ReturnGoodsIcon />
+          <SmallTitle>Thông tin đơn hoàn</SmallTitle>
+        </div>
         <div className="grid grid-cols-1 gap-5 mt-4 md:grid-cols-2">
           <ChooseExportReportDropdown
             title={
@@ -388,7 +393,10 @@ function CreateReturnReport() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">Thông tin sản phẩm trả</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ReturnGoodIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm trả</h1>
+        </div>
         {isLoadingListProduct ? (
           <div>
             <div className="h-[60px] w-full skeleton-loading" />
