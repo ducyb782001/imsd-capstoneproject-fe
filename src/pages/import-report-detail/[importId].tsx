@@ -2,7 +2,7 @@ import React from "react"
 import ImportReportDetail from "../../components/ImportGoods/ImportReportDetail"
 import Layout from "../../components/Layout"
 
-function importId(props) {
+function importId() {
   return (
     <Layout>
       <ImportReportDetail />

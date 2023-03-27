@@ -6,11 +6,11 @@ import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
-import PrimaryBtn from "../PrimaryBtn"
 import { BigNumber } from "bignumber.js"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 function ImportReportCanceled() {
   const { t } = useTranslation()
@@ -171,9 +171,10 @@ function ImportReportCanceled() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("import_product_list")}
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ImportGoodIcon />
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

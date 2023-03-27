@@ -172,6 +172,7 @@ function MainNav({ userName = "", roleId = 3 }) {
         router.asPath.includes("/create-return-export-good") ||
         router.asPath.includes("/create-return-report") ||
         router.asPath.includes("/return-import-detail") ||
+        router.asPath.includes("/return-export-detail") ||
         router.asPath.includes("/manage-return-export-good"),
     },
     {
@@ -196,10 +197,13 @@ function MainNav({ userName = "", roleId = 3 }) {
             <Link href="/">
               <a className="text-base">
                 <img
-                  className="w-[250px] h-[150px] object-cover"
-                  src="/images/big-logo.png"
+                  className="w-[150px] object-cover"
+                  src="/images/big-logo-no-text.png"
                   alt="menu-logo"
                 />
+                <p className="text-[8px] text-center">
+                  The best choice for your warehouse
+                </p>
               </a>
             </Link>
           </div>

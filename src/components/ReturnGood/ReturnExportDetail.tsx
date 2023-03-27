@@ -12,7 +12,7 @@ import { useQueries } from "react-query"
 import ReturnTitleIcon from "../icons/ReturnTitleIcon"
 import GeneralInformationIcon from "../icons/GeneralInformationIcon"
 
-function ReturnImportDetail() {
+function ReturnExportDetail() {
   const { t } = useTranslation()
 
   const [detailReturnImport, setDetailReturnImport] = useState<any>()
@@ -58,6 +58,25 @@ function ReturnImportDetail() {
         {
           Header: "SL trả",
           accessor: (data: any) => <p>{data?.amount}</p>,
+        },
+        {
+          Header: "Đơn giá trả",
+          accessor: (data: any) => (
+            <p>{new BigNumber(data?.price || 0).toFormat()} đ</p>
+          ),
+        },
+        {
+          Header: "Thành tiền",
+          accessor: (data: any) => (
+            <div className="flex items-center gap-1">
+              <div className="px-3 py-2 text-center text-white rounded-md bg-successBtn">
+                {new BigNumber(data.amount)
+                  .multipliedBy(data.price)
+                  .toFormat(0)}{" "}
+                đ
+              </div>
+            </div>
+          ),
         },
       ],
     },
@@ -161,7 +180,7 @@ function ReturnImportDetail() {
     </div>
   )
 }
-export default ReturnImportDetail
+export default ReturnExportDetail
 
 function ProductInfo({ title = "", data = "" }) {
   return (

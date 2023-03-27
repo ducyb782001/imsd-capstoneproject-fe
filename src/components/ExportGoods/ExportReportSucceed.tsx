@@ -13,6 +13,7 @@ import { format, parseISO } from "date-fns"
 import Link from "next/link"
 import SecondaryBtn from "../SecondaryBtn"
 import { useTranslation } from "react-i18next"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
 function ImportReportSucceed() {
   const { t } = useTranslation()
@@ -52,9 +53,7 @@ function ImportReportSucceed() {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <p className="text-center">{data?.price} đ</p>
-            </div>
+            <p className="text-center">{data?.price} đ</p>
           ),
         },
         {
@@ -68,19 +67,18 @@ function ImportReportSucceed() {
         {
           Header: t("total_price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <p>
-                {new BigNumber(data.amount)
-                  .multipliedBy(data.price)
-                  .minus(
-                    new BigNumber(data.amount)
-                      .multipliedBy(data.price)
-                      .multipliedBy(data.discount)
-                      .dividedBy(100),
-                  )
-                  .toFormat(0)}
-              </p>
-            </div>
+            <p>
+              {new BigNumber(data.amount)
+                .multipliedBy(data.price)
+                .minus(
+                  new BigNumber(data.amount)
+                    .multipliedBy(data.price)
+                    .multipliedBy(data.discount)
+                    .dividedBy(100),
+                )
+                .toFormat(0)}{" "}
+              đ
+            </p>
           ),
         },
       ],
@@ -113,9 +111,9 @@ function ImportReportSucceed() {
     <ExportReportSkeleton />
   ) : (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImport?.exportCode}
@@ -202,9 +200,10 @@ function ImportReportSucceed() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("export_product_infor")}
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}

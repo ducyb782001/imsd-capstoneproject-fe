@@ -14,6 +14,8 @@ import Pagination from "../../Pagination"
 import useDebounce from "../../../hooks/useDebounce"
 import SupplierDetailSkeleton from "../../Skeleton/SupplierDetailSkeleton"
 import { useTranslation } from "react-i18next"
+import GeneralIcon from "../../icons/GeneralIcon"
+import ProductProvideIcon from "../../icons/ProductProvideIcon"
 
 interface Supplier {
   supplierId: number
@@ -55,8 +57,7 @@ function SupplierDetail() {
         },
         {
           Header: t("type.type"),
-          // accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
-          accessor: (data: any) => <p>{data?.categoryName}</p>,
+          accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
         },
         {
           Header: t("unit"),
@@ -154,21 +155,20 @@ function SupplierDetail() {
   ) : (
     <div>
       <div className="bg-white block-border">
-        <div>
-          <div className="float-left">
+        <div className="flex flex-wrap items-center justify-between">
+          <div className="flex items-center gap-3 mb-4">
+            <GeneralIcon />
             <SmallTitle>{t("general_information")}</SmallTitle>
           </div>
-          <div className="float-right">
-            <PrimaryBtn
-              onClick={handleEditSupplier}
-              className="bg-successBtn border-successBtn active:bg-greenDark"
-            >
-              {t("edit_supplier")}
-            </PrimaryBtn>
-          </div>
+          <PrimaryBtn
+            onClick={handleEditSupplier}
+            className="bg-successBtn border-successBtn active:bg-greenDark w-[300px]"
+          >
+            {t("edit_supplier")}
+          </PrimaryBtn>
         </div>
 
-        <div className="grid grid-cols-2 mt-10 gap-y-1">
+        <div className="grid grid-cols-2 mt-5 gap-y-1">
           <div className="text-gray ">
             <SupplierStatus status={supplier?.status} />
           </div>
@@ -200,7 +200,10 @@ function SupplierDetail() {
       </div>
 
       <div className="mt-4 bg-white block-border">
-        <h1 className="text-2xl font-bold">{t("productOfSupplier")}</h1>
+        <div className="flex items-center gap-3">
+          <ProductProvideIcon />
+          <h1 className="text-2xl font-bold">{t("productOfSupplier")}</h1>
+        </div>
         <div className="flex flex-col gap-4 mt-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput

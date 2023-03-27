@@ -7,6 +7,7 @@ import {
   getDashboardChartData,
   getDashBoardData,
 } from "../../apis/dashboard-module"
+import Page401 from "../401"
 import ExportDashboardIcon from "../icons/ExportDashboardIcon"
 import ExportReturnDashboardIcon from "../icons/ExportReturnDashboardIcon"
 import GainDashboardIcon from "../icons/GainDashboardIcon"
@@ -112,6 +113,7 @@ function Dashboard() {
         />
       </div>
     </div>
+    // <Page401 />
   )
 }
 

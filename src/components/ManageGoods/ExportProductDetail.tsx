@@ -14,18 +14,23 @@ import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import { useTranslation } from "react-i18next"
+import Link from "next/link"
+import SecondaryBtn from "../SecondaryBtn"
 
 function ExportProductDetail() {
+  const { t } = useTranslation()
+
   const columns = [
     {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -35,7 +40,7 @@ function ExportProductDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName}
@@ -43,62 +48,46 @@ function ExportProductDetail() {
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("export_number"),
           accessor: (data: any) => (
-            <PrimaryInput
-              value={data?.amount}
-              className="w-16"
-              readOnly={true}
-            />
+            <div>{data?.amount ? data?.amount : "---"}</div>
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
-              <PrimaryInput
-                value={data?.product.sellingPrice}
-                className="w-24"
-                readOnly={true}
-              />
-              <p>đ</p>
+            <p className="text-center">{data?.price} đ</p>
+          ),
+        },
+        {
+          Header: t("discount"),
+          accessor: (data: any) => (
+            <div>
+              <p className="text-center">{data?.discount} %</p>
             </div>
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("total_price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <PrimaryInput
-                value={data?.discount}
-                className="w-12"
-                readOnly={true}
-              />
-              <p>%</p>
-            </div>
-          ),
-        },
-        {
-          Header: "Thành tiền",
-          accessor: (data: any) => (
-            <div className="flex items-center gap-1">
-              <p>
-                {new BigNumber(data.amount)
-                  .multipliedBy(data.product.sellingPrice)
-                  .minus(
-                    new BigNumber(data.amount)
-                      .multipliedBy(data.product.sellingPrice)
-                      .multipliedBy(data.discount)
-                      .dividedBy(100),
-                  )
-                  .toFormat(0)}
-              </p>
-            </div>
+            <p>
+              {new BigNumber(data.amount)
+                .multipliedBy(data.price)
+                .minus(
+                  new BigNumber(data.amount)
+                    .multipliedBy(data.price)
+                    .multipliedBy(data.discount)
+                    .dividedBy(100),
+                )
+                .toFormat(0)}{" "}
+              đ
+            </p>
           ),
         },
       ],
     },
   ]
+
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
@@ -118,7 +107,7 @@ function ExportProductDetail() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
+  const handleClickOutBtn = () => {
     router.back()
   }
 
@@ -138,8 +127,17 @@ function ExportProductDetail() {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
+              <Link
+                href={`/create-return-export-good/?exportId=${productImport?.exportId}`}
+              >
+                <a>
+                  <SecondaryBtn className="max-w-[120px]">
+                    Hoàn hàng
+                  </SecondaryBtn>
+                </a>
+              </Link>
               <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                Thoát
+                {t("exit")}
               </PrimaryBtn>
             </div>
           </div>
@@ -162,9 +160,9 @@ function ExportProductDetail() {
                   : format(new Date(), "dd/MM/yyyy HH:mm")
               }
               succeededDate={
-                productImport?.succeededDate
+                productImport?.completedDate
                   ? format(
-                      new Date(productImport?.succeededDate),
+                      new Date(productImport?.completedDate),
                       "dd/MM/yyyy HH:mm",
                     )
                   : format(new Date(), "dd/MM/yyyy HH:mm")
@@ -215,8 +213,8 @@ function ExportProductDetail() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {productImport?.totalPrice}
+          <div className="text-base font-semibold">{t("price_overall")}</div>
+          {new BigNumber(productImport?.totalPrice).toFormat(0)} đ
         </div>
       </div>
     </div>

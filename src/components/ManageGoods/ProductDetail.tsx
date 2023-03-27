@@ -123,10 +123,11 @@ function ProductDetail() {
             />
             <ProductInfo
               title={t("date_create")}
-              data={format(
-                new Date(detailProduct?.created),
-                "dd/MM/yyyy HH:mm",
-              )}
+              data={
+                detailProduct?.created
+                  ? format(new Date(detailProduct?.created), "dd/MM/yyyy HH:mm")
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
             />
             <ProductInfo
               title={"Ngưỡng tồn nhỏ nhất"}
@@ -225,7 +226,11 @@ function HistoryProduct({ data }) {
         {
           Header: t("recorded_date"),
           accessor: (data: any) => (
-            <p>{format(new Date(data?.date), "dd/MM/yyyy HH:mm")}</p>
+            <p>
+              {data?.date
+                ? format(new Date(data?.date), "dd/MM/yyyy HH:mm")
+                : format(new Date(), "dd/MM/yyyy HH:mm")}
+            </p>
           ),
         },
       ],

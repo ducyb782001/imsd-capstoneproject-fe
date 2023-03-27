@@ -82,30 +82,7 @@ function CreateReturnReport() {
         },
         {
           Header: "Đơn giá gốc",
-          accessor: (data: any) => (
-            <p className="text-center text-blue">{data?.price} đ</p>
-          ),
-        },
-        {
-          Header: "Đơn giá trả",
-          accessor: (data: any) => (
-            <div className="items-center ">
-              <ListPriceImport
-                data={data}
-                listProductImport={listProductImport}
-                setListProductImport={setListProductImport}
-              />
-            </div>
-          ),
-        },
-        {
-          Header: "Thành tiền",
-          accessor: (data: any) => (
-            <CountTotalPrice
-              data={data}
-              listProductImport={listProductImport}
-            />
-          ),
+          accessor: (data: any) => <p className="text-blue">{data?.price} đ</p>,
         },
       ],
     },
@@ -171,7 +148,7 @@ function CreateReturnReport() {
         return {
           productId: item.productId,
           amount: amount,
-          price: costPrice,
+          price: 0,
           measuredUnitId: item?.measuredUnitId ? item?.measuredUnitId : 0,
         }
       })
@@ -388,7 +365,6 @@ function CreateReturnReport() {
               ) : (
                 ""
               )}
-              {/* <SecondaryBtn className="w-[150px]">Chọn file</SecondaryBtn> */}
             </ChooseFileReason>
           </div>
         </div>
@@ -411,11 +387,6 @@ function CreateReturnReport() {
             />
           </div>
         )}
-        <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">
-            Tổng giá trị hàng trả: {new BigNumber(totalPriceSend).toFormat(0)} đ
-          </div>
-        </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn trả không?"
@@ -467,77 +438,6 @@ function ListQuantitiveImport({
         }}
       />
       <div>/ {data?.available}</div>
-    </div>
-  )
-}
-
-function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState(data?.price)
-
-  useEffect(() => {
-    if (data) {
-      setCostPrice(data?.price)
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (costPrice) {
-      const list = listProductImport
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return { ...item, price: costPrice }
-        }
-        return item
-      })
-      setListProductImport(newList)
-    }
-  }, [costPrice])
-
-  return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={costPrice ? costPrice : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCostPrice(e.target.value)
-      }}
-    />
-  )
-}
-
-function CountTotalPrice({ data, listProductImport }) {
-  const [price, setPrice] = useState<any>()
-  const handleSetPrice = () => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        const totalPrice = new BigNumber(item.amount || 0).multipliedBy(
-          item.price || 0,
-        )
-        const discountPrice = new BigNumber(item.amount || 0)
-          .multipliedBy(item.price || 0)
-          .multipliedBy(item.discount || 0)
-          .dividedBy(100)
-        if (item.discount) {
-          const afterPrice = totalPrice.minus(discountPrice)
-          setPrice(afterPrice)
-        } else {
-          setPrice(totalPrice)
-        }
-      }
-      return item
-    })
-  }
-
-  useEffect(() => {
-    handleSetPrice()
-  }, [listProductImport])
-
-  return (
-    <div className="py-2 text-center text-white rounded-md bg-successBtn">
-      {new BigNumber(price).toFormat(0)} đ
     </div>
   )
 }

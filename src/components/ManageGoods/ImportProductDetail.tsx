@@ -16,6 +16,7 @@ import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import SecondaryBtn from "../SecondaryBtn"
+import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 function ImportProductDetail() {
   const { t } = useTranslation()
@@ -135,7 +136,7 @@ function ImportProductDetail() {
     <div>
       <div className="grid gap-5 grid-cols md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between w-full gap-4">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
@@ -161,18 +162,30 @@ function ImportProductDetail() {
           </div>
           <div className="flex justify-center mt-6">
             <StepBar
-              createdDate={format(
-                new Date(productImport?.createdDate),
-                "dd/MM/yyyy HH:mm",
-              )}
-              approvedDate={format(
-                new Date(productImport?.approvedDate),
-                "dd/MM/yyyy HH:mm",
-              )}
-              succeededDate={format(
-                new Date(productImport?.completedDate),
-                "dd/MM/yyyy HH:mm",
-              )}
+              createdDate={
+                productImport?.createdDate
+                  ? format(
+                      new Date(productImport?.createdDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
+              approvedDate={
+                productImport?.approvedDate
+                  ? format(
+                      new Date(productImport?.approvedDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
+              succeededDate={
+                productImport?.completedDate
+                  ? format(
+                      new Date(productImport?.completedDate),
+                      "dd/MM/yyyy HH:mm",
+                    )
+                  : format(new Date(), "dd/MM/yyyy HH:mm")
+              }
               status="succeed"
             />
           </div>
@@ -190,12 +203,12 @@ function ImportProductDetail() {
           <h1 className="text-xl font-semibold text-center">
             Thông tin bổ sung
           </h1>
-          {productImport?.createdDate && (
-            <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
-              {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
-            </div>
-          )}
+          <div className="text-sm font-medium text-center text-gray">
+            Ngày tạo đơn:{" "}
+            {productImport?.createdDate
+              ? format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")
+              : format(new Date(), "dd/MM/yyyy HH:mm")}
+          </div>
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
           <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
@@ -208,9 +221,10 @@ function ImportProductDetail() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          Thông tin sản phẩm nhập vào
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ImportGoodIcon />
+          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+        </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
