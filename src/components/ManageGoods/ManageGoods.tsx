@@ -50,15 +50,25 @@ function ManageGoods({ ...props }) {
         },
         {
           Header: t("product_name"),
-          accessor: (data: any) => <p>{data?.productName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line max-w-[150px]">{data?.productName}</p>
+          ),
         },
         {
           Header: t("supplier"),
-          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line max-w-[150px]">
+              {data?.supplier?.supplierName}
+            </p>
+          ),
         },
         {
           Header: t("type.type"),
-          accessor: (data: any) => <p>{data?.category?.categoryName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line max-w-[150px]">
+              {data?.category?.categoryName}
+            </p>
+          ),
         },
         {
           Header: t("in_stock"),

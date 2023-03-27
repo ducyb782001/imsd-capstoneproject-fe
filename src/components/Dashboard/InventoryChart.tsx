@@ -10,8 +10,9 @@ function InventoryChart() {
     { key: 2, value: 2022 },
   ]
   const [isLoading, setIsLoading] = useState(true)
+  const [inventoryChart, setInventoryChart] = useState<any>()
 
-  const { data } = useQuery({
+  useQuery({
     queryKey: ["getDashboardChartData", selectedYear],
     queryFn: async () => {
       setIsLoading(true)
@@ -19,6 +20,7 @@ function InventoryChart() {
         year: selectedYear?.value,
       })
       setIsLoading(false)
+      setInventoryChart(response?.data)
 
       return response?.data
     },
@@ -28,12 +30,14 @@ function InventoryChart() {
   return (
     <div className="bg-white block-border !rounded-b-lg !rounded-t-none">
       {isLoading && <div className="w-full h-[600px] skeleton-loading" />}
-      <AvgPriceChart
-        dashboardData={data}
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-        listYear={listYear}
-      />
+      {inventoryChart && (
+        <AvgPriceChart
+          dashboardData={inventoryChart}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+          listYear={listYear}
+        />
+      )}
     </div>
   )
 }

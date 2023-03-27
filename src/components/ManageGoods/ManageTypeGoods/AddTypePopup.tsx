@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
-function AddTypePopup({ className = "" }) {
+function AddTypePopup({ className = "", children }) {
   const { t } = useTranslation()
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
@@ -60,9 +60,8 @@ function AddTypePopup({ className = "" }) {
 
   return (
     <div className={`${className}`}>
-      <PrimaryBtn onClick={open}>
-        <PlusIcon /> {t("add_type")}
-      </PrimaryBtn>
+      <div onClick={open}>{children}</div>
+
       <AnimatePresence>
         {showDialog && (
           <DialogOverlay

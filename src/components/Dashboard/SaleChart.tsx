@@ -10,7 +10,9 @@ function SaleChart() {
     { key: 2, value: 2022 },
   ]
   const [isLoading, setIsLoading] = useState(true)
-  const { data } = useQuery({
+  const [saleChartData, setSaleChartData] = useState<any>()
+
+  useQuery({
     queryKey: ["getDashboardChartData", selectedYear],
     queryFn: async () => {
       setIsLoading(true)
@@ -18,6 +20,7 @@ function SaleChart() {
         year: selectedYear?.value,
       })
       setIsLoading(false)
+      setSaleChartData(response?.data)
       return response?.data
     },
     enabled: !!selectedYear,
@@ -26,12 +29,14 @@ function SaleChart() {
   return (
     <div className="bg-white block-border !rounded-b-lg !rounded-t-none">
       {isLoading && <div className="w-full h-[600px] skeleton-loading" />}
-      <BarChart
-        dashboardData={data}
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-        listYear={listYear}
-      />
+      {saleChartData && (
+        <BarChart
+          dashboardData={saleChartData}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+          listYear={listYear}
+        />
+      )}
     </div>
   )
 }

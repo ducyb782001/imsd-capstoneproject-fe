@@ -104,7 +104,7 @@ function DraffCheckGood() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userData = localStorage.getItem("userData")
-      if (userData) {
+      if (userData != "undefined") {
         setUserData(JSON.parse(userData))
       }
     }
