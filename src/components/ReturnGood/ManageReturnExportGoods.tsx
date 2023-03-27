@@ -150,7 +150,7 @@ export default ManageReturnExportGoods
 function DetailImportProduct({ data }) {
   return (
     <div className="flex items-center gap-2">
-      <Link href={`/return-import-detail/${data?.returnsId}`}>
+      <Link href={`/return-export-detail/${data?.returnsId}`}>
         <a className="w-full">
           <ShowDetailIcon />
         </a>

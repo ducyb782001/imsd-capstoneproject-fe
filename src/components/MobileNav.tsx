@@ -170,6 +170,7 @@ function MobileNav() {
         router.asPath.includes("/create-return-export-good") ||
         router.asPath.includes("/create-return-report") ||
         router.asPath.includes("/return-import-detail") ||
+        router.asPath.includes("/return-export-detail") ||
         router.asPath.includes("/manage-return-export-good"),
     },
     {
