@@ -35,7 +35,7 @@ function Dashboard() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userData = localStorage.getItem("userData")
-      if (userData) {
+      if (userData != "undefined") {
         const user = JSON.parse(userData)
         setUserData(user)
       }

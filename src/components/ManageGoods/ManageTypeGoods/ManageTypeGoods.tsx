@@ -15,6 +15,8 @@ import AddTypePopup from "./AddTypePopup"
 import EditTypePopup from "./EditTypePopup"
 import TableSkeleton from "../../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
+import PrimaryBtn from "../../PrimaryBtn"
+import PlusIcon from "../../icons/PlusIcon"
 
 function ManageTypeGoods() {
   const { t } = useTranslation()
@@ -123,7 +125,11 @@ function ManageTypeGoods() {
   return (
     <div>
       <div className="flex items-center justify-end">
-        <AddTypePopup className="max-w-[250px]" />
+        <AddTypePopup className="max-w-[250px]">
+          <PrimaryBtn>
+            <PlusIcon /> {t("add_type")}
+          </PrimaryBtn>
+        </AddTypePopup>
       </div>
       <div className="mt-2 bg-white block-border">
         <div className="flex flex-col gap-4">

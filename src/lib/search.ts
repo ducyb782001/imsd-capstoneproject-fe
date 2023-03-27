@@ -100,9 +100,36 @@ export function searchBySupplierName(searchInput: string, list: []) {
     return list
   }
   if (searchInput) {
+    result = list?.filter(function (item) {
+      // @ts-ignore
+      if (item.supplierName.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+      // @ts-ignore
+      if (item?.supplierPhone) {
+        if (
+          // @ts-ignore
+          item.supplierPhone.toLowerCase().includes(searchInput.toLowerCase())
+        ) {
+          return item
+        }
+      }
+    })
+  } else {
+    result = []
+  }
+  return result
+}
+
+export function searchByCategoryName(searchInput: string, list: []) {
+  let result
+  if (!searchInput) {
+    return list
+  }
+  if (searchInput) {
     result = list.filter((i) =>
       // @ts-ignore
-      i?.supplierName.toLowerCase().includes(searchInput.toLowerCase()),
+      i?.categoryName.toLowerCase().includes(searchInput.toLowerCase()),
     )
   } else {
     result = []

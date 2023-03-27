@@ -46,8 +46,8 @@ function AddSupplierPopup({ className = "" }) {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("add_supplier_success"))
-          queryClient.invalidateQueries("getListStaff")
-          queryClient.invalidateQueries("getListSupplier")
+          queryClient.refetchQueries("getListStaff")
+          queryClient.refetchQueries("getListSupplier")
           close()
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -69,7 +69,7 @@ function AddSupplierPopup({ className = "" }) {
   return (
     <div className={`${className}`}>
       <button
-        className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
+        className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF] hover:bg-[#EFEAFA]"
         onClick={open}
       >
         <AddPlusIcon />

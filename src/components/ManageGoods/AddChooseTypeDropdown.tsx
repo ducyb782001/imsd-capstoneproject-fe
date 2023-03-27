@@ -1,11 +1,13 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
+import { search, searchByCategoryName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddTypePopup from "./ManageTypeGoods/AddTypePopup"
 import { useTranslation } from "react-i18next"
 import AddTypeProductPopup from "./ManageTypeGoods/AddTypeProductPopup"
+import AddPlusIcon from "../icons/AddPlusIcon"
+
 function AddChooseTypeDropdown({
   title = "",
   listDropdown,
@@ -16,7 +18,7 @@ function AddChooseTypeDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+  const listResult = searchByCategoryName(searchInput, listDropdown)
   const { t } = useTranslation()
   const toggleOpenMenu = () => {
     toggleOpen(!isOpen)
@@ -104,13 +106,17 @@ function AddChooseTypeDropdown({
         />
         <div
           id="list-dropdown"
-          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
+          className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] max-h-[250px] overflow-y-auto"
         >
           {listResult?.map((i, index) => (
             <DropDownItem key={index} data={i} setShowing={setShowing} />
           ))}
         </div>
-        <AddTypeProductPopup />
+        <AddTypePopup>
+          <button className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF] hover:bg-[#EFEAFA]">
+            <AddPlusIcon /> {t("add_type")}
+          </button>
+        </AddTypePopup>
       </motion.div>
     </motion.div>
   )

@@ -70,10 +70,7 @@ function AddTypeProductPopup({ className = "" }) {
 
   return (
     <div className={`${className}`}>
-      <button
-        className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]"
-        onClick={open}
-      >
+      <button className="flex items-center gap-1 bg-[#fff] w-full px-4 py-3 active:bg-[#EFEFEF]">
         <AddPlusIcon /> {t("add_type")}
       </button>
       <AnimatePresence>

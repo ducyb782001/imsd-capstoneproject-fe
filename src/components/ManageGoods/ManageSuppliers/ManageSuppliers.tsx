@@ -29,7 +29,11 @@ function ManageSuppliers({ ...props }) {
       columns: [
         {
           Header: t("supplier_name"),
-          accessor: (data: any) => <p>{data?.supplierName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line max-w-[450px]">
+              {data?.supplierName}
+            </p>
+          ),
         },
         {
           Header: t("phone_number"),

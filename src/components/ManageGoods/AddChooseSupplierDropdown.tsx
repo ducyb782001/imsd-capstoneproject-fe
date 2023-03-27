@@ -119,7 +119,7 @@ function AddChooseSupplierDropdown({
 
             <div
               id="list-dropdown"
-              className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] pb-3 max-h-[250px] overflow-y-auto"
+              className="smooth-transform z-50 flex w-full flex-col gap-1 bg-[#fff] max-h-[250px] overflow-y-auto"
             >
               {listResult?.map((i, index) => (
                 <DropDownItem key={index} data={i} setShowing={setShowing} />
