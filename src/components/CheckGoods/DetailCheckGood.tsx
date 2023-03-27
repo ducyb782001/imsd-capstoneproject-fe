@@ -149,10 +149,10 @@ function DetailCheckGood() {
                     new Date(productCheckObject?.updated),
                     "dd/MM/yyyy HH:mm",
                   )
-                : ""}
+                : "---"}
             </p>
-            <p>{productCheckObject?.updatedBy?.userName}</p>
-            <p>{productCheckObject?.note}</p>
+            <p>{productCheckObject?.updatedBy?.userName || "---"}</p>
+            <p>{productCheckObject?.note || "---"}</p>
           </div>
         </div>
       </div>

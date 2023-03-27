@@ -24,6 +24,7 @@ import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import GeneralIcon from "../icons/GeneralIcon"
+import BarcodeIcon from "../icons/BarcodeIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -246,6 +247,7 @@ function AddProduct() {
               onChange={(e) => {
                 setProduct({ ...product, barcode: e.target.value })
               }}
+              accessoriesRight={<BarcodeIcon />}
             />
             <PrimaryInput
               title={t("product_unit")}

@@ -146,8 +146,8 @@ function DropDownItem({ data, setShowing }) {
           alt="product-image"
           className="object-cover w-[40px] h-[40px] rounded-md"
         />
-        <div>
-          <p>{data?.productName}</p>
+        <div className="max-w-[150px] md:max-w-[600px]">
+          <p className="truncate-2-line">{data?.productName}</p>
           <p className="text-gray">
             {data?.productCode} ĐVT:
             <span className="text-blue"> {data?.defaultMeasuredUnit}</span>

@@ -26,6 +26,7 @@ import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import GeneralIcon from "../icons/GeneralIcon"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import BarcodeIcon from "../icons/BarcodeIcon"
 
 interface Product {
   productId: number
@@ -308,6 +309,7 @@ function EditProduct() {
               onChange={(e) => {
                 setDetailProduct({ ...detailProduct, barcode: e.target.value })
               }}
+              accessoriesRight={<BarcodeIcon />}
             />
             <PrimaryInput
               title={t("product_unit")}

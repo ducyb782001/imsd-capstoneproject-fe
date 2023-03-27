@@ -17,6 +17,7 @@ import { addNewSupplier } from "../../../apis/supplier-module"
 import ConfirmPopup from "../../ConfirmPopup"
 import { useTranslation } from "react-i18next"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
+import GeneralIcon from "../../icons/GeneralIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created- product-type-id"
 
@@ -168,7 +169,10 @@ function AddSupplier() {
     <div className="">
       <div>
         <div className="w-full bg-white block-border">
-          <SmallTitle>{t("general_information")}</SmallTitle>
+          <div className="flex gap-3 item-center">
+            <GeneralIcon />
+            <SmallTitle>{t("general_information")}</SmallTitle>
+          </div>
           <PrimaryInput
             className="mt-6"
             placeholder={t("fill_supplier_name")}

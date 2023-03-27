@@ -17,6 +17,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import { createStockTakeProduct } from "../../apis/stocktake-product-module"
 import ReasonDropdown from "./ReasonDropdown"
 import { useTranslation } from "react-i18next"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -66,7 +67,10 @@ function CreateCheckReport() {
         {
           Header: t("current_stock"),
           accessor: (data: any) => (
-            <div className="text-center">{data?.inStock}</div>
+            <RenderCurrentStock
+              data={data}
+              listProductCheck={listProductCheck}
+            />
           ),
         },
         {
@@ -256,11 +260,17 @@ function CreateCheckReport() {
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    createStockTakeMutation.mutate({
+    const submittedData = {
       ...productCheckObject,
       stocktakeId: 0,
       stocktakeCode: "string",
-    })
+    }
+
+    if (!staffSelected) {
+      submittedData["createdId"] = userData.userId
+    }
+
+    createStockTakeMutation.mutate(submittedData)
   }
   const handleClickOutBtn = () => {
     router.push("/manage-check-good")
@@ -321,7 +331,10 @@ function CreateCheckReport() {
         </div>
       </div>
       <div className="!pb-20 mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">{t("check_good_infor")}</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
+        </div>
         <SearchProductImportDropdown
           listDropdown={listProductSearch?.data}
           placeholder={t("search.searchInGoods")}
@@ -342,6 +355,29 @@ function CreateCheckReport() {
 }
 
 export default CreateCheckReport
+
+function RenderCurrentStock({ data, listProductCheck }) {
+  const [inStockData, setInStockData] = useState<any>()
+
+  useEffect(() => {
+    if (listProductCheck) {
+      const product = listProductCheck.filter(
+        (i) => i.productId === data?.productId,
+      )
+
+      if (!product[0]?.measuredUnitId) {
+        setInStockData(data?.inStock)
+      } else {
+        const currentStockUnit = data?.measuredUnits?.filter(
+          (i) => i.measuredUnitId === product[0].measuredUnitId,
+        )
+        setInStockData(currentStockUnit[0].inStock)
+      }
+    }
+  }, [listProductCheck])
+
+  return <div className="text-center">{inStockData}</div>
+}
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
   const [actualStock, setActualStock] = useState(data?.actualStock)
@@ -374,21 +410,37 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
 function CountDeviated({ data, listProductCheck }) {
   const [deviated, setDeviated] = useState<any>(0)
 
+  useEffect(() => {
+    if (listProductCheck) {
+      handleSetPrice()
+    }
+  }, [listProductCheck])
+
   const handleSetPrice = () => {
     const list = listProductCheck
+    let inStockData = 0
+    const product = listProductCheck.filter(
+      (i) => i.productId === data?.productId,
+    )
+
+    if (!product[0]?.measuredUnitId) {
+      inStockData = data?.inStock
+    } else {
+      const currentStockUnit = data?.measuredUnits?.filter(
+        (i) => i.measuredUnitId === product[0].measuredUnitId,
+      )
+      inStockData = currentStockUnit[0].inStock
+    }
+
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
-        const deviatedAmount = item.currentStock - item.actualStock
+        const deviatedAmount = item.actualStock - inStockData
         setDeviated(deviatedAmount)
         return { ...item, amountDifferential: deviatedAmount }
       }
       return item
     })
   }
-
-  useEffect(() => {
-    handleSetPrice()
-  }, [listProductCheck])
 
   return (
     <div className="px-2 py-2 text-center text-white rounded-md bg-successBtn">
@@ -404,7 +456,13 @@ function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
 
   useEffect(() => {
     if (data) {
-      setListDropdown(data?.measuredUnits)
+      setListDropdown([
+        {
+          measuredUnitId: 0,
+          measuredUnitName: data?.defaultMeasuredUnit,
+        },
+        ...data?.measuredUnits,
+      ])
       setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
     }
   }, [data])
@@ -414,7 +472,10 @@ function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
       const list = listProductCheck
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
-          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+          }
         }
         return item
       })

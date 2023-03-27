@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next"
 import { useRouter } from "next/router"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 import SearchProductExportDropdown from "./SearchProductExportDropdown"
+import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateExportGood() {
@@ -348,7 +349,7 @@ function CreateExportGood() {
 
   return (
     <div>
-      <div className="grid gap-5 grid-cols md: grid-cols-7525">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
           <div className="flex items-center justify-between w-full">
             <h1 className="text-2xl font-semibold">{t("add_export_title")}</h1>
@@ -407,9 +408,10 @@ function CreateExportGood() {
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
-        <h1 className="mb-4 text-xl font-semibold">
-          {t("export_product_infor")}
-        </h1>
+        <div className="flex items-center gap-3 mb-4">
+          <ExportGoodsIcon />
+          <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
+        </div>
         <SearchProductExportDropdown
           listDropdown={listProduct?.data}
           textDefault={t("supplier")}

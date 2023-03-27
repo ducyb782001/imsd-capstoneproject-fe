@@ -58,7 +58,9 @@ function Dashboard() {
     },
   })
 
-  return (
+  return !!!userData || userData?.roleId === 3 ? (
+    <Page401 />
+  ) : (
     <div>
       <SummaryRevenue />
       <SubMenu
@@ -113,7 +115,6 @@ function Dashboard() {
         />
       </div>
     </div>
-    // <Page401 />
   )
 }
 
