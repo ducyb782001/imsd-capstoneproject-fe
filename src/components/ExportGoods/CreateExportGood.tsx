@@ -624,11 +624,11 @@ function ListUnitExport({ data, listProductExport, setListProductExport }) {
       setListDropdown([
         {
           measuredUnitId: 0,
-          measuredUnitName: data?.defaultMeasuredUnit,
+          measuredUnitName: data?.defaultMeasuredUnit || "---",
         },
         ...data?.measuredUnits,
       ])
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit || "---")
     }
   }, [data])
 

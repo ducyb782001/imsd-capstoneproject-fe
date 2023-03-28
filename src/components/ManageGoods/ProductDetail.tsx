@@ -39,8 +39,10 @@ function ProductDetail() {
   ) : (
     <div>
       <div className="flex flex-col justify-between gap-4 md:items-center md:flex-row">
-        <div className="flex flex-wrap items-center gap-4">
-          <h1 className="text-3xl font-medium">{detailProduct?.productName}</h1>
+        <div className="flex flex-wrap items-center gap-4 max-w-[600px]">
+          <h1 className="text-3xl font-medium truncate-2-line">
+            {detailProduct?.productName}
+          </h1>
           {detailProduct?.status ? (
             <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
               <h1 className="m-2 ml-3 text-green-500">Đang giao dịch</h1>

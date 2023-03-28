@@ -16,6 +16,7 @@ import { getAllStaff } from "../../apis/user-module"
 import SetStatusPopup from "./SetStatusPopup"
 import { useTranslation } from "react-i18next"
 import ShowDetail from "../ShowDetail"
+import Page401 from "../401"
 
 function ManageStaff() {
   const { t } = useTranslation()
@@ -196,7 +197,9 @@ function ManageStaff() {
       enabled: !!userData,
     },
   ])
-  return (
+  return userData?.roleId !== 1 ? (
+    <Page401 />
+  ) : (
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2"></div>
