@@ -155,20 +155,20 @@ function SupplierDetail() {
   ) : (
     <div>
       <div className="bg-white block-border">
-        <div className="flex flex-wrap items-center justify-between">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="flex flex-wrap items-center justify-between md:flex-nowrap">
+          <div className="flex items-center w-full gap-3 mb-4">
             <GeneralIcon />
             <SmallTitle>{t("general_information")}</SmallTitle>
           </div>
           <PrimaryBtn
             onClick={handleEditSupplier}
-            className="bg-successBtn border-successBtn active:bg-greenDark w-[300px]"
+            className="bg-successBtn border-successBtn active:bg-greenDark max-w-[300px]"
           >
             {t("edit_supplier")}
           </PrimaryBtn>
         </div>
 
-        <div className="grid grid-cols-2 mt-5 gap-y-1">
+        <div className="grid grid-cols-2 gap-y-1">
           <div className="text-gray ">
             <SupplierStatus status={supplier?.status} />
           </div>
@@ -176,6 +176,7 @@ function SupplierDetail() {
           <SupplierInfo
             title={t("supplier_name")}
             data={supplier?.supplierName || "---"}
+            className="truncate-2-line"
           />
           <SupplierInfo
             title={t("phone_number")}
@@ -195,6 +196,8 @@ function SupplierDetail() {
                 .join(", ") || "---"
             }
           />
+        </div>
+        <div className="mt-3">
           <SupplierInfo title={t("note")} data={supplier?.note || "---"} />
         </div>
       </div>
@@ -234,11 +237,11 @@ function SupplierDetail() {
 
 export default SupplierDetail
 
-function SupplierInfo({ title = "", data = "" }) {
+function SupplierInfo({ title = "", data = "", className = "" }) {
   return (
     <div>
       <div className="text-gray ">{title}</div>
-      <div className="col-span-2 text-black">{data}</div>
+      <div className={`col-span-2 text-black ${className}`}>{data}</div>
     </div>
   )
 }

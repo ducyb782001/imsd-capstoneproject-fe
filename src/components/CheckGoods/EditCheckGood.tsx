@@ -466,7 +466,7 @@ function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
       setListDropdown([
         {
           measuredUnitId: 0,
-          measuredUnitName: data?.defaultMeasuredUnit,
+          measuredUnitName: data?.defaultMeasuredUnit || "---",
         },
         ...data?.measuredUnits,
       ])
@@ -474,7 +474,7 @@ function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
       if (test[0].measuredUnitId) {
         setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
       } else {
-        setDefaultMeasuredUnit(data?.defaultMeasuredUnit)
+        setDefaultMeasuredUnit(data?.defaultMeasuredUnit || "---")
       }
     }
   }, [data])

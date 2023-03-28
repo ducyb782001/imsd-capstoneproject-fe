@@ -17,7 +17,7 @@ function ChooseUnitImport({
   const listResult = search(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
-    if (listDropdown?.length > 0) {
+    if (listDropdown?.length > 1) {
       toggleOpen(!isOpen)
     }
   }

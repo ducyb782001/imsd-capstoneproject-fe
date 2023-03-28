@@ -42,7 +42,7 @@ function InputEmailForgot() {
       },
       onError: (data: any) => {
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        router.push("/check-reset-password-alert")
+        toast.error("Địa chỉ email không tồn tại")
       },
     },
   )

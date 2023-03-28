@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
+import ArrowDownIcon from "../icons/ArrowDownIcon"
 import EngFlagIcon from "../icons/EngFlagIcon"
 import VnFlagIcon from "../icons/VnFlagIcon"
 
@@ -68,6 +69,9 @@ function LanguageDropdown({ showing, changeLanguage, title = "" }) {
           <div className="flex items-center gap-2">
             <div>{showing?.logo}</div>
             <p className="text-base font-medium text-black">{showing?.name}</p>
+            <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+              <ArrowDownIcon color="#373737" />
+            </div>
           </div>
         </div>
       </div>
