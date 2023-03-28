@@ -40,6 +40,7 @@ interface Supplier {
 
 function EditSupplier() {
   const [supplier, setSupplier] = useState<Supplier>()
+
   const [supplierStatus, setSupplierStatus] = useState(true)
   const [disabled, setDisabled] = useState(false)
 
@@ -61,6 +62,17 @@ function EditSupplier() {
         if (supplierId) {
           const response = await getSupplierDetail(supplierId)
           setSupplier(response?.data)
+          const supplier = response?.data
+
+          // setSupplierDetail({
+          //   address: supplier?.address,
+          //   note: supplier?.note,
+          //   status: supplier?.status,
+          //   supplierEmail: supplier?.supplierEmail,
+          //   supplierId: supplier?.supplierId,
+          //   supplierName: supplier?.supplierName,
+          //   supplierPhone: supplier?.supplierPhone,
+          // })
 
           setCitySelected(response?.data?.city)
           setDistrictSelected(response?.dasta?.district)
@@ -180,10 +192,32 @@ function EditSupplier() {
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
+
+    // check null
+    const submittedData = {
+      address: supplier?.address,
+      note: supplier?.note,
+      status: supplier?.status,
+      supplierEmail: supplier?.supplierEmail,
+      supplierId: supplier?.supplierId,
+      supplierName: supplier?.supplierName,
+      supplierPhone: supplier?.supplierPhone,
+    }
+
+    if (supplier?.city) {
+      submittedData["city"] = supplier?.city
+    }
+
+    if (supplier?.district) {
+      submittedData["district"] = supplier?.district
+    }
+
+    if (supplier?.ward) {
+      submittedData["ward"] = supplier?.ward
+    }
+
     // @ts-ignore
-    editSupplierMutation.mutate({
-      ...supplier,
-    })
+    editSupplierMutation.mutate(submittedData)
   }
   const handleCancelEditSupplier = (event) => {
     router.push("/manage-suppliers")
