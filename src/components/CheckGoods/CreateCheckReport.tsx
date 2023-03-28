@@ -18,6 +18,7 @@ import { createStockTakeProduct } from "../../apis/stocktake-product-module"
 import ReasonDropdown from "./ReasonDropdown"
 import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
+import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -134,6 +135,8 @@ function CreateCheckReport() {
   const [productCheckObject, setProductCheckObject] = useState<any>()
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
+  const [submitted, setSubmitted] = useState(false)
+
   const [userData, setUserData] = useState<any>()
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -168,13 +171,9 @@ function CreateCheckReport() {
         const currentStock = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.inStock
-          ? undefined
-          : item.inStock
         const measuredUnitId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
-          ? undefined
-          : 0
         const note = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.note
@@ -199,6 +198,16 @@ function CreateCheckReport() {
         stocktakeNoteDetails: listProductCheck,
       })
     }
+    console.log(listProductCheck)
+
+    for (let index = 0; index < listProductCheck.length; index++) {
+      const product = listProductCheck[index]
+      if (product.actualStock === "" || product.actualStock === "undefined") {
+        setSubmitted(true)
+        return
+      }
+    }
+    setSubmitted(false)
   }, [listProductCheck])
 
   const router = useRouter()
@@ -285,19 +294,20 @@ function CreateCheckReport() {
               {t("create_check_title")}
             </h1>
           </div>
-          <div className="flex items-center justify-between gap-4">
+          {/* <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
               classNameBtn="w-[190px]"
               title={t("confirm_import")}
               handleClickSaveBtn={handleClickSaveBtn}
+              disabled={submitted}
             >
               {t("create_check_title")}
             </ConfirmPopup>
             <SecondaryBtn className="" onClick={handleClickOutBtn}>
               {t("exit")}
             </SecondaryBtn>
-          </div>
+          </div> */}
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
@@ -330,7 +340,7 @@ function CreateCheckReport() {
           />
         </div>
       </div>
-      <div className="!pb-20 mt-4 bg-white block-border">
+      <div className="mt-4 mb-10 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <CheckGoodIcon />
           <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
@@ -349,6 +359,14 @@ function CreateCheckReport() {
             data={listChosenProduct}
           />
         </div>
+        <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
+          title={t("confirm_import")}
+          handleClickSaveBtn={handleClickSaveBtn}
+          disabled={submitted}
+        >
+          {t("create_check_title")}
+        </ConfirmPopup>
       </div>
     </div>
   )
@@ -380,12 +398,19 @@ function RenderCurrentStock({ data, listProductCheck }) {
 }
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
+  console.log(listProductCheck)
+
   const [actualStock, setActualStock] = useState(data?.actualStock)
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductCheck
     const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, actualStock: value }
+      if (item.productId === data.productId && !!!item?.measuredUnitId) {
+        return { ...item, actualStock: value, currentStock: data?.inStock }
+      } else if (item.productId === data.productId && !!item?.measuredUnitId) {
+        const currentStockUnit = data?.measuredUnits?.filter(
+          (i) => i.measuredUnitId === item.measuredUnitId,
+        )[0].inStock
+        return { ...item, actualStock: value, currentStock: currentStockUnit }
       }
       return item
     })
