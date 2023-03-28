@@ -62,8 +62,8 @@ function DraffCheckGood() {
           accessor: (data: any) => (
             <div>
               {data?.measuredUnitId
-                ? data?.measuredUnitId
-                : data?.product?.defaultMeasuredUnit}
+                ? data?.measuredUnit?.measuredUnitName
+                : data?.defaultMeasuredUnit}
             </div>
           ),
         },
@@ -284,33 +284,3 @@ function DraffCheckGood() {
 }
 
 export default DraffCheckGood
-
-function NoteProduct({ data }) {
-  const { t } = useTranslation()
-
-  if (data.id == 1) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("other")}</p>
-      </div>
-    )
-  } else if (data.id == 2) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("damaged")}</p>
-      </div>
-    )
-  } else if (data.id == 3) {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">{t("return")}</p>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-center">---</p>
-      </div>
-    )
-  }
-}
