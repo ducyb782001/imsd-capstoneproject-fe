@@ -15,6 +15,7 @@ import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
+import { addNewType } from "../../../apis/type-good-module"
 
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
@@ -41,8 +42,8 @@ function AddTypePopup({ className = "", children }) {
   }
 
   const addTypeMutation = useMutation(
-    (type) => {
-      return axios.post(addTypeGoodUrl, type)
+    async (newType) => {
+      return await addNewType(newType)
     },
     {
       onSuccess: (data, error, variables) => {
