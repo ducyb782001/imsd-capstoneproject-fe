@@ -103,13 +103,13 @@ function MainNav({ userName = "", roleId = 3 }) {
   ]
 
   const mainMenu = [
-    {
-      id: 1,
-      name: t("dashboard"),
-      href: "/dashboard",
-      icon: <DashboardIcon />,
-      isActive: router.asPath.includes("/dashboard"),
-    },
+    // {
+    //   id: 1,
+    //   name: t("dashboard"),
+    //   href: "/dashboard",
+    //   icon: <DashboardIcon />,
+    //   isActive: router.asPath.includes("/dashboard"),
+    // },
     {
       id: 2,
       name: t("manageGoods"),
@@ -186,6 +186,7 @@ function MainNav({ userName = "", roleId = 3 }) {
         router.asPath.includes("/draff-check-good") ||
         router.asPath.includes("/check-good-detail") ||
         router.asPath.includes("/create-check-report"),
+      href: null,
     },
   ]
 
@@ -209,6 +210,15 @@ function MainNav({ userName = "", roleId = 3 }) {
           </div>
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
+            {(roleId === 1 || roleId === 2) && (
+              <MenuItem
+                key={1}
+                icon={<DashboardIcon />}
+                name={t("dashboard")}
+                href="/dashboard"
+                isActive={router.asPath.includes("/dashboard")}
+              />
+            )}
             {mainMenu &&
               mainMenu.map((i) => (
                 <MenuItem

@@ -204,6 +204,8 @@ function CreateExportGood() {
       })
 
       setListProductExport(list)
+    } else {
+      setTotalPriceSend(0)
     }
   }, [listChosenProduct])
 
@@ -235,7 +237,9 @@ function CreateExportGood() {
         if (!product.measuredUnitId) {
           if (
             new BigNumber(listProductExport[index]?.amount).isGreaterThan(
-              listChosenProduct[index].inStock,
+              listChosenProduct[index]?.inStock
+                ? listChosenProduct[index]?.inStock
+                : 0,
             )
           ) {
             setSubmitted(true)
@@ -245,9 +249,16 @@ function CreateExportGood() {
           const eachProduct = listChosenProduct[index].measuredUnits.filter(
             (i) => i.measuredUnitId === listProductExport[index].measuredUnitId,
           )[0]
+          const amountExportvalue = BigNumber(
+            listChosenProduct[index]?.inStock || 1,
+          )
+            .dividedBy(eachProduct?.measuredUnitValue || 1)
+            .decimalPlaces(0, BigNumber.ROUND_DOWN)
+            .toNumber()
+
           if (
             new BigNumber(listProductExport[index].amount).isGreaterThan(
-              eachProduct.inStock,
+              amountExportvalue,
             )
           ) {
             setSubmitted(true)
@@ -435,7 +446,7 @@ function CreateExportGood() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted}
+          disabled={submitted || listChosenProduct?.length === 0}
         >
           {t("add_export_title")}
         </ConfirmPopup>
@@ -474,10 +485,15 @@ function ListQuantitiveExport({
       if (!product[0]?.measuredUnitId) {
         setInStockData(data?.inStock)
       } else {
-        const inStockUnit = data?.measuredUnits?.filter(
+        const inStock = data?.inStock
+        const measuredUnitValue = data?.measuredUnits.filter(
           (i) => i.measuredUnitId === product[0].measuredUnitId,
-        )
-        setInStockData(inStockUnit[0].inStock)
+        )[0].measuredUnitValue
+        const showValue = BigNumber(inStock)
+          .dividedBy(measuredUnitValue || 1)
+          .decimalPlaces(0, BigNumber.ROUND_DOWN)
+          .toNumber()
+        setInStockData(showValue)
       }
     }
   }, [listProductExport])
@@ -529,6 +545,41 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
     }
   }, [costPrice])
 
+  const renderWarningPrice = () => {
+    const product = listProductExport?.filter(
+      (i) => i.productId === data?.productId,
+    )
+    if (!product[0]?.measuredUnitId) {
+      const importPrice = data?.costPrice
+      const checkLessPrice = new BigNumber(costPrice).isLessThan(
+        importPrice || 0,
+      )
+      return (
+        checkLessPrice && (
+          <p className="absolute text-xs text-dangerous">
+            Giá xuất nhỏ hơn giá nhập
+          </p>
+        )
+      )
+    } else {
+      const quantityUnit = data?.measuredUnits.filter(
+        (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+      )[0].measuredUnitValue
+
+      const checkLessPrice = new BigNumber(costPrice).isLessThan(
+        BigNumber(data?.costPrice || 1).multipliedBy(quantityUnit),
+      )
+
+      return (
+        checkLessPrice && (
+          <p className="absolute text-xs text-dangerous">
+            Giá xuất nhỏ hơn giá nhập
+          </p>
+        )
+      )
+    }
+  }
+
   return (
     <div className="w-[100px] relative">
       <PrimaryInput
@@ -541,13 +592,14 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
           setCostPrice(e.target.value)
         }}
       />
-      {new BigNumber(costPrice).isLessThan(
+      {/* {new BigNumber(costPrice).isLessThan(
         data?.costPrice ? data?.costPrice : 0,
       ) && (
         <p className="absolute text-xs text-dangerous">
           Giá xuất nhỏ hơn giá nhập
         </p>
-      )}
+      )} */}
+      {renderWarningPrice()}
     </div>
   )
 }

@@ -147,6 +147,7 @@ function CreateImportReport() {
   const [isLoadingSupplier, setIsloadingSupplier] = useState(true)
 
   const [userData, setUserData] = useState<any>()
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -208,12 +209,12 @@ function CreateImportReport() {
           discount: discount,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          )?.measuredUnitId,
         }
       })
       setListProductImport(list)
+    } else {
+      setTotalPriceSend(0)
     }
   }, [listChosenProduct])
 
@@ -423,6 +424,7 @@ function CreateImportReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={submitted || listChosenProduct?.length === 0}
         >
           Tạo hóa đơn nhập hàng
         </ConfirmPopup>
@@ -450,6 +452,40 @@ function ListQuantitiveImport({
     setListProductImport(newList)
   }
 
+  const renderWarningImport = () => {
+    const product = listProductImport?.filter(
+      (i) => i.productId === data?.productId,
+    )
+    if (!product[0]?.measuredUnitId) {
+      const overAmount = new BigNumber(quantity)
+        .plus(data?.inStock ? data?.inStock : 0)
+        .isGreaterThan(data?.maxStock)
+      return (
+        overAmount && (
+          <p className="absolute text-xs text-dangerous">
+            Số lượng nhập vượt định mức
+          </p>
+        )
+      )
+    } else {
+      const quantityUnit = data?.measuredUnits.filter(
+        (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+      )[0].measuredUnitValue
+
+      const overAmount = new BigNumber(quantity)
+        .multipliedBy(quantityUnit)
+        .plus(data?.inStock ? data?.inStock : 0)
+        .isGreaterThan(data?.maxStock)
+
+      return (
+        overAmount && (
+          <p className="absolute text-xs text-dangerous">
+            Số lượng nhập vượt định mức
+          </p>
+        )
+      )
+    }
+  }
   return (
     <div className="relative">
       <PrimaryInput
@@ -463,13 +499,7 @@ function ListQuantitiveImport({
           handleOnChangeAmount(e.target.value, data)
         }}
       />
-      {new BigNumber(quantity)
-        .plus(data?.inStock ? data?.inStock : 0)
-        .isGreaterThan(data?.maxStock) && (
-        <p className="absolute text-xs text-dangerous">
-          Số lượng nhập vượt định mức
-        </p>
-      )}
+      {renderWarningImport()}
     </div>
   )
 }
