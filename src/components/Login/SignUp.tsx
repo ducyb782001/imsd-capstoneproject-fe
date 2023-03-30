@@ -12,16 +12,14 @@ import { toast } from "react-toastify"
 import axios from "axios"
 import { useMutation } from "react-query"
 import { signUpUrl } from "../../constants/APIConfig"
-import { passRegex } from "../../constants/constants"
-import { emailRegex } from "../../constants/constants"
 import InfoIcon from "../icons/InfoIcon"
 import Tooltip from "../ToolTip"
 import { isValidGmail } from "../../hooks/useValidator"
 import { checkPassword, checkSamePassword } from "../../lib/check-password"
+import { signUpUser } from "../../apis/user-module"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function Signup() {
-  const [disabled, setDisabled] = useState(true)
   const [userEmail, setUserEmail] = useState("")
   const [userPassword, setUserPassword] = useState("")
   const [userPassword2, setUserPassword2] = useState("")
@@ -44,8 +42,8 @@ function Signup() {
     })
   }
   const signUpMutation = useMutation(
-    (account) => {
-      return axios.post(signUpUrl, account)
+    async (newUser) => {
+      return await signUpUser(newUser)
     },
     {
       onSuccess: (data, error, variables) => {
@@ -56,10 +54,8 @@ function Signup() {
         }, 300)
       },
       onError: (data: any) => {
-        console.log("login error", data)
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        toast.success("Đăng kí thành công!")
-        router.push("/confirm-email")
+        toast.error("Something when wrong")
       },
     },
   )

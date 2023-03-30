@@ -9,32 +9,64 @@ import { LeftBlock } from "./Login"
 import { useMutation } from "react-query"
 import axios from "axios"
 import { confirmEmailUrl } from "../../constants/APIConfig"
+import { toast } from "react-toastify"
+import { verifyAccount } from "../../apis/user-module"
 
-function VerifySuccessful(props) {
-  const [current, setCurrent] = useState(props.current)
-  const [param, setParam] = useState("")
+function VerifySuccessful() {
+  // const [param, setParam] = useState("")
 
+  // const router = useRouter()
+
+  // const handleLogin = (event) => {
+  //   router.push("/login")
+  // }
+  // const { token } = router.query
+
+  // useEffect(() => {
+  //   var parameter = token + ""
+  //   setParam(confirmEmailUrl + parameter)
+  // })
+
+  // useEffect(() => {
+  //   if (param != undefined) {
+  //     resetPassMutation.mutate()
+  //   }
+  // }, [param])
+
+  // const resetPassMutation = useMutation(() => {
+  //   return axios.post(param)
+  // })
   const router = useRouter()
-
-  const handleLogin = (event) => {
-    router.push("/login")
-  }
   const { token } = router.query
 
   useEffect(() => {
-    var parameter = token + ""
-    setParam(confirmEmailUrl + parameter)
-  })
-
-  useEffect(() => {
-    if (param != undefined) {
-      resetPassMutation.mutate()
+    if (token) {
+      verifyToken.mutate(token)
     }
-  }, [param])
+  }, [token])
 
-  const resetPassMutation = useMutation(() => {
-    return axios.post(param)
-  })
+  const verifyToken = useMutation(
+    async (token: any) => {
+      return await verifyAccount({ token: token })
+    },
+    {
+      onSuccess: (data, error, variables) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          console.log("Verify Success")
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data?.message[0])
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                "Something went wrong",
+            )
+          }
+        }
+      },
+    },
+  )
 
   return (
     <div className="relative">
@@ -57,7 +89,7 @@ function VerifySuccessful(props) {
             </div>
             <div className="flex flex-col items-center justify-center w-8/12 h-40 bg-white rounded-md mt-7">
               <PrimaryBtn
-                onClick={handleLogin}
+                onClick={() => router.push("/login")}
                 disabled={false}
                 className="w-4/6 "
               >
