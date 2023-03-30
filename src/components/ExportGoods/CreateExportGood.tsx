@@ -204,6 +204,8 @@ function CreateExportGood() {
       })
 
       setListProductExport(list)
+    } else {
+      setTotalPriceSend(0)
     }
   }, [listChosenProduct])
 
@@ -235,25 +237,15 @@ function CreateExportGood() {
         if (!product.measuredUnitId) {
           if (
             new BigNumber(listProductExport[index]?.amount).isGreaterThan(
-              listChosenProduct[index].inStock,
+              listChosenProduct[index]?.inStock
+                ? listChosenProduct[index]?.inStock
+                : 0,
             )
           ) {
             setSubmitted(true)
             return
           }
         } else {
-          // else {
-          //   const inStock = data?.inStock
-          //   const measuredUnitValue = data?.measuredUnits.filter(
-          //     (i) => i.measuredUnitId === product[0].measuredUnitId,
-          //   )[0].measuredUnitValue
-          //   const showValue = BigNumber(inStock)
-          //     .dividedBy(measuredUnitValue)
-          //     .decimalPlaces(0, BigNumber.ROUND_DOWN)
-          //     .toNumber()
-          //   setInStockData(showValue)
-          // }
-
           const eachProduct = listChosenProduct[index].measuredUnits.filter(
             (i) => i.measuredUnitId === listProductExport[index].measuredUnitId,
           )[0]
@@ -454,7 +446,7 @@ function CreateExportGood() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted}
+          disabled={submitted || listChosenProduct?.length === 0}
         >
           {t("add_export_title")}
         </ConfirmPopup>

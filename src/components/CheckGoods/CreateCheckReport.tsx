@@ -355,7 +355,7 @@ function CreateCheckReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("confirm_import")}
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted}
+          disabled={submitted || listChosenProduct?.length === 0}
         >
           {t("create_check_title")}
         </ConfirmPopup>

@@ -147,6 +147,7 @@ function CreateImportReport() {
   const [isLoadingSupplier, setIsloadingSupplier] = useState(true)
 
   const [userData, setUserData] = useState<any>()
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -208,12 +209,12 @@ function CreateImportReport() {
           discount: discount,
           measuredUnitId: listProductImport.find(
             (i) => i.productId == item.productId,
-          )?.measuredUnitId
-            ? undefined
-            : 0,
+          )?.measuredUnitId,
         }
       })
       setListProductImport(list)
+    } else {
+      setTotalPriceSend(0)
     }
   }, [listChosenProduct])
 
@@ -423,6 +424,7 @@ function CreateImportReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
           handleClickSaveBtn={handleClickSaveBtn}
+          disabled={submitted || listChosenProduct?.length === 0}
         >
           Tạo hóa đơn nhập hàng
         </ConfirmPopup>

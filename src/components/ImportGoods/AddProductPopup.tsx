@@ -180,6 +180,7 @@ function AddProductPopup({ className = "" }) {
                         Tên sản phẩm <span className="text-red-500">*</span>
                       </p>
                     }
+                    value={product?.productName || ""}
                     onChange={(e) => {
                       setProduct({ ...product, productName: e.target.value })
                     }}
@@ -228,6 +229,7 @@ function AddProductPopup({ className = "" }) {
                           </Tooltip>
                         </div>
                       }
+                      value={product?.productCode ? product?.productCode : ""}
                       onChange={(e) => {
                         setProduct({ ...product, productCode: e.target.value })
                       }}
@@ -249,13 +251,19 @@ function AddProductPopup({ className = "" }) {
                         </div>
                       }
                       placeholder="Nhập tay hoặc dùng máy quét"
+                      value={product?.barcode ? product?.barcode : ""}
                       onChange={(e) => {
-                        setProduct({ ...product, productCode: e.target.value })
+                        setProduct({ ...product, barcode: e.target.value })
                       }}
                     />
                     <PrimaryInput
                       title="Đơn vị tính"
                       placeholder="Nhập đơn vị tính"
+                      value={
+                        product?.defaultMeasuredUnit
+                          ? product?.defaultMeasuredUnit
+                          : ""
+                      }
                       onChange={(e) => {
                         setProduct({
                           ...product,
@@ -267,6 +275,7 @@ function AddProductPopup({ className = "" }) {
                     <PrimaryInput
                       title="Giá nhập"
                       type="number"
+                      value={product?.costPrice ? product?.costPrice : ""}
                       onChange={(e) => {
                         setProduct({ ...product, costPrice: e.target.value })
                       }}
@@ -275,6 +284,7 @@ function AddProductPopup({ className = "" }) {
                     <PrimaryInput
                       title="Giá bán"
                       type="number"
+                      value={product?.sellingPrice ? product?.sellingPrice : ""}
                       onChange={(e) => {
                         setProduct({ ...product, sellingPrice: e.target.value })
                       }}
