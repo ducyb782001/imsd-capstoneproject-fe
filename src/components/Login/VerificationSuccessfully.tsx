@@ -9,6 +9,7 @@ import { LeftBlock } from "./Login"
 import { useMutation } from "react-query"
 import axios from "axios"
 import { confirmEmailUrl } from "../../constants/APIConfig"
+
 function VerifySuccessful(props) {
   const [current, setCurrent] = useState(props.current)
   const [param, setParam] = useState("")
