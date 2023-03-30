@@ -5,7 +5,6 @@ import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import AddTypePopup from "./ManageTypeGoods/AddTypePopup"
 import { useTranslation } from "react-i18next"
-import AddTypeProductPopup from "./ManageTypeGoods/AddTypeProductPopup"
 import AddPlusIcon from "../icons/AddPlusIcon"
 
 function AddChooseTypeDropdown({

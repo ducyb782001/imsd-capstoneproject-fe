@@ -1,4 +1,5 @@
 import {
+  addTypeGoodUrl,
   allTypeGoodUrl,
   editTypeGoodUrl,
   getTypeGoodDetailUrl,
@@ -20,11 +21,11 @@ export const getListTypeGood = (searchObj) => {
   })
 }
 
-//   export const addNewProduct = (newProduct) =>
-//     postAPI({
-//       url: postProductUrl,
-//       data: newProduct,
-//     })
+export const addNewType = (newType) =>
+  postAPI({
+    url: addTypeGoodUrl,
+    data: newType,
+  })
 
 export const getTypeGoodDetail = (typeId) => {
   return requestAPI({
