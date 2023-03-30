@@ -58,21 +58,14 @@ function CreateCheckReport() {
         {
           Header: t("unit"),
           accessor: (data: any) => (
-            <ListUnitImport
-              data={data}
-              listProductCheck={listProductCheck}
-              setListProductCheck={setListProductCheck}
-            />
+            <p>
+              {data?.defaultMeasuredUnit ? data?.defaultMeasuredUnit : "---"}
+            </p>
           ),
         },
         {
           Header: t("current_stock"),
-          accessor: (data: any) => (
-            <RenderCurrentStock
-              data={data}
-              listProductCheck={listProductCheck}
-            />
-          ),
+          accessor: (data: any) => <RenderCurrentStock data={data} />,
         },
         {
           Header: t("actual_stock"),
@@ -198,7 +191,6 @@ function CreateCheckReport() {
         stocktakeNoteDetails: listProductCheck,
       })
     }
-    console.log(listProductCheck)
 
     for (let index = 0; index < listProductCheck.length; index++) {
       const product = listProductCheck[index]
@@ -374,43 +366,17 @@ function CreateCheckReport() {
 
 export default CreateCheckReport
 
-function RenderCurrentStock({ data, listProductCheck }) {
-  const [inStockData, setInStockData] = useState<any>()
-
-  useEffect(() => {
-    if (listProductCheck) {
-      const product = listProductCheck.filter(
-        (i) => i.productId === data?.productId,
-      )
-
-      if (!product[0]?.measuredUnitId) {
-        setInStockData(data?.inStock)
-      } else {
-        const currentStockUnit = data?.measuredUnits?.filter(
-          (i) => i.measuredUnitId === product[0].measuredUnitId,
-        )
-        setInStockData(currentStockUnit[0].inStock)
-      }
-    }
-  }, [listProductCheck])
-
-  return <div className="text-center">{inStockData}</div>
+function RenderCurrentStock({ data }) {
+  return <div className="text-center">{data?.inStock ? data?.inStock : 0}</div>
 }
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
-  console.log(listProductCheck)
-
   const [actualStock, setActualStock] = useState(data?.actualStock)
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductCheck
     const newList = list.map((item) => {
-      if (item.productId === data.productId && !!!item?.measuredUnitId) {
+      if (item.productId === data.productId) {
         return { ...item, actualStock: value, currentStock: data?.inStock }
-      } else if (item.productId === data.productId && !!item?.measuredUnitId) {
-        const currentStockUnit = data?.measuredUnits?.filter(
-          (i) => i.measuredUnitId === item.measuredUnitId,
-        )[0].inStock
-        return { ...item, actualStock: value, currentStock: currentStockUnit }
       }
       return item
     })
@@ -471,50 +437,6 @@ function CountDeviated({ data, listProductCheck }) {
     <div className="px-2 py-2 text-center text-white rounded-md bg-successBtn">
       {deviated}
     </div>
-  )
-}
-
-function ListUnitImport({ data, listProductCheck, setListProductCheck }) {
-  const [listDropdown, setListDropdown] = useState([])
-  const [unitChosen, setUnitChosen] = useState<any>()
-  const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-
-  useEffect(() => {
-    if (data) {
-      setListDropdown([
-        {
-          measuredUnitId: 0,
-          measuredUnitName: data?.defaultMeasuredUnit || "---",
-        },
-        ...data?.measuredUnits,
-      ])
-      setDefaultMeasuredUnit(data?.defaultMeasuredUnit || "---")
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (unitChosen) {
-      const list = listProductCheck
-      const newList = list.map((item) => {
-        if (item.productId == data.productId) {
-          return {
-            ...item,
-            measuredUnitId: unitChosen?.measuredUnitId,
-          }
-        }
-        return item
-      })
-      setListProductCheck(newList)
-    }
-  }, [unitChosen])
-
-  return (
-    <ChooseUnitImport
-      listDropdown={listDropdown}
-      showing={unitChosen}
-      setShowing={setUnitChosen}
-      textDefault={defaultMeasuredUnit}
-    />
   )
 }
 

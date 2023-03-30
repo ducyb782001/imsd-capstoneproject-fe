@@ -450,6 +450,40 @@ function ListQuantitiveImport({
     setListProductImport(newList)
   }
 
+  const renderWarningImport = () => {
+    const product = listProductImport?.filter(
+      (i) => i.productId === data?.productId,
+    )
+    if (!product[0]?.measuredUnitId) {
+      const overAmount = new BigNumber(quantity)
+        .plus(data?.inStock ? data?.inStock : 0)
+        .isGreaterThan(data?.maxStock)
+      return (
+        overAmount && (
+          <p className="absolute text-xs text-dangerous">
+            Số lượng nhập vượt định mức
+          </p>
+        )
+      )
+    } else {
+      const quantityUnit = data?.measuredUnits.filter(
+        (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+      )[0].measuredUnitValue
+
+      const overAmount = new BigNumber(quantity)
+        .multipliedBy(quantityUnit)
+        .plus(data?.inStock ? data?.inStock : 0)
+        .isGreaterThan(data?.maxStock)
+
+      return (
+        overAmount && (
+          <p className="absolute text-xs text-dangerous">
+            Số lượng nhập vượt định mức
+          </p>
+        )
+      )
+    }
+  }
   return (
     <div className="relative">
       <PrimaryInput
@@ -463,13 +497,7 @@ function ListQuantitiveImport({
           handleOnChangeAmount(e.target.value, data)
         }}
       />
-      {new BigNumber(quantity)
-        .plus(data?.inStock ? data?.inStock : 0)
-        .isGreaterThan(data?.maxStock) && (
-        <p className="absolute text-xs text-dangerous">
-          Số lượng nhập vượt định mức
-        </p>
-      )}
+      {renderWarningImport()}
     </div>
   )
 }
