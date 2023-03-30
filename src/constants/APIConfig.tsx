@@ -20,7 +20,7 @@ export const resetPassword = `${baseUrl}/Authentication/ResetPassword?token=`
 
 export const signUpUrl = `${baseUrl}/Authentication/SignUp`
 
-export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail?token=`
+export const confirmEmailUrl = `${baseUrl}/Authentication/ConfirmEmail`
 
 export const logoutUrl = `${baseUrl}/Logout`
 

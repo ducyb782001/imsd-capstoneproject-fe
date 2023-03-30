@@ -1,9 +1,11 @@
 import {
   activeStaffUrl,
+  confirmEmailUrl,
   createStaffUrl,
   deactiveStaffUrl,
   getStaffDetailUrl,
   listStaffUrl,
+  signUpUrl,
   updateExportProductUrl,
   updateStaffUrl,
 } from "../constants/APIConfig"
@@ -63,5 +65,19 @@ export const updateProfile = (updatedStaff) => {
   return patchAPI({
     url: `${updateStaffUrl}`,
     data: updatedStaff,
+  })
+}
+
+export const signUpUser = (newUser) => {
+  return postAPI({
+    url: signUpUrl,
+    data: newUser,
+  })
+}
+
+export const verifyAccount = (queryObj) => {
+  const queryString = convertObjectToQueryString(queryObj)
+  return postAPI({
+    url: `${confirmEmailUrl}${queryString}`,
   })
 }
