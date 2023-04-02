@@ -26,6 +26,8 @@ import SecondaryBtn from "../SecondaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import DeleteDetail from "../DeleteDetail"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -76,7 +78,7 @@ function ImportReportEdit() {
           Header: t("unit"),
           accessor: (data: any) => (
             <ListUnitImport
-              data={data?.product}
+              data={data}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
             />
@@ -119,17 +121,17 @@ function ImportReportEdit() {
         },
         {
           Header: " ",
-          accessor: (data: any, index) => (
+          accessor: (data: any) => (
             <div
               className="cursor-pointer"
               onClick={() => {
                 let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
+                  (i) => i?.productId !== data?.productId,
                 )
                 setListChosenProduct(result)
               }}
             >
-              <XIcons />
+              <DeleteDetail />
             </div>
           ),
         },
@@ -196,7 +198,10 @@ function ImportReportEdit() {
         }
       })
       setListProductImport(list)
+    } else {
+      setTotalPriceSend(0)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {
@@ -249,10 +254,19 @@ function ImportReportEdit() {
   )
 
   const handleClickUpdateBtn = async (event) => {
+    event?.preventDefault()
+
+    const count = countUndefinedOrEmptyAmount(listProductImport)
+
+    if (count > 0) {
+      toast.error(
+        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
+      )
+      return
+    }
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    event?.preventDefault()
     await updateImportMutation.mutate({
       ...productImportObject,
     })
@@ -266,11 +280,12 @@ function ImportReportEdit() {
         const detailReport = response?.data
         setListChosenProduct(detailReport?.importOrderDetails)
         setListProductImport(detailReport?.importOrderDetails)
+
         setProductImportObject({
           importId: detailReport?.importId,
           importCode: detailReport?.importCode,
-          userId: detailReport?.userId,
-          supplierId: detailReport?.supplierId,
+          userId: detailReport?.user?.userId,
+          supplierId: detailReport?.supplier?.supplierId,
           importOrderDetails: detailReport?.importOrderDetails,
           note: detailReport?.note,
         })
@@ -344,6 +359,7 @@ function ImportReportEdit() {
                 classNameBtn="w-[120px]"
                 title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
+                disabled={listChosenProduct?.length === 0}
               >
                 {t("save")}
               </ConfirmPopup>
@@ -459,33 +475,115 @@ function ListQuantitiveImport({
     setListProductImport(newList)
   }
 
+  const renderWarningImport = () => {
+    if (data?.product) {
+      const product = listProductImport?.filter(
+        (i) => i.productId === data?.product?.productId,
+      )
+      if (!product[0]?.measuredUnitId) {
+        const overAmount = new BigNumber(quantity)
+          .plus(data?.product?.inStock ? data?.product?.inStock : 0)
+          .isGreaterThan(data?.product?.maxStock)
+        return (
+          overAmount && (
+            <p className="absolute text-xs text-dangerous">
+              Số lượng nhập vượt định mức
+            </p>
+          )
+        )
+      } else {
+        const quantityUnit = data?.product?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+        )[0].measuredUnitValue
+
+        const overAmount = new BigNumber(quantity)
+          .multipliedBy(quantityUnit)
+          .plus(data?.product?.inStock ? data?.product?.inStock : 0)
+          .isGreaterThan(data?.product?.maxStock)
+
+        return (
+          overAmount && (
+            <p className="absolute text-xs text-dangerous">
+              Số lượng nhập vượt định mức
+            </p>
+          )
+        )
+      }
+    } else if (data?.productName) {
+      const product = listProductImport?.filter(
+        (i) => i.productId === data?.productId,
+      )
+      if (!product[0]?.measuredUnitId) {
+        const overAmount = new BigNumber(quantity)
+          .plus(data?.inStock ? data?.inStock : 0)
+          .isGreaterThan(data?.maxStock)
+        return (
+          overAmount && (
+            <p className="absolute text-xs text-dangerous">
+              Số lượng nhập vượt định mức
+            </p>
+          )
+        )
+      } else {
+        const quantityUnit = data?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+        )[0].measuredUnitValue
+
+        const overAmount = new BigNumber(quantity)
+          .multipliedBy(quantityUnit)
+          .plus(data?.inStock ? data?.inStock : 0)
+          .isGreaterThan(data?.maxStock)
+
+        return (
+          overAmount && (
+            <p className="absolute text-xs text-dangerous">
+              Số lượng nhập vượt định mức
+            </p>
+          )
+        )
+      }
+    }
+  }
+
   return (
-    <PrimaryInput
-      className="w-[60px]"
-      type="number"
-      placeholder="0"
-      value={quantity ? quantity : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setQuantity(e.target.value)
-        handleOnChangeAmount(e.target.value, data)
-      }}
-    />
+    <div className="relative">
+      <PrimaryInput
+        className="w-[60px]"
+        type="number"
+        placeholder="0"
+        value={quantity ? quantity : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          setQuantity(e.target.value)
+          handleOnChangeAmount(e.target.value, data)
+        }}
+      />
+      {renderWarningImport()}
+    </div>
   )
 }
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState(data?.costPrice)
-  const handleOnChangeAmount = (value) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, costPrice: value }
-      }
-      return item
-    })
-    setListProductImport(newList)
-  }
+  const [costPrice, setCostPrice] = useState()
+
+  useEffect(() => {
+    if (data) {
+      setCostPrice(data?.costPrice)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (costPrice) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, costPrice: costPrice }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [costPrice])
 
   return (
     <PrimaryInput
@@ -496,7 +594,6 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       onChange={(e) => {
         e.stopPropagation()
         setCostPrice(e.target.value)
-        handleOnChangeAmount(e.target.value)
       }}
     />
   )
@@ -569,9 +666,29 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
+  console.log(123, data, listProductImport)
 
   useEffect(() => {
-    if (data) {
+    if (data?.product) {
+      const list = listProductImport
+      setListDropdown([
+        {
+          measuredUnitId: 0,
+          measuredUnitName: data?.product?.defaultMeasuredUnit || "---",
+        },
+        ...data?.product?.measuredUnits,
+      ])
+      const test = list.filter((i) => i?.productId === data?.product?.productId)
+      if (test[0].measuredUnitId) {
+        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
+      } else {
+        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit || "---")
+      }
+    }
+  }, [data?.product])
+
+  useEffect(() => {
+    if (data?.productName) {
       const list = listProductImport
       setListDropdown([
         {
@@ -580,17 +697,24 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
         },
         ...data?.measuredUnits,
       ])
-      const test = list.filter((i) => i?.productId === data?.productId)
-      if (test[0].measuredUnitId) {
-        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
-      } else {
-        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit || "---")
-      }
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit || "---")
     }
-  }, [data])
+  }, [data?.productName])
 
   useEffect(() => {
-    if (unitChosen) {
+    if (unitChosen && data?.product) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data?.product.productId) {
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+          }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    } else if (unitChosen && data?.productName) {
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {

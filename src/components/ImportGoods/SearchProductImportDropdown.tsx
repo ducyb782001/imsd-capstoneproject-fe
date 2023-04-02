@@ -137,7 +137,10 @@ export default SearchProductImportDropdown
 function DropDownItem({ data, setShowing }) {
   return (
     <div
-      onClick={() => setShowing(data)}
+      onClick={(e) => {
+        e.preventDefault()
+        setShowing(data)
+      }}
       className="w-full flex justify-between px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
       <div className="flex gap-2">

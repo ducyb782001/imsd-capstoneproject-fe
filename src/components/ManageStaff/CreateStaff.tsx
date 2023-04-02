@@ -17,6 +17,8 @@ import { createStaff } from "../../apis/user-module"
 import router from "next/router"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
+import { checkPassword } from "../../lib/check-password"
+import { isValidPhoneNumber } from "../../hooks/useValidator"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -26,29 +28,10 @@ function CreateStaff() {
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
-
-  useEffect(() => {
-    setStaffAccountObject({
-      ...staffAccountObject,
-      userId: 0,
-      password: "123456aA@",
-      roleId: 3,
-      status: true,
-      gender: true,
-    })
-  }, [])
-
-  useEffect(() => {
-    if (gender) {
-      setStaffAccountObject({
-        ...staffAccountObject,
-        gender: gender.id,
-      })
-    }
-  }, [gender])
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const [selectRole, setSelectRole] = useState({
-    id: 2,
+    id: 3,
     value: t("seller"),
   })
 
@@ -62,6 +45,25 @@ function CreateStaff() {
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
+
+  useEffect(() => {
+    if (gender) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        gender: gender?.id,
+      })
+    }
+  }, [gender])
+
+  useEffect(() => {
+    if (selectRole) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        roleId: selectRole.id,
+      })
+    }
+  }, [selectRole])
+
   const createStaffMutation = useMutation(
     async (importProduct) => {
       return await createStaff(importProduct)
@@ -91,6 +93,18 @@ function CreateStaff() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+
+    const submittedData = { userId: 0, status: true, ...staffAccountObject }
+    if (!staffAccountObject?.roleId) {
+      submittedData["roleId"] = 3
+    }
+    if (!staffAccountObject?.password) {
+      submittedData["password"] = "123456aA"
+    }
+    if (staffAccountObject?.gender === undefined) {
+      submittedData["gender"] = true
+    }
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
@@ -99,7 +113,7 @@ function CreateStaff() {
   const handleOut = (event) => {
     router.push("/manage-staff")
   }
-  console.log(staffAccountObject)
+  const canChangePassword = checkPassword(staffAccountObject?.password)
 
   return (
     <div>
@@ -121,9 +135,9 @@ function CreateStaff() {
               <SelectRoleDropdown
                 title={t("staff_position")}
                 listDropdown={[
-                  { id: 1, value: t("store_keeper") },
+                  { id: 2, value: t("store_keeper") },
                   {
-                    id: 2,
+                    id: 3,
                     value: t("seller"),
                   },
                 ]}
@@ -157,36 +171,51 @@ function CreateStaff() {
                   })
                 }}
               />
-              <PasswordInput
-                title={
-                  <div className="flex gap-1">
-                    <h1>{t("password")}</h1>
-                    <Tooltip content={<div>{t("password_default")}</div>}>
-                      <InfoIcon />
-                    </Tooltip>
-                  </div>
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    password: e.target.value,
-                  })
-                }}
-                placeholder={t("enter_password_placeholder")}
-              />
+              <div>
+                <PasswordInput
+                  title={
+                    <div className="flex gap-1">
+                      <h1>{t("password")}</h1>
+                      <Tooltip content={<div>{t("password_default")}</div>}>
+                        <InfoIcon />
+                      </Tooltip>
+                    </div>
+                  }
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      password: e.target.value,
+                    })
+                  }}
+                  placeholder={t("enter_password_placeholder")}
+                />
+                {!canChangePassword && staffAccountObject?.password && (
+                  <p className="mt-1 text-sm text-red-500">
+                    * Password must be at least 8 characters with at least 1
+                    Upper Case, 1 lower case, 1 special character and 1 numeric
+                    character
+                  </p>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
-              <PrimaryInput
-                title={t("phone_number")}
-                placeholder={t("enter_number")}
-                type="number"
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    phone: e.target.value,
-                  })
-                }}
-              />
+              <div>
+                <PrimaryInput
+                  title={t("phone_number")}
+                  placeholder={t("enter_number")}
+                  type="number"
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      phone: e.target.value,
+                    })
+                  }}
+                />
+                {staffAccountObject?.phone &&
+                  !!!isValidPhoneNumber(staffAccountObject?.phone) && (
+                    <p className="text-red-500">Sai định dạng</p>
+                  )}
+              </div>
               <SelectGenderDropdown
                 title={t("gender")}
                 textDefault={t("male")}
@@ -206,9 +235,9 @@ function CreateStaff() {
                     staffAccountObject?.birthDate
                       ? format(
                           new Date(staffAccountObject?.birthDate),
-                          "dd/MM/yyyy",
+                          "yyyy-MM-dd",
                         )
-                      : ""
+                      : format(Date.now(), "yyyy-MM-dd")
                   }
                   onChange={(e) => {
                     setStaffAccountObject({
@@ -280,6 +309,13 @@ function CreateStaff() {
                   classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
                   title={t("confirm_create_staff")}
                   handleClickSaveBtn={handleClickSaveBtn}
+                  disabled={
+                    isSubmitted ||
+                    !!!staffAccountObject?.userCode ||
+                    (staffAccountObject?.phone &&
+                      !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
+                    (!canChangePassword && staffAccountObject?.password)
+                  }
                 >
                   {t("save")}
                 </ConfirmPopup>

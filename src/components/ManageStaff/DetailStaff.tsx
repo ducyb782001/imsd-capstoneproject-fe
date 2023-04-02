@@ -22,6 +22,7 @@ import Switch from "react-switch"
 import DetailStaffSkeleton from "./DetailStaffSkeleton"
 import GeneralIcon from "../icons/GeneralIcon"
 import PasswordIcon from "../icons/PasswordIcon"
+import { isValidPhoneNumber } from "../../hooks/useValidator"
 
 function DetailStaff() {
   const { t } = useTranslation()
@@ -249,24 +250,30 @@ function DetailStaff() {
               />
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-3">
-              <PrimaryInput
-                title={t("phone_number")}
-                placeholder={t("enter_number")}
-                type="number"
-                value={
-                  staffAccountObject?.phone ? staffAccountObject?.phone : ""
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    phone: e.target.value,
-                  })
-                }}
-              />
+              <div>
+                <PrimaryInput
+                  title={t("phone_number")}
+                  placeholder={t("enter_number")}
+                  type="number"
+                  value={
+                    staffAccountObject?.phone ? staffAccountObject?.phone : ""
+                  }
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      phone: e.target.value,
+                    })
+                  }}
+                />
+                {staffAccountObject?.phone &&
+                  !!!isValidPhoneNumber(staffAccountObject?.phone) && (
+                    <p className="text-red-500">Sai định dạng</p>
+                  )}
+              </div>
               <SelectGenderDropdown
                 title={t("gender")}
                 textDefault={
-                  staffAccountObject?.gender == true ? t("male") : t("gender")
+                  staffAccountObject?.gender ? t("male") : t("female")
                 }
                 listDropdown={[
                   { id: true, value: "Nam" },
@@ -341,7 +348,14 @@ function DetailStaff() {
             </div>
           </div>
         </div>
-        <PrimaryBtn className="max-w-[182px] mt-6" onClick={handleClickSaveBtn}>
+        <PrimaryBtn
+          className="max-w-[182px] mt-6"
+          onClick={handleClickSaveBtn}
+          disabled={
+            staffAccountObject?.phone &&
+            !!!isValidPhoneNumber(staffAccountObject?.phone)
+          }
+        >
           {t("save")}
         </PrimaryBtn>
       </div>
