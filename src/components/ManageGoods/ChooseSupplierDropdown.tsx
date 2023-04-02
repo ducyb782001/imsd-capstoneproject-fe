@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
+import { searchBySupplierName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import { useTranslation } from "react-i18next"
@@ -16,7 +16,7 @@ function ChooseSupplierDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+  const listResult = searchBySupplierName(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {
@@ -76,9 +76,7 @@ function ChooseSupplierDropdown({
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <div className="flex items-center gap-1">
-            <p className="text-gray">
-              {showing?.supplierName || showing || textDefault}
-            </p>
+            <p className="text-gray">{textDefault}</p>
           </div>
           <div className={`${isOpen && "rotate-180"} smooth-transform`}>
             <ArrowDownIcon color="#373737" />

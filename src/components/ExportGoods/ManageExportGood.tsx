@@ -100,7 +100,6 @@ function ManageExportGoods() {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
       setListFilter([
-        ...listFilter,
         {
           key: "supId",
           applied: t("supplier"),
@@ -114,7 +113,6 @@ function ManageExportGoods() {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
       setListFilter([
-        ...listFilter,
         {
           key: "state",
           applied: t("status"),
@@ -151,38 +149,21 @@ function ManageExportGoods() {
         queryParams,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getAllExportProduct({
-            code: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListExportProduct(response?.data)
+        setIsLoadingListExport(true)
 
-          const exportFile = await getListImportProduct({
-            code: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListImportProductExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getAllExportProduct({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListExportProduct(response?.data)
-          setIsLoadingListExport(response?.data?.isLoading)
-
-          //-----------
-
-          return response?.data
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParams,
         }
+        if (debouncedSearchValue) {
+          queryObj["code"] = debouncedSearchValue
+        }
+        const response = await getAllExportProduct(queryObj)
+        setListExportProduct(response?.data)
+        setIsLoadingListExport(false)
+
+        return response?.data
       },
     },
   ])

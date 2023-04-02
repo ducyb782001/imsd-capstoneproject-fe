@@ -122,41 +122,20 @@ function ManageSuppliers({ ...props }) {
         queryParams,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getListSupplier({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListSupplier(response?.data)
-
-          const exportFile = await getListExportSupplier({
-            search: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListSupplierExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getListSupplier({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListSupplier(response?.data)
-          setIsLoadingListSupplier(response?.data?.isLoading)
-
-          const exportFile = await getListExportSupplier({})
-          setListSupplierExport(exportFile?.data)
-
-          //-----------
-
-          return response?.data
+        setIsLoadingListSupplier(true)
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParams,
         }
+        if (debouncedSearchValue) {
+          queryObj["search"] = debouncedSearchValue
+        }
+        const response = await getListSupplier(queryObj)
+        setListSupplier(response?.data)
+        setIsLoadingListSupplier(false)
+
+        return response?.data
       },
     },
   ])

@@ -90,11 +90,14 @@ function ManageStaff() {
   const [roleSelected, setRoleSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
-  const [queryParams, setQueryParams] = useState<any>({})
+  const [queryParamsRole, setQueryParamsRole] = useState<any>({})
+  const [queryParamsStatus, setQueryParamsStatus] = useState<any>({})
+
   const debouncedSearchValue = useDebounce(searchParam, 500)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [listFilter, setListFilter] = useState([])
+  const [listFilterRole, setListFilterRole] = useState([])
+  const [listFilterStatus, setListFilterStatus] = useState([])
 
   const [listStaffs, setListStaffs] = useState<any>()
   const [newList, setNewList] = useState([])
@@ -103,8 +106,7 @@ function ManageStaff() {
   useEffect(() => {
     if (roleSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterRole([
         {
           key: "roleId",
           applied: t("staff_position"),
@@ -117,8 +119,7 @@ function ManageStaff() {
   useEffect(() => {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterStatus([
         {
           key: "status",
           applied: t("status"),
@@ -129,20 +130,37 @@ function ManageStaff() {
     }
   }, [statusSelected])
 
-  //change queryParamsObj when change listFilter in one useEffect
+  //change queryParamsRoleObj when change listFilterRole in one useEffect
   useEffect(() => {
-    if (listFilter) {
-      const queryObj = listFilter.reduce(
+    if (listFilterRole) {
+      const queryObj = listFilterRole.reduce(
         (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
         {},
       )
-      setQueryParams(queryObj)
+      setQueryParamsRole(queryObj)
     }
-  }, [listFilter])
+  }, [listFilterRole])
 
-  const handleRemoveFilter = (itemIndex) => {
-    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
-    setListFilter(listRemove)
+  useEffect(() => {
+    if (listFilterStatus) {
+      const queryObj = listFilterStatus.reduce(
+        (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
+        {},
+      )
+      setQueryParamsStatus(queryObj)
+    }
+  }, [listFilterStatus])
+
+  const handleRemoveFilterRole = (itemIndex) => {
+    const listRemove = listFilterRole.filter((i, index) => index !== itemIndex)
+    setListFilterRole(listRemove)
+  }
+
+  const handleRemoveFilterStatus = (itemIndex) => {
+    const listRemove = listFilterStatus.filter(
+      (i, index) => index !== itemIndex,
+    )
+    setListFilterStatus(listRemove)
   }
 
   const [userData, setUserData] = useState<any>()
@@ -162,37 +180,32 @@ function ManageStaff() {
         debouncedSearchValue,
         currentPage,
         pageSize,
-        queryParams,
+        queryParamsRole,
         userData,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getAllStaff({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListStaffs(response?.data)
-          setNewList(response?.data?.data)
+        setIsLoadingListExport(true)
 
-          return response?.data
-        } else {
-          const response = await getAllStaff({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          const listStaff = response?.data?.data
-          const newList = listStaff.filter((i) => userData?.email != i?.email)
-
-          setListStaffs(response?.data)
-          setIsLoadingListExport(response?.data?.isLoading)
-          setNewList(newList)
-          //-----------
-
-          return response?.data
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParamsRole,
+          ...queryParamsStatus,
         }
+        if (debouncedSearchValue) {
+          queryObj["search"] = debouncedSearchValue
+        }
+        const response = await getAllStaff(queryObj)
+
+        const newList = response?.data?.data.filter(
+          (i) => userData?.email != i?.email,
+        )
+
+        setIsLoadingListExport(false)
+        setListStaffs(response?.data)
+        setNewList(newList)
+
+        return response?.data
       },
       enabled: !!userData,
     },
@@ -237,14 +250,24 @@ function ManageStaff() {
               setShowing={setStatusSelected}
             />
           </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
+          <div className="flex flex-wrap gap-3">
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterRole}
+              handleRemoveFilter={handleRemoveFilterRole}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterRole}
+            />
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterStatus}
+              handleRemoveFilter={handleRemoveFilterStatus}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterStatus}
+            />
+          </div>
         </div>
         {isLoadingListExport ? (
           <TableSkeleton />
@@ -275,19 +298,19 @@ export default ManageStaff
 
 function RoleDisplay({ data }) {
   const { t } = useTranslation()
-  if (data?.roleId == 1) {
+  if (data?.roleName === "Owner") {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">{t("owner")}</h1>
       </div>
     )
-  } else if (data?.roleId == 2) {
+  } else if (data?.roleName === "Storekeeper") {
     return (
       <div className="w-[150] mt-4 font-medium text-center text-white bg-green-50 border border-green-500 rounded-lg">
         <h1 className="m-2 ml-3 text-green-500">{t("store_keeper")}</h1>
       </div>
     )
-  } else if (data?.roleId == 3) {
+  } else if (data?.roleName === "Seller") {
     return (
       <div className="w-[150] mt-4 font-medium text-center rounded-lg bg-orange-50 border border-[#D69555] text-[#D69555]">
         <h1 className="m-2 ml-3">{t("seller")}</h1>

@@ -10,7 +10,7 @@ function index() {
     if (!cookies.token) {
       router.push("/login")
     } else {
-      router.push("/dashboard")
+      router.push("/manage-goods")
     }
   }, [cookie])
 

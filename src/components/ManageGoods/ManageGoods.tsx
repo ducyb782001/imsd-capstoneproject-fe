@@ -112,11 +112,14 @@ function ManageGoods({ ...props }) {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeSelected, setTypeSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
-  const [queryParams, setQueryParams] = useState<any>({})
+  const [queryParamsSuplpier, setQueryParamsSupplier] = useState<any>({})
+  const [queryParamsType, setQueryParamsType] = useState<any>({})
+
   const debouncedSearchValue = useDebounce(searchParam, 500)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [listFilter, setListFilter] = useState([])
+  const [listFilterSupplier, setListFilterSupplier] = useState([])
+  const [listFilterType, setListFilterType] = useState([])
 
   const [listProduct, setListProduct] = useState<any>()
 
@@ -127,9 +130,7 @@ function ManageGoods({ ...props }) {
 
   useEffect(() => {
     if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterSupplier([
         {
           key: "supId",
           applied: "Nhà cung cấp",
@@ -139,11 +140,10 @@ function ManageGoods({ ...props }) {
       ])
     }
   }, [nhaCungCapSelected])
+
   useEffect(() => {
     if (typeSelected) {
-      // Them logic check id cua type phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterType([
         {
           key: "catId",
           applied: "Loại",
@@ -154,20 +154,37 @@ function ManageGoods({ ...props }) {
     }
   }, [typeSelected])
 
-  //change queryParamsObj when change listFilter in one useEffect
+  //change queryParamsObj when change listFilterSupplier in one useEffect
   useEffect(() => {
-    if (listFilter) {
-      const queryObj = listFilter.reduce(
+    if (listFilterSupplier) {
+      const queryObj = listFilterSupplier.reduce(
         (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
         {},
       )
-      setQueryParams(queryObj)
+      setQueryParamsSupplier(queryObj)
     }
-  }, [listFilter])
+  }, [listFilterSupplier])
 
-  const handleRemoveFilter = (itemIndex) => {
-    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
-    setListFilter(listRemove)
+  useEffect(() => {
+    if (listFilterType) {
+      const queryObj = listFilterType.reduce(
+        (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
+        {},
+      )
+      setQueryParamsType(queryObj)
+    }
+  }, [listFilterType])
+
+  const handleRemoveFilterSupplier = (itemIndex) => {
+    const listRemove = listFilterSupplier.filter(
+      (i, index) => index !== itemIndex,
+    )
+    setListFilterSupplier(listRemove)
+  }
+
+  const handleRemoveFilterType = (itemIndex) => {
+    const listRemove = listFilterType.filter((i, index) => index !== itemIndex)
+    setListFilterType(listRemove)
   }
 
   useScanDetection({
@@ -188,60 +205,34 @@ function ManageGoods({ ...props }) {
         debouncedSearchValue,
         currentPage,
         pageSize,
-        queryParams,
+        queryParamsSuplpier,
+        queryParamsType,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getListProduct({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListProduct(response?.data)
-
-          const exportFile = await getListProduct({
-            search: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListProductExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getListProduct({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListProduct(response?.data)
-
-          const exportFile = await getListExportProduct({
-            offset: 0,
-            limit: 1000,
-          })
-          setListProductExport(exportFile?.data)
-          setIsLoadingListProducts(response?.data?.isLoading)
-          //-----------
-
-          return response?.data
+        setIsLoadingListProducts(true)
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParamsSuplpier,
+          ...queryParamsType,
         }
+        if (debouncedSearchValue) {
+          queryObj["search"] = debouncedSearchValue
+        }
+        const response = await getListProduct(queryObj)
+        setListProduct(response?.data)
+        setIsLoadingListProducts(false)
+
+        return response?.data
       },
     },
     {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
-        const category = await getListExportTypeGood({
-          search: debouncedSearchValue,
-          offset: (currentPage - 1) * pageSize,
-          limit: pageSize,
-          ...queryParams,
-        })
+        const category = await getListExportTypeGood({})
         setListCategory(category?.data?.data)
-        const typeGood = await getListExportSupplier({})
-        setListSupplier(typeGood?.data?.data)
+        const supplier = await getListExportSupplier({})
+        setListSupplier(supplier?.data?.data)
       },
     },
   ])
@@ -290,14 +281,24 @@ function ManageGoods({ ...props }) {
               setShowing={setTypeSelected}
             />
           </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
+          <div className="flex flex-wrap gap-3">
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterSupplier}
+              handleRemoveFilter={handleRemoveFilterSupplier}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterSupplier}
+            />
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterType}
+              handleRemoveFilter={handleRemoveFilterType}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterType}
+            />
+          </div>
         </div>
 
         {isLoadingListProducts ? (
