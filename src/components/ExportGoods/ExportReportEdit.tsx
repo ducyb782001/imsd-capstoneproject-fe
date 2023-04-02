@@ -25,6 +25,7 @@ import {
 } from "../../apis/export-product-module"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -71,7 +72,7 @@ function ImportReportEdit() {
           Header: "Đơn vị",
           accessor: (data: any) => (
             <ListUnitImport
-              data={data?.product}
+              data={data}
               listProductImport={listProductImport}
               setListProductImport={setListProductImport}
             />
@@ -192,7 +193,10 @@ function ImportReportEdit() {
         }
       })
       setListProductImport(list)
+    } else {
+      setTotalPriceSend(0)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {
@@ -218,28 +222,42 @@ function ImportReportEdit() {
         totalPrice: new BigNumber(price).toFixed(),
       })
 
-      for (let index = 0; index < listProductImport.length; index++) {
-        const product = listProductImport[index]
-        if (!product.measuredUnitId) {
-          if (
-            listProductImport[index]?.amount >
-            listChosenProduct[index].product.inStock
-          ) {
-            setSubmitted(true)
-            return
-          }
-        } else {
-          const eachProduct = listChosenProduct[
-            index
-          ]?.product?.measuredUnits.filter(
-            (i) => i.measuredUnitId === listProductImport[index].measuredUnitId,
-          )[0]
-          if (listProductImport[index].amount > eachProduct.inStock) {
-            setSubmitted(true)
-            return
-          }
-        }
-      }
+      // for (let index = 0; index < listProductImport.length; index++) {
+      //   const product = listProductImport[index]
+      //   if (!product.measuredUnitId) {
+      //     if (
+      //       new BigNumber(listProductImport[index]?.amount).isGreaterThan(
+      //         listChosenProduct[index]?.inStock
+      //           ? listChosenProduct[index]?.inStock
+      //           : 0,
+      //       )
+      //     ) {
+      //       setSubmitted(true)
+      //       return
+      //     }
+      //   } else {
+      //     const eachProduct = listChosenProduct[index]?.measuredUnits?.filter(
+      //       (i) =>
+      //         i.measuredUnitId === listProductImport[index]?.measuredUnitId,
+      //     )[0]
+      //     const amountExportvalue = BigNumber(
+      //       listChosenProduct[index]?.inStock || 1,
+      //     )
+      //       .dividedBy(eachProduct?.measuredUnitValue || 1)
+      //       .decimalPlaces(0, BigNumber.ROUND_DOWN)
+      //       .toNumber()
+
+      //     if (
+      //       new BigNumber(listProductImport[index].amount).isGreaterThan(
+      //         amountExportvalue,
+      //       )
+      //     ) {
+      //       setSubmitted(true)
+      //       return
+      //     }
+      //   }
+      // }
+
       setSubmitted(false)
     }
   }, [listProductImport])
@@ -253,8 +271,10 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("export_edit_success"))
+          setSubmitted(false)
           router.push("/export-report-draff/" + exportId)
         } else {
+          setSubmitted(false)
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(data?.response?.data?.message[0])
@@ -272,10 +292,21 @@ function ImportReportEdit() {
   )
 
   const handleClickUpdateBtn = async (event) => {
+    event?.preventDefault()
+
+    const count = countUndefinedOrEmptyAmount(listProductImport)
+    if (count > 0) {
+      toast.error(
+        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
+      )
+      return
+    }
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
-    event?.preventDefault()
+    setSubmitted(true)
+
     await updateImportMutation.mutate(productImportObject)
   }
 
@@ -289,8 +320,8 @@ function ImportReportEdit() {
       queryFn: async () => {
         const response = await getDetailExportProduct(exportId)
         const detailReport = response?.data
-        setListChosenProduct(response?.data?.exportOrderDetails)
-        setListProductImport(response?.data?.exportOrderDetails)
+        setListChosenProduct(detailReport?.exportOrderDetails)
+        setListProductImport(detailReport?.exportOrderDetails)
 
         setProductImportObject({
           exportId: detailReport?.exportId,
@@ -300,7 +331,6 @@ function ImportReportEdit() {
           note: detailReport?.note,
         })
 
-        // setProductImportObject(response?.data)
         setDetailResponse(response?.data)
         setIsLoadingReport(response?.data?.isLoading)
         return response?.data
@@ -357,7 +387,7 @@ function ImportReportEdit() {
                 classNameBtn="w-[120px]"
                 title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
-                disabled={submitted}
+                disabled={submitted || listChosenProduct?.length === 0}
               >
                 {t("update")}
               </ConfirmPopup>
@@ -467,19 +497,41 @@ function ListQuantitiveImport({
   }
 
   useEffect(() => {
-    if (listProductImport) {
+    if (listProductImport && data?.product) {
       const product = listProductImport.filter(
         (i) => i.productId === data?.productId,
       )
 
       if (!product[0]?.measuredUnitId) {
-        const inStock = data?.product?.inStock
-        setInStockData(inStock)
+        setInStockData(data?.product?.inStock)
       } else {
-        const inStockUnit = data?.product?.measuredUnits?.filter(
-          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
-        )
-        setInStockData(inStockUnit[0].inStock)
+        const inStock = data?.product?.inStock
+        const measuredUnitValue = data?.product?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0].measuredUnitId,
+        )[0].measuredUnitValue
+        const showValue = BigNumber(inStock)
+          .dividedBy(measuredUnitValue || 1)
+          .decimalPlaces(0, BigNumber.ROUND_DOWN)
+          .toNumber()
+        setInStockData(showValue)
+      }
+    } else if (listProductImport && data?.productName) {
+      const product = listProductImport.filter(
+        (i) => i.productId === data?.productId,
+      )
+
+      if (!product[0]?.measuredUnitId) {
+        setInStockData(data?.inStock)
+      } else {
+        const inStock = data?.inStock
+        const measuredUnitValue = data?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0].measuredUnitId,
+        )[0].measuredUnitValue
+        const showValue = BigNumber(inStock)
+          .dividedBy(measuredUnitValue || 1)
+          .decimalPlaces(0, BigNumber.ROUND_DOWN)
+          .toNumber()
+        setInStockData(showValue)
       }
     }
   }, [listProductImport])
@@ -510,31 +562,113 @@ function ListQuantitiveImport({
 }
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState(data?.price)
+  const [costPrice, setCostPrice] = useState()
 
-  const handleOnChangeAmount = (value) => {
-    const list = listProductImport
-    const newList = list.map((item) => {
-      if (item.productId == data.productId) {
-        return { ...item, price: value }
+  useEffect(() => {
+    if (data && data?.product) {
+      setCostPrice(data?.price)
+    } else if (data && data?.productName) {
+      setCostPrice(data?.sellingPrice)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (costPrice) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data.productId) {
+          return { ...item, price: costPrice }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    }
+  }, [costPrice])
+
+  const renderWarningPrice = () => {
+    if (data?.product) {
+      const product = listProductImport?.filter(
+        (i) => i.productId === data?.product?.productId,
+      )
+      if (!product[0]?.measuredUnitId) {
+        const importPrice = data?.product?.costPrice
+        const checkLessPrice = new BigNumber(costPrice).isLessThan(
+          importPrice || 0,
+        )
+        return (
+          checkLessPrice && (
+            <p className="absolute text-xs text-dangerous">
+              Giá xuất nhỏ hơn giá nhập
+            </p>
+          )
+        )
+      } else {
+        const quantityUnit = data?.product?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+        )[0].measuredUnitValue
+
+        const checkLessPrice = new BigNumber(costPrice).isLessThan(
+          BigNumber(data?.product?.costPrice || 1).multipliedBy(quantityUnit),
+        )
+
+        return (
+          checkLessPrice && (
+            <p className="absolute text-xs text-dangerous">
+              Giá xuất nhỏ hơn giá nhập
+            </p>
+          )
+        )
       }
-      return item
-    })
-    setListProductImport(newList)
+    } else if (data?.productName) {
+      const product = listProductImport?.filter(
+        (i) => i.productId === data?.productId,
+      )
+      if (!product[0]?.measuredUnitId) {
+        const importPrice = data?.costPrice
+        const checkLessPrice = new BigNumber(costPrice).isLessThan(
+          importPrice || 0,
+        )
+        return (
+          checkLessPrice && (
+            <p className="absolute text-xs text-dangerous">
+              Giá xuất nhỏ hơn giá nhập
+            </p>
+          )
+        )
+      } else {
+        const quantityUnit = data?.measuredUnits.filter(
+          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
+        )[0].measuredUnitValue
+
+        const checkLessPrice = new BigNumber(costPrice).isLessThan(
+          BigNumber(data?.costPrice || 1).multipliedBy(quantityUnit),
+        )
+
+        return (
+          checkLessPrice && (
+            <p className="absolute text-xs text-dangerous">
+              Giá xuất nhỏ hơn giá nhập
+            </p>
+          )
+        )
+      }
+    }
   }
 
   return (
-    <PrimaryInput
-      className="w-[100px]"
-      type="number"
-      placeholder="---"
-      value={costPrice ? costPrice : ""}
-      onChange={(e) => {
-        e.stopPropagation()
-        setCostPrice(e.target.value)
-        handleOnChangeAmount(e.target.value)
-      }}
-    />
+    <div className="w-[100px] relative">
+      <PrimaryInput
+        className="w-[100px]"
+        type="number"
+        placeholder="---"
+        value={costPrice ? costPrice : ""}
+        onChange={(e) => {
+          e.stopPropagation()
+          setCostPrice(e.target.value)
+        }}
+      />
+      {renderWarningPrice()}
+    </div>
   )
 }
 
@@ -608,7 +742,26 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
 
   useEffect(() => {
-    if (data) {
+    if (data?.product) {
+      const list = listProductImport
+      setListDropdown([
+        {
+          measuredUnitId: 0,
+          measuredUnitName: data?.product?.defaultMeasuredUnit || "---",
+        },
+        ...data?.product?.measuredUnits,
+      ])
+      const test = list.filter((i) => i?.productId === data?.product?.productId)
+      if (test[0].measuredUnitId) {
+        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
+      } else {
+        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit || "---")
+      }
+    }
+  }, [data?.product])
+
+  useEffect(() => {
+    if (data?.productName) {
       const list = listProductImport
       setListDropdown([
         {
@@ -617,21 +770,31 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
         },
         ...data?.measuredUnits,
       ])
-      const test = list.filter((i) => i?.productId === data?.productId)
-      if (test[0].measuredUnitId) {
-        setDefaultMeasuredUnit(test[0]?.measuredUnit?.measuredUnitName)
-      } else {
-        setDefaultMeasuredUnit(test[0]?.defaultMeasuredUnit || "---")
-      }
+      setDefaultMeasuredUnit(data?.defaultMeasuredUnit || "---")
     }
-  }, [data])
+  }, [data?.productName])
 
   useEffect(() => {
-    if (unitChosen) {
+    if (unitChosen && data?.product) {
+      const list = listProductImport
+      const newList = list.map((item) => {
+        if (item.productId == data?.product.productId) {
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+          }
+        }
+        return item
+      })
+      setListProductImport(newList)
+    } else if (unitChosen && data?.productName) {
       const list = listProductImport
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
-          return { ...item, measuredUnitId: unitChosen?.measuredUnitId }
+          return {
+            ...item,
+            measuredUnitId: unitChosen?.measuredUnitId,
+          }
         }
         return item
       })
