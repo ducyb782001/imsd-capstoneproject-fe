@@ -20,6 +20,7 @@ import { getListExportSupplier } from "../../apis/supplier-module"
 import { getListReturnGoods } from "../../apis/return-product-module"
 import BigNumber from "bignumber.js"
 import ShowDetail from "../ShowDetail"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 
 function ManageReturnGood() {
   const { t } = useTranslation()
@@ -93,6 +94,8 @@ function ManageReturnGood() {
         queryParams,
       ],
       queryFn: async () => {
+        setIsLoadingListReturn(true)
+
         const object = {
           offset: (currentPage - 1) * pageSize,
           limit: pageSize,
@@ -105,7 +108,7 @@ function ManageReturnGood() {
 
         const response = await getListReturnGoods(object)
 
-        setIsLoadingListReturn(response?.data?.isLoading)
+        setIsLoadingListReturn(false)
         setListReturnImportGoods(response?.data)
         return response?.data
       },
@@ -124,7 +127,6 @@ function ManageReturnGood() {
     if (nhaCungCapSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
       setListFilter([
-        ...listFilter,
         {
           key: "supId",
           applied: t("supplier"),
@@ -182,7 +184,7 @@ function ManageReturnGood() {
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
-            <ChooseSupplierImportGoodDropdown
+            <ChooseSupplierDropdown
               listDropdown={listSupplier}
               textDefault={t("supplier")}
               showing={nhaCungCapSelected}

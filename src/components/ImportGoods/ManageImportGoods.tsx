@@ -14,12 +14,12 @@ import * as XLSX from "xlsx/xlsx"
 import { format, parseISO } from "date-fns"
 import { getListExportSupplier } from "../../apis/supplier-module"
 import ChooseStatusDropdown from "./ChooseStatusDropdown"
-import ChooseSupplierImportGoodDropdown from "./ChooseSupplierImportGoodDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
 import ShowDetail from "../ShowDetail"
+import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 
 function ManageImportGoods() {
   const { t } = useTranslation()
@@ -88,11 +88,14 @@ function ManageImportGoods() {
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [statusSelected, setStatusSelected] = useState<any>()
   const [searchParam, setSearchParam] = useState<string>("")
-  const [queryParams, setQueryParams] = useState<any>({})
+  const [queryParamsStatus, setQueryParamsStatus] = useState<any>({})
+  const [queryParamsSupplier, setQueryParamsSupplier] = useState<any>({})
+
   const debouncedSearchValue = useDebounce(searchParam, 500)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [listFilter, setListFilter] = useState([])
+  const [listFilterStatus, setListFilterStatus] = useState([])
+  const [listFilterSuplier, setListFilterSuplier] = useState([])
 
   const [listImportProduct, setListImportProduct] = useState<any>()
 
@@ -100,11 +103,10 @@ function ManageImportGoods() {
   const [listSupplier, setListSupplier] = useState<any>()
 
   const [isLoadingListImport, setIsLoadingListImport] = useState(true)
+
   useEffect(() => {
     if (nhaCungCapSelected) {
-      // Them logic check id cua nha cung cap phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterSuplier([
         {
           key: "supId",
           applied: t("supplier"),
@@ -114,11 +116,11 @@ function ManageImportGoods() {
       ])
     }
   }, [nhaCungCapSelected])
+
   useEffect(() => {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
-      setListFilter([
-        ...listFilter,
+      setListFilterStatus([
         {
           key: "state",
           applied: t("status"),
@@ -129,20 +131,39 @@ function ManageImportGoods() {
     }
   }, [statusSelected])
 
-  //change queryParamsObj when change listFilter in one useEffect
+  //change queryParamsObj when change listFilterStatus in one useEffect
   useEffect(() => {
-    if (listFilter) {
-      const queryObj = listFilter.reduce(
+    if (listFilterStatus) {
+      const queryObj = listFilterStatus.reduce(
         (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
         {},
       )
-      setQueryParams(queryObj)
+      setQueryParamsStatus(queryObj)
     }
-  }, [listFilter])
+  }, [listFilterStatus])
 
-  const handleRemoveFilter = (itemIndex) => {
-    const listRemove = listFilter.filter((i, index) => index !== itemIndex)
-    setListFilter(listRemove)
+  const handleRemoveFilterStatus = (itemIndex) => {
+    const listRemove = listFilterStatus.filter(
+      (i, index) => index !== itemIndex,
+    )
+    setListFilterStatus(listRemove)
+  }
+
+  useEffect(() => {
+    if (listFilterSuplier) {
+      const queryObj = listFilterSuplier.reduce(
+        (prev, curr) => ({ ...prev, [curr.key]: curr.id }),
+        {},
+      )
+      setQueryParamsSupplier(queryObj)
+    }
+  }, [listFilterSuplier])
+
+  const handleRemoveFilterSupplier = (itemIndex) => {
+    const listRemove = listFilterSuplier.filter(
+      (i, index) => index !== itemIndex,
+    )
+    setListFilterSuplier(listRemove)
   }
 
   useQueries([
@@ -152,44 +173,28 @@ function ManageImportGoods() {
         debouncedSearchValue,
         currentPage,
         pageSize,
-        queryParams,
+        queryParamsSupplier,
+        queryParamsStatus,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getListImportProduct({
-            code: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListImportProduct(response?.data)
-
-          const exportFile = await getListImportProduct({
-            code: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListImportProductExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getListImportProduct({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListImportProduct(response?.data)
-          setIsLoadingListImport(response?.data?.isLoading)
-          //-----------
-
-          return response?.data
+        setIsLoadingListImport(true)
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParamsStatus,
+          ...queryParamsSupplier,
         }
+        if (debouncedSearchValue) {
+          queryObj["code"] = debouncedSearchValue
+        }
+        const response = await getListImportProduct(queryObj)
+        setListImportProduct(response?.data)
+        setIsLoadingListImport(false)
+        return response?.data
       },
     },
     {
-      queryKey: ["getListFilter"],
+      queryKey: ["getListFilterStatus"],
       queryFn: async () => {
         const supplierList = await getListExportSupplier({})
         setListSupplier(supplierList?.data?.data)
@@ -236,21 +241,31 @@ function ManageImportGoods() {
               setShowing={setStatusSelected}
             />
 
-            <ChooseSupplierImportGoodDropdown
+            <ChooseSupplierDropdown
               listDropdown={listSupplier}
               textDefault={t("supplier")}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
             />
           </div>
-          <ShowLabelBar
-            isExpandedLabelBar={true}
-            listFilter={listFilter}
-            handleRemoveFilter={handleRemoveFilter}
-            appliedDate={undefined}
-            dateRange={undefined}
-            handleRemoveDatefilter={handleRemoveFilter}
-          />
+          <div className="flex flex-wrap gap-3">
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterStatus}
+              handleRemoveFilter={handleRemoveFilterStatus}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterStatus}
+            />
+            <ShowLabelBar
+              isExpandedLabelBar={true}
+              listFilter={listFilterSuplier}
+              handleRemoveFilter={handleRemoveFilterSupplier}
+              appliedDate={undefined}
+              dateRange={undefined}
+              handleRemoveDatefilter={handleRemoveFilterSupplier}
+            />
+          </div>
         </div>
         {isLoadingListImport ? (
           <TableSkeleton />

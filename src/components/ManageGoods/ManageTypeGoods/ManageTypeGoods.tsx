@@ -84,40 +84,20 @@ function ManageTypeGoods() {
         queryParams,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getListTypeGood({
-            search: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListTypeGood(response?.data)
+        setIsLoadingListType(true)
 
-          const exportFile = await getListExportTypeGood({
-            search: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListTypeGoodExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getListTypeGood({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListTypeGood(response?.data)
-
-          const exportFile = await getListExportTypeGood({})
-          setListTypeGoodExport(exportFile?.data)
-          setIsLoadingListType(response?.data?.isLoading)
-          //-----------
-
-          return response?.data
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
         }
+        if (debouncedSearchValue) {
+          queryObj["search"] = debouncedSearchValue
+        }
+        const response = await getListTypeGood(queryObj)
+        setListTypeGood(response?.data)
+        setIsLoadingListType(false)
+
+        return response?.data
       },
     },
   ])

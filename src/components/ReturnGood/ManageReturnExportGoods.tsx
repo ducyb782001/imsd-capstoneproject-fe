@@ -73,6 +73,8 @@ function ManageReturnExportGoods() {
         pageSize,
       ],
       queryFn: async () => {
+        setIsLoadingListReturn(true)
+
         const object = {
           offset: (currentPage - 1) * pageSize,
           limit: pageSize,
@@ -84,7 +86,7 @@ function ManageReturnExportGoods() {
 
         const response = await getListReturnGoods(object)
 
-        setIsLoadingListReturn(response?.data?.isLoading)
+        setIsLoadingListReturn(false)
         setListReturnExportGoods(response?.data)
         return response?.data
       },

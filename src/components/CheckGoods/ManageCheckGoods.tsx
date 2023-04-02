@@ -101,7 +101,6 @@ function ManageCheckGoods() {
     if (statusSelected) {
       // Them logic check id cua type phai khac thi moi them vao list
       setListFilter([
-        ...listFilter,
         {
           key: "state",
           applied: t("status"),
@@ -138,38 +137,20 @@ function ManageCheckGoods() {
         queryParams,
       ],
       queryFn: async () => {
-        if (debouncedSearchValue) {
-          const response = await getListStockTakeProduct({
-            code: debouncedSearchValue,
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListCheckProduct(response?.data)
+        setIsLoadingListExport(true)
 
-          const exportFile = await getListStockTakeProduct({
-            code: debouncedSearchValue,
-            offset: 0,
-            limit: 1000,
-            ...queryParams,
-          })
-          setListCheckProductExport(exportFile?.data)
-          //-----------
-
-          return response?.data
-        } else {
-          const response = await getListStockTakeProduct({
-            offset: (currentPage - 1) * pageSize,
-            limit: pageSize,
-            ...queryParams,
-          })
-          setListCheckProduct(response?.data)
-          setIsLoadingListExport(response?.data?.isLoading)
-
-          //-----------
-
-          return response?.data
+        const queryObj = {
+          offset: (currentPage - 1) * pageSize,
+          limit: pageSize,
+          ...queryParams,
         }
+        if (debouncedSearchValue) {
+          queryObj["code"] = debouncedSearchValue
+        }
+        const response = await getListStockTakeProduct(queryObj)
+        setIsLoadingListExport(false)
+        setListCheckProduct(response?.data)
+        return response?.data
       },
     },
   ])
