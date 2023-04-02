@@ -75,12 +75,7 @@ function EditCheckGood() {
         },
         {
           Header: t("current_stock"),
-          accessor: (data: any) => (
-            <RenderCurrentStock
-              data={data}
-              listProductCheck={listProductCheck}
-            />
-          ),
+          accessor: (data: any) => <RenderCurrentStock data={data} />,
         },
         {
           Header: t("actual_stock"),
@@ -141,11 +136,21 @@ function EditCheckGood() {
   const [productCheckObject, setProductCheckObject] = useState<any>()
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
+  const [userData, setUserData] = useState<any>()
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData != "undefined") {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   useEffect(() => {
     if (staffSelected) {
       setProductCheckObject({
         ...productCheckObject,
-        userId: staffSelected?.userId,
+        createdId: staffSelected?.userId,
       })
     }
   }, [staffSelected])
@@ -189,6 +194,7 @@ function EditCheckGood() {
       })
       setListProductCheck(list)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {
@@ -284,6 +290,9 @@ function EditCheckGood() {
       stocktakeNoteDetails: productCheckObject?.stocktakeNoteDetails,
       state: 0,
     }
+    if (!staffSelected) {
+      submittedData["createdId"] = userData.userId
+    }
     updateStockTakeMutation.mutate(submittedData)
   }
   const handleClickOutBtn = (event) => {
@@ -372,46 +381,58 @@ function EditCheckGood() {
 
 export default EditCheckGood
 
-function RenderCurrentStock({ data, listProductCheck }) {
-  const [inStockData, setInStockData] = useState<any>()
-
-  useEffect(() => {
-    if (listProductCheck) {
-      const product = listProductCheck.filter(
-        (i) => i.productId === data?.productId,
-      )
-
-      if (!product[0]?.measuredUnitId) {
-        setInStockData(data?.currentStock)
-      } else {
-        const currentStockUnit = data?.product?.measuredUnits?.filter(
-          (i) => i.measuredUnitId === product[0]?.measuredUnitId,
-        )
-        setInStockData(currentStockUnit[0].inStock)
-      }
+function RenderCurrentStock({ data }) {
+  const renderCurrentStock = () => {
+    if (data?.currentStock) {
+      return <div className="text-center">{data?.currentStock}</div>
     }
-  }, [listProductCheck])
-
-  return <div className="text-center">{inStockData}</div>
+    if (data?.inStock) {
+      return <div className="text-center">{data?.inStock}</div>
+    }
+    return <div className="text-center">0</div>
+  }
+  return <div>{renderCurrentStock()}</div>
 }
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
-  const [actualStock, setActualStock] = useState(data?.actualStock)
-  const handleOnChangeDiscount = (value, data) => {
-    const list = listProductCheck
-    const newList = list.map((item) => {
-      if (item.productId === data.productId && !!!item?.measuredUnitId) {
-        return { ...item, actualStock: value, currentStock: data?.currentStock }
-      } else if (item.productId === data.productId && !!item?.measuredUnitId) {
-        const currentStockUnit = data?.product?.measuredUnits?.filter(
-          (i) => i.measuredUnitId === item.measuredUnitId,
-        )[0].inStock
-        return { ...item, actualStock: value, currentStock: currentStockUnit }
-      }
-      return item
-    })
-    setListProductCheck(newList)
-  }
+  const [actualStock, setActualStock] = useState()
+  useEffect(() => {
+    if (data && data?.product) {
+      setActualStock(data?.actualStock)
+    } else if (data && data?.productName) {
+      setActualStock(data?.inStock)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (actualStock && data?.product) {
+      const list = listProductCheck
+      const newList = list.map((item) => {
+        if (item.productId === data.productId) {
+          return {
+            ...item,
+            actualStock: actualStock,
+            currentStock: data?.currentStock,
+          }
+        }
+        return item
+      })
+      setListProductCheck(newList)
+    } else if (actualStock && data?.productName) {
+      const list = listProductCheck
+      const newList = list.map((item) => {
+        if (item.productId === data.productId) {
+          return {
+            ...item,
+            actualStock: actualStock,
+            currentStock: data?.inStock,
+          }
+        }
+        return item
+      })
+      setListProductCheck(newList)
+    }
+  }, [actualStock])
 
   return (
     <PrimaryInput
@@ -422,7 +443,6 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
       onChange={(e) => {
         e.stopPropagation()
         setActualStock(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
       }}
     />
   )
@@ -433,20 +453,6 @@ function CountDeviated({ data, listProductCheck }) {
 
   const handleCountDeviated = () => {
     const list = listProductCheck
-
-    let inStockData = 0
-    const product = listProductCheck.filter(
-      (i) => i.productId === data?.productId,
-    )
-
-    // if (!product[0]?.measuredUnitId) {
-    //   inStockData = data?.inStock
-    // } else {
-    //   const currentStockUnit = data?.measuredUnits?.filter(
-    //     (i) => i.measuredUnitId === product[0].measuredUnitId,
-    //   )
-    //   inStockData = currentStockUnit[0].inStock
-    // }
 
     const newList = list.map((item) => {
       if (item.productId == data.productId) {
@@ -465,7 +471,7 @@ function CountDeviated({ data, listProductCheck }) {
 
   return (
     <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
-      {deviated}
+      {deviated ? deviated : 0}
     </div>
   )
 }

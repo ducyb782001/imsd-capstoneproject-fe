@@ -72,7 +72,7 @@ function DraffCheckGood() {
           Header: t("current_stock"),
           accessor: (data: any) => (
             <div className="text-center">
-              {data?.currentStock ? data?.currentStock : "---"}
+              {data?.currentStock ? data?.currentStock : "0"}
             </div>
           ),
         },
