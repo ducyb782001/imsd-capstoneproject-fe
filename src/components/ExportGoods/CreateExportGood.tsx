@@ -180,7 +180,6 @@ function CreateExportGood() {
 
   useEffect(() => {
     if (listChosenProduct?.length > 0) {
-      // setSubmitted(false)
       const list = listChosenProduct.map((item) => {
         const discount = listProductExport.find(
           (i) => i.productId == item.productId,
@@ -247,8 +246,9 @@ function CreateExportGood() {
             return
           }
         } else {
-          const eachProduct = listChosenProduct[index].measuredUnits.filter(
-            (i) => i.measuredUnitId === listProductExport[index].measuredUnitId,
+          const eachProduct = listChosenProduct[index]?.measuredUnits?.filter(
+            (i) =>
+              i.measuredUnitId === listProductExport[index]?.measuredUnitId,
           )[0]
           const amountExportvalue = BigNumber(
             listChosenProduct[index]?.inStock || 1,
@@ -593,13 +593,6 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
           setCostPrice(e.target.value)
         }}
       />
-      {/* {new BigNumber(costPrice).isLessThan(
-        data?.costPrice ? data?.costPrice : 0,
-      ) && (
-        <p className="absolute text-xs text-dangerous">
-          Giá xuất nhỏ hơn giá nhập
-        </p>
-      )} */}
       {renderWarningPrice()}
     </div>
   )

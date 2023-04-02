@@ -155,7 +155,8 @@ function MainNav({ userName = "", roleId = 3 }) {
         router.asPath.includes("/export-report-detail") ||
         router.asPath.includes("/export-report-draff") ||
         router.asPath.includes("/export-report-succeed") ||
-        router.asPath.includes("/create-export-report"),
+        router.asPath.includes("/create-export-report") ||
+        router.asPath.includes("/export-report-edit"),
     },
     // indev
     {

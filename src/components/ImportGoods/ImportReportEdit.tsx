@@ -228,6 +228,7 @@ function ImportReportEdit() {
       })
     }
   }, [listProductImport])
+
   const updateImportMutation = useMutation(
     async (importProduct) => {
       return await updateImportProduct(importProduct)
@@ -666,7 +667,6 @@ function ListUnitImport({ data, listProductImport, setListProductImport }) {
   const [listDropdown, setListDropdown] = useState([])
   const [unitChosen, setUnitChosen] = useState<any>()
   const [defaultMeasuredUnit, setDefaultMeasuredUnit] = useState("")
-  console.log(123, data, listProductImport)
 
   useEffect(() => {
     if (data?.product) {

@@ -17,6 +17,7 @@ import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
 import GeneralIcon from "../icons/GeneralIcon"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
+import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -87,6 +88,11 @@ function DraffCheckGood() {
           Header: t("deviated"),
           accessor: (data: any) => (
             <div className="text-center">
+              {new BigNumber(data?.currentStock || 0).isGreaterThan(
+                data?.actualStock || 0,
+              )
+                ? "-"
+                : "+"}
               {data?.amountDifferential ? data?.amountDifferential : "---"}
             </div>
           ),

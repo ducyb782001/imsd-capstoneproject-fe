@@ -9,6 +9,7 @@ import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import GeneralIcon from "../icons/GeneralIcon"
+import BigNumber from "bignumber.js"
 
 function DetailCheckGood() {
   const { t } = useTranslation()
@@ -73,12 +74,19 @@ function DetailCheckGood() {
         {
           Header: t("deviated"),
           accessor: (data: any) => (
-            <p className="text-center">{data?.amountDifferential}</p>
+            <p className="text-center">
+              {new BigNumber(data?.currentStock || 0).isGreaterThan(
+                data?.actualStock || 0,
+              )
+                ? "-"
+                : "+"}
+              {data?.amountDifferential || "---"}
+            </p>
           ),
         },
         {
           Header: t("reason"),
-          accessor: (data: any) => <p>{data?.note}</p>,
+          accessor: (data: any) => <p>{data?.note || "---"}</p>,
         },
       ],
     },
