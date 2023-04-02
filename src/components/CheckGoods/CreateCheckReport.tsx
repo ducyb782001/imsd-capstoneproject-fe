@@ -182,6 +182,7 @@ function CreateCheckReport() {
       })
       setListProductCheck(list)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {

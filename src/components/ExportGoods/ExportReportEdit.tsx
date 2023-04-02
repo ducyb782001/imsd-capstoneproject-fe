@@ -136,7 +136,6 @@ function ImportReportEdit() {
   const { exportId } = router.query
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductImport, setListProductImport] = useState<any>([])

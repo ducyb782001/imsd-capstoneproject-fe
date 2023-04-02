@@ -120,7 +120,7 @@ function CreateImportReport() {
               className="w-full cursor-pointer"
               onClick={() => {
                 let result = listChosenProduct?.filter(
-                  (i, ind) => ind !== index,
+                  (i) => i?.productId !== data?.productId,
                 )
                 setListChosenProduct(result)
               }}
@@ -216,6 +216,7 @@ function CreateImportReport() {
     } else {
       setTotalPriceSend(0)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {
@@ -486,6 +487,7 @@ function ListQuantitiveImport({
       )
     }
   }
+
   return (
     <div className="relative">
       <PrimaryInput

@@ -53,7 +53,7 @@ function ManageStaff() {
         {
           Header: t("staff_position"),
           accessor: (data: any) => (
-            <div className="flex justify-self-start">
+            <div className="flex justify-start">
               <RoleDisplay data={data} />
             </div>
           ),
@@ -320,8 +320,6 @@ function RoleDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
-  console.log(data)
-
   return (
     <div className="flex items-center w-full gap-2">
       <Link href={`/edit-staff/${data?.userId}`}>

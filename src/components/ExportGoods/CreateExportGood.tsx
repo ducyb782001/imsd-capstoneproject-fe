@@ -207,6 +207,7 @@ function CreateExportGood() {
     } else {
       setTotalPriceSend(0)
     }
+    setProductChosen(null)
   }, [listChosenProduct])
 
   useEffect(() => {

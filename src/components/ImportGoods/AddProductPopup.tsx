@@ -12,7 +12,10 @@ import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import Tooltip from "../ToolTip"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getListExportSupplier,
+  getListSupplier,
+} from "../../apis/supplier-module"
 import { toast } from "react-toastify"
 import { addNewProduct } from "../../apis/product-module"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
@@ -129,7 +132,11 @@ function AddProductPopup({ className = "" }) {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
         setIsLoadingSupplier(true)
-        const response = await getListExportSupplier({})
+        const queryObj = {
+          offset: 0,
+          limit: 1000,
+        }
+        const response = await getListSupplier(queryObj)
         await setListNhaCungCap(response?.data?.data)
         setIsLoadingSupplier(false)
 

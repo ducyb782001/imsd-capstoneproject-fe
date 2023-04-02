@@ -29,7 +29,7 @@ export function searchName(searchInput: string, list: []) {
   if (searchInput) {
     result = list.filter((i) =>
       // @ts-ignore
-      i?.userName.toLowerCase().includes(searchInput.toLowerCase()),
+      i?.userName?.toLowerCase().includes(searchInput.toLowerCase()),
     )
   } else {
     result = []
