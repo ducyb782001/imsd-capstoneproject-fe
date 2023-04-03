@@ -304,45 +304,24 @@ function ManageGoods({ ...props }) {
         {isLoadingListProducts ? (
           <TableSkeleton />
         ) : (
-          <>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={columns}
-                data={listProduct?.data}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listProduct?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={listProduct?.data}
             />
-          </>
+          </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listProduct?.total}
+        />
       </div>
     </div>
   )
 }
 
 export default ManageGoods
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}

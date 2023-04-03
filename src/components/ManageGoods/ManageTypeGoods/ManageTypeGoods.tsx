@@ -124,23 +124,21 @@ function ManageTypeGoods() {
         {isLoadingListType ? (
           <TableSkeleton />
         ) : (
-          <div>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={column}
-                data={listTypeGood?.data}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listTypeGood?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={column}
+              data={listTypeGood?.data}
             />
           </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listTypeGood?.total}
+        />
       </div>
     </div>
   )

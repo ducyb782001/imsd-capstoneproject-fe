@@ -203,23 +203,21 @@ function ManageReturnGood() {
         {isLoadingListReturn ? (
           <TableSkeleton />
         ) : (
-          <>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={columns}
-                data={listReturnImportGoods?.data}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listReturnImportGoods?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={listReturnImportGoods?.data}
             />
-          </>
+          </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listReturnImportGoods?.total}
+        />
       </div>
     </div>
   )

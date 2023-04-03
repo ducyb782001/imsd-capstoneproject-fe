@@ -17,6 +17,9 @@ import SetStatusPopup from "./SetStatusPopup"
 import { useTranslation } from "react-i18next"
 import ShowDetail from "../ShowDetail"
 import Page401 from "../401"
+import ImportExportButton from "../ImportExportButton"
+import DownloadIcon from "../icons/DownloadIcon"
+import ModalExportExcel from "../ExportExcel/ModalExportExcel"
 
 function ManageStaff() {
   const { t } = useTranslation()
@@ -102,6 +105,8 @@ function ManageStaff() {
   const [listStaffs, setListStaffs] = useState<any>()
   const [newList, setNewList] = useState([])
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
+
+  const [typeExportExcel, setTypeExportExcel] = useState()
 
   useEffect(() => {
     if (roleSelected) {
@@ -210,12 +215,16 @@ function ManageStaff() {
       enabled: !!userData,
     },
   ])
+
+  const handleExportExcelFile = () => {
+    console.log(123)
+  }
+
   return userData?.roleId !== 1 ? (
     <Page401 />
   ) : (
     <div>
       <div className="flex items-center justify-between">
-        <div className="flex gap-2"></div>
         <Link href={`/create-staff`}>
           <a>
             <PrimaryBtn
@@ -272,23 +281,21 @@ function ManageStaff() {
         {isLoadingListExport ? (
           <TableSkeleton />
         ) : (
-          <>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={columns}
-                data={newList}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listStaffs?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={newList}
             />
-          </>
+          </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listStaffs?.total}
+        />
       </div>
     </div>
   )

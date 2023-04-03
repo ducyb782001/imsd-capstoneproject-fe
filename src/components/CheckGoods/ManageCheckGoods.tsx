@@ -205,23 +205,21 @@ function ManageCheckGoods() {
         {isLoadingListExport ? (
           <TableSkeleton />
         ) : (
-          <>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={columns}
-                data={listCheckProduct?.data}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listCheckProduct?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={listCheckProduct?.data}
             />
-          </>
+          </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listCheckProduct?.total}
+        />
       </div>
     </div>
   )

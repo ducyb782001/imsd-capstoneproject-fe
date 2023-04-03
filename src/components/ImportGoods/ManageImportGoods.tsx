@@ -270,23 +270,21 @@ function ManageImportGoods() {
         {isLoadingListImport ? (
           <TableSkeleton />
         ) : (
-          <>
-            <div className="mt-4 table-style">
-              <Table
-                pageSizePagination={pageSize}
-                columns={columns}
-                data={listImportProduct?.data}
-              />
-            </div>
-            <Pagination
-              pageSize={pageSize}
-              setPageSize={setPageSize}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              totalItems={listImportProduct?.total}
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={listImportProduct?.data}
             />
-          </>
+          </div>
         )}
+        <Pagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={listImportProduct?.total}
+        />
       </div>
     </div>
   )
