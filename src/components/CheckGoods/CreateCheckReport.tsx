@@ -19,6 +19,7 @@ import ReasonDropdown from "./ReasonDropdown"
 import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import BigNumber from "bignumber.js"
+import GeneralIcon from "../icons/GeneralIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -304,6 +305,7 @@ function CreateCheckReport() {
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
+            <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">

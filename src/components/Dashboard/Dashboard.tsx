@@ -42,12 +42,6 @@ function Dashboard() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (userData && userData?.roleId !== 1) {
-  //     router.push("/manage-goods")
-  //   }
-  // }, [userData])
-
   const [activeTab, setActiveTab] = useState<string>("sale")
 
   const { data, isLoading } = useQuery({
