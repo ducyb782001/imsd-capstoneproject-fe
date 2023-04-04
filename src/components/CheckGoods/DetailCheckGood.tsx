@@ -101,10 +101,12 @@ function DetailCheckGood() {
     {
       queryKey: ["getDetailCheckGood"],
       queryFn: async () => {
-        const response = await getDetailStockTakeProduct(checkId)
-        setProductCheckObject(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
+        if (checkId) {
+          const response = await getDetailStockTakeProduct(checkId)
+          setProductCheckObject(response?.data)
+          setIsLoadingReport(response?.data?.isLoading)
+          return response?.data
+        }
       },
       enabled: !!checkId,
     },

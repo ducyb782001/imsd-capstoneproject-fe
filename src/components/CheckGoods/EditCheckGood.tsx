@@ -270,7 +270,7 @@ function EditCheckGood() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -309,6 +309,7 @@ function EditCheckGood() {
             <h1 className="text-2xl font-semibold">{t("edit_check")}</h1>
           </div>
           <div className="flex items-center justify-between gap-4">
+            <SecondaryBtn onClick={handleClickOutBtn}>{t("exit")}</SecondaryBtn>
             <ConfirmPopup
               className="!w-fit"
               classNameBtn="w-[180px]"
@@ -317,7 +318,6 @@ function EditCheckGood() {
             >
               {t("save")}
             </ConfirmPopup>
-            <SecondaryBtn onClick={handleClickOutBtn}>{t("exit")}</SecondaryBtn>
           </div>
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">

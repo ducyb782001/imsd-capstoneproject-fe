@@ -155,21 +155,13 @@ function ManageCheckGoods() {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listCheckProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
       <div className="flex items-center justify-end">
         <Link href={`/create-check-report`}>
           <a>
             <PrimaryBtn
-              className="max-w-[230px]"
+              className="max-w-[330px]"
               accessoriesLeft={<PlusIcon />}
             >
               {t("create_check_good")}
@@ -226,25 +218,6 @@ function ManageCheckGoods() {
 }
 
 export default ManageCheckGoods
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 
 function StatusDisplay({ data }) {
   const { t } = useTranslation()

@@ -154,7 +154,7 @@ function DraffCheckGood() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -181,7 +181,7 @@ function DraffCheckGood() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -217,14 +217,14 @@ function DraffCheckGood() {
           <div className="flex items-center justify-between gap-4">
             <ConfirmPopup
               className="!w-fit"
-              classNameBtn="w-[100px] !bg-transparent text-dangerous !border-dangerous hover:!bg-[#E9283730]"
+              classNameBtn="w-[130px] !bg-transparent text-dangerous !border-dangerous hover:!bg-[#E9283730]"
               title={t("deny_alert")}
               handleClickSaveBtn={handleClickCancelBtn}
             >
-              Hủy đơn
+              {t("deny_order")}
             </ConfirmPopup>
             <SecondaryBtn
-              className="w-[100px]"
+              className="w-[130px]"
               onClick={() => {
                 router.push(
                   "/edit-check-good/" + productCheckObject?.stocktakeId,
