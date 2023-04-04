@@ -19,6 +19,7 @@ import ReasonDropdown from "./ReasonDropdown"
 import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import BigNumber from "bignumber.js"
+import GeneralIcon from "../icons/GeneralIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -243,13 +244,13 @@ function CreateCheckReport() {
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data?.message[0] || t("error_occur"))
           } else {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -274,9 +275,6 @@ function CreateCheckReport() {
 
     createStockTakeMutation.mutate(submittedData)
   }
-  const handleClickOutBtn = () => {
-    router.push("/manage-check-good")
-  }
 
   return (
     <div>
@@ -287,23 +285,10 @@ function CreateCheckReport() {
               {t("create_check_title")}
             </h1>
           </div>
-          {/* <div className="flex items-center justify-between gap-4">
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[190px]"
-              title={t("confirm_import")}
-              handleClickSaveBtn={handleClickSaveBtn}
-              disabled={submitted}
-            >
-              {t("create_check_title")}
-            </ConfirmPopup>
-            <SecondaryBtn className="" onClick={handleClickOutBtn}>
-              {t("exit")}
-            </SecondaryBtn>
-          </div> */}
         </div>
         <div className="w-full p-6 mt-6 bg-white block-border">
           <div className="flex items-center gap-2 mb-4">
+            <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
           <div className="mb-3 text-sm font-medium text-left text-gray">
@@ -388,7 +373,7 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
     <PrimaryInput
       className="w-[70px]"
       type="number"
-      placeholder="--"
+      placeholder="---"
       value={actualStock ? actualStock : ""}
       onChange={(e) => {
         e.stopPropagation()

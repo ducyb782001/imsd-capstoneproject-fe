@@ -5,40 +5,11 @@ import { CategoryScale } from "chart.js"
 import YearTimeDropdown from "./YearTimeDropdown"
 import BigNumber from "bignumber.js"
 Chart.register(CategoryScale)
-
-const data = {
-  labels: [
-    "Boston",
-    "Worcester",
-    "Springfield",
-    "Lowell",
-    "Cambridge",
-    "New Bedford",
-  ],
-  datasets: [
-    {
-      label: "Population",
-      data: [617594, 181045, 153060, 106519, 105162, 95072],
-      //   backgroundColor: "green",
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(255, 206, 86, 0.6)",
-        "rgba(75, 192, 192, 0.6)",
-        "rgba(153, 102, 255, 0.6)",
-        "rgba(255, 159, 64, 0.6)",
-        "rgba(255, 99, 132, 0.6)",
-      ],
-      borderWidth: 1,
-      borderColor: "#777",
-      hoverBorderWidth: 3,
-      hoverBorderColor: "#000",
-    },
-  ],
-}
+import { useTranslation } from "react-i18next"
 
 function BarChart({ dashboardData, selectedYear, setSelectedYear, listYear }) {
   const [chartData, setChartData] = useState<any>()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (dashboardData) {
@@ -54,10 +25,23 @@ function BarChart({ dashboardData, selectedYear, setSelectedYear, listYear }) {
       )
 
       setChartData({
-        labels: chartLabels,
+        labels: [
+          t("month.Jan"),
+          t("month.Feb"),
+          t("month.Mar"),
+          t("month.Apr"),
+          t("month.May"),
+          t("month.Jun"),
+          t("month.Jul"),
+          t("month.Aug"),
+          t("month.Sep"),
+          t("month.Oct"),
+          t("month.Nov"),
+          t("month.Dec"),
+        ],
         datasets: [
           {
-            label: "Doanh thu",
+            label: t("revenue"),
             backgroundColor: chartColor,
             data: chartDataNumber,
             borderWidth: 0,
@@ -112,7 +96,7 @@ function BarChart({ dashboardData, selectedYear, setSelectedYear, listYear }) {
   return (
     <div className="w-full bg-white">
       <div className="flex items-center justify-between mb-2">
-        <p>Doanh thu bán hàng</p>
+        <p>{t("sale_revenue")}</p>
         <YearTimeDropdown
           listDropdown={listYear}
           showing={selectedYear}

@@ -2,12 +2,17 @@ import React, { useState } from "react"
 import { useQuery } from "react-query"
 import { getDashboardChartData } from "../../apis/dashboard-module"
 import BarChart from "../Chart/BarChart"
+import BigNumber from "bignumber.js"
 
 function SaleChart() {
-  const [selectedYear, setSelectedYear] = useState({ key: 1, value: 2023 })
+  const date = new Date().getFullYear()
+  const [selectedYear, setSelectedYear] = useState({
+    key: 1,
+    value: new BigNumber(date).toFixed(),
+  })
   const listYear = [
-    { key: 1, value: 2023 },
-    { key: 2, value: 2022 },
+    { key: 1, value: new BigNumber(date).toFixed() },
+    { key: 2, value: new BigNumber(date).minus(1).toFixed() },
   ]
   const [isLoading, setIsLoading] = useState(true)
   const [saleChartData, setSaleChartData] = useState<any>()

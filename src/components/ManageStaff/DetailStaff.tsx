@@ -287,19 +287,29 @@ function DetailStaff() {
                   {t("dob")}
                 </div>
                 <input
+                  max={new Date().toISOString().slice(0, 10)}
                   value={
                     staffAccountObject?.birthDate
                       ? format(
                           new Date(staffAccountObject?.birthDate),
                           "yyyy-MM-dd",
                         )
-                      : format(Date.now(), "yyyy-MM-dd")
+                      : ""
                   }
                   onChange={(e) => {
-                    setStaffAccountObject({
-                      ...staffAccountObject,
-                      birthDate: e.target.value,
-                    })
+                    const selectedDate = e.target.value
+                    const currentDate = new Date().toISOString().slice(0, 10)
+                    if (selectedDate > currentDate) {
+                      setStaffAccountObject({
+                        ...staffAccountObject,
+                        birthDate: currentDate,
+                      })
+                    } else {
+                      setStaffAccountObject({
+                        ...staffAccountObject,
+                        birthDate: selectedDate,
+                      })
+                    }
                   }}
                   type="date"
                   className="w-full h-[46px] px-4 py-3 border rounded-md outline-none border-gray focus:border-primary hover:border-primary smooth-transform"

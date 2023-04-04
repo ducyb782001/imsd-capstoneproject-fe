@@ -261,5 +261,22 @@
   "save_report": "Bạn chắc chắn muốn lưu?",
   "created_report_check": "Ngày tạo phiếu",
   "checking_status": "Đang kiểm hàng",
-  "list_check": "Danh sách phiếu kiểm hàng"
+  "list_check": "Danh sách phiếu kiểm hàng",
+  "month": {
+    "Jan": "Tháng 1",
+    "Feb": "Tháng 2",
+    "Mar": "Tháng 3",
+    "Apr": "Tháng 4",
+    "May": "Tháng 5",
+    "Jun": "Tháng 6",
+    "Jul": "Tháng 7",
+    "Aug": "Tháng 8",
+    "Sep": "Tháng 9",
+    "Oct": "Tháng 10",
+    "Nov": "Tháng 11",
+    "Dec": "Tháng 12"
+  },
+  "inventory_value_year": "Giá trị tồn kho theo năm",
+  "revenue": "Doanh thu",
+  "sale_revenue": "Doanh thu bán hàng"
 }
