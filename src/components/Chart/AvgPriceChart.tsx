@@ -4,22 +4,9 @@ import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js"
 import YearTimeDropdown from "./YearTimeDropdown"
 import BigNumber from "bignumber.js"
+import { useTranslation } from "react-i18next"
+
 Chart.register(CategoryScale)
-
-const labels = ["January", "February", "March", "April", "May", "June"]
-
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: "",
-      backgroundColor: "#3AD34930",
-      borderColor: "#3AD349",
-      data: [0, 10, 5, 4, 20, 30, 45],
-      fill: true,
-    },
-  ],
-}
 
 function AvgPriceChart({
   dashboardData,
@@ -28,6 +15,7 @@ function AvgPriceChart({
   listYear,
 }) {
   const [chartData, setChartData] = useState<any>()
+  const { t } = useTranslation()
 
   const options = {
     plugins: {
@@ -65,10 +53,23 @@ function AvgPriceChart({
       )
 
       setChartData({
-        labels: chartLabels,
+        labels: [
+          t("month.Jan"),
+          t("month.Feb"),
+          t("month.Mar"),
+          t("month.Apr"),
+          t("month.May"),
+          t("month.Jun"),
+          t("month.Jul"),
+          t("month.Aug"),
+          t("month.Sep"),
+          t("month.Oct"),
+          t("month.Nov"),
+          t("month.Dec"),
+        ],
         datasets: [
           {
-            label: "Tồn kho",
+            label: t("in_stock"),
             backgroundColor: "#696CFF30",
             borderColor: "#696CFF",
             data: chartDataNumber,
@@ -88,7 +89,7 @@ function AvgPriceChart({
   return (
     <div className="w-full bg-white">
       <div className="flex items-center justify-between mb-2">
-        <p>Giá trị tồn kho theo năm</p>
+        <p>{t("inventory_value_year")}</p>
         <YearTimeDropdown
           listDropdown={listYear}
           showing={selectedYear}

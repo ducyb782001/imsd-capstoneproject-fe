@@ -242,7 +242,7 @@
   "actual_stock": "Actual stock",
   "deviated": "Deviated",
   "reason": "Reason",
-  "add_check_success": "Add stocktake good report successfully!",
+  "add_check_success": "Add order successfully!",
   "create_check_title": "Create stocktake good report",
   "report_infor": "Report information",
   "check_date": "Stocktake date",
@@ -261,5 +261,22 @@
   "save_report": "Are you sure you want to save report?",
   "created_report_check": "Create date",
   "checking_status": "In stocktaking",
-  "list_check": "Stocktake list"
+  "list_check": "Stocktake list",
+  "month": {
+    "Jan": "Jan",
+    "Feb": "Feb",
+    "Mar": "Mar",
+    "Apr": "Apr",
+    "May": "May",
+    "Jun": "Jun",
+    "Jul": "Jul",
+    "Aug": "Aug",
+    "Sep": "Sep",
+    "Oct": "Oct",
+    "Nov": "Nov",
+    "Dec": "Dec"
+  },
+  "inventory_value_year": "Value of inventory by year",
+  "revenue": "Revenue",
+  "sale_revenue": "Sales revenue"
 }

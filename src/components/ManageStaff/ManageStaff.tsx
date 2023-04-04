@@ -224,7 +224,7 @@ function ManageStaff() {
     <Page401 />
   ) : (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-end">
         <Link href={`/create-staff`}>
           <a>
             <PrimaryBtn
