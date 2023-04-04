@@ -222,8 +222,8 @@
   "export_manage_title": "Export list",
   "numerical_order": "#",
   "export_number": "Export number",
-  "toast_add_export_success": "Add export report successfully!",
-  "add_export_title": "Create export report",
+  "toast_add_export_success": "Add export order successfully!",
+  "add_export_title": "Create export order",
   "exit_alert_popup": "The data you just entered will not be saved, do you want to exit?",
   "staff_create_export": "Staff information",
   "choose_staff": "Choose staff",
@@ -297,5 +297,8 @@
   "thismonth": "This month",
   "new_order": "New order",
   "return_order": "Return order",
-  "cancel_order": "Cancel order"
+  "cancel_order": "Cancel order",
+  "export_number_0": "Product has an export quantity of 0. Please delete that product to continue",
+  "warning_amount_export": "Export quantity is greater than stock quantity",
+  "warning_price_export": "The export price is less than the import price"
 }

@@ -38,6 +38,7 @@ function Profile() {
 
   useEffect(() => {
     setStaffAccountObject(data)
+    setImageUploaded(data?.image)
   }, [data])
 
   const onErrorUpload = (error: any) => {
@@ -51,6 +52,15 @@ function Profile() {
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
+
+  useEffect(() => {
+    if (imageUploaded) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        image: imageUploaded,
+      })
+    }
+  }, [imageUploaded])
 
   const updateProfileMutation = useMutation(
     async (dataUpdate) => {

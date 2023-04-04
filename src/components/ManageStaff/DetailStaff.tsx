@@ -39,6 +39,7 @@ function DetailStaff() {
   useEffect(() => {
     if (staffAccountObject) {
       setStatusStaff(staffAccountObject?.status)
+      setImageUploaded(staffAccountObject?.image)
     }
   }, [staffAccountObject])
 
@@ -73,6 +74,15 @@ function DetailStaff() {
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
+
+  useEffect(() => {
+    if (imageUploaded) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        image: imageUploaded,
+      })
+    }
+  }, [imageUploaded])
 
   const router = useRouter()
   const { staffId } = router.query

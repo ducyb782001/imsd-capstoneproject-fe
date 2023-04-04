@@ -297,5 +297,8 @@
   "thismonth": "Tháng này",
   "new_order": "Đơn hàng mới",
   "return_order": "Đơn hàng trả",
-  "cancel_order": "Đơn hủy"
+  "cancel_order": "Đơn hủy",
+  "export_number_0": "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
+  "warning_amount_export": "Số lượng xuất lớn hơn số lượng tồn",
+  "warning_price_export": "Giá xuất nhỏ hơn giá nhập"
 }

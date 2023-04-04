@@ -477,7 +477,7 @@ function CountDeviated({ data, listProductCheck }) {
 }
 
 function ListNote({ data, listProductCheck, setListProductCheck }) {
-  const [note, setNote] = useState<any>()
+  const [note, setNote] = useState<any>({ id: 0, value: data?.note })
 
   useEffect(() => {
     if (note) {
