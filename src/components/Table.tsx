@@ -125,7 +125,7 @@ function Table({
 
           {page.length < 1 && (
             <tr className="odd">
-              <td colSpan={100}>Không dữ liệu</td>
+              <td colSpan={100}>{t("no_data")}</td>
             </tr>
           )}
         </tbody>

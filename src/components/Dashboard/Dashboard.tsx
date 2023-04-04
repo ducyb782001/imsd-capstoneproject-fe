@@ -22,14 +22,16 @@ import InventoryChart from "./InventoryChart"
 import SaleChart from "./SaleChart"
 import SubMenu from "./SubMenu"
 import SummaryRevenue from "./SummaryRevenue"
-
-const listSubMenu = [
-  { id: "sale", label: "Doanh thu bán hàng" },
-  { id: "inventoryEachYear", label: "Tồn kho theo năm" },
-]
+import { useTranslation } from "react-i18next"
 
 function Dashboard() {
-  const router = useRouter()
+  const { t } = useTranslation()
+
+  const listSubMenu = [
+    { id: "sale", label: t("sale_revenue") },
+    { id: "inventoryEachYear", label: t("inventory_by_year") },
+  ]
+
   const [userData, setUserData] = useState<any>()
 
   useEffect(() => {
@@ -66,44 +68,44 @@ function Dashboard() {
       {activeTab === "inventoryEachYear" && <InventoryChart />}
       <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-4">
         <InfoDashboardCard
-          title="Nhân viên hiện tại"
+          title={t("current_user")}
           value={data?.staff}
           icon={<UserDasboardIcon />}
         />
         <InfoDashboardCard
-          title="Số mặt hàng trong kho"
+          title={t("number_in_stock")}
           value={data?.product}
           icon={<ProductDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Tổng tiền thu"
+          title={t("total_revenue")}
           value={data?.gain}
           token={true}
           icon={<GainDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Tổng tiền chi"
+          title={t("total_amount_spent")}
           value={data?.spent}
           token={true}
           icon={<SpentDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Tổng số đơn nhập hàng"
+          title={t("total_import_orders")}
           value={data?.import}
           icon={<ImportDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Số đơn trả nhà cung cấp"
+          title={t("order_return_supplier")}
           value={data?.importReturn}
           icon={<ImportReturnDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Tổng số đơn xuất hàng"
+          title={t("total_export_orders")}
           value={data?.export}
           icon={<ExportDashboardIcon />}
         />
         <InfoDashboardCard
-          title="Số đơn khách trả"
+          title={t("order_return_customer")}
           value={data?.exportReturn}
           icon={<ExportReturnDashboardIcon />}
         />

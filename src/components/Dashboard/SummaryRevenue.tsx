@@ -10,11 +10,14 @@ import UserIcon from "../icons/UserIcon"
 import DashboardCardSkeleton from "../Skeleton/DashboardCardSkeleton"
 import SmallTitle from "../SmallTitle"
 import RevenueTimeDropdown from "./RevenueTimeDropdown"
+import { useTranslation } from "react-i18next"
 
 function SummaryRevenue() {
+  const { t } = useTranslation()
+
   const [timeSelected, setTimeSelected] = useState<any>({
     key: "today",
-    value: "Hôm nay",
+    value: t("today"),
   })
 
   const { data, isLoading } = useQuery({
@@ -32,24 +35,24 @@ function SummaryRevenue() {
   return (
     <div className="mt-6 bg-white block-border">
       <div className="flex items-center justify-between">
-        <SmallTitle>Kết quả doanh thu trong ngày</SmallTitle>
+        <SmallTitle>{t("revenue_of_day")}</SmallTitle>
         <RevenueTimeDropdown
           listDropdown={[
             {
               key: "today",
-              value: "Hôm nay",
+              value: t("today"),
             },
             {
               key: "yesterday",
-              value: "Hôm qua",
+              value: t("yesterday"),
             },
             {
               key: "thisweek",
-              value: "Tuần này",
+              value: t("thisweek"),
             },
             {
               key: "thismonth",
-              value: "Tháng này",
+              value: t("thismonth"),
             },
           ]}
           showing={timeSelected}
@@ -62,23 +65,23 @@ function SummaryRevenue() {
       ) : (
         <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-4">
           <RevenueDashboardCard
-            title="Doanh thu"
+            title={t("revenue")}
             value={data?.profit}
             token={true}
             icon={<ProfitDashboardIcon />}
           />
           <RevenueDashboardCard
-            title="Đơn hàng mới"
+            title={t("new_order")}
             value={data?.newOrders}
             icon={<NewOrdersDashboardIcon />}
           />
           <RevenueDashboardCard
-            title="Đơn hàng trả"
+            title={t("return_order")}
             value={data?.newReturns}
             icon={<NewReturnDashboardIcon />}
           />
           <RevenueDashboardCard
-            title="Đơn hủy"
+            title={t("cancel_order")}
             value={data?.cancelOrders}
             icon={<NewCancelDashboardIcon />}
           />
