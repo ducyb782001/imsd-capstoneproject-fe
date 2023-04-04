@@ -186,7 +186,6 @@ function ManageStaff() {
         currentPage,
         pageSize,
         queryParamsRole,
-        userData,
       ],
       queryFn: async () => {
         setIsLoadingListExport(true)
@@ -203,7 +202,7 @@ function ManageStaff() {
         const response = await getAllStaff(queryObj)
 
         const newList = response?.data?.data.filter(
-          (i) => userData?.email != i?.email,
+          (i) => i?.roleName !== "Owner",
         )
 
         setIsLoadingListExport(false)
@@ -212,13 +211,8 @@ function ManageStaff() {
 
         return response?.data
       },
-      enabled: !!userData,
     },
   ])
-
-  const handleExportExcelFile = () => {
-    console.log(123)
-  }
 
   return userData?.roleId !== 1 ? (
     <Page401 />
@@ -294,7 +288,7 @@ function ManageStaff() {
           setPageSize={setPageSize}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={listStaffs?.total}
+          totalItems={newList?.length}
         />
       </div>
     </div>
