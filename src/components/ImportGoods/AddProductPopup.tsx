@@ -20,6 +20,7 @@ import { toast } from "react-toastify"
 import { addNewProduct } from "../../apis/product-module"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
+import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 interface Product {
@@ -282,18 +283,32 @@ function AddProductPopup({ className = "" }) {
                     <PrimaryInput
                       title="Giá nhập"
                       type="number"
-                      value={product?.costPrice ? product?.costPrice : ""}
+                      min="0"
+                      value={
+                        BigNumber(product?.costPrice).isGreaterThanOrEqualTo(0)
+                          ? product?.costPrice
+                          : ""
+                      }
                       onChange={(e) => {
-                        setProduct({ ...product, costPrice: e.target.value })
+                        const value = e.target.value < 0 ? 0 : e.target.value
+                        setProduct({ ...product, costPrice: value })
                       }}
                       accessoriesRight="đ"
                     />
                     <PrimaryInput
                       title="Giá bán"
                       type="number"
-                      value={product?.sellingPrice ? product?.sellingPrice : ""}
+                      min="0"
+                      value={
+                        BigNumber(product?.sellingPrice).isGreaterThanOrEqualTo(
+                          0,
+                        )
+                          ? product?.sellingPrice
+                          : ""
+                      }
                       onChange={(e) => {
-                        setProduct({ ...product, sellingPrice: e.target.value })
+                        const value = e.target.value < 0 ? 0 : e.target.value
+                        setProduct({ ...product, sellingPrice: value })
                       }}
                       accessoriesRight="đ"
                     />

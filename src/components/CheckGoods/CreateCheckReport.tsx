@@ -357,7 +357,7 @@ function RenderCurrentStock({ data }) {
 }
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
-  const [actualStock, setActualStock] = useState(data?.actualStock)
+  const [actualStock, setActualStock] = useState(0)
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductCheck
     const newList = list.map((item) => {
@@ -373,12 +373,16 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
     <PrimaryInput
       className="w-[70px]"
       type="number"
+      min="0"
       placeholder="---"
-      value={actualStock ? actualStock : ""}
+      value={
+        BigNumber(actualStock).isGreaterThanOrEqualTo(0) ? actualStock : ""
+      }
       onChange={(e) => {
         e.stopPropagation()
-        setActualStock(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
+        const value = e.target.value < 0 ? 0 : e.target.value
+        setActualStock(value)
+        handleOnChangeDiscount(value, data)
       }}
     />
   )

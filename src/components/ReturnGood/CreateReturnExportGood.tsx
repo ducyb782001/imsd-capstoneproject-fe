@@ -438,8 +438,6 @@ function ListQuantitiveImport({
   listProductImport,
   setListProductImport,
 }) {
-  console.log(data)
-
   const [quantity, setQuantity] = useState()
   const handleOnChangeAmount = (value, data) => {
     const list = listProductImport
@@ -457,16 +455,18 @@ function ListQuantitiveImport({
       <PrimaryInput
         className="w-[60px] "
         type="number"
+        min="0"
         placeholder="0"
-        value={quantity ? quantity : ""}
+        value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
-          if (e.target.value > data?.available) {
+          const value = e.target.value < 0 ? 0 : e.target.value
+          if (value > data?.available) {
             setQuantity(data?.available)
             handleOnChangeAmount(data?.available, data)
           } else {
-            setQuantity(e.target.value)
-            handleOnChangeAmount(e.target.value, data)
+            setQuantity(value)
+            handleOnChangeAmount(value, data)
           }
         }}
       />
@@ -501,12 +501,14 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
     <PrimaryInput
       className="w-[100px]"
       type="number"
+      min="0"
       placeholder="---"
-      value={costPrice ? costPrice : ""}
+      value={BigNumber(costPrice).isGreaterThanOrEqualTo(0) ? costPrice : ""}
       accessoriesRight="đ"
       onChange={(e) => {
-        setCostPrice(e.target.value)
         e.stopPropagation()
+        const value = e.target.value < 0 ? 0 : e.target.value
+        setCostPrice(value)
       }}
     />
   )

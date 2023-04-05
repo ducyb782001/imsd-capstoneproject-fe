@@ -9,7 +9,7 @@ import { getUserData, logout } from "../apis/auth"
 import { browserRedirectToIndexAfterSignOut } from "../lib/redirect"
 import { useTranslation } from "react-i18next"
 
-function UserDropdown({ userName = "" }) {
+function UserDropdown({ avatar = null, userName = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
@@ -94,7 +94,15 @@ function UserDropdown({ userName = "" }) {
         className="flex items-center gap-1 cursor-pointer"
         ref={node}
       >
-        <AvatarIcon />
+        {avatar ? (
+          <img
+            alt="avatar-user"
+            className="object-cover w-8 h-8"
+            src={avatar}
+          />
+        ) : (
+          <AvatarIcon />
+        )}
         <p className="text-grayDark">{userName}</p>
         <ArrowDownIcon color="#373737" />
       </div>

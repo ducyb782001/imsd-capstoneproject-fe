@@ -132,7 +132,7 @@ function ExportReportDraff() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -169,7 +169,7 @@ function ExportReportDraff() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -218,7 +218,7 @@ function ExportReportDraff() {
                 title={t("cancel_confirm_import")}
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                Hủy đơn
+                {t("deny_order")}
               </ConfirmPopup>
               <SecondaryBtn
                 className="w-[100px]"

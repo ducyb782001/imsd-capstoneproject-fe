@@ -186,6 +186,7 @@ function ManageStaff() {
         currentPage,
         pageSize,
         queryParamsRole,
+        queryParamsStatus,
       ],
       queryFn: async () => {
         setIsLoadingListExport(true)

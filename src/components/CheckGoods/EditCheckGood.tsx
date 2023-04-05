@@ -204,11 +204,21 @@ function EditCheckGood() {
         stocktakeNoteDetails: listProductCheck,
       })
     }
+
+    // for (let index = 0; index < listProductCheck.length; index++) {
+    //   const product = listProductCheck[index]
+    //   if (product.actualStock === "" || product.actualStock === "undefined") {
+    //     setSubmitted(true)
+    //     return
+    //   }
+    // }
+    // setSubmitted(false)
   }, [listProductCheck])
 
   const router = useRouter()
   const { checkId } = router.query
   const [isLoadingReport, setIsLoadingReport] = useState(true)
+  const [submitted, setSubmitted] = useState(false)
 
   useQueries([
     {
@@ -315,6 +325,7 @@ function EditCheckGood() {
               classNameBtn="w-[180px]"
               title={t("save_report")}
               handleClickSaveBtn={handleClickSaveBtn}
+              disabled={listChosenProduct?.length === 0 || submitted}
             >
               {t("save")}
             </ConfirmPopup>
@@ -438,11 +449,15 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
     <PrimaryInput
       className="w-[70px]"
       type="number"
+      min="0"
       placeholder="--"
-      value={actualStock ? actualStock : ""}
+      value={
+        BigNumber(actualStock).isGreaterThanOrEqualTo(0) ? actualStock : ""
+      }
       onChange={(e) => {
         e.stopPropagation()
-        setActualStock(e.target.value)
+        const value = e.target.value < 0 ? 0 : e.target.value
+        setActualStock(value)
       }}
     />
   )
@@ -477,7 +492,7 @@ function CountDeviated({ data, listProductCheck }) {
 }
 
 function ListNote({ data, listProductCheck, setListProductCheck }) {
-  const [note, setNote] = useState<any>()
+  const [note, setNote] = useState<any>({ id: 0, value: data?.note })
 
   useEffect(() => {
     if (note) {

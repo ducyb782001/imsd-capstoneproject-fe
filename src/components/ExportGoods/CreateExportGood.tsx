@@ -325,7 +325,7 @@ function CreateExportGood() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -338,9 +338,7 @@ function CreateExportGood() {
     const count = countUndefinedOrEmptyAmount(listProductExport)
 
     if (count > 0) {
-      toast.error(
-        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
-      )
+      toast.error(t("export_number_0"))
       return
     }
 
@@ -363,19 +361,7 @@ function CreateExportGood() {
     <div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-2xl font-semibold">{t("add_export_title")}</h1>
-            <ConfirmPopup
-              className="!w-fit"
-              classNameBtn="w-[120px] bg-white border-white"
-              title={t("exit_alert_popup")}
-              handleClickSaveBtn={() => {
-                router.push("/manage-export-goods")
-              }}
-            >
-              {t("exit")}
-            </ConfirmPopup>
-          </div>
+          <h1 className="text-2xl font-semibold">{t("add_export_title")}</h1>
           <div className="flex justify-center mt-6">
             <StepBar
               createdDate={format(
@@ -498,6 +484,7 @@ function ListQuantitiveExport({
       }
     }
   }, [listProductExport])
+  const { t } = useTranslation()
 
   return (
     <div className="w-[100px] relative">
@@ -505,19 +492,21 @@ function ListQuantitiveExport({
         <PrimaryInput
           className="w-[60px]"
           type="number"
+          min="0"
           placeholder="0"
-          value={quantity ? quantity : ""}
+          value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
           onChange={(e) => {
             e.stopPropagation()
-            setQuantity(e.target.value)
-            handleOnChangeAmount(e.target.value, data)
+            const value = e.target.value < 0 ? 0 : e.target.value
+            setQuantity(value)
+            handleOnChangeAmount(value, data)
           }}
         />
         <p>/{inStockData}</p>
       </div>
       {new BigNumber(quantity).isGreaterThan(inStockData ? inStockData : 0) && (
         <p className="absolute text-xs text-dangerous">
-          Số lượng xuất lớn hơn số lượng tồn
+          {t("warning_amount_export")}
         </p>
       )}
     </div>
@@ -532,6 +521,7 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
       setCostPrice(data?.sellingPrice)
     }
   }, [data])
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (costPrice) {
@@ -558,7 +548,7 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
       return (
         checkLessPrice && (
           <p className="absolute text-xs text-dangerous">
-            Giá xuất nhỏ hơn giá nhập
+            {t("warning_price_export")}
           </p>
         )
       )
@@ -574,7 +564,7 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
       return (
         checkLessPrice && (
           <p className="absolute text-xs text-dangerous">
-            Giá xuất nhỏ hơn giá nhập
+            {t("warning_price_export")}
           </p>
         )
       )
@@ -586,11 +576,13 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
       <PrimaryInput
         className="w-[100px]"
         type="number"
+        min="0"
         placeholder="---"
-        value={costPrice ? costPrice : ""}
+        value={BigNumber(costPrice).isGreaterThanOrEqualTo(0) ? costPrice : ""}
         onChange={(e) => {
           e.stopPropagation()
-          setCostPrice(e.target.value)
+          const value = e.target.value < 0 ? 0 : e.target.value
+          setCostPrice(value)
         }}
       />
       {renderWarningPrice()}
@@ -615,12 +607,15 @@ function ListDiscountExport({ data, listProductExport, setListProductExport }) {
     <PrimaryInput
       className="w-[50px]"
       type="number"
+      min="0"
       placeholder="0"
-      value={discount ? discount : ""}
+      value={BigNumber(discount).isGreaterThanOrEqualTo(0) ? discount : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setDiscount(e.target.value)
-        handleOnChangeDiscount(e.target.value, data)
+        const value =
+          e.target.value < 0 || e.target.value > 100 ? 0 : e.target.value
+        setDiscount(value)
+        handleOnChangeDiscount(value, data)
       }}
     />
   )

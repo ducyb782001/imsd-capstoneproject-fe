@@ -328,25 +328,37 @@ function EditProduct() {
             <div className="hidden md:block" />
             <PrimaryInput
               title={t("cost_price")}
-              value={detailProduct?.costPrice ? detailProduct?.costPrice : 0}
+              type="number"
+              min="0"
+              value={
+                BigNumber(detailProduct?.costPrice).isGreaterThanOrEqualTo(0)
+                  ? detailProduct?.costPrice
+                  : ""
+              }
               onChange={(e) => {
+                const value = e.target.value < 0 ? 0 : e.target.value
                 setDetailProduct({
                   ...detailProduct,
-                  costPrice: e.target.value,
+                  costPrice: value,
                 })
               }}
               accessoriesRight="đ"
             />
             <PrimaryInput
               title={t("sell_price")}
+              type="number"
+              min="0"
               accessoriesRight="đ"
               value={
-                detailProduct?.sellingPrice ? detailProduct?.sellingPrice : 0
+                BigNumber(detailProduct?.sellingPrice).isGreaterThanOrEqualTo(0)
+                  ? detailProduct?.sellingPrice
+                  : ""
               }
               onChange={(e) => {
+                const value = e.target.value < 0 ? 0 : e.target.value
                 setDetailProduct({
                   ...detailProduct,
-                  sellingPrice: e.target.value,
+                  sellingPrice: value,
                 })
               }}
             />
@@ -565,18 +577,30 @@ function RightSideProductDetail({
           <PrimaryInput
             placeholder="Min"
             type="number"
-            value={product?.minStock ? product?.minStock : ""}
+            min="0"
+            value={
+              BigNumber(product?.minStock).isGreaterThanOrEqualTo(0)
+                ? product?.minStock
+                : ""
+            }
             onChange={(e) => {
-              setProduct({ ...product, minStock: e.target.value })
+              const value = e.target.value < 0 ? 0 : e.target.value
+              setProduct({ ...product, minStock: value })
             }}
           />
           <p>-</p>
           <PrimaryInput
             placeholder="Max"
             type="number"
-            value={product?.maxStock ? product?.maxStock : ""}
+            min="0"
+            value={
+              BigNumber(product?.maxStock).isGreaterThanOrEqualTo(0)
+                ? product?.maxStock
+                : ""
+            }
             onChange={(e) => {
-              setProduct({ ...product, maxStock: e.target.value })
+              const value = e.target.value < 0 ? 0 : e.target.value
+              setProduct({ ...product, maxStock: value })
             }}
           />
         </div>
@@ -644,9 +668,13 @@ function AdditionUnitRow({
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
         title={t("number_in_unit")}
-        onChange={(e) => setNewDetail(e.target.value)}
         type="number"
-        value={newDetail}
+        min="0"
+        value={BigNumber(newDetail).isGreaterThanOrEqualTo(0) ? newDetail : ""}
+        onChange={(e) => {
+          const value = e.target.value < 0 ? 0 : e.target.value
+          setNewDetail(value)
+        }}
         onKeyPress={(e) => {
           if (e.key === "Enter") {
             handleAddNewUnit()
