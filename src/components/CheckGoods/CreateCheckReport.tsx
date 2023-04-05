@@ -240,7 +240,7 @@ function CreateCheckReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("add_check_success"))
-          router.push("/manage-check-good")
+          router.push("/manage-inventory-checking")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)

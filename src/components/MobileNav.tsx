@@ -44,14 +44,14 @@ function MobileNav() {
     {
       id: 1,
       name: t("list_import_report"),
-      href: "/manage-import-goods",
-      isActive: router.asPath.includes("/manage-import-goods"),
+      href: "/manage-import-orders",
+      isActive: router.asPath.includes("/manage-import-orders"),
     },
     {
       id: 2,
       name: t("create_import_report"),
-      href: "/create-import-report",
-      isActive: router.asPath.includes("/create-import-report"),
+      href: "/create-import-order",
+      isActive: router.asPath.includes("/create-import-order"),
     },
   ]
 
@@ -59,14 +59,14 @@ function MobileNav() {
     {
       id: 1,
       name: t("list_export_report"),
-      href: "/manage-export-goods",
-      isActive: router.asPath.includes("/manage-export-goods"),
+      href: "/manage-export-orders",
+      isActive: router.asPath.includes("/manage-export-orders"),
     },
     {
       id: 2,
       name: t("create_export_report"),
-      href: "/create-export-report",
-      isActive: router.asPath.includes("/create-export-report"),
+      href: "/create-export-order",
+      isActive: router.asPath.includes("/create-export-order"),
     },
   ]
 
@@ -74,8 +74,8 @@ function MobileNav() {
     {
       id: 1,
       name: "Trả hàng về nhà cung cấp",
-      href: "/manage-return-good",
-      isActive: router.asPath.includes("/manage-return-good"),
+      href: "/manage-return-products",
+      isActive: router.asPath.includes("/manage-return-products"),
     },
     {
       id: 2,
@@ -89,14 +89,14 @@ function MobileNav() {
     {
       id: 1,
       name: t("check_history"),
-      href: "/manage-check-good",
-      isActive: router.asPath.includes("/manage-check-good"),
+      href: "/manage-inventory-checking",
+      isActive: router.asPath.includes("/manage-inventory-checking"),
     },
     {
       id: 2,
       name: t("create_check_good"),
-      href: "/create-check-report",
-      isActive: router.asPath.includes("/create-check-report"),
+      href: "/create-inventory-checking-order",
+      isActive: router.asPath.includes("/create-inventory-checking-order"),
     },
   ]
 
@@ -134,13 +134,10 @@ function MobileNav() {
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-import-goods") ||
-        router.asPath.includes("/import-report-detail") ||
-        router.asPath.includes("/import-report-succeed") ||
-        router.asPath.includes("/import-report-canceled") ||
-        router.asPath.includes("/import-report-draff") ||
-        router.asPath.includes("/import-report-edit") ||
-        router.asPath.includes("/create-import-report"),
+        router.asPath.includes("/manage-import-orders") ||
+        router.asPath.includes("/import-order-detail") ||
+        router.asPath.includes("/import-order-edit") ||
+        router.asPath.includes("/create-import-order"),
     },
     {
       id: 4,
@@ -148,12 +145,9 @@ function MobileNav() {
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-export-goods") ||
-        router.asPath.includes("/export-report-canceled") ||
-        router.asPath.includes("/export-report-detail") ||
-        router.asPath.includes("/export-report-draff") ||
-        router.asPath.includes("/export-report-succeed") ||
-        router.asPath.includes("/create-export-report"),
+        router.asPath.includes("/manage-export-orders") ||
+        router.asPath.includes("/export-order-detail") ||
+        router.asPath.includes("/create-export-order"),
     },
     // indev
     {
@@ -162,7 +156,7 @@ function MobileNav() {
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-return-good") ||
+        router.asPath.includes("/manage-return-products") ||
         router.asPath.includes("/return-customer-draff") ||
         router.asPath.includes("/return-report-detail") ||
         router.asPath.includes("/return-customer-detail") ||
@@ -179,11 +173,10 @@ function MobileNav() {
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-check-good") ||
-        router.asPath.includes("/edit-check-good") ||
-        router.asPath.includes("/draff-check-good") ||
-        router.asPath.includes("/check-good-detail") ||
-        router.asPath.includes("/create-check-report"),
+        router.asPath.includes("/manage-inventory-checking") ||
+        router.asPath.includes("/create-inventory-checking-order") ||
+        router.asPath.includes("/inventory-checking-order-detail") ||
+        router.asPath.includes("/edit-inventory-checking-order"),
     },
   ]
 
