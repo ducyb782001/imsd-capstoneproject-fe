@@ -59,14 +59,14 @@ function MobileNav() {
     {
       id: 1,
       name: t("list_export_report"),
-      href: "/manage-export-goods",
-      isActive: router.asPath.includes("/manage-export-goods"),
+      href: "/manage-export-orders",
+      isActive: router.asPath.includes("/manage-export-orders"),
     },
     {
       id: 2,
       name: t("create_export_report"),
-      href: "/create-export-report",
-      isActive: router.asPath.includes("/create-export-report"),
+      href: "/create-export-order",
+      isActive: router.asPath.includes("/create-export-order"),
     },
   ]
 
@@ -145,12 +145,9 @@ function MobileNav() {
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-export-goods") ||
-        router.asPath.includes("/export-report-canceled") ||
-        router.asPath.includes("/export-report-detail") ||
-        router.asPath.includes("/export-report-draff") ||
-        router.asPath.includes("/export-report-succeed") ||
-        router.asPath.includes("/create-export-report"),
+        router.asPath.includes("/manage-export-orders") ||
+        router.asPath.includes("/export-order-detail") ||
+        router.asPath.includes("/create-export-order"),
     },
     // indev
     {

@@ -15,7 +15,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
-function ImportReportSucceed() {
+function SecondExportReportStatus({ productImport }) {
   const { t } = useTranslation()
 
   const columns = [
@@ -84,32 +84,15 @@ function ImportReportSucceed() {
       ],
     },
   ]
-  const [productImport, setProductImport] = useState<any>()
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
   const router = useRouter()
   const { exportId } = router.query
 
-  useQueries([
-    {
-      queryKey: ["getDetailProductExport", exportId],
-      queryFn: async () => {
-        const response = await getDetailExportProduct(exportId)
-        setProductImport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!exportId,
-    },
-  ])
-
   const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
+    router.push("/manage-export-orders")
   }
 
-  return isLoadingReport ? (
-    <ExportReportSkeleton />
-  ) : (
+  return (
     <div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
@@ -220,4 +203,4 @@ function ImportReportSucceed() {
   )
 }
 
-export default ImportReportSucceed
+export default SecondExportReportStatus

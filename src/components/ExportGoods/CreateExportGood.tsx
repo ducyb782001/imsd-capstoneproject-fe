@@ -316,7 +316,7 @@ function CreateExportGood() {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("toast_add_export_success"))
           setSubmitted(false)
-          router.push("/manage-export-goods")
+          router.push("/manage-export-orders")
         } else {
           setSubmitted(false)
           if (typeof data?.response?.data?.message !== "string") {

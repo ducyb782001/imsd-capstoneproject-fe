@@ -179,7 +179,7 @@ function ManageExportOrders() {
   return (
     <div>
       <div className="flex items-center justify-end">
-        <Link href={`/create-export-report`}>
+        <Link href={`/create-export-order`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
@@ -289,45 +289,13 @@ function StatusDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
-  if (data?.state == 0) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/export-report-draff/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 1) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/export-report-detail/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 2) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/export-report-succeed/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/export-report-canceled/${data?.exportId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  }
+  return (
+    <div className="flex items-center w-full gap-2">
+      <Link href={`/export-order-detail/${data?.exportId}`}>
+        <a className="w-full">
+          <ShowDetail />
+        </a>
+      </Link>
+    </div>
+  )
 }

@@ -29,7 +29,7 @@ import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function ImportReportEdit() {
+function ExportOrderEdit() {
   const { t } = useTranslation()
 
   const columns = [
@@ -235,7 +235,7 @@ function ImportReportEdit() {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("export_edit_success"))
           setSubmitted(false)
-          router.push("/export-report-draff/" + exportId)
+          router.push("/export-order-detail/" + exportId)
         } else {
           setSubmitted(false)
           if (typeof data?.response?.data?.message !== "string") {
@@ -272,7 +272,7 @@ function ImportReportEdit() {
   }
 
   const handleClickOutBtn = () => {
-    router.push("/export-report-draff/" + exportId)
+    router.push("/export-order-detail/" + exportId)
   }
 
   useQueries([
@@ -433,7 +433,7 @@ function ImportReportEdit() {
   )
 }
 
-export default ImportReportEdit
+export default ExportOrderEdit
 
 function ListQuantitiveImport({
   data,

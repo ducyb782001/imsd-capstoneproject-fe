@@ -1,11 +1,11 @@
 import React from "react"
-import ExportReportDetail from "../../components/ExportGoods/ExportReportDetail"
 import Layout from "../../components/Layout"
+import ExportOrderDetail from "../../components/ManageExportOrders/ExportOrderDetail"
 
-function exportId(props) {
+function exportId() {
   return (
     <Layout>
-      <ExportReportDetail />
+      <ExportOrderDetail />
     </Layout>
   )
 }

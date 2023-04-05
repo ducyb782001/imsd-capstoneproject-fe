@@ -1,19 +1,15 @@
 import React, { useState } from "react"
-import { useQueries } from "react-query"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
-import PrimaryBtn from "../PrimaryBtn"
-import { getDetailExportProduct } from "../../apis/export-product-module"
-import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import { BigNumber } from "bignumber.js"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 
-function ExportReportCanceled() {
+function ThirdExportReportStatus({ productExport }) {
   const { t } = useTranslation()
 
   const columns = [
@@ -85,30 +81,9 @@ function ExportReportCanceled() {
       ],
     },
   ]
-  const [productExport, setProductExport] = useState<any>()
   const router = useRouter()
-  const { exportId } = router.query
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
-  useQueries([
-    {
-      queryKey: ["getDetailProductExport", exportId],
-      queryFn: async () => {
-        const response = await getDetailExportProduct(exportId)
-        setProductExport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!exportId,
-    },
-  ])
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
-  }
-
-  return isLoadingReport ? (
-    <ExportReportSkeleton />
-  ) : (
+  return (
     <div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
@@ -120,11 +95,6 @@ function ExportReportCanceled() {
               <div className="px-4 py-1 font-bold text-red-600 bg-red-100 border border-red-600 rounded-2xl">
                 {t("cancelled")}
               </div>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
-                {t("exit")}
-              </PrimaryBtn>
             </div>
           </div>
           <div className="flex justify-center mt-6">
@@ -199,4 +169,4 @@ function ExportReportCanceled() {
   )
 }
 
-export default ExportReportCanceled
+export default ThirdExportReportStatus

@@ -1,23 +1,8 @@
-import BigNumber from "bignumber.js"
-import { format } from "date-fns"
-import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import {
-  getDetailImportProduct,
-  importImportProduct,
-} from "../../apis/import-product-module"
-import ConfirmPopup from "../ConfirmPopup"
-import PrimaryInput from "../PrimaryInput"
-import PrimaryTextArea from "../PrimaryTextArea"
-import SecondaryBtn from "../SecondaryBtn"
-import StepBar from "../StepBar"
-import Table from "../Table"
+import React, { useState } from "react"
+import { useQueries } from "react-query"
+import { getDetailImportProduct } from "../../apis/import-product-module"
 import { useRouter } from "next/router"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
-import { useTranslation } from "react-i18next"
-import ImportGoodIcon from "../icons/ImportGoodIcon"
-import ImportReportDraff from "./ZeroImportReportStatus"
 import FirstImportReportStatus from "./FirstImportReportStatus"
 import ZeroImportReportStatus from "./ZeroImportReportStatus"
 import SecondImportReportStatus from "./SecondImportReportStatus"
@@ -48,18 +33,22 @@ function ImportReportDetail() {
     <ImportReportSkeleton />
   ) : (
     <div>
+      {/* State 0 is new, can edit */}
       {productImport?.state === 0 && (
         <ZeroImportReportStatus
           isLoadingReport={isLoadingReport}
           productImport={productImport}
         />
       )}
+      {/* State 1 is approved, ready to import */}
       {productImport?.state === 1 && (
         <FirstImportReportStatus productImport={productImport} />
       )}
+      {/* state 2 is improved succeed */}
       {productImport?.state === 2 && (
         <SecondImportReportStatus productImport={productImport} />
       )}
+      {/* state 3 is cancel improve */}
       {productImport?.state === 3 && (
         <ThirdImportReportStatus productImport={productImport} />
       )}
