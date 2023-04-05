@@ -1,11 +1,11 @@
 import React from "react"
-import ImportReportCanceled from "../../components/ImportGoods/ImportReportCancel"
 import Layout from "../../components/Layout"
+import ImportReportDetail from "../../components/ManageImportOrders/ImportReportDetail"
 
 function importId() {
   return (
     <Layout>
-      <ImportReportCanceled />
+      <ImportReportDetail />
     </Layout>
   )
 }

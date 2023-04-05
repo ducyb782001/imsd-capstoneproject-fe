@@ -1,8 +1,8 @@
 import React from "react"
-import ManageImportGoods from "../components/ImportGoods/ManageImportGoods"
 import Layout from "../components/Layout"
+import ManageImportGoods from "../components/ManageImportOrders/ManageImportOrders"
 
-function manageImportGoods(props) {
+function manageImportGoods() {
   return (
     <Layout headTitle="Danh sách phiếu nhập hàng">
       <ManageImportGoods />

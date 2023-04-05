@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 import {
   approveImportProduct,
@@ -21,7 +21,7 @@ import ImportGoodIcon from "../icons/ImportGoodIcon"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function ImportReportDraff() {
+function ZeroImportReportStatus({ isLoadingReport, productImport }) {
   const { t } = useTranslation()
   const columns = [
     {
@@ -110,11 +110,9 @@ function ImportReportDraff() {
     }
   }, [])
 
-  const [productImport, setProductImport] = useState<any>()
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
   const router = useRouter()
-  const { importId } = router.query
 
+  const queryClient = useQueryClient()
   const approveImportMutation = useMutation(
     async (importProduct) => {
       return await approveImportProduct(importProduct)
@@ -124,7 +122,7 @@ function ImportReportDraff() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("success_import"))
-          router.push("/import-report-detail/" + productImport?.importId)
+          queryClient.refetchQueries("getDetailProductImport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -157,7 +155,7 @@ function ImportReportDraff() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("cancel_import"))
-          router.push("/manage-import-goods")
+          queryClient.refetchQueries("getDetailProductImport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -180,22 +178,18 @@ function ImportReportDraff() {
     cancelImportMutation.mutate(productImport?.importId)
   }
 
-  const handleClickOutBtn = () => {
-    router.push("/manage-import-goods")
-  }
-
-  useQueries([
-    {
-      queryKey: ["getDetailProductImport", importId],
-      queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!importId,
-    },
-  ])
+  // useQueries([
+  //   {
+  //     queryKey: ["getDetailProductImport", importId],
+  //     queryFn: async () => {
+  //       const response = await getDetailImportProduct(importId)
+  //       setProductImport(response?.data)
+  //       setIsLoadingReport(response?.data?.isLoading)
+  //       return response?.data
+  //     },
+  //     enabled: !!importId,
+  //   },
+  // ])
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
@@ -224,7 +218,7 @@ function ImportReportDraff() {
               <SecondaryBtn
                 className="w-[100px]"
                 onClick={() => {
-                  router.push("/import-report-edit/" + productImport?.importId)
+                  router.push("/import-order-edit/" + productImport?.importId)
                 }}
               >
                 {t("edit_import")}
@@ -308,4 +302,4 @@ function ImportReportDraff() {
   )
 }
 
-export default ImportReportDraff
+export default ZeroImportReportStatus

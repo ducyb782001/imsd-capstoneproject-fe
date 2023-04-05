@@ -12,7 +12,7 @@ import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 
-function ImportReportCanceled() {
+function ThirdImportReportStatus({ productImport }) {
   const { t } = useTranslation()
 
   const columns = [
@@ -92,27 +92,10 @@ function ImportReportCanceled() {
     },
   ]
 
-  const [productImport, setProductImport] = useState<any>()
   const router = useRouter()
   const { importId } = router.query
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
-  useQueries([
-    {
-      queryKey: ["getDetailProductImport", importId],
-      queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!importId,
-    },
-  ])
-
-  return isLoadingReport ? (
-    <ImportReportSkeleton />
-  ) : (
+  return (
     <div>
       <div className="grid grid-cols-1 gap-5 grid-cols md:grid-cols-7525">
         <div>
@@ -191,4 +174,4 @@ function ImportReportCanceled() {
   )
 }
 
-export default ImportReportCanceled
+export default ThirdImportReportStatus

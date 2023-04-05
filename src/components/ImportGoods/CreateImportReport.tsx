@@ -253,7 +253,7 @@ function CreateImportReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success("Thêm đơn nhập hàng thành công")
-          router.push("/manage-import-goods")
+          router.push("/manage-import-orders")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])

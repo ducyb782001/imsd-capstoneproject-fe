@@ -1,26 +1,21 @@
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
-import { toast } from "react-toastify"
-import {
-  getDetailImportProduct,
-  importImportProduct,
-} from "../../apis/import-product-module"
-import ConfirmPopup from "../ConfirmPopup"
+import { useQueries } from "react-query"
+import { getDetailImportProduct } from "../../apis/import-product-module"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
-import SecondaryBtn from "../SecondaryBtn"
 import StepBar from "../StepBar"
 import Table from "../Table"
 import { useRouter } from "next/router"
+import PrimaryBtn from "../PrimaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
+import SecondaryBtn from "../SecondaryBtn"
+import Link from "next/link"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 
-const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
-
-function ImportReportDetail() {
+function SecondImportReportStatus({ productImport }) {
   const { t } = useTranslation()
 
   const columns = [
@@ -99,68 +94,11 @@ function ImportReportDetail() {
       ],
     },
   ]
-  const [productImport, setProductImport] = useState<any>()
-  const router = useRouter()
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
 
-  useEffect(() => {
-    if (productImport) {
-      if (productImport?.state != 1) {
-        router.push("/manage-import-goods")
-      }
-    }
-  }, [productImport])
+  const router = useRouter()
   const { importId } = router.query
 
-  useQueries([
-    {
-      queryKey: ["getDetailProductImport", importId],
-      queryFn: async () => {
-        const response = await getDetailImportProduct(importId)
-        setProductImport(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!importId,
-    },
-  ])
-
-  const importImportMutation = useMutation(
-    async (importProduct) => {
-      return await importImportProduct(importProduct)
-    },
-    {
-      onSuccess: (data, error, variables) => {
-        if (data?.status >= 200 && data?.status < 300) {
-          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success(t("import_success"))
-          router.push("/import-report-succeed/" + productImport?.importId)
-        } else {
-          if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
-          } else {
-            toast.error(
-              data?.response?.data?.message ||
-                data?.message ||
-                t("error_occur"),
-            )
-          }
-        }
-      },
-    },
-  )
-
-  const handleClickApproveBtn = (event) => {
-    event?.preventDefault()
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-    importImportMutation.mutate(productImport?.importId)
-  }
-
-  return isLoadingReport ? (
-    <ImportReportSkeleton />
-  ) : (
+  return (
     <div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
@@ -169,66 +107,72 @@ function ImportReportDetail() {
               <h1 className="text-2xl font-semibold">
                 #{productImport?.importCode}
               </h1>
-              <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                {t("wait_get_product")}
+              <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
+                {t("final")}
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <ConfirmPopup
-                className="!w-fit"
-                classNameBtn="min-w-[120px]"
-                title={t("confirm_receive_instock")}
-                handleClickSaveBtn={handleClickApproveBtn}
+            <div className="flex items-center gap-4">
+              <Link href={`/create-return-report/?importId=${importId}`}>
+                <a>
+                  <SecondaryBtn className="max-w-[120px]">
+                    Trả hàng
+                  </SecondaryBtn>
+                </a>
+              </Link>
+              <PrimaryBtn
+                onClick={() => {
+                  router.push("/manage-import-orders")
+                }}
+                className="w-[120px]"
               >
-                {t("receive_goods")}
-              </ConfirmPopup>
+                {t("exit")}
+              </PrimaryBtn>
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            {productImport && (
-              <StepBar
-                status="approved"
-                createdDate={format(
-                  new Date(productImport?.createdDate),
-                  "dd/MM/yyyy HH:mm",
-                )}
-                approvedDate={format(
-                  new Date(productImport?.approvedDate),
-                  "dd/MM/yyyy HH:mm",
-                )}
-              />
-            )}
+            <StepBar
+              createdDate={format(
+                new Date(productImport?.createdDate),
+                "dd/MM/yyyy HH:mm",
+              )}
+              approvedDate={format(
+                new Date(productImport?.approvedDate),
+                "dd/MM/yyyy HH:mm",
+              )}
+              succeededDate={format(
+                new Date(productImport?.completedDate),
+                "dd/MM/yyyy HH:mm",
+              )}
+              status="succeed"
+            />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp</h1>
+              <h1 className="text-xl font-semibold">{t("supplier") + ": "}</h1>
             </div>
-            <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
-              {productImport?.supplier?.supplierName}
-            </div>
+            <PrimaryInput
+              readOnly={true}
+              value={productImport?.supplier?.supplierName}
+            />
           </div>
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
-          {productImport && (
+          {productImport?.createdDate && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
+              {t("created_report_import")}:{" "}
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
-
           <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
-          <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
-            <div className="flex items-center gap-1">
-              <p className="text-gray">{productImport?.user?.userName}</p>
-            </div>
-          </div>
+          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
+            placeholder={productImport?.note}
             value={productImport?.note}
             readOnly={true}
           />
@@ -237,7 +181,7 @@ function ImportReportDetail() {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ImportGoodIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
         </div>
         <div className="mt-4 table-style">
           <Table
@@ -247,12 +191,12 @@ function ImportReportDetail() {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {new BigNumber(productImport?.totalCost).toFormat()} đ
+          <div className="text-base font-semibold">{t("price_overall")}</div>
+          {new BigNumber(productImport?.totalCost || 0).toFormat()} đ
         </div>
       </div>
     </div>
   )
 }
 
-export default ImportReportDetail
+export default SecondImportReportStatus

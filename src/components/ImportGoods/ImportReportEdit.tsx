@@ -238,7 +238,7 @@ function ImportReportEdit() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("update_import_success"))
-          router.push("/import-report-draff/" + importId)
+          router.push("/import-order-detail/" + importId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -350,7 +350,7 @@ function ImportReportEdit() {
               <SecondaryBtn
                 className="w-[120px]"
                 onClick={() => {
-                  router.push("/import-report-draff/" + importId)
+                  router.push("/import-order-detail/" + importId)
                 }}
               >
                 {t("back")}

@@ -13,13 +13,13 @@ import { useQueries } from "react-query"
 import * as XLSX from "xlsx/xlsx"
 import { format, parseISO } from "date-fns"
 import { getListExportSupplier } from "../../apis/supplier-module"
-import ChooseStatusDropdown from "./ChooseStatusDropdown"
 import { getListImportProduct } from "../../apis/import-product-module"
 import TableSkeleton from "../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
 import ShowDetail from "../ShowDetail"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
+import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
 
 function ManageImportGoods() {
   const { t } = useTranslation()
@@ -214,7 +214,7 @@ function ManageImportGoods() {
   return (
     <div>
       <div className="flex items-center justify-end">
-        <Link href={`/create-import-report`}>
+        <Link href={`/create-import-order`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
@@ -341,45 +341,13 @@ function StatusDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
-  if (data?.state == 0) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/import-report-draff/${data?.importId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 1) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/import-report-detail/${data?.importId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 2) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/import-report-succeed/${data?.importId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/import-report-canceled/${data?.importId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  }
+  return (
+    <div className="flex items-center w-full gap-2">
+      <Link href={`/import-order-detail/${data?.importId}`}>
+        <a className="w-full">
+          <ShowDetail />
+        </a>
+      </Link>
+    </div>
+  )
 }

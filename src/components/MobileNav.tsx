@@ -44,14 +44,14 @@ function MobileNav() {
     {
       id: 1,
       name: t("list_import_report"),
-      href: "/manage-import-goods",
-      isActive: router.asPath.includes("/manage-import-goods"),
+      href: "/manage-import-orders",
+      isActive: router.asPath.includes("/manage-import-orders"),
     },
     {
       id: 2,
       name: t("create_import_report"),
-      href: "/create-import-report",
-      isActive: router.asPath.includes("/create-import-report"),
+      href: "/create-import-order",
+      isActive: router.asPath.includes("/create-import-order"),
     },
   ]
 
@@ -134,13 +134,13 @@ function MobileNav() {
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-import-goods") ||
+        router.asPath.includes("/manage-import-orders") ||
         router.asPath.includes("/import-report-detail") ||
         router.asPath.includes("/import-report-succeed") ||
         router.asPath.includes("/import-report-canceled") ||
         router.asPath.includes("/import-report-draff") ||
-        router.asPath.includes("/import-report-edit") ||
-        router.asPath.includes("/create-import-report"),
+        router.asPath.includes("/import-order-edit") ||
+        router.asPath.includes("/create-import-order"),
     },
     {
       id: 4,

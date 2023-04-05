@@ -659,7 +659,8 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
       value={BigNumber(discount).isGreaterThanOrEqualTo(0) ? discount : ""}
       onChange={(e) => {
         e.stopPropagation()
-        const value = e.target.value < 0 ? 0 : e.target.value
+        const value =
+          e.target.value < 0 || e.target.value > 100 ? 0 : e.target.value
         setDiscount(value)
         handleOnChangeDiscount(value)
       }}
