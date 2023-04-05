@@ -4,6 +4,7 @@ import UploadIcon from "./icons/UploadIcon"
 import { IKUpload } from "imagekitio-react"
 import Loading from "./Loading"
 import { useTranslation } from "react-i18next"
+import { toast } from "react-toastify"
 
 function AddImage({
   children,
@@ -13,6 +14,7 @@ function AddImage({
   className = "input-img",
   loadingImage = false,
   setLoadingImage,
+  toastLoadingId = "",
 }) {
   return (
     <label
@@ -33,7 +35,21 @@ function AddImage({
         </div>
       )}
       <IKUpload
-        onChange={(e) => setLoadingImage(true)}
+        // onUploadStart={(file) => {
+        //   if (file.size > 5242880) {
+        //     // 5 MB in bytes
+        //     toast.error("File size exceeded 5 MB limit")
+        //     return false // stop the upload process
+        //   }
+        //   // continue with the upload
+        //   return true
+        // }}
+        onChange={() => {
+          toast.loading("Thao tác đang được xử lý ... ", {
+            toastId: toastLoadingId,
+          })
+          setLoadingImage(true)
+        }}
         onError={onError}
         onSuccess={onSuccess}
       />

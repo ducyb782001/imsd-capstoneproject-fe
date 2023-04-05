@@ -21,6 +21,7 @@ import { checkPassword } from "../../lib/check-password"
 import { isValidPhoneNumber } from "../../hooks/useValidator"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function CreateStaff() {
   const { t } = useTranslation()
@@ -37,11 +38,13 @@ function CreateStaff() {
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
     console.log("Run onsucces here")
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
@@ -285,6 +288,7 @@ function CreateStaff() {
                     onSuccess={onSuccessUpload}
                     imageUploaded={imageUploaded}
                     setLoadingImage={setLoadingImage}
+                    toastLoadingId={TOAST_UPLOAD_IMAGE}
                   >
                     {loadingImage ? (
                       <div className="w-full h-[176px] flex items-center justify-center">
