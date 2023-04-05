@@ -118,10 +118,6 @@ function ExportReportDetail() {
     },
   ])
 
-  const handleClickOutBtn = (event) => {
-    router.push("/manage-export-goods")
-  }
-
   const exportExportMutation = useMutation(
     async (importProduct) => {
       return await exportExportProduct(importProduct)
@@ -139,7 +135,7 @@ function ExportReportDetail() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -170,10 +166,10 @@ function ExportReportDetail() {
                 {t("waiting_for_export")}
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
-              <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
+            <div className="flex items-center justify-end gap-4">
+              {/* <SecondaryBtn className="w-[120px]" onClick={handleClickOutBtn}>
                 {t("exit")}
-              </SecondaryBtn>
+              </SecondaryBtn> */}
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"

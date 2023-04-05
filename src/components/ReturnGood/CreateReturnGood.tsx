@@ -291,10 +291,11 @@ function CreateReturnReport() {
       setProductImportObject({
         ...productImportObject,
         importId: importId || reportChosen?.importId,
-        supplierId: productImport.supplierId,
+        supplierId: productImport?.supplier?.supplierId,
       })
     }
   }, [productImport])
+  console.log(productImport)
 
   return (
     <div>
@@ -432,16 +433,18 @@ function ListQuantitiveImport({
       <PrimaryInput
         className="w-[60px] "
         type="number"
+        min="0"
         placeholder="0"
-        value={quantity ? quantity : ""}
+        value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
-          if (e.target.value > data?.available) {
+          const value = e.target.value < 0 ? 0 : e.target.value
+          if (value > data?.available) {
             setQuantity(data?.available)
             handleOnChangeAmount(data?.available, data)
           } else {
-            setQuantity(e.target.value)
-            handleOnChangeAmount(e.target.value, data)
+            setQuantity(value)
+            handleOnChangeAmount(value, data)
           }
         }}
       />

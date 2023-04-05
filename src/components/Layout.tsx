@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import React, { useEffect } from "react"
 import HorizontalNav from "./HorizontalNav"
-import MainNav from "./MainNav"
+import MainNav from "./Nav/MainNav"
 import cookie from "cookie"
 import useGetMe from "../hooks/useGetMe"
 

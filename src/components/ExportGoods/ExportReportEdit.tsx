@@ -69,7 +69,7 @@ function ImportReportEdit() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
             <ListUnitImport
               data={data}
@@ -221,43 +221,6 @@ function ImportReportEdit() {
         exportOrderDetails: listProductImport,
         totalPrice: new BigNumber(price).toFixed(),
       })
-
-      // for (let index = 0; index < listProductImport.length; index++) {
-      //   const product = listProductImport[index]
-      //   if (!product.measuredUnitId) {
-      //     if (
-      //       new BigNumber(listProductImport[index]?.amount).isGreaterThan(
-      //         listChosenProduct[index]?.inStock
-      //           ? listChosenProduct[index]?.inStock
-      //           : 0,
-      //       )
-      //     ) {
-      //       setSubmitted(true)
-      //       return
-      //     }
-      //   } else {
-      //     const eachProduct = listChosenProduct[index]?.measuredUnits?.filter(
-      //       (i) =>
-      //         i.measuredUnitId === listProductImport[index]?.measuredUnitId,
-      //     )[0]
-      //     const amountExportvalue = BigNumber(
-      //       listChosenProduct[index]?.inStock || 1,
-      //     )
-      //       .dividedBy(eachProduct?.measuredUnitValue || 1)
-      //       .decimalPlaces(0, BigNumber.ROUND_DOWN)
-      //       .toNumber()
-
-      //     if (
-      //       new BigNumber(listProductImport[index].amount).isGreaterThan(
-      //         amountExportvalue,
-      //       )
-      //     ) {
-      //       setSubmitted(true)
-      //       return
-      //     }
-      //   }
-      // }
-
       setSubmitted(false)
     }
   }, [listProductImport])
@@ -283,7 +246,7 @@ function ImportReportEdit() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -296,9 +259,7 @@ function ImportReportEdit() {
 
     const count = countUndefinedOrEmptyAmount(listProductImport)
     if (count > 0) {
-      toast.error(
-        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
-      )
+      toast.error(t("export_number_0"))
       return
     }
 
@@ -407,9 +368,6 @@ function ImportReportEdit() {
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-xl font-semibold">{t("choose_staff")}</h1>
-              <Tooltip content={t("choose_supplier_product")}>
-                <InfoIcon />
-              </Tooltip>
             </div>
             <ChooseStaffDropdown
               listDropdown={listStaff}
@@ -535,6 +493,7 @@ function ListQuantitiveImport({
       }
     }
   }, [listProductImport])
+  const { t } = useTranslation()
 
   return (
     <div className="w-[100px] relative">
@@ -542,19 +501,21 @@ function ListQuantitiveImport({
         <PrimaryInput
           className="w-[60px]"
           type="number"
+          min="0"
           placeholder="0"
-          value={quantity ? quantity : ""}
+          value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
           onChange={(e) => {
             e.stopPropagation()
-            setQuantity(e.target.value)
-            handleOnChangeAmount(e.target.value, data)
+            const value = e.target.value < 0 ? 0 : e.target.value
+            setQuantity(value)
+            handleOnChangeAmount(value, data)
           }}
         />
         <p>/{inStockData}</p>
       </div>
       {new BigNumber(quantity).isGreaterThan(inStockData ? inStockData : 0) && (
         <p className="absolute text-xs text-dangerous">
-          Số lượng xuất lớn hơn số lượng tồn
+          {t("warning_amount_export")}
         </p>
       )}
     </div>
@@ -563,6 +524,7 @@ function ListQuantitiveImport({
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
   const [costPrice, setCostPrice] = useState()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (data && data?.product) {
@@ -598,7 +560,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
         return (
           checkLessPrice && (
             <p className="absolute text-xs text-dangerous">
-              Giá xuất nhỏ hơn giá nhập
+              {t("warning_price_export")}
             </p>
           )
         )
@@ -614,7 +576,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
         return (
           checkLessPrice && (
             <p className="absolute text-xs text-dangerous">
-              Giá xuất nhỏ hơn giá nhập
+              {t("warning_price_export")}
             </p>
           )
         )
@@ -631,7 +593,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
         return (
           checkLessPrice && (
             <p className="absolute text-xs text-dangerous">
-              Giá xuất nhỏ hơn giá nhập
+              {t("warning_price_export")}
             </p>
           )
         )
@@ -647,7 +609,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
         return (
           checkLessPrice && (
             <p className="absolute text-xs text-dangerous">
-              Giá xuất nhỏ hơn giá nhập
+              {t("warning_price_export")}
             </p>
           )
         )
@@ -660,11 +622,13 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
       <PrimaryInput
         className="w-[100px]"
         type="number"
+        min="0"
         placeholder="---"
-        value={costPrice ? costPrice : ""}
+        value={BigNumber(costPrice).isGreaterThanOrEqualTo(0) ? costPrice : ""}
         onChange={(e) => {
           e.stopPropagation()
-          setCostPrice(e.target.value)
+          const value = e.target.value < 0 ? 0 : e.target.value
+          setCostPrice(value)
         }}
       />
       {renderWarningPrice()}
@@ -690,12 +654,14 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
     <PrimaryInput
       className="w-[50px]"
       type="number"
+      min="0"
       placeholder="0"
-      value={discount ? discount : ""}
+      value={BigNumber(discount).isGreaterThanOrEqualTo(0) ? discount : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setDiscount(e.target.value)
-        handleOnChangeDiscount(e.target.value)
+        const value = e.target.value < 0 ? 0 : e.target.value
+        setDiscount(value)
+        handleOnChangeDiscount(value)
       }}
     />
   )

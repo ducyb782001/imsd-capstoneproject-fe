@@ -551,12 +551,14 @@ function ListQuantitiveImport({
       <PrimaryInput
         className="w-[60px]"
         type="number"
+        min="0"
         placeholder="0"
-        value={quantity ? quantity : ""}
+        value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
-          setQuantity(e.target.value)
-          handleOnChangeAmount(e.target.value, data)
+          const value = e.target.value < 0 ? 0 : e.target.value
+          setQuantity(value)
+          handleOnChangeAmount(value, data)
         }}
       />
       {renderWarningImport()}
@@ -590,11 +592,13 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
     <PrimaryInput
       className="w-[100px]"
       type="number"
+      min="0"
       placeholder="---"
-      value={costPrice ? costPrice : ""}
+      value={BigNumber(costPrice).isGreaterThanOrEqualTo(0) ? costPrice : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setCostPrice(e.target.value)
+        const value = e.target.value < 0 ? 0 : e.target.value
+        setCostPrice(value)
       }}
     />
   )
@@ -617,12 +621,15 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
     <PrimaryInput
       className="w-[50px]"
       type="number"
+      min="0"
       placeholder="0"
-      value={discount ? discount : ""}
+      value={BigNumber(discount).isGreaterThanOrEqualTo(0) ? discount : ""}
       onChange={(e) => {
         e.stopPropagation()
-        setDiscount(e.target.value)
-        handleOnChangeAmount(e.target.value)
+        const value =
+          e.target.value < 0 || e.target.value > 100 ? 0 : e.target.value
+        setDiscount(value)
+        handleOnChangeAmount(value)
       }}
     />
   )

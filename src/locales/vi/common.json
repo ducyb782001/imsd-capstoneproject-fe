@@ -235,7 +235,7 @@
   "update": "Cập nhật",
   "choose_supplier_product": "Chọn nhà cung cấp để hiển thị mặt hàng tương ứng",
   "approve_export_alert": "Bạn có chắc chắn muốn xác nhận phiếu nhập hàng không?",
-  "complete_export_alert": "Hoàn thành đơn nhập hàng thành công",
+  "complete_export_alert": "Đơn hàng đã được xuất khỏi kho thành công!",
   "waiting_for_export": "Chờ xuất hàng",
   "export": "Xuất hàng",
   "current_stock": "Tồn chi nhánh",

@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import GeneralIcon from "../icons/GeneralIcon"
 import BarcodeIcon from "../icons/BarcodeIcon"
+import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -259,17 +260,31 @@ function AddProduct() {
             <PrimaryInput
               title={t("cost_price")}
               type="number"
+              min="0"
+              value={
+                BigNumber(product?.costPrice).isGreaterThanOrEqualTo(0)
+                  ? product?.costPrice
+                  : ""
+              }
               onChange={(e) => {
-                setProduct({ ...product, costPrice: e.target.value })
+                const value = e.target.value < 0 ? 0 : e.target.value
+                setProduct({ ...product, costPrice: value })
               }}
               accessoriesRight="đ"
             />
             <PrimaryInput
               title={t("sell_price")}
               type="number"
+              min="0"
+              value={
+                BigNumber(product?.sellingPrice).isGreaterThanOrEqualTo(0)
+                  ? product?.sellingPrice
+                  : ""
+              }
               accessoriesRight="đ"
               onChange={(e) => {
-                setProduct({ ...product, sellingPrice: e.target.value })
+                const value = e.target.value < 0 ? 0 : e.target.value
+                setProduct({ ...product, sellingPrice: value })
               }}
             />
           </div>
@@ -310,15 +325,30 @@ function AddProduct() {
                   <PrimaryInput
                     title={t("in_stock_first")}
                     type="number"
+                    min="0"
+                    value={
+                      BigNumber(product?.inStock).isGreaterThanOrEqualTo(0)
+                        ? product?.inStock
+                        : ""
+                    }
                     onChange={(e) => {
-                      setProduct({ ...product, inStock: e.target.value })
+                      const value = e.target.value < 0 ? 0 : e.target.value
+                      setProduct({ ...product, inStock: value })
                     }}
                   />
                   <PrimaryInput
                     title={t("cost_price")}
                     type="number"
+                    min="0"
+                    value={
+                      BigNumber(product?.stockPrice).isGreaterThanOrEqualTo(0)
+                        ? product?.stockPrice
+                        : ""
+                    }
+                    accessoriesRight="đ"
                     onChange={(e) => {
-                      setProduct({ ...product, stockPrice: e.target.value })
+                      const value = e.target.value < 0 ? 0 : e.target.value
+                      setProduct({ ...product, stockPrice: value })
                     }}
                   />
                 </motion.div>
@@ -488,16 +518,30 @@ function RightSideProductDetail({
           <PrimaryInput
             placeholder="Min"
             type="number"
+            min="0"
+            value={
+              BigNumber(product?.minStock).isGreaterThanOrEqualTo(0)
+                ? product?.minStock
+                : ""
+            }
             onChange={(e) => {
-              setProduct({ ...product, minStock: e.target.value })
+              const value = e.target.value < 0 ? 0 : e.target.value
+              setProduct({ ...product, minStock: value })
             }}
           />
           <p>-</p>
           <PrimaryInput
             placeholder="Max"
             type="number"
+            min="0"
+            value={
+              BigNumber(product?.maxStock).isGreaterThanOrEqualTo(0)
+                ? product?.maxStock
+                : ""
+            }
             onChange={(e) => {
-              setProduct({ ...product, maxStock: e.target.value })
+              const value = e.target.value < 0 ? 0 : e.target.value
+              setProduct({ ...product, maxStock: value })
             }}
           />
         </div>
@@ -563,13 +607,15 @@ function AdditionUnitRow({
         classNameInput="text-xs md:text-sm rounded-md"
         placeholder="10"
         title={t("number_in_unit")}
-        onChange={(e) => setNewDetail(e.target.value)}
         type="number"
-        value={newDetail}
+        min="0"
+        value={BigNumber(newDetail).isGreaterThanOrEqualTo(0) ? newDetail : ""}
+        onChange={(e) => {
+          const value = e.target.value < 0 ? 0 : e.target.value
+          setNewDetail(value)
+        }}
         onKeyPress={(e) => {
           // 13 is enter button
-          console.log("E: ", e)
-
           if (e.key === "Enter") {
             handleAddNewUnit()
           }
