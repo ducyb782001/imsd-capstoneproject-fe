@@ -4,14 +4,12 @@ import { useQueries } from "react-query"
 import Table from "../Table"
 import { useRouter } from "next/router"
 import PrimaryBtn from "../PrimaryBtn"
-import { getDetailStockTakeProduct } from "../../apis/stocktake-product-module"
-import StockTakeSkeleton from "../Skeleton/StockTakeDetailSkeleton"
 import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import GeneralIcon from "../icons/GeneralIcon"
 import BigNumber from "bignumber.js"
 
-function DetailCheckGood() {
+function FirstCheckingReportStatus({ productCheckObject }) {
   const { t } = useTranslation()
   const columns = [
     {
@@ -93,32 +91,12 @@ function DetailCheckGood() {
   ]
 
   const router = useRouter()
-  const { checkId } = router.query
-  const [productCheckObject, setProductCheckObject] = useState<any>()
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
-
-  useQueries([
-    {
-      queryKey: ["getDetailCheckGood"],
-      queryFn: async () => {
-        if (checkId) {
-          const response = await getDetailStockTakeProduct(checkId)
-          setProductCheckObject(response?.data)
-          setIsLoadingReport(response?.data?.isLoading)
-          return response?.data
-        }
-      },
-      enabled: !!checkId,
-    },
-  ])
 
   const handleClickOutBtn = () => {
-    router.push("/manage-check-good")
+    router.push("/manage-inventory-checking")
   }
 
-  return isLoadingReport ? (
-    <StockTakeSkeleton />
-  ) : (
+  return (
     <div>
       <div className="w-full p-6 mt-6 bg-white block-border">
         <div className="flex flex-wrap items-center justify-between w-full gap-4 mb-6">
@@ -183,14 +161,14 @@ function DetailCheckGood() {
   )
 }
 
-export default DetailCheckGood
+export default FirstCheckingReportStatus
 
 function StatusDisplay({ data }) {
   const { t } = useTranslation()
   if (data == 2) {
     return (
-      <div className="font-medium text-center text-white rounded-lg bg-orange-50 border border-[#D69555]">
-        <h1 className="m-2 ml-3 text-orange-500">{t("cancelled")}</h1>
+      <div className="font-medium text-center text-red-600 bg-red-100 border border-red-600 rounded-lg">
+        <h1 className="m-2 ml-3">{t("cancelled")}</h1>
       </div>
     )
   } else if (data == 1) {

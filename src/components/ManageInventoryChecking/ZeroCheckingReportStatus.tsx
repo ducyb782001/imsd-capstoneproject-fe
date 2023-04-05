@@ -1,6 +1,6 @@
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryTextArea from "../PrimaryTextArea"
@@ -21,7 +21,7 @@ import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
-function DraffCheckGood() {
+function ZeroCheckingReportStatus({ productCheckObject }) {
   const { t } = useTranslation()
 
   const columns = [
@@ -116,24 +116,8 @@ function DraffCheckGood() {
     }
   }, [])
 
-  const [productCheckObject, setProductCheckObject] = useState<any>()
-  const [isLoadingReport, setIsLoadingReport] = useState(true)
-
   const router = useRouter()
-  const { checkId } = router.query
-
-  useQueries([
-    {
-      queryKey: ["getDetailCheckGood"],
-      queryFn: async () => {
-        const response = await getDetailStockTakeProduct(checkId)
-        setProductCheckObject(response?.data)
-        setIsLoadingReport(response?.data?.isLoading)
-        return response?.data
-      },
-      enabled: !!checkId,
-    },
-  ])
+  const queryClient = useQueryClient()
 
   const approveExportMutation = useMutation(
     async (exportProduct) => {
@@ -144,7 +128,7 @@ function DraffCheckGood() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("approve_check"))
-          router.push("/manage-check-good")
+          queryClient.refetchQueries("getDetailCheckGood")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -171,7 +155,7 @@ function DraffCheckGood() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("deny_check"))
-          router.push("/manage-check-good")
+          queryClient.refetchQueries("getDetailCheckGood")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -205,9 +189,7 @@ function DraffCheckGood() {
     denyExportMutation.mutate(productCheckObject?.stocktakeId)
   }
 
-  return isLoadingReport ? (
-    <StockTakeSkeleton />
-  ) : (
+  return (
     <div>
       <div>
         <div className="flex flex-col justify-between w-full gap-4 md:flex-row md:items-center">
@@ -227,7 +209,8 @@ function DraffCheckGood() {
               className="w-[130px]"
               onClick={() => {
                 router.push(
-                  "/edit-check-good/" + productCheckObject?.stocktakeId,
+                  "/edit-inventory-checking-order/" +
+                    productCheckObject?.stocktakeId,
                 )
               }}
             >
@@ -289,4 +272,4 @@ function DraffCheckGood() {
   )
 }
 
-export default DraffCheckGood
+export default ZeroCheckingReportStatus

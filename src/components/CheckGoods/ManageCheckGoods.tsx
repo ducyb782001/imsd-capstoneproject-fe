@@ -158,7 +158,7 @@ function ManageCheckGoods() {
   return (
     <div>
       <div className="flex items-center justify-end">
-        <Link href={`/create-check-report`}>
+        <Link href={`/create-inventory-checking-order`}>
           <a>
             <PrimaryBtn
               className="max-w-[330px]"
@@ -244,35 +244,13 @@ function StatusDisplay({ data }) {
 }
 
 function DetailImportProduct({ data }) {
-  if (data?.state == 0) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/draff-check-good/${data?.stocktakeId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 1) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  } else if (data?.state == 2) {
-    return (
-      <div className="flex items-center w-full gap-2">
-        <Link href={`/check-good-detail/${data?.stocktakeId}`}>
-          <a className="w-full">
-            <ShowDetail />
-          </a>
-        </Link>
-      </div>
-    )
-  }
+  return (
+    <div className="flex items-center w-full gap-2">
+      <Link href={`/inventory-checking-order-detail/${data?.stocktakeId}`}>
+        <a className="w-full">
+          <ShowDetail />
+        </a>
+      </Link>
+    </div>
+  )
 }

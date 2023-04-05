@@ -270,7 +270,7 @@ function EditCheckGood() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("approve_check"))
-          router.push("/draff-check-good/" + checkId)
+          router.push("/inventory-checking-order-detail/" + checkId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
@@ -306,7 +306,7 @@ function EditCheckGood() {
     updateStockTakeMutation.mutate(submittedData)
   }
   const handleClickOutBtn = (event) => {
-    router.push("/manage-check-good")
+    router.back()
   }
 
   return isLoadingReport ? (
