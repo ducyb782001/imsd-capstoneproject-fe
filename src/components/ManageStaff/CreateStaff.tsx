@@ -77,7 +77,7 @@ function CreateStaff() {
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data || t("error_occur"))
           } else {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(

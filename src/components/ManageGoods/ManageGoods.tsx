@@ -78,7 +78,7 @@ function ManageGoods({ ...props }) {
         },
         {
           Header: t("unit"),
-          accessor: (data: any) => <p>{data?.defaultMeasuredUnit}</p>,
+          accessor: (data: any) => <p>{data?.defaultMeasuredUnit || "---"}</p>,
         },
         {
           Header: t("created_date"),
