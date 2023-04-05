@@ -413,6 +413,7 @@ function AddProduct() {
                   )}
 
                   <AdditionUnitRow
+                    product={product}
                     newType={newType}
                     setNewType={setNewType}
                     newDetail={newDetail}
@@ -455,6 +456,7 @@ function RightSideProductDetail({
 }) {
   const [disabled, setDisabled] = useState(true)
   const [loadingImage, setLoadingImage] = useState(false)
+  const [warningStock, setWarningStock] = useState(false)
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
@@ -480,6 +482,16 @@ function RightSideProductDetail({
       setDisabled(false)
     }
   })
+
+  useEffect(() => {
+    if (
+      BigNumber(product?.minStock).isGreaterThanOrEqualTo(product?.maxStock)
+    ) {
+      setWarningStock(true)
+    } else {
+      setWarningStock(false)
+    }
+  }, [product?.minStock, product?.maxStock])
 
   const { t } = useTranslation()
   return (
@@ -545,7 +557,11 @@ function RightSideProductDetail({
             }}
           />
         </div>
-
+        {warningStock && (
+          <div className="mt-1 text-xs text-red-500">
+            Ngưỡng tồn tối đa phải lớn hơn ngưỡng tồn tối thiểu
+          </div>
+        )}
         <PrimaryTextArea
           rows={4}
           className="mt-5"
@@ -577,7 +593,7 @@ function RightSideProductDetail({
         <PrimaryBtn
           className="bg-successBtn border-successBtn active:bg-greenDark"
           onClick={handleAddProduct}
-          disabled={disabled}
+          disabled={disabled || warningStock}
         >
           {t("add_product")}
         </PrimaryBtn>
@@ -587,6 +603,7 @@ function RightSideProductDetail({
 }
 
 function AdditionUnitRow({
+  product,
   newType,
   setNewType,
   newDetail,
@@ -594,36 +611,62 @@ function AdditionUnitRow({
   handleAddNewUnit,
 }) {
   const { t } = useTranslation()
+  const [warning, setWarning] = useState(false)
+
+  useEffect(() => {
+    if (newType && newType.trim() === product?.defaultMeasuredUnit.trim()) {
+      setWarning(true)
+    } else {
+      setWarning(false)
+    }
+  }, [newType, product])
+
   return (
-    <div className="grid items-end gap-2 mt-3 text-white grid-cols-454510 md:gap-5">
-      <PrimaryInput
-        classNameInput="text-xs md:text-sm rounded-md"
-        placeholder={t("carton")}
-        title={t("unit_same")}
-        onChange={(e) => setNewType(e.target.value)}
-        value={newType}
-      />
-      <PrimaryInput
-        classNameInput="text-xs md:text-sm rounded-md"
-        placeholder="10"
-        title={t("number_in_unit")}
-        type="number"
-        min="0"
-        value={BigNumber(newDetail).isGreaterThanOrEqualTo(0) ? newDetail : ""}
-        onChange={(e) => {
-          const value = e.target.value < 0 ? 0 : e.target.value
-          setNewDetail(value)
-        }}
-        onKeyPress={(e) => {
-          // 13 is enter button
-          if (e.key === "Enter") {
-            handleAddNewUnit()
+    <div>
+      <div className="grid items-end gap-2 mt-3 grid-cols-454510 md:gap-5">
+        <PrimaryInput
+          classNameInput="text-xs md:text-sm rounded-md"
+          placeholder={t("carton")}
+          title={t("unit_same")}
+          onChange={(e) => setNewType(e.target.value)}
+          value={newType}
+        />
+        <PrimaryInput
+          classNameInput="text-xs md:text-sm rounded-md"
+          placeholder="10"
+          title={t("number_in_unit")}
+          type="number"
+          min="0"
+          value={
+            BigNumber(newDetail).isGreaterThanOrEqualTo(0) ? newDetail : ""
           }
-        }}
-      />
-      <div className="h-[46px] flex items-center justify-center">
-        <AddUnitIcon className="cursor-pointer" onClick={handleAddNewUnit} />
+          onChange={(e) => {
+            const value = e.target.value < 0 ? 0 : e.target.value
+            setNewDetail(value)
+          }}
+          onKeyPress={(e) => {
+            // 13 is enter button
+            if (e.key === "Enter" && !warning) {
+              handleAddNewUnit()
+            }
+          }}
+        />
+        <div className="h-[46px] flex items-center justify-center">
+          <AddUnitIcon
+            className="cursor-pointer"
+            onClick={() => {
+              if (!warning) {
+                handleAddNewUnit()
+              }
+            }}
+          />
+        </div>
       </div>
+      {warning && (
+        <p className="text-xs text-red-500">
+          Tên của đơn vị quy đổi phải khác tên của đơn vị mặc định
+        </p>
+      )}
     </div>
   )
 }

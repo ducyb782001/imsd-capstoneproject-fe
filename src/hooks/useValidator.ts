@@ -7,3 +7,8 @@ export function isValidGmail(gmail: string): boolean {
   var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   return regex.test(gmail)
 }
+
+export function isValidFullName(name: string): boolean {
+  var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  return regex.test(name)
+}
