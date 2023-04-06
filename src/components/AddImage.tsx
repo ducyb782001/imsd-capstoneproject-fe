@@ -4,6 +4,7 @@ import UploadIcon from "./icons/UploadIcon"
 import { IKUpload } from "imagekitio-react"
 import Loading from "./Loading"
 import { useTranslation } from "react-i18next"
+import { toast } from "react-toastify"
 
 function AddImage({
   children,
@@ -13,6 +14,7 @@ function AddImage({
   className = "input-img",
   loadingImage = false,
   setLoadingImage,
+  toastLoadingId = "",
 }) {
   return (
     <label
@@ -33,7 +35,13 @@ function AddImage({
         </div>
       )}
       <IKUpload
-        onChange={(e) => setLoadingImage(true)}
+        onChange={(e) => {
+          // console.log(e.target.value)
+          toast.loading("Thao tác đang được xử lý ... ", {
+            toastId: toastLoadingId,
+          })
+          setLoadingImage(true)
+        }}
         onError={onError}
         onSuccess={onSuccess}
       />

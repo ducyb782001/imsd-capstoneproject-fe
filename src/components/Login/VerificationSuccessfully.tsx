@@ -55,7 +55,7 @@ function VerifySuccessful() {
           console.log("Verify Success")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data || "error_occur")
           } else {
             toast.error(
               data?.response?.data?.message ||
