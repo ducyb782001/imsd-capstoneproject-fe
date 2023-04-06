@@ -22,6 +22,7 @@ import { changePassword } from "../../apis/auth"
 import { format } from "date-fns"
 import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
 import { isValidPhoneNumber } from "../../hooks/useValidator"
+const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function Profile() {
   const { t } = useTranslation()
@@ -44,12 +45,14 @@ function Profile() {
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
     // setImages([...images, res.filePath])
     console.log("Run onsucces here")
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
@@ -276,6 +279,7 @@ function Profile() {
                     onSuccess={onSuccessUpload}
                     imageUploaded={imageUploaded}
                     setLoadingImage={setLoadingImage}
+                    toastLoadingId={TOAST_UPLOAD_IMAGE}
                   >
                     {loadingImage ? (
                       <div className="w-full h-[176px] flex items-center justify-center">

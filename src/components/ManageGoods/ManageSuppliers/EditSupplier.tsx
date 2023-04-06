@@ -238,7 +238,7 @@ function EditSupplier() {
               {t("supplier_name")} <span className="text-red-500">*</span>
             </h1>
           }
-          value={supplier?.supplierName}
+          value={supplier?.supplierName ? supplier?.supplierName : ""}
           onChange={(e) => {
             setSupplier({ ...supplier, supplierName: e.target.value })
           }}
@@ -269,7 +269,7 @@ function EditSupplier() {
                 {t("phone_number")} <span className="text-red-500">*</span>
               </div>
             }
-            value={supplier?.supplierPhone}
+            value={supplier?.supplierPhone ? supplier?.supplierPhone : ""}
             onChange={(e) => {
               setSupplier({ ...supplier, supplierPhone: e.target.value })
             }}
@@ -282,7 +282,7 @@ function EditSupplier() {
         <div>
           <PrimaryInput
             title="Email"
-            value={supplier?.supplierEmail}
+            value={supplier?.supplierEmail ? supplier?.supplierEmail : ""}
             onChange={(e) => {
               setSupplier({ ...supplier, supplierEmail: e.target.value })
             }}
@@ -320,7 +320,7 @@ function EditSupplier() {
       <PrimaryInput
         className="mt-4"
         title={t("detail_adderss")}
-        value={supplier?.address}
+        value={supplier?.address ? supplier?.address : ""}
         onChange={(e) => {
           setSupplier({ ...supplier, address: e.target.value })
         }}
@@ -328,7 +328,7 @@ function EditSupplier() {
       <PrimaryTextArea
         className="mt-4"
         title={t("note_supplier")}
-        value={supplier?.note}
+        value={supplier?.note ? supplier?.note : ""}
         onChange={(e) => {
           setSupplier({ ...supplier, note: e.target.value })
         }}
