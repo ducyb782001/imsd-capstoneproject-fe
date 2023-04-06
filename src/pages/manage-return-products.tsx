@@ -1,13 +1,13 @@
 import React from "react"
-import ManageReturnGood from "../components/ReturnGood/ManageReturnGood"
 import Layout from "../components/Layout"
 import { useTranslation } from "react-i18next"
+import ManageReturnProducts from "../components/ReturnGood/ManageReturnProduct"
 
 function managReturnGoods(props) {
   const { t } = useTranslation()
   return (
     <Layout headTitle={t("return_supplier_title")}>
-      <ManageReturnGood />
+      <ManageReturnProducts />
     </Layout>
   )
 }

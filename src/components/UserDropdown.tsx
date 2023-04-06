@@ -91,7 +91,7 @@ function UserDropdown({ avatar = null, userName = "" }) {
     <div className="relative">
       <div
         onClick={toggleOpenMenu}
-        className="flex items-center gap-1 cursor-pointer"
+        className="flex items-center gap-5 cursor-pointer"
         ref={node}
       >
         {avatar ? (
