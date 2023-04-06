@@ -22,7 +22,7 @@ import BigNumber from "bignumber.js"
 import ShowDetail from "../ShowDetail"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
 
-function ManageReturnGood() {
+function ManageReturnProductToSupplier() {
   const { t } = useTranslation()
 
   const columns = [
@@ -223,12 +223,12 @@ function ManageReturnGood() {
   )
 }
 
-export default ManageReturnGood
+export default ManageReturnProductToSupplier
 
 function DetailImportProduct({ data }) {
   return (
     <div className="flex items-center w-full gap-2">
-      <Link href={`/return-import-detail/${data?.returnsId}`}>
+      <Link href={`/return-to-supplier-order-detail/${data?.returnsId}`}>
         <a className="w-full">
           <ShowDetail />
         </a>

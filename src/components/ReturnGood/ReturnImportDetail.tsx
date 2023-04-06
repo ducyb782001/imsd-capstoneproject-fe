@@ -8,9 +8,16 @@ import SmallTitle from "../SmallTitle"
 import { useTranslation } from "react-i18next"
 import PrimaryBtn from "../PrimaryBtn"
 import { getDetailReturnImport } from "../../apis/return-product-module"
-import { useQueries } from "react-query"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import ReturnTitleIcon from "../icons/ReturnTitleIcon"
 import GeneralInformationIcon from "../icons/GeneralInformationIcon"
+import SecondaryBtn from "../SecondaryBtn"
+import YellowStatus from "./YellowStatus"
+import GreenStatus from "./GreenStatus"
+import { toast } from "react-toastify"
+import { importReturnProduct } from "../../apis/import-product-module"
+
+const TOAST_IMPORT_PRODUCT_TYPE_ID = "toast-import-product-type-id"
 
 function ReturnImportDetail() {
   const { t } = useTranslation()
@@ -82,6 +89,39 @@ function ReturnImportDetail() {
     },
   ])
 
+  const handleClickImportReturnGood = async (event) => {
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_IMPORT_PRODUCT_TYPE_ID,
+    })
+    event?.preventDefault()
+    await approveImportMutation.mutate(returnId)
+  }
+  const queryClient = useQueryClient()
+  const approveImportMutation = useMutation(
+    async (importProduct: any) => {
+      return await importReturnProduct(importProduct)
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_IMPORT_PRODUCT_TYPE_ID)
+          toast.success(t("success_import"))
+          queryClient.invalidateQueries("getDetailReturnImport")
+        } else {
+          if (typeof data?.response?.data?.message !== "string") {
+            toast.error(data?.response?.data || "Error")
+          } else {
+            toast.error(
+              data?.response?.data?.message ||
+                data?.message ||
+                t("error_occur"),
+            )
+          }
+        }
+      },
+    },
+  )
+
   return isLoadingReport ? (
     <StockTakeSkeleton />
   ) : (
@@ -93,10 +133,26 @@ function ReturnImportDetail() {
             <SmallTitle>{t("product_infor")}</SmallTitle>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <PrimaryBtn className="w-[120px]" onClick={() => router.back()}>
+            <SecondaryBtn className="w-[120px]" onClick={() => router.back()}>
               {t("exit")}
-            </PrimaryBtn>
+            </SecondaryBtn>
+            {detailReturnImport?.state === 0 && (
+              <PrimaryBtn onClick={handleClickImportReturnGood}>
+                Nhập lại hàng trả
+              </PrimaryBtn>
+            )}
           </div>
+        </div>
+        <div className="text-center">
+          {detailReturnImport?.state === 0 && (
+            <YellowStatus className="max-w-[150px]" status="Đang trả hàng" />
+          )}
+          {detailReturnImport?.state === 1 && (
+            <GreenStatus
+              className="max-w-[200px]"
+              status="Đã nhập lại hàng trả"
+            />
+          )}
         </div>
         <div className="grid grid-cols-1 mt-4 md:grid-cols-502030">
           <div className="grid grid-cols-2 gap-y-4">

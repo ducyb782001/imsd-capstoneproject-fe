@@ -204,15 +204,6 @@ function EditCheckGood() {
         stocktakeNoteDetails: listProductCheck,
       })
     }
-
-    // for (let index = 0; index < listProductCheck.length; index++) {
-    //   const product = listProductCheck[index]
-    //   if (product.actualStock === "" || product.actualStock === "undefined") {
-    //     setSubmitted(true)
-    //     return
-    //   }
-    // }
-    // setSubmitted(false)
   }, [listProductCheck])
 
   const router = useRouter()

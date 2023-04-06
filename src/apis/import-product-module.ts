@@ -6,6 +6,7 @@ import {
   importImportDetailUrl,
   importProductDetailUrl,
   importProductUrl,
+  returnGoodsUrl,
   updateImportUrl,
 } from "../constants/APIConfig"
 import {
@@ -42,6 +43,12 @@ export const getProductDetailImportProduct = (importProductCode) => {
 export const approveImportProduct = (importProductId) => {
   return postAPI({
     url: `${approveImportDetailUrl}?importid=${importProductId}`,
+  })
+}
+
+export const importReturnProduct = (returnId) => {
+  return postAPI({
+    url: `${returnGoodsUrl}/ReImport?returnid=${returnId}`,
   })
 }
 

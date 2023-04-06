@@ -91,7 +91,7 @@ function UserDropdown({ avatar = null, userName = "" }) {
     <div className="relative">
       <div
         onClick={toggleOpenMenu}
-        className="flex items-center gap-1 cursor-pointer"
+        className="flex items-center gap-5 cursor-pointer"
         ref={node}
       >
         {avatar ? (
@@ -104,7 +104,9 @@ function UserDropdown({ avatar = null, userName = "" }) {
           <AvatarIcon />
         )}
         <p className="text-grayDark">{userName}</p>
-        <ArrowDownIcon color="#373737" />
+        <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+          <ArrowDownIcon color="#373737" />
+        </div>
       </div>
 
       <motion.div

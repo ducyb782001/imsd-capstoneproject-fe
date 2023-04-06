@@ -67,7 +67,7 @@ function CityDropDown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm text-black font-bold">{title}</p>}
+        {title && <p className="mb-1 text-sm font-bold text-black">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -76,7 +76,9 @@ function CityDropDown({
           <div className="flex items-center gap-1">
             <p className="text-gray">{showing?.name || textDefault}</p>
           </div>
-          <ArrowDownIcon color="#373737" />
+          <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+            <ArrowDownIcon color="#373737" />
+          </div>
         </div>
       </div>
 

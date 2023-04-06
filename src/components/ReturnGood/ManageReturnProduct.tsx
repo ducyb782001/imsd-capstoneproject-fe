@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next"
 import { getListReturnGoods } from "../../apis/return-product-module"
 import BigNumber from "bignumber.js"
 
-function ManageReturnExportGoods() {
+function ManageReturnProducts() {
   const { t } = useTranslation()
 
   const columns = [
@@ -93,14 +93,6 @@ function ManageReturnExportGoods() {
     },
   ])
 
-  // const handleExportProduct = () => {
-  //   const dateTime = Date().toLocaleString() + ""
-  //   const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-  //   const workbook = XLSX.utils.book_new()
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-  //   XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  // }
-
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -147,12 +139,12 @@ function ManageReturnExportGoods() {
   )
 }
 
-export default ManageReturnExportGoods
+export default ManageReturnProducts
 
 function DetailImportProduct({ data }) {
   return (
     <div className="flex items-center gap-2">
-      <Link href={`/return-export-detail/${data?.returnsId}`}>
+      <Link href={`/return-order-detail/${data?.returnsId}`}>
         <a className="w-full">
           <ShowDetailIcon />
         </a>

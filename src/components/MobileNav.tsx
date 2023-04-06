@@ -159,7 +159,7 @@ function MobileNav() {
       isActive:
         router.asPath === "/manage-return-products" ||
         router.asPath === "/create-return-to-supplier-order" ||
-        router.asPath === "/create-return-order" ||
+        router.asPath.includes("/create-return-order") ||
         router.asPath === "/manage-return-product-to-supplier",
     },
     {
