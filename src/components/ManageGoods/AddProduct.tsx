@@ -28,6 +28,7 @@ import BarcodeIcon from "../icons/BarcodeIcon"
 import BigNumber from "bignumber.js"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
+const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 interface Product {
   productId: number
@@ -460,11 +461,13 @@ function RightSideProductDetail({
 
   const onErrorUpload = (error: any) => {
     console.log("Run upload error", error)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
     // setImages([...images, res.filePath])
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     console.log("Run onsucces here")
     setImageUploaded(res.url)
     setLoadingImage(false)
@@ -506,6 +509,7 @@ function RightSideProductDetail({
               onSuccess={onSuccessUpload}
               imageUploaded={imageUploaded}
               setLoadingImage={setLoadingImage}
+              toastLoadingId={TOAST_UPLOAD_IMAGE}
             >
               {loadingImage ? (
                 <div className="w-full h-[176px] flex items-center justify-center">

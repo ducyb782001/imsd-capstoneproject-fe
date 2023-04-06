@@ -28,6 +28,8 @@ import GeneralIcon from "../icons/GeneralIcon"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import BarcodeIcon from "../icons/BarcodeIcon"
 
+const TOAST_UPLOAD_IMAGE = "toast-upload-image"
+
 interface Product {
   productId: number
   productName: string
@@ -97,11 +99,13 @@ function EditProduct() {
 
   const onErrorUpload = (error: any) => {
     console.log("upload error", error)
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
     // setImages([...images, res.filePath])
+    toast.dismiss(TOAST_UPLOAD_IMAGE)
     setImageUploaded(res.url)
     setLoadingImage(false)
   }
@@ -558,6 +562,7 @@ function RightSideProductDetail({
               onSuccess={onSuccessUpload}
               imageUploaded={imageUploaded}
               setLoadingImage={setLoadingImage}
+              toastLoadingId={TOAST_UPLOAD_IMAGE}
             >
               {loadingImage ? (
                 <div className="w-full h-[176px] flex items-center justify-center">
