@@ -159,7 +159,7 @@ function MainNav({ userName = "", roleId = 3 }) {
       icon: <ReturnGoodsIcon />,
       isActive:
         router.asPath === "/manage-return-products" ||
-        router.asPath === "/create-return-to-supplier-order" ||
+        router.asPath.includes("/create-return-to-supplier-order") ||
         router.asPath.includes("/create-return-order") ||
         router.asPath === "/manage-return-product-to-supplier" ||
         router.pathname === "/return-order-detail/[returnId]" ||

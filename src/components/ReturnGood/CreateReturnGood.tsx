@@ -31,7 +31,7 @@ import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
-function CreateReturnReport() {
+function CreateReturnGood() {
   const { t } = useTranslation()
 
   const columns = [
@@ -408,7 +408,7 @@ function CreateReturnReport() {
   )
 }
 
-export default CreateReturnReport
+export default CreateReturnGood
 
 function ListQuantitiveImport({
   data,

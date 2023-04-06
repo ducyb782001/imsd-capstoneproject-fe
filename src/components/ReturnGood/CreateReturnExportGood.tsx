@@ -31,7 +31,7 @@ import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
-function CreateReturnReport() {
+function CreateReturnExportGood() {
   const { t } = useTranslation()
 
   const columns = [
@@ -217,7 +217,7 @@ function CreateReturnReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_RETURN_GOODS_ID)
           toast.success("Trả hàng thành công")
-          router.push("/manage-return-product-to-supplier")
+          router.push("/manage-return-products")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -325,7 +325,7 @@ function CreateReturnReport() {
       <div className="flex items-center justify-end w-full">
         <PrimaryBtn
           className="w-[120px]"
-          onClick={() => router.push("/manage-return-product-to-supplier")}
+          onClick={() => router.push("/manage-return-products")}
         >
           {t("exit")}
         </PrimaryBtn>
@@ -431,7 +431,7 @@ function CreateReturnReport() {
   )
 }
 
-export default CreateReturnReport
+export default CreateReturnExportGood
 
 function ListQuantitiveImport({
   data,
