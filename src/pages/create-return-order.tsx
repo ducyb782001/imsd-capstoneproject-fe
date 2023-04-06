@@ -1,11 +1,14 @@
 import React from "react"
-import CreateReturnReport from "../components/ReturnGood/CreateReturnGood"
 import Layout from "../components/Layout"
+import CreateReturnExportGood from "../components/ReturnGood/CreateReturnExportGood"
 
 function createReturnReport() {
   return (
-    <Layout headTitle="Trả hàng về nhà cung cấp">
-      <CreateReturnReport />
+    // <Layout headTitle="Trả hàng về nhà cung cấp">
+    //   <CreateReturnExportGood />
+    // </Layout>
+    <Layout headTitle="Trả hàng về kho">
+      <CreateReturnExportGood />
     </Layout>
   )
 }
