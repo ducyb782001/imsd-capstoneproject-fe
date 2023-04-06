@@ -217,7 +217,7 @@ function CreateReturnReport() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_RETURN_GOODS_ID)
           toast.success("Trả hàng thành công")
-          router.push("/manage-return-export-good")
+          router.push("/manage-return-product-to-supplier")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -325,7 +325,7 @@ function CreateReturnReport() {
       <div className="flex items-center justify-end w-full">
         <PrimaryBtn
           className="w-[120px]"
-          onClick={() => router.push("/manage-return-export-good")}
+          onClick={() => router.push("/manage-return-product-to-supplier")}
         >
           {t("exit")}
         </PrimaryBtn>

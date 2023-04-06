@@ -295,7 +295,6 @@ function CreateReturnReport() {
       })
     }
   }, [productImport])
-  console.log(productImport)
 
   return (
     <div>

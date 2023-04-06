@@ -25,20 +25,20 @@ function MainNav({ userName = "", roleId = 3 }) {
     {
       id: 1,
       name: t("product"),
-      href: "/manage-goods",
-      isActive: router.asPath.includes("/manage-goods"),
+      href: "/manage-products",
+      isActive: router.asPath === "/manage-products",
     },
     {
       id: 2,
       name: t("supplier"),
       href: "/manage-suppliers",
-      isActive: router.asPath.includes("/manage-suppliers"),
+      isActive: router.asPath === "/manage-suppliers",
     },
     {
       id: 3,
       name: t("type.typeGoods"),
-      href: "/manage-type-goods",
-      isActive: router.asPath.includes("/manage-type-goods"),
+      href: "/manage-category",
+      isActive: router.asPath === "/manage-category",
     },
   ]
 
@@ -47,13 +47,13 @@ function MainNav({ userName = "", roleId = 3 }) {
       id: 1,
       name: t("list_import_report"),
       href: "/manage-import-orders",
-      isActive: router.asPath.includes("/manage-import-orders"),
+      isActive: router.asPath === "/manage-import-orders",
     },
     {
       id: 2,
       name: t("create_import_report"),
       href: "/create-import-order",
-      isActive: router.asPath.includes("/create-import-order"),
+      isActive: router.asPath === "/create-import-order",
     },
   ]
 
@@ -62,13 +62,13 @@ function MainNav({ userName = "", roleId = 3 }) {
       id: 1,
       name: t("list_export_report"),
       href: "/manage-export-orders",
-      isActive: router.asPath.includes("/manage-export-orders"),
+      isActive: router.asPath === "/manage-export-orders",
     },
     {
       id: 2,
       name: t("create_export_report"),
       href: "/create-export-order",
-      isActive: router.asPath.includes("/create-export-order"),
+      isActive: router.asPath === "/create-export-order",
     },
   ]
 
@@ -76,14 +76,14 @@ function MainNav({ userName = "", roleId = 3 }) {
     {
       id: 1,
       name: "Trả hàng về nhà cung cấp",
-      href: "/manage-return-products",
-      isActive: router.asPath.includes("/manage-return-products"),
+      href: "/manage-return-product-to-supplier",
+      isActive: router.asPath === "/manage-return-product-to-supplier",
     },
     {
       id: 2,
       name: "Khách trả",
-      href: "/manage-return-export-good",
-      isActive: router.asPath.includes("/manage-return-export-good"),
+      href: "/manage-return-products",
+      isActive: router.asPath === "/manage-return-products",
     },
   ]
 
@@ -92,13 +92,13 @@ function MainNav({ userName = "", roleId = 3 }) {
       id: 1,
       name: t("check_history"),
       href: "/manage-inventory-checking",
-      isActive: router.asPath.includes("/manage-inventory-checking"),
+      isActive: router.asPath === "/manage-inventory-checking",
     },
     {
       id: 2,
       name: t("create_check_good"),
       href: "/create-inventory-checking-order",
-      isActive: router.asPath.includes("/create-inventory-checking-order"),
+      isActive: router.asPath === "/create-inventory-checking-order",
     },
   ]
 
@@ -108,7 +108,7 @@ function MainNav({ userName = "", roleId = 3 }) {
     //   name: t("dashboard"),
     //   href: "/dashboard",
     //   icon: <DashboardIcon />,
-    //   isActive: router.asPath.includes("/dashboard"),
+    //   isActive: router.asPath === ("/dashboard"),
     // },
     {
       id: 2,
@@ -116,19 +116,19 @@ function MainNav({ userName = "", roleId = 3 }) {
       subMenu: subMenuManageGoods,
       icon: <ManageGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-goods") ||
-        router.asPath.includes("/manage-suppliers") ||
-        router.asPath.includes("/manage-type-goods") ||
-        router.asPath.includes("/add-suppliers") ||
-        router.asPath.includes("/product-detail") ||
-        router.asPath.includes("/supplier-detail") ||
-        router.asPath.includes("/edit-product") ||
-        router.asPath.includes("/add-supplier") ||
-        router.asPath.includes("/edit-supplier") ||
-        router.asPath.includes("/export-product-detail") ||
-        router.asPath.includes("/check-product-detail") ||
-        router.asPath.includes("/import-product-detail") ||
-        router.asPath.includes("/add-product"),
+        router.asPath === "/manage-products" ||
+        router.asPath === "/manage-suppliers" ||
+        router.asPath === "/manage-category" ||
+        router.asPath === "/add-suppliers" ||
+        router.asPath === "/product-detail" ||
+        router.asPath === "/supplier-detail" ||
+        router.asPath === "/edit-product" ||
+        router.asPath === "/add-supplier" ||
+        router.asPath === "/edit-supplier" ||
+        router.asPath === "/export-product-detail" ||
+        router.asPath === "/check-product-detail" ||
+        router.asPath === "/import-product-detail" ||
+        router.asPath === "/add-product",
     },
     {
       id: 3,
@@ -136,10 +136,10 @@ function MainNav({ userName = "", roleId = 3 }) {
       subMenu: subMenuImportGoods,
       icon: <ImportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-import-orders") ||
-        router.asPath.includes("/import-order-detail") ||
-        router.asPath.includes("/import-order-edit") ||
-        router.asPath.includes("/create-import-order"),
+        router.asPath === "/manage-import-orders" ||
+        router.asPath === "/import-order-detail" ||
+        router.asPath === "/import-order-edit" ||
+        router.asPath === "/create-import-order",
     },
     {
       id: 4,
@@ -147,10 +147,10 @@ function MainNav({ userName = "", roleId = 3 }) {
       subMenu: subMenuExportGoods,
       icon: <ExportGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-export-orders") ||
-        router.asPath.includes("/export-order-detail") ||
-        router.asPath.includes("/create-export-order") ||
-        router.asPath.includes("/export-order-edit"),
+        router.asPath === "/manage-export-orders" ||
+        router.asPath === "/export-order-detail" ||
+        router.asPath === "/create-export-order" ||
+        router.asPath === "/export-order-edit",
     },
     // indev
     {
@@ -159,16 +159,10 @@ function MainNav({ userName = "", roleId = 3 }) {
       subMenu: subMenuReturnGoods,
       icon: <ReturnGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-return-products") ||
-        router.asPath.includes("/return-customer-draff") ||
-        router.asPath.includes("/return-report-detail") ||
-        router.asPath.includes("/return-customer-detail") ||
-        router.asPath.includes("/return-report-draff") ||
-        router.asPath.includes("/create-return-export-good") ||
-        router.asPath.includes("/create-return-report") ||
-        router.asPath.includes("/return-import-detail") ||
-        router.asPath.includes("/return-export-detail") ||
-        router.asPath.includes("/manage-return-export-good"),
+        router.asPath === "/manage-return-products" ||
+        router.asPath === "/create-return-to-supplier-order" ||
+        router.asPath === "/create-return-order" ||
+        router.asPath === "/manage-return-product-to-supplier",
     },
     {
       id: 6,
@@ -176,10 +170,10 @@ function MainNav({ userName = "", roleId = 3 }) {
       subMenu: subMenuCheckGoods,
       icon: <CheckGoodsIcon />,
       isActive:
-        router.asPath.includes("/manage-inventory-checking") ||
-        router.asPath.includes("/create-inventory-checking-order") ||
-        router.asPath.includes("/inventory-checking-order-detail") ||
-        router.asPath.includes("/edit-inventory-checking-order"),
+        router.asPath === "/manage-inventory-checking" ||
+        router.asPath === "/create-inventory-checking-order" ||
+        router.asPath === "/inventory-checking-order-detail" ||
+        router.asPath === "/edit-inventory-checking-order",
       href: null,
     },
   ]

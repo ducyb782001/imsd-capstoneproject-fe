@@ -195,7 +195,7 @@ function EditProduct() {
           toast.dismiss(TOAST_EDIT_PRODUCT_TYPE_ID)
           toast.success(t("update_product_success"))
           queryClient.invalidateQueries("getProductDetail")
-          router.push("/manage-goods")
+          router.push("/manage-products")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])

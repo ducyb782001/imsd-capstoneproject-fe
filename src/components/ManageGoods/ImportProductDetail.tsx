@@ -147,7 +147,7 @@ function ImportProductDetail() {
             </div>
             <div className="flex items-center gap-4">
               <Link
-                href={`/create-return-report/?importId=${productImport?.importId}`}
+                href={`/create-return-order/?importId=${productImport?.importId}`}
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
