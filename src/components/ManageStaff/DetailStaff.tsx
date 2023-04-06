@@ -23,6 +23,9 @@ import DetailStaffSkeleton from "./DetailStaffSkeleton"
 import GeneralIcon from "../icons/GeneralIcon"
 import PasswordIcon from "../icons/PasswordIcon"
 import { isValidPhoneNumber } from "../../hooks/useValidator"
+import Page401 from "../401"
+import GreenStatus from "../ReturnGood/GreenStatus"
+import YellowStatus from "../ReturnGood/YellowStatus"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function DetailStaff() {
@@ -36,13 +39,6 @@ function DetailStaff() {
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    if (staffAccountObject) {
-      setStatusStaff(staffAccountObject?.status)
-      setImageUploaded(staffAccountObject?.image)
-    }
-  }, [staffAccountObject])
 
   useEffect(() => {
     if (gender) {
@@ -92,13 +88,27 @@ function DetailStaff() {
   const router = useRouter()
   const { staffId } = router.query
 
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("userData")
+      if (userData != "undefined") {
+        setUserData(JSON.parse(userData))
+      }
+    }
+  }, [])
+
   useQueries([
     {
       queryKey: ["getDetailStaff", staffId],
       queryFn: async () => {
+        setIsLoadingReport(true)
         const detail = await getDetailStaff(staffId)
         setStaffAccountObject(detail?.data)
-        setIsLoadingReport(detail?.data?.isLoading)
+        setStatusStaff(detail?.data?.status)
+        setImageUploaded(detail?.data?.image)
+        setIsLoadingReport(false)
         return detail?.data
       },
       enabled: !!staffId,
@@ -170,13 +180,20 @@ function DetailStaff() {
     }
   }
 
-  const handleChangeStatus = () => {}
+  // useEffect(() => {
+  //   setStaffAccountObject({
+  //     ...staffAccountObject,
+  //     status: statusStaff,
+  //   })
+  // }, [statusStaff])
 
   const canChangePassword = checkPassword(newPassword)
   const confirmChange = checkSamePassword(newPassword, confirmPassword)
 
   return isLoadingReport ? (
     <DetailStaffSkeleton />
+  ) : userData?.roleId !== 1 ? (
+    <Page401 />
   ) : (
     <div>
       <div className="bg-white block-border">
@@ -218,12 +235,14 @@ function DetailStaff() {
                 setShowing={setSelectRole}
               />
               <div>
-                <label className="mb-2 text-sm font-bold text-gray">
+                <div className="mb-3 text-sm font-bold text-gray">
                   {t("status")}
-                </label>
-                <div className="h-[40px] mt-4">
+                </div>
+                {/* <div className="h-[40px] mt-4">
                   <Switch
-                    onChange={handleChangeStatus}
+                    onChange={() => {
+                      setStatusStaff(!statusStaff)
+                    }}
                     readOnly={true}
                     checked={statusStaff}
                     width={44}
@@ -234,7 +253,13 @@ function DetailStaff() {
                     offColor="#CBCBCB"
                     onColor="#6A44D2"
                   />
-                </div>
+                </div> */}
+                {statusStaff === true && (
+                  <GreenStatus status="Đang hoạt động" />
+                )}
+                {statusStaff === false && (
+                  <YellowStatus status="Ngừng hoạt động" />
+                )}
               </div>
             </div>
 

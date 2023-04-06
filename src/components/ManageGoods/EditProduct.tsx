@@ -681,8 +681,9 @@ function AdditionUnitRow({
 
   useEffect(() => {
     if (
-      (newType && newType.trim()) ===
-      (product?.defaultMeasuredUnit && product?.defaultMeasuredUnit.trim())
+      (newType && newType.trim.toLowerCase()()) ===
+      (product?.defaultMeasuredUnit &&
+        product?.defaultMeasuredUnit.toLowerCase().trim())
     ) {
       setWarning(true)
     } else {

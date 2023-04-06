@@ -160,7 +160,7 @@ function MainNav({ userName = "", roleId = 3 }) {
       isActive:
         router.asPath === "/manage-return-products" ||
         router.asPath === "/create-return-to-supplier-order" ||
-        router.asPath === "/create-return-order" ||
+        router.asPath.includes("/create-return-order") ||
         router.asPath === "/manage-return-product-to-supplier" ||
         router.pathname === "/return-order-detail/[returnId]" ||
         router.pathname === "/return-to-supplier-order-detail/[returnId]",
@@ -227,7 +227,8 @@ function MainNav({ userName = "", roleId = 3 }) {
                 href="/manage-staff"
                 isActive={
                   router.asPath.includes("/manage-staff") ||
-                  router.asPath.includes("/create-staff")
+                  router.asPath.includes("/create-staff") ||
+                  router.asPath.includes("/edit-staff")
                 }
               />
             )}
