@@ -67,7 +67,7 @@ function WardDropDown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <h1 className="mb-1 text-sm text-gray font-bold">{title}</h1>}
+        {title && <h1 className="mb-1 text-sm font-bold text-gray">{title}</h1>}
 
         <div
           onClick={toggleOpenMenu}
@@ -76,7 +76,10 @@ function WardDropDown({
           <div className="flex items-center gap-1">
             <h1 className="text-black">{showing?.name || textDefault}</h1>
           </div>
-          <ArrowDownIcon color="#373737" />
+
+          <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+            <ArrowDownIcon color="#373737" />
+          </div>
         </div>
       </div>
 

@@ -104,7 +104,9 @@ function UserDropdown({ avatar = null, userName = "" }) {
           <AvatarIcon />
         )}
         <p className="text-grayDark">{userName}</p>
-        <ArrowDownIcon color="#373737" />
+        <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+          <ArrowDownIcon color="#373737" />
+        </div>
       </div>
 
       <motion.div

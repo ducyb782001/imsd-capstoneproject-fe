@@ -68,7 +68,9 @@ function ReasonDropdown({ showing, setShowing, textDefault = "" }) {
           className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform"
         >
           <p className="text-gray">{showing?.value || textDefault}</p>
-          <ArrowDownIcon color="#373737" />
+          <div className={`${isOpen && "rotate-180"} smooth-transform`}>
+            <ArrowDownIcon color="#373737" />
+          </div>
         </div>
       </div>
 

@@ -21,6 +21,7 @@ import { checkPassword, checkSamePassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import { format } from "date-fns"
 import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
+import { isValidPhoneNumber } from "../../hooks/useValidator"
 
 function Profile() {
   const { t } = useTranslation()
@@ -182,20 +183,26 @@ function Profile() {
                   ""
                 }
               />
-              <PrimaryInput
-                title={t("phone_number")}
-                placeholder={t("enter_number")}
-                type="number"
-                value={
-                  staffAccountObject?.phone ? staffAccountObject?.phone : ""
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    phone: e.target.value,
-                  })
-                }}
-              />
+              <div>
+                <PrimaryInput
+                  title={t("phone_number")}
+                  placeholder={t("enter_number")}
+                  type="number"
+                  value={
+                    staffAccountObject?.phone ? staffAccountObject?.phone : ""
+                  }
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      phone: e.target.value,
+                    })
+                  }}
+                />
+                {staffAccountObject?.phone &&
+                  !!!isValidPhoneNumber(staffAccountObject?.phone) && (
+                    <p className="text-red-500">Sai định dạng</p>
+                  )}
+              </div>
             </div>
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
               <SelectGenderDropdown
@@ -288,6 +295,10 @@ function Profile() {
         <PrimaryBtn
           onClick={() => handleChangeProfile()}
           className="max-w-[182px] mt-6"
+          disabled={
+            staffAccountObject?.phone &&
+            !!!isValidPhoneNumber(staffAccountObject?.phone)
+          }
         >
           {t("save")}
         </PrimaryBtn>
