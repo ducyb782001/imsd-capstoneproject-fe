@@ -675,7 +675,10 @@ function AdditionUnitRow({
   const [warning, setWarning] = useState(false)
 
   useEffect(() => {
-    if (newType && newType.trim() === product?.defaultMeasuredUnit.trim()) {
+    if (
+      (newType && newType.trim()) ===
+      (product?.defaultMeasuredUnit && product?.defaultMeasuredUnit.trim())
+    ) {
       setWarning(true)
     } else {
       setWarning(false)
