@@ -165,7 +165,7 @@ function ManageReturnGood() {
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2"></div>
-        <Link href={`/create-return-report`}>
+        <Link href={`/create-return-order`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"

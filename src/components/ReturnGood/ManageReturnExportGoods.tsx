@@ -105,7 +105,7 @@ function ManageReturnExportGoods() {
     <div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2"></div>
-        <Link href={`/create-return-export-good`}>
+        <Link href={`/create-return-to-supplier-order`}>
           <a>
             <PrimaryBtn
               className="max-w-[230px]"
@@ -118,7 +118,7 @@ function ManageReturnExportGoods() {
       </div>
       <div className="mt-2 bg-white block-border">
         <SearchInput
-          placeholder={t("search_return")}
+          placeholder={"Tìm theo mã đơn trả hàng, người tạo đơn"}
           onChange={(e) => setSearchParam(e.target.value)}
           className="w-full mb-4"
         />

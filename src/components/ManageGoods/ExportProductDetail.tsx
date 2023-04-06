@@ -128,7 +128,7 @@ function ExportProductDetail() {
             </div>
             <div className="flex items-center justify-between gap-4">
               <Link
-                href={`/create-return-export-good/?exportId=${productImport?.exportId}`}
+                href={`/create-return-to-supplier-order/?exportId=${productImport?.exportId}`}
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
