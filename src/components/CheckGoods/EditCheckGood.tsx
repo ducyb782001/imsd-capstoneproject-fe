@@ -165,7 +165,7 @@ function EditCheckGood() {
   }, [productChosen])
 
   useEffect(() => {
-    if (listChosenProduct?.length > 0) {
+    if (listChosenProduct) {
       const list = listChosenProduct.map((item) => {
         const currentStock = listProductCheck.find(
           (i) => i.productId == item.productId,
@@ -173,9 +173,6 @@ function EditCheckGood() {
         const measuredUnitId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
-        const stocktakeId = listProductCheck.find(
-          (i) => i.productId == item.productId,
-        )?.actualStock
         const note = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.note
@@ -184,7 +181,6 @@ function EditCheckGood() {
         )?.actualStock
 
         return {
-          stocktakeId: stocktakeId,
           productId: item.productId,
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
@@ -236,7 +232,7 @@ function EditCheckGood() {
       },
     },
     {
-      queryKey: ["getDetailStockTake"],
+      queryKey: ["getDetailStockTake", checkId],
       queryFn: async () => {
         const response = await getDetailStockTakeProduct(checkId)
         setProductCheckObject(response?.data)
@@ -265,7 +261,7 @@ function EditCheckGood() {
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data || t("error_occur"))
           } else {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
@@ -486,7 +482,7 @@ function ListNote({ data, listProductCheck, setListProductCheck }) {
   const [note, setNote] = useState<any>({ id: 0, value: data?.note })
 
   useEffect(() => {
-    if (note) {
+    if (note?.value) {
       const list = listProductCheck
       const newList = list.map((item) => {
         if (item.productId == data.productId) {
@@ -496,7 +492,7 @@ function ListNote({ data, listProductCheck, setListProductCheck }) {
       })
       setListProductCheck(newList)
     }
-  }, [note])
+  }, [note?.value])
 
   return <ReasonDropdown showing={note} setShowing={setNote} />
 }

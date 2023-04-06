@@ -320,7 +320,7 @@ function CreateExportGood() {
         } else {
           setSubmitted(false)
           if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data || t("error_occur"))
           } else {
             toast.error(
               data?.response?.data?.message ||

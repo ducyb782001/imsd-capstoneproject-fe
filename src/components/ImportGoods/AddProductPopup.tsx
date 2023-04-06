@@ -76,7 +76,7 @@ function AddProductPopup({ className = "" }) {
           close()
         } else {
           if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data || "Error")
           } else {
             toast.error(
               data?.response?.data?.message ||
