@@ -57,8 +57,14 @@ function ManageReturnProductToSupplier() {
         {
           Header: "Giá trị trả hàng",
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+            <p className="text-center">
+              {new BigNumber(data?.total).toFormat()} đ
+            </p>
           ),
+        },
+        {
+          Header: "ABC",
+          accessor: (data: any) => <p>{data?.state}</p>,
         },
         {
           Header: "Ghi chú",

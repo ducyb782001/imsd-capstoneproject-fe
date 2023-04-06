@@ -6,7 +6,7 @@ import ManageReturnProducts from "../components/ReturnGood/ManageReturnProduct"
 function managReturnGoods(props) {
   const { t } = useTranslation()
   return (
-    <Layout headTitle={t("return_supplier_title")}>
+    <Layout headTitle={t("return_customer_title")}>
       <ManageReturnProducts />
     </Layout>
   )

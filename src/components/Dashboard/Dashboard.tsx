@@ -23,6 +23,7 @@ import SaleChart from "./SaleChart"
 import SubMenu from "./SubMenu"
 import SummaryRevenue from "./SummaryRevenue"
 import { useTranslation } from "react-i18next"
+import DashboardCardSkeleton from "../Skeleton/DashboardCardSkeleton"
 
 function Dashboard() {
   const { t } = useTranslation()

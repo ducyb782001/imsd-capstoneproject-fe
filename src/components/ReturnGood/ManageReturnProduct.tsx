@@ -45,7 +45,9 @@ function ManageReturnProducts() {
         {
           Header: "Giá trị trả hàng",
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+            <p className="text-center">
+              {new BigNumber(data?.total).toFormat()} đ
+            </p>
           ),
         },
         {
