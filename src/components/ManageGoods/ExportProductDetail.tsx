@@ -107,10 +107,6 @@ function ExportProductDetail() {
     },
   ])
 
-  const handleClickOutBtn = () => {
-    router.back()
-  }
-
   return isLoadingReport ? (
     <ExportReportSkeleton />
   ) : (
@@ -128,7 +124,7 @@ function ExportProductDetail() {
             </div>
             <div className="flex items-center justify-between gap-4">
               <Link
-                href={`/create-return-to-supplier-order/?exportId=${productImport?.exportId}`}
+                href={`/create-return-order/?exportId=${productImport?.exportId}`}
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
@@ -136,7 +132,12 @@ function ExportProductDetail() {
                   </SecondaryBtn>
                 </a>
               </Link>
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+              <PrimaryBtn
+                onClick={() => {
+                  router.push("/manage-export-orders")
+                }}
+                className="w-[120px]"
+              >
                 {t("exit")}
               </PrimaryBtn>
             </div>

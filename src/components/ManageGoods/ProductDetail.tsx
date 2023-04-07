@@ -225,6 +225,12 @@ function HistoryProduct({ data }) {
             </p>
           ),
         },
+        // {
+        //   Header: "Giá thay đổi",
+        //   accessor: (data: any) => (
+        //     <p className="text-center">{data?.priceDifferential || "0"} đ</p>
+        //   ),
+        // },
         {
           Header: t("recorded_date"),
           accessor: (data: any) => (
@@ -287,6 +293,17 @@ function ShowDetailHistory({ data }) {
     return (
       <div>
         <Link href={`/import-product-detail/` + a}>
+          <p className="cursor-pointer text-blue">{a}</p>
+        </Link>
+      </div>
+    )
+  } else if (
+    data?.actionType?.action == "Nhập hàng trả" ||
+    data?.actionType?.action == "Trả hàng"
+  ) {
+    return (
+      <div>
+        <Link href={`/return-product-detail?returnCode=` + a}>
           <p className="cursor-pointer text-blue">{a}</p>
         </Link>
       </div>

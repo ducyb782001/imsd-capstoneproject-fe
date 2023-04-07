@@ -11,6 +11,9 @@ import {
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 import GeneralIcon from "../icons/GeneralIcon"
+import PrimaryBtn from "../PrimaryBtn"
+import CheckGoodIcon from "../icons/CheckGoodIcon"
+import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 
 function CheckProductDetail() {
   const { t } = useTranslation()
@@ -76,12 +79,19 @@ function CheckProductDetail() {
         {
           Header: t("deviated"),
           accessor: (data: any) => (
-            <p className="text-center">{data?.amountDifferential}</p>
+            <p className="text-center">
+              {new BigNumber(data?.currentStock || 0).isGreaterThan(
+                data?.actualStock || 0,
+              )
+                ? "-"
+                : "+"}
+              {data?.amountDifferential || "---"}
+            </p>
           ),
         },
         {
           Header: t("reason"),
-          accessor: (data: any) => <p>{data?.note}</p>,
+          accessor: (data: any) => <p>{data?.note || "---"}</p>,
         },
       ],
     },
@@ -89,77 +99,88 @@ function CheckProductDetail() {
 
   const router = useRouter()
   const { detailCode } = router.query
-  const [productStockTakeObject, setProductStockTakeObject] = useState<any>()
+  const [productCheckObject, setProductStockTakeObject] = useState<any>()
+  const [isLoadingReport, setIsLoadingChecking] = useState(true)
 
   useQueries([
     {
       queryKey: ["getListProduct"],
       queryFn: async () => {
+        setIsLoadingChecking(true)
         const response = await getProductDetailStockTakeProduct(detailCode)
         setProductStockTakeObject(response?.data)
+        setIsLoadingChecking(false)
         return response?.data
       },
       enabled: !!detailCode,
     },
   ])
 
-  return (
+  return isLoadingReport ? (
+    <ImportReportSkeleton />
+  ) : (
     <div>
-      <div>
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center justify-between gap-4"></div>
-        </div>
-        <div className="w-full p-6 mt-6 bg-white block-border">
-          <div className="flex items-center gap-3 mb-10">
+      <div className="w-full p-6 mt-6 bg-white block-border">
+        <div className="flex flex-wrap items-center justify-between w-full gap-4 mb-6">
+          <div className="flex items-center gap-3">
             <GeneralIcon />
-            <h1 className="text-2xl font-semibold">Thông tin đơn</h1>
-            <StatusDisplay data={productStockTakeObject?.state} />
+            <h1 className="text-2xl font-semibold">{t("report_infor")}</h1>
+            <StatusDisplay data={productCheckObject?.state} />
           </div>
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
-            <div className="flex flex-col gap-1">
-              <p>{t("check_code")}:</p>
-              <p>{t("created_report_import")}:</p>
-              <p>{t("staff_created")}:</p>
-              <p>{t("check_date")}:</p>
-              <p>{t("check_staff")}:</p>
-              <p>{t("note")}:</p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p>{productStockTakeObject?.stocktakeCode}</p>
-              <p>
-                {productStockTakeObject?.created
-                  ? format(
-                      new Date(productStockTakeObject?.created),
-                      "dd/MM/yyyy HH:mm",
-                    )
-                  : ""}
-              </p>
-              <p>{productStockTakeObject?.createdBy?.userName}</p>
-              <p>
-                {productStockTakeObject?.updated
-                  ? format(
-                      new Date(productStockTakeObject?.updated),
-                      "dd/MM/yyyy HH:mm",
-                    )
-                  : ""}
-              </p>
-              <p>{productStockTakeObject?.updatedBy?.userName}</p>
-              <p>{productStockTakeObject?.note || "---"}</p>
-            </div>
+          <div className="flex items-center justify-between gap-4">
+            <PrimaryBtn
+              onClick={() => {
+                router.push("/manage-inventory-checking")
+              }}
+              className="w-[120px]"
+            >
+              {t("exit")}
+            </PrimaryBtn>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+          <div className="flex flex-col gap-1">
+            <p>{t("check_code")}:</p>
+            <p>{t("created_report_import")}:</p>
+            <p>{t("staff_created")}:</p>
+            <p>{t("check_date")}:</p>
+            <p>{t("check_staff")}:</p>
+            <p>{t("note")}:</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p>{productCheckObject?.stocktakeCode}</p>
+            <p>
+              {productCheckObject?.created
+                ? format(
+                    new Date(productCheckObject?.created),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : ""}
+            </p>
+            <p>{productCheckObject?.createdBy?.userName}</p>
+            <p>
+              {productCheckObject?.updated
+                ? format(
+                    new Date(productCheckObject?.updated),
+                    "dd/MM/yyyy HH:mm",
+                  )
+                : "---"}
+            </p>
+            <p>{productCheckObject?.updatedBy?.userName || "---"}</p>
+            <p>{productCheckObject?.note || "---"}</p>
           </div>
         </div>
       </div>
-
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3">
-          <ExportGoodsIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm xuất</h1>
+          <CheckGoodIcon />
+          <h1 className="text-xl font-semibold">{t("check_good_infor")}</h1>
         </div>
         <div className="mt-4 table-style">
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={productStockTakeObject?.stocktakeNoteDetails}
+            data={productCheckObject?.stocktakeNoteDetails}
           />
         </div>
       </div>
