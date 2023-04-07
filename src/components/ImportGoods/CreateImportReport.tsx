@@ -308,6 +308,7 @@ function CreateImportReport() {
         const response = await getListSupplier({
           offset: 0,
           limit: 1000,
+          status: true,
         })
 
         setListNhaCungCap(response?.data?.data)

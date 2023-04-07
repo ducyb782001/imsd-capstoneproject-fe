@@ -25,6 +25,8 @@ import useScanDetection from "../../hooks/useScanDetection"
 import { useTranslation } from "react-i18next"
 import ShowDetail from "../ShowDetail"
 import EditDetail from "../EditDetail"
+import GreenStatus from "../ReturnGood/GreenStatus"
+import RedStatus from "../ReturnGood/RedStatus"
 
 function ManageGoods({ ...props }) {
   const { t } = useTranslation()
@@ -84,6 +86,18 @@ function ManageGoods({ ...props }) {
           Header: t("created_date"),
           accessor: (data: any) => (
             <p>{format(parseISO(data?.created), "dd/MM/yyyy HH:mm")}</p>
+          ),
+        },
+        {
+          Header: t("status"),
+          accessor: (data: any) => (
+            <div className="flex justify-center">
+              {data?.status ? (
+                <GreenStatus className="w-fit" status="Đang giao dịch" />
+              ) : (
+                <RedStatus className="w-fit" status="Ngừng giao dịch" />
+              )}
+            </div>
           ),
         },
         {
