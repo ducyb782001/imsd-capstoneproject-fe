@@ -18,7 +18,10 @@ import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getListExportSupplier,
+  getListSupplier,
+} from "../../apis/supplier-module"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import { useTranslation } from "react-i18next"
@@ -126,7 +129,11 @@ function AddProduct() {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
         setIsLoadingSupplier(true)
-        const response = await getListExportSupplier({})
+        const response = await getListSupplier({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         await setListNhaCungCap(response?.data?.data)
         setIsLoadingSupplier(false)
 

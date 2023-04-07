@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { getListExportProduct } from "../../apis/product-module"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
@@ -302,7 +302,11 @@ function ExportOrderEdit() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsLoadingStaff(true)
-        const response = await getListStaff()
+        const response = await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(response?.data?.data)
         setIsLoadingStaff(false)
 

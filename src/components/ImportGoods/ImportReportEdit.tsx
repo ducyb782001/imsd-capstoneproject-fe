@@ -8,7 +8,10 @@ import {
   updateImportProduct,
 } from "../../apis/import-product-module"
 import { getListExportProductBySupplier } from "../../apis/product-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getListExportSupplier,
+  getListSupplier,
+} from "../../apis/supplier-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
@@ -301,7 +304,11 @@ function ImportReportEdit() {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
         setIsLoadingSupplier(true)
-        const response = await getListExportSupplier({})
+        const response = await getListSupplier({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListNhaCungCap(response?.data?.data)
         setIsLoadingSupplier(false)
 

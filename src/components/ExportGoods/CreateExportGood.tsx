@@ -6,7 +6,7 @@ import { toast } from "react-toastify"
 import { createExportProduct } from "../../apis/export-product-module"
 import { getListExportProduct } from "../../apis/product-module"
 import { getListExportSupplier } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
@@ -122,11 +122,8 @@ function CreateExportGood() {
       ],
     },
   ]
-  const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
-  const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [staffSelected, setStaffSelected] = useState<any>()
   const [listStaff, setListStaff] = useState<any>()
-  const [autoUpdatePrice, setAutoUpdatePrice] = useState(true)
   const [listChosenProduct, setListChosenProduct] = useState([])
   const [productChosen, setProductChosen] = useState<any>()
   const [listProductExport, setListProductExport] = useState<any>([])
@@ -155,19 +152,6 @@ function CreateExportGood() {
       })
     }
   }, [staffSelected])
-
-  useEffect(() => {
-    if (nhaCungCapSelected) {
-      setProductExportObject({
-        ...productExportObject,
-        supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductExportObject({
-        ...productExportObject,
-        state: 0,
-      })
-    }
-  }, [nhaCungCapSelected])
 
   useEffect(() => {
     if (productChosen) {
@@ -277,10 +261,12 @@ function CreateExportGood() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsLoadingStaff(true)
-        const staff = await getListStaff()
+        const staff = await await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(staff?.data?.data)
-        const supplier = await getListExportSupplier({})
-        setListNhaCungCap(supplier?.data?.data)
         setIsLoadingStaff(false)
         return staff?.data?.data
       },

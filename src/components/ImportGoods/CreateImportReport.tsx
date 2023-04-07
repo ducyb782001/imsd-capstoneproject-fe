@@ -9,7 +9,7 @@ import {
   getListExportSupplier,
   getListSupplier,
 } from "../../apis/supplier-module"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import InfoIcon from "../icons/InfoIcon"
 import XIcons from "../icons/XIcons"
@@ -302,7 +302,11 @@ function CreateImportReport() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsloadingSupplier(true)
-        const staff = await getListStaff()
+        const staff = await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(staff?.data?.data)
 
         const response = await getListSupplier({
