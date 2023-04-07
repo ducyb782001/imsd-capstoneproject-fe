@@ -6,7 +6,7 @@ import {
   getDetailImportProduct,
   getListImportProduct,
 } from "../../apis/import-product-module"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
@@ -249,7 +249,11 @@ function CreateReturnGood() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsLoadingStaff(true)
-        const response = await getListStaff()
+        const response = await await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(response?.data?.data)
         setIsLoadingStaff(false)
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { getListExportProduct } from "../../apis/product-module"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import XIcons from "../icons/XIcons"
 import PrimaryInput from "../PrimaryInput"
@@ -212,7 +212,11 @@ function EditCheckGood() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsLoadingStaff(true)
-        const staff = await getListStaff()
+        const staff = await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(staff?.data?.data)
         setIsLoadingStaff(false)
 
@@ -225,7 +229,6 @@ function EditCheckGood() {
         const response = await getListExportProduct({
           offset: 0,
           limit: 1000,
-          status: true,
         })
         setListProduct(response?.data)
         return response?.data

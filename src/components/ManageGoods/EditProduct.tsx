@@ -19,7 +19,10 @@ import { getProductDetail, updateProduct } from "../../apis/product-module"
 import BigNumber from "bignumber.js"
 import { toast } from "react-toastify"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import { getListExportSupplier } from "../../apis/supplier-module"
+import {
+  getListExportSupplier,
+  getListSupplier,
+} from "../../apis/supplier-module"
 import { useTranslation } from "react-i18next"
 import defaultProductImage from "../images/default-product-image.jpg"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
@@ -155,7 +158,11 @@ function EditProduct() {
       queryKey: ["getListSupplier"],
       queryFn: async () => {
         setIsLoadingSupplier(true)
-        const response = await getListExportSupplier({})
+        const response = await getListSupplier({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         await setListNhaCungCap(response?.data?.data)
         setIsLoadingSupplier(false)
 

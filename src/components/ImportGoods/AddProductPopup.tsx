@@ -136,6 +136,7 @@ function AddProductPopup({ className = "" }) {
         const queryObj = {
           offset: 0,
           limit: 1000,
+          status: true,
         }
         const response = await getListSupplier(queryObj)
         await setListNhaCungCap(response?.data?.data)

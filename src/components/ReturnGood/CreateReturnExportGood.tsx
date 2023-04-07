@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
-import { getListStaff } from "../../apis/user-module"
+import { getAllStaff } from "../../apis/user-module"
 import ConfirmPopup from "../ConfirmPopup"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
@@ -274,7 +274,11 @@ function CreateReturnExportGood() {
       queryKey: ["getListStaff"],
       queryFn: async () => {
         setIsLoadingStaff(true)
-        const response = await getListStaff()
+        const response = await getAllStaff({
+          offset: 0,
+          limit: 1000,
+          status: true,
+        })
         setListStaff(response?.data?.data)
         setIsLoadingStaff(false)
 
