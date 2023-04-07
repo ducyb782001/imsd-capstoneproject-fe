@@ -1,5 +1,5 @@
 import React from "react"
-import Layout from "../components/Layout"
+import Layout from "../components/Nav/Layout"
 import AddSupplier from "../components/ManageGoods/ManageSuppliers/AddSupplier"
 import { useTranslation } from "react-i18next"
 

@@ -1,6 +1,6 @@
 import React from "react"
 import CreateImportReport from "../components/ImportGoods/CreateImportReport"
-import Layout from "../components/Layout"
+import Layout from "../components/Nav/Layout"
 
 function createImportReport(props) {
   return (

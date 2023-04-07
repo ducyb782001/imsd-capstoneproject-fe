@@ -1,7 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import ManageCheckGoods from "../components/CheckGoods/ManageCheckGoods"
-import Layout from "../components/Layout"
+import Layout from "../components/Nav/Layout"
 
 function manageCheckGood() {
   const { t } = useTranslation()
