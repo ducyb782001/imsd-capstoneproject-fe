@@ -1,11 +1,11 @@
 import { useRouter } from "next/router"
 import React, { useEffect } from "react"
-import HorizontalNav from "./HorizontalNav"
-import MainNav from "./Nav/MainNav"
+import HorizontalNav from "../HorizontalNav"
+import MainNav from "./MainNav"
 import cookie from "cookie"
-import useGetMe from "../hooks/useGetMe"
+import useGetMe from "../../hooks/useGetMe"
 
-function Layout({ headTitle = "", ...props }) {
+function StoreKeeperLayout({ headTitle = "", ...props }) {
   const router = useRouter()
 
   useEffect(() => {
@@ -34,4 +34,4 @@ function Layout({ headTitle = "", ...props }) {
   )
 }
 
-export default Layout
+export default StoreKeeperLayout

@@ -155,7 +155,12 @@ function ImportProductDetail() {
                   </SecondaryBtn>
                 </a>
               </Link>
-              <PrimaryBtn onClick={handleClickOutBtn} className="w-[120px]">
+              <PrimaryBtn
+                onClick={() => {
+                  router.push("/manage-import-orders")
+                }}
+                className="w-[120px]"
+              >
                 Thoát
               </PrimaryBtn>
             </div>

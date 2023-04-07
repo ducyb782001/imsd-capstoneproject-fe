@@ -21,6 +21,8 @@ import { getListReturnGoods } from "../../apis/return-product-module"
 import BigNumber from "bignumber.js"
 import ShowDetail from "../ShowDetail"
 import ChooseSupplierDropdown from "../ManageGoods/ChooseSupplierDropdown"
+import YellowStatus from "./YellowStatus"
+import GreenStatus from "./GreenStatus"
 
 function ManageReturnProductToSupplier() {
   const { t } = useTranslation()
@@ -63,8 +65,15 @@ function ManageReturnProductToSupplier() {
           ),
         },
         {
-          Header: "ABC",
-          accessor: (data: any) => <p>{data?.state}</p>,
+          Header: "Trạng thái",
+          accessor: (data: any) => (
+            <div className="flex justify-center w-full">
+              {data?.state === 0 && <YellowStatus status="Đang trả hàng" />}
+              {data?.state === 1 && (
+                <GreenStatus status="Đã nhập lại hàng trả" />
+              )}
+            </div>
+          ),
         },
         {
           Header: "Ghi chú",

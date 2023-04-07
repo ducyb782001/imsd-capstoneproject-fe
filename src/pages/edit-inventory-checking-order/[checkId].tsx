@@ -1,5 +1,5 @@
 import React from "react"
-import Layout from "../../components/Layout"
+import Layout from "../../components/Nav/Layout"
 import CheckGood from "../../components/CheckGoods/EditCheckGood"
 
 function checkGood(props) {

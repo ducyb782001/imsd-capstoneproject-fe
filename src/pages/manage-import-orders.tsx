@@ -1,5 +1,5 @@
 import React from "react"
-import Layout from "../components/Layout"
+import Layout from "../components/Nav/Layout"
 import ManageImportGoods from "../components/ManageImportOrders/ManageImportOrders"
 
 function manageImportGoods() {

@@ -27,3 +27,9 @@ export const getListProductAvailable = (queryObject) => {
     url: `${returnGoodsUrl}/GetAvailable${queryString}`,
   })
 }
+
+export const getDetailReturnBycode = (returnCode) => {
+  return requestAPI({
+    url: `${returnGoodsUrl}/GetDetail?returncode=${returnCode}`,
+  })
+}

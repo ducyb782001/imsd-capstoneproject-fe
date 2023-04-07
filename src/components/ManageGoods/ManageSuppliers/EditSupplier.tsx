@@ -204,15 +204,15 @@ function EditSupplier() {
       supplierPhone: supplier?.supplierPhone,
     }
 
-    if (supplier?.city) {
+    if (supplier?.city?.id) {
       submittedData["city"] = supplier?.city
     }
 
-    if (supplier?.district) {
+    if (supplier?.district?.id) {
       submittedData["district"] = supplier?.district
     }
 
-    if (supplier?.ward) {
+    if (supplier?.ward?.id) {
       submittedData["ward"] = supplier?.ward
     }
 
