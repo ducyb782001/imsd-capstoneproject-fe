@@ -127,3 +127,11 @@ export function checkDisableApplyRewardFilter(
     return false
   }
 }
+
+export function checkStringLength(str: string, length: number) {
+  if (str?.length <= length) {
+    return false
+  } else {
+    return true
+  }
+}

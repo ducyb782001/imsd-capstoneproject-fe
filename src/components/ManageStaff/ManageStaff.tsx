@@ -215,9 +215,7 @@ function ManageStaff() {
     },
   ])
 
-  return isLoadingListExport ? (
-    <ManageStaffSkeleton />
-  ) : userData?.roleId !== 1 ? (
+  return userData?.roleId !== 1 ? (
     <Page401 />
   ) : (
     <div>
@@ -241,7 +239,6 @@ function ManageStaff() {
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
-
             <ChooseRoleDropdown
               listDropdown={role}
               textDefault={t("staff_position")}
@@ -275,13 +272,17 @@ function ManageStaff() {
             />
           </div>
         </div>
-        <div className="mt-4 table-style">
-          <Table
-            pageSizePagination={pageSize}
-            columns={columns}
-            data={newList}
-          />
-        </div>
+        {isLoadingListExport ? (
+          <TableSkeleton />
+        ) : (
+          <div className="mt-4 table-style">
+            <Table
+              pageSizePagination={pageSize}
+              columns={columns}
+              data={newList}
+            />
+          </div>
+        )}
         <Pagination
           pageSize={pageSize}
           setPageSize={setPageSize}

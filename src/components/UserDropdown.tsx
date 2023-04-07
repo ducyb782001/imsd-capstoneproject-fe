@@ -78,6 +78,8 @@ function UserDropdown({ avatar = null, userName = "" }) {
     logoutMutation.mutate()
     localStorage.removeItem("userData")
     localStorage.removeItem("token")
+    localStorage.removeItem("userName")
+    localStorage.removeItem("roleId")
     window.document.cookie = cookie.serialize("token", "", {
       maxAge: -1, // Expire the cookie immediately.
       path: "/",

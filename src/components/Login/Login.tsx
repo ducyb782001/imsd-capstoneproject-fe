@@ -28,9 +28,13 @@ function Login() {
     {
       onSuccess: (data, error, variables) => {
         if (typeof window !== "undefined") {
-          const token = data?.data?.accessToken
+          const token = data?.data?.token?.accessToken
+          const userName = data?.data?.userName
+          const roleId = data?.data?.roleId
           const maxAge = data?.data?.expiresIn
           localStorage.setItem("token", token)
+          localStorage.setItem("userName", userName)
+          localStorage.setItem("roleId", roleId)
           window.document.cookie = cookie.serialize("token", token, {
             // maxAge: 30 * 24 * 60 * 60,
             maxAge: maxAge,

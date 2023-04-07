@@ -53,13 +53,21 @@ function ManageGoods({ ...props }) {
         {
           Header: t("product_name"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[150px]">{data?.productName}</p>
+            <p
+              title={data?.productName || ""}
+              className="truncate-2-line max-w-[150px]"
+            >
+              {data?.productName}
+            </p>
           ),
         },
         {
           Header: t("supplier"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[150px]">
+            <p
+              title={data?.supplier?.supplierName || ""}
+              className="truncate-2-line max-w-[150px]"
+            >
               {data?.supplier?.supplierName}
             </p>
           ),
@@ -67,7 +75,10 @@ function ManageGoods({ ...props }) {
         {
           Header: t("type.type"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[150px]">
+            <p
+              title={data?.category?.categoryName || ""}
+              className="truncate-2-line max-w-[150px]"
+            >
               {data?.category?.categoryName}
             </p>
           ),

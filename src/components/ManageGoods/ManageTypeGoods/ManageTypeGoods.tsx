@@ -28,7 +28,6 @@ function ManageTypeGoods() {
 
   const [listTypeGood, setListTypeGood] = useState<any>()
 
-  const [listTypeGoodExport, setListTypeGoodExport] = useState<any>()
   const [listFilter, setListFilter] = useState([])
   const [isLoadingListType, setIsLoadingListType] = useState(true)
 
@@ -40,14 +39,20 @@ function ManageTypeGoods() {
           Header: t("name_type"),
           accessor: (data: any) => (
             <div>
-              <p>{data?.categoryName ? data?.categoryName : "---"}</p>
+              <p title={data?.categoryName || ""} className="truncate-2-line">
+                {data?.categoryName ? data?.categoryName : "---"}
+              </p>
             </div>
           ),
         },
         {
           Header: "Mô tả",
           accessor: (data: any) => {
-            return <div>{data?.description ? data?.description : "---"}</div>
+            return (
+              <div title={data?.description || ""} className="truncate-2-line">
+                {data?.description ? data?.description : "---"}
+              </div>
+            )
           },
         },
         {

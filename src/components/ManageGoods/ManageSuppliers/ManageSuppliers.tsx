@@ -30,7 +30,10 @@ function ManageSuppliers({ ...props }) {
         {
           Header: t("supplier_name"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[300px]">
+            <p
+              title={data?.supplierName || ""}
+              className="truncate-2-line max-w-[300px]"
+            >
               {data?.supplierName}
             </p>
           ),
@@ -42,14 +45,19 @@ function ManageSuppliers({ ...props }) {
         {
           Header: "Email",
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[250px]">
-              {data?.supplierEmail || "---"}
-            </p>
+            <p className="truncate-2-line">{data?.supplierEmail || "---"}</p>
           ),
         },
         {
           Header: t("address"),
-          accessor: (data: any) => <p>{data?.address || "---"}</p>,
+          accessor: (data: any) => (
+            <p
+              title={data?.address || "---"}
+              className="truncate-2-line max-w-[250px]"
+            >
+              {data?.address || "---"}
+            </p>
+          ),
         },
         {
           Header: "Trạng thái",

@@ -31,6 +31,7 @@ function AddSupplierPopup({ className = "" }) {
     })
     // @ts-ignore
     addNewSupplierMutation.mutate({
+      status: true,
       ...supplier,
     })
   }
