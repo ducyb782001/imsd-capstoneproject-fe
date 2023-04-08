@@ -1,14 +1,10 @@
 import { useRouter } from "next/router"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import HorizontalNav from "../HorizontalNav"
 import MainNav from "./MainNav"
 import cookie from "cookie"
 import useGetMe from "../../hooks/useGetMe"
-import OwnerLayout from "./OwnerLayout"
-import StoreKeeperLayout from "./StoreKeeperLayout"
-import SellerLayout from "./SellerLayout"
-import Page404 from "../404"
-
+import BigNumber from "bignumber.js"
 function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
 
@@ -19,21 +15,26 @@ function Layout({ headTitle = "", ...props }) {
     }
   }, [cookie])
 
+  const [userName, setUserName] = useState("")
+  const [roleId, setRoleId] = useState<number>()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userNameCurrent = localStorage.getItem("userName")
+      const roleIdCurrent = localStorage.getItem("roleId")
+      setUserName(userNameCurrent)
+      setRoleId(new BigNumber(roleIdCurrent).toNumber())
+    }
+  }, [])
+
   const { data } = useGetMe()
 
-  // return data?.roleId === 1 ? (
-  //   <OwnerLayout>{props.children}</OwnerLayout>
-  // ) : data?.roleId === 2 ? (
-  //   <StoreKeeperLayout>{props.children}</StoreKeeperLayout>
-  // ) : (
-  //   <SellerLayout>{props.children}</SellerLayout>
-  // )
   return (
     <div className="flex bg-[#F6F5FA] w-full">
-      <MainNav userName={data?.userName} roleId={data?.roleId} />
+      <MainNav userName={userName} />
       <HorizontalNav
         headTitle={headTitle}
-        userName={data?.userName}
+        userName={userName}
         avatar={data?.image}
       />
       <div className="w-full min-h-screen pt-[44px] md:pt-[71px] md:pl-[276px]">
