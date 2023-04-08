@@ -27,6 +27,7 @@ import ChooseExportReportDropdown from "./ChooseExportReportDropdown"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 import ReturnGoodIcon from "../icons/ReturnGoodIcon"
 import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -361,17 +362,22 @@ function CreateReturnExportGood() {
           />
         </div>
         <div className="grid gap-5 mt-4 md:grid-cols-73">
-          <PrimaryTextArea
-            rows={4}
-            title="Lý do trả hàng"
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
-            className="w-full"
-          />
+          <div>
+            <PrimaryTextArea
+              rows={4}
+              title="Lý do trả hàng"
+              onChange={(e) => {
+                setProductImportObject({
+                  ...productImportObject,
+                  note: e.target.value,
+                })
+              }}
+              className="w-full"
+            />
+            {checkStringLength(productImportObject?.note, 250) && (
+              <div className="text-sm text-red-500">Lý do tối đa 250 kí tự</div>
+            )}
+          </div>
           <div>
             <p className="mb-2 text-sm font-bold text-gray">Chọn lý do (ảnh)</p>
             <ChooseFileReason
@@ -426,7 +432,10 @@ function CreateReturnExportGood() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn trả không?"
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={!productImportObject?.exportId}
+          disabled={
+            !productImportObject?.exportId ||
+            productImportObject?.note?.length > 250
+          }
         >
           Trả hàng
         </ConfirmPopup>

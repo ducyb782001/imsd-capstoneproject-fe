@@ -18,6 +18,7 @@ import ConfirmPopup from "../../ConfirmPopup"
 import { useTranslation } from "react-i18next"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
 import GeneralIcon from "../../icons/GeneralIcon"
+import { checkStringLength } from "../../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created- product-type-id"
 
@@ -29,7 +30,7 @@ interface Supplier {
   district: any
   ward: any
   address: string
-  note: number
+  note: string
   supplierEmail: string
   status: boolean
 }
@@ -173,18 +174,24 @@ function AddSupplier() {
             <GeneralIcon />
             <SmallTitle>{t("general_information")}</SmallTitle>
           </div>
-          <PrimaryInput
-            className="mt-6"
-            placeholder={t("fill_supplier_name")}
-            title={
-              <h1>
-                {t("supplier_name")} <span className="text-red-500">*</span>
-              </h1>
-            }
-            onChange={(e) => {
-              setSupplier({ ...supplier, supplierName: e.target.value })
-            }}
-          />
+          <div className="mt-6">
+            <PrimaryInput
+              placeholder={t("fill_supplier_name")}
+              title={
+                <h1>
+                  {t("supplier_name")} <span className="text-red-500">*</span>
+                </h1>
+              }
+              onChange={(e) => {
+                setSupplier({ ...supplier, supplierName: e.target.value })
+              }}
+            />
+            {checkStringLength(supplier?.supplierName, 100) && (
+              <div className="text-sm text-red-500">
+                Tên nhà cung cấp tối đa 100 kí tự
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 mt-4 gap-7">
             <div>
               <PrimaryInput
@@ -252,21 +259,35 @@ function AddSupplier() {
               setShowing={setWardSelected}
             />
           </div>
-          <PrimaryInput
-            className="mt-4"
-            title={t("detail_adderss")}
-            placeholder={t("enter_detail_address")}
-            onChange={(e) => {
-              setSupplier({ ...supplier, address: e.target.value })
-            }}
-          />
-          <PrimaryTextArea
-            className="mt-4"
-            title={t("note_supplier")}
-            onChange={(e) => {
-              setSupplier({ ...supplier, note: e.target.value })
-            }}
-          />
+          <div>
+            <PrimaryInput
+              className="mt-4"
+              title={t("detail_adderss")}
+              placeholder={t("enter_detail_address")}
+              onChange={(e) => {
+                setSupplier({ ...supplier, address: e.target.value })
+              }}
+            />
+            {checkStringLength(supplier?.address, 250) && (
+              <div className="text-sm text-red-500">
+                Địa chỉ tối đa 250 kí tự
+              </div>
+            )}
+          </div>
+          <div>
+            <PrimaryTextArea
+              className="mt-4"
+              title={t("note_supplier")}
+              onChange={(e) => {
+                setSupplier({ ...supplier, note: e.target.value })
+              }}
+            />
+            {checkStringLength(supplier?.note, 250) && (
+              <div className="text-sm text-red-500">
+                Ghi chú tối đa 250 kí tự
+              </div>
+            )}
+          </div>
           <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">
             <ConfirmPopup
               className="md:w-[200px]"
@@ -288,7 +309,10 @@ function AddSupplier() {
                 (supplier?.supplierEmail &&
                   !!!isValidGmail(supplier?.supplierEmail)) ||
                 !!!supplier?.supplierPhone ||
-                !!!supplier?.supplierName
+                !!!supplier?.supplierName ||
+                supplier?.supplierName?.length > 100 ||
+                supplier?.note?.length > 250 ||
+                supplier?.address?.length > 250
               }
             >
               {t("add_new_supplier")}

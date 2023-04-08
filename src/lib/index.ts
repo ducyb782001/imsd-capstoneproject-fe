@@ -1,3 +1,5 @@
+import { isValidGmail } from "../hooks/useValidator"
+
 export function convertSecondsToReadableObject(seconds: number) {
   seconds = seconds || 0
   seconds = Number(seconds)
@@ -129,9 +131,23 @@ export function checkDisableApplyRewardFilter(
 }
 
 export function checkStringLength(str: string, length: number) {
-  if (str?.length <= length) {
-    return false
-  } else {
+  if (str?.length > length) {
     return true
   }
+  return false
+}
+
+export function checkSameUserCode(array, userCodeCheck) {
+  for (let i = 0; i < array?.length; i++) {
+    if (
+      array[i].userCode &&
+      array[i].userCode.toLowerCase() === userCodeCheck.toLowerCase()
+    ) {
+      return true
+    }
+  }
+  if (userCodeCheck?.length > 24 || isValidGmail(userCodeCheck)) {
+    return true
+  }
+  return false
 }

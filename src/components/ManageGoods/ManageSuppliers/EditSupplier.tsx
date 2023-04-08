@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next"
 import Switch from "react-switch"
 import { isValidGmail, isValidPhoneNumber } from "../../../hooks/useValidator"
 import GeneralIcon from "../../icons/GeneralIcon"
+import { checkStringLength } from "../../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -231,18 +232,25 @@ function EditSupplier() {
         <SmallTitle>{t("general_information")}</SmallTitle>
       </div>
       <div className="grid mt-6 grid-cols-73 gap-7">
-        <PrimaryInput
-          placeholder={t("fill_supplier_name")}
-          title={
-            <h1>
-              {t("supplier_name")} <span className="text-red-500">*</span>
-            </h1>
-          }
-          value={supplier?.supplierName ? supplier?.supplierName : ""}
-          onChange={(e) => {
-            setSupplier({ ...supplier, supplierName: e.target.value })
-          }}
-        />
+        <div>
+          <PrimaryInput
+            placeholder={t("fill_supplier_name")}
+            title={
+              <h1>
+                {t("supplier_name")} <span className="text-red-500">*</span>
+              </h1>
+            }
+            value={supplier?.supplierName ? supplier?.supplierName : ""}
+            onChange={(e) => {
+              setSupplier({ ...supplier, supplierName: e.target.value })
+            }}
+          />
+          {checkStringLength(supplier?.supplierName, 100) && (
+            <div className="text-sm text-red-500">
+              Tên nhà cung cấp tối đa 100 kí tự
+            </div>
+          )}
+        </div>
         <div>
           <div className="mb-2 text-sm font-bold text-gray">
             Trạng thái giao dịch
@@ -317,22 +325,32 @@ function EditSupplier() {
           setShowing={setWardSelected}
         />
       </div>
-      <PrimaryInput
-        className="mt-4"
-        title={t("detail_adderss")}
-        value={supplier?.address ? supplier?.address : ""}
-        onChange={(e) => {
-          setSupplier({ ...supplier, address: e.target.value })
-        }}
-      />
-      <PrimaryTextArea
-        className="mt-4"
-        title={t("note_supplier")}
-        value={supplier?.note ? supplier?.note : ""}
-        onChange={(e) => {
-          setSupplier({ ...supplier, note: e.target.value })
-        }}
-      />
+      <div>
+        <PrimaryInput
+          className="mt-4"
+          title={t("detail_adderss")}
+          value={supplier?.address ? supplier?.address : ""}
+          onChange={(e) => {
+            setSupplier({ ...supplier, address: e.target.value })
+          }}
+        />
+        {checkStringLength(supplier?.address, 250) && (
+          <div className="text-sm text-red-500">Địa chỉ tối đa 250 kí tự</div>
+        )}
+      </div>
+      <div>
+        <PrimaryTextArea
+          className="mt-4"
+          title={t("note_supplier")}
+          value={supplier?.note ? supplier?.note : ""}
+          onChange={(e) => {
+            setSupplier({ ...supplier, note: e.target.value })
+          }}
+        />
+        {checkStringLength(supplier?.note, 250) && (
+          <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+        )}
+      </div>
       <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">
         <ConfirmPopup
           className="md:w-[200px]"
@@ -354,7 +372,10 @@ function EditSupplier() {
             (supplier?.supplierEmail &&
               !!!isValidGmail(supplier?.supplierEmail)) ||
             !!!supplier?.supplierPhone ||
-            !!!supplier?.supplierName
+            !!!supplier?.supplierName ||
+            supplier?.supplierName?.length > 100 ||
+            supplier?.note?.length > 250 ||
+            supplier?.address?.length > 250
           }
         >
           {t("edit")}

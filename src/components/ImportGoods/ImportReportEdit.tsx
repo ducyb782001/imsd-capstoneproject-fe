@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 import DeleteDetail from "../DeleteDetail"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -367,7 +368,10 @@ function ImportReportEdit() {
                 classNameBtn="w-[120px]"
                 title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
-                disabled={listChosenProduct?.length === 0}
+                disabled={
+                  listChosenProduct?.length === 0 ||
+                  productImportObject?.note?.length > 250
+                }
               >
                 {t("save")}
               </ConfirmPopup>
@@ -420,18 +424,25 @@ function ImportReportEdit() {
           <div className="px-4 py-3 border rounded border-gray text-gray">
             {detailResponse?.user?.userName}
           </div>
-          <PrimaryTextArea
-            rows={4}
-            className="mt-2"
-            title={t("note_report")}
-            value={detailResponse?.note ? detailResponse?.note : ""}
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
-          />
+          <div>
+            <PrimaryTextArea
+              rows={4}
+              className="mt-2"
+              title={t("note_report")}
+              value={detailResponse?.note ? detailResponse?.note : ""}
+              onChange={(e) => {
+                setProductImportObject({
+                  ...productImportObject,
+                  note: e.target.value,
+                })
+              }}
+            />
+            {checkStringLength(productImportObject?.note, 250) && (
+              <div className="text-sm text-red-500">
+                Ghi chú tối đa 250 kí tự
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">

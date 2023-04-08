@@ -3,19 +3,16 @@ import axios from "axios"
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
-import { addTypeGoodUrl } from "../../../constants/APIConfig"
-import AddPlusIcon from "../../icons/AddPlusIcon"
 import CloseDialogIcon from "../../icons/CloseDialogIcon"
-import PlusIcon from "../../icons/PlusIcon"
 import MotionDialogContent from "../../MotionDialogContent"
 import PrimaryBtn from "../../PrimaryBtn"
 import PrimaryInput from "../../PrimaryInput"
 import SecondaryBtn from "../../SecondaryBtn"
 import SmallTitle from "../../SmallTitle"
 import { toast } from "react-toastify"
-import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
 import { addNewType } from "../../../apis/type-good-module"
+import { checkStringLength } from "../../../lib"
 
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
@@ -88,28 +85,47 @@ function AddTypePopup({ className = "", children }) {
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
-                <div className="px-6  text-base text-[#4F4F4F] pt-5">
-                  <PrimaryInput
-                    title={
-                      <div>
-                        {t("name_type")} <span className="text-red-500">*</span>
+                <div className="px-6 text-base text-[#4F4F4F] pt-5">
+                  <div>
+                    <PrimaryInput
+                      title={
+                        <div>
+                          {t("name_type")}{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      }
+                      onChange={(event) => setTypeName(event.target.value)}
+                    />
+                    {checkStringLength(typeName, 100) && (
+                      <div className="text-sm text-red-500">
+                        Tên loại sản phẩm tối đa 100 kí tự
                       </div>
-                    }
-                    onChange={(event) => setTypeName(event.target.value)}
-                  />
+                    )}
+                  </div>
                 </div>
                 <div className="px-6 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    title={t("description_type")}
-                    onChange={(event) => setDescription(event.target.value)}
-                  />
+                  <div>
+                    <PrimaryInput
+                      title={t("description_type")}
+                      onChange={(event) => setDescription(event.target.value)}
+                    />
+                    {checkStringLength(description, 250) && (
+                      <div className="text-sm text-red-500">
+                        Tên loại sản phẩm tối đa 250 kí tự
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
                   <PrimaryBtn
                     className="w-[200px]"
                     onClick={handleSaveBtn}
-                    disabled={!typeName}
+                    disabled={
+                      !typeName ||
+                      typeName?.length > 100 ||
+                      description?.length > 250
+                    }
                   >
                     {t("save")}
                   </PrimaryBtn>

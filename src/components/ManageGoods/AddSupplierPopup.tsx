@@ -13,6 +13,7 @@ import { isValidPhoneNumber } from "../../hooks/useValidator"
 import { toast } from "react-toastify"
 import { addNewSupplier } from "../../apis/supplier-module"
 import { useMutation, useQueryClient } from "react-query"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created- product-type-id"
 
@@ -102,18 +103,28 @@ function AddSupplierPopup({ className = "" }) {
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F]">
-                  <PrimaryInput
-                    title={
-                      <div>
-                        {t("supplier_name")}{" "}
-                        <span className="text-red-500">*</span>
+                  <div>
+                    <PrimaryInput
+                      title={
+                        <div>
+                          {t("supplier_name")}{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      }
+                      placeholder={t("fill_supplier_name")}
+                      onChange={(e) => {
+                        setSupplier({
+                          ...supplier,
+                          supplierName: e.target.value,
+                        })
+                      }}
+                    />
+                    {checkStringLength(supplier?.supplierName, 100) && (
+                      <div className="text-sm text-red-500">
+                        Tên nhà cung cấp tối đa 100 kí tự
                       </div>
-                    }
-                    placeholder={t("fill_supplier_name")}
-                    onChange={(e) => {
-                      setSupplier({ ...supplier, supplierName: e.target.value })
-                    }}
-                  />
+                    )}
+                  </div>
                 </div>
                 <div className="px-6 mt-6 text-base text-[#4F4F4F]">
                   <PrimaryInput
@@ -143,7 +154,8 @@ function AddSupplierPopup({ className = "" }) {
                       (supplier?.supplierPhone &&
                         !!!isValidPhoneNumber(supplier?.supplierPhone)) ||
                       !!!supplier?.supplierPhone ||
-                      !!!supplier?.supplierName
+                      !!!supplier?.supplierName ||
+                      supplier?.supplierName?.length > 100
                     }
                     onClick={handleAddNewSupplier}
                   >

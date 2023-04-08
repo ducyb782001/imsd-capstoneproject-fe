@@ -29,6 +29,7 @@ import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount
 import SecondaryBtn from "../SecondaryBtn"
 import DeleteDetail from "../DeleteDetail"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 function CreateImportReport() {
@@ -388,17 +389,24 @@ function CreateImportReport() {
             setShowing={setStaffSelected}
             isLoadingStaff={isLoadingSupplier}
           />
-          <PrimaryTextArea
-            rows={4}
-            className="mt-2"
-            title="Ghi chú hóa đơn"
-            onChange={(e) => {
-              setProductImportObject({
-                ...productImportObject,
-                note: e.target.value,
-              })
-            }}
-          />
+          <div>
+            <PrimaryTextArea
+              rows={4}
+              className="mt-2"
+              title="Ghi chú hóa đơn"
+              onChange={(e) => {
+                setProductImportObject({
+                  ...productImportObject,
+                  note: e.target.value,
+                })
+              }}
+            />
+            {checkStringLength(productImportObject?.note, 250) && (
+              <div className="text-sm text-red-500">
+                Ghi chú tối đa 250 kí tự
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
@@ -430,7 +438,11 @@ function CreateImportReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted || listChosenProduct?.length === 0}
+          disabled={
+            submitted ||
+            listChosenProduct?.length === 0 ||
+            productImportObject?.note?.length > 250
+          }
         >
           Tạo hóa đơn nhập hàng
         </ConfirmPopup>

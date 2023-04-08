@@ -21,6 +21,7 @@ import { addNewProduct } from "../../apis/product-module"
 import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
 import BigNumber from "bignumber.js"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 interface Product {
@@ -55,7 +56,10 @@ function AddProductPopup({ className = "" }) {
       nhaCungCapSelected == null ||
       typeProduct == null ||
       product.productName?.trim() == "" ||
-      product.productName == null
+      product.productName == null ||
+      product?.productName?.length > 100 ||
+      product?.barcode?.length > 20 ||
+      product?.productCode?.length > 20
     ) {
       setDisabled(true)
     } else {
@@ -182,18 +186,25 @@ function AddProductPopup({ className = "" }) {
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    placeholder="Nhập tên sản phẩm"
-                    title={
-                      <p>
-                        Tên sản phẩm <span className="text-red-500">*</span>
-                      </p>
-                    }
-                    value={product?.productName || ""}
-                    onChange={(e) => {
-                      setProduct({ ...product, productName: e.target.value })
-                    }}
-                  />
+                  <div>
+                    <PrimaryInput
+                      placeholder="Nhập tên sản phẩm"
+                      title={
+                        <p>
+                          Tên sản phẩm <span className="text-red-500">*</span>
+                        </p>
+                      }
+                      value={product?.productName || ""}
+                      onChange={(e) => {
+                        setProduct({ ...product, productName: e.target.value })
+                      }}
+                    />
+                    {checkStringLength(product?.productName, 100) && (
+                      <div className="text-sm text-red-500">
+                        Tên sản phẩm tối đa 100 kí tự
+                      </div>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <div>
                       <p className="mb-2 text-sm font-bold text-gray">
@@ -220,51 +231,68 @@ function AddProductPopup({ className = "" }) {
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
-                    <PrimaryInput
-                      title={
-                        <div className="flex gap-1">
-                          <p>Mã sản phẩm</p>
-                          <Tooltip
-                            content={
-                              <div>
-                                Mã không trùng lặp giữa các sản phẩm
-                                <p>
-                                  Nếu để trống, mã sản phẩm sẽ có tiền tố SP
-                                </p>
-                              </div>
-                            }
-                          >
-                            <InfoIcon />
-                          </Tooltip>
+                    <div>
+                      <PrimaryInput
+                        title={
+                          <div className="flex gap-1">
+                            <p>Mã sản phẩm</p>
+                            <Tooltip
+                              content={
+                                <div>
+                                  Mã không trùng lặp giữa các sản phẩm
+                                  <p>
+                                    Nếu để trống, mã sản phẩm sẽ có tiền tố SP
+                                  </p>
+                                </div>
+                              }
+                            >
+                              <InfoIcon />
+                            </Tooltip>
+                          </div>
+                        }
+                        value={product?.productCode ? product?.productCode : ""}
+                        onChange={(e) => {
+                          setProduct({
+                            ...product,
+                            productCode: e.target.value,
+                          })
+                        }}
+                        placeholder="Nhập mã sản phẩm"
+                      />
+                      {checkStringLength(product?.productCode, 20) && (
+                        <div className="text-sm text-red-500">
+                          Mã sản phẩm tối đa 20 kí tự
                         </div>
-                      }
-                      value={product?.productCode ? product?.productCode : ""}
-                      onChange={(e) => {
-                        setProduct({ ...product, productCode: e.target.value })
-                      }}
-                      placeholder="Nhập mã sản phẩm"
-                    />
-                    <PrimaryInput
-                      title={
-                        <div className="flex gap-1">
-                          <p>Mã vạch/ Barcode</p>
-                          <Tooltip
-                            content={
-                              <div>
-                                Nếu để trống, mã vạch sẽ trùng với mã sản phẩm
-                              </div>
-                            }
-                          >
-                            <InfoIcon />
-                          </Tooltip>
+                      )}
+                    </div>
+                    <div>
+                      <PrimaryInput
+                        title={
+                          <div className="flex gap-1">
+                            <p>Mã vạch/ Barcode</p>
+                            <Tooltip
+                              content={
+                                <div>
+                                  Nếu để trống, mã vạch sẽ trùng với mã sản phẩm
+                                </div>
+                              }
+                            >
+                              <InfoIcon />
+                            </Tooltip>
+                          </div>
+                        }
+                        placeholder="Nhập tay hoặc dùng máy quét"
+                        value={product?.barcode ? product?.barcode : ""}
+                        onChange={(e) => {
+                          setProduct({ ...product, barcode: e.target.value })
+                        }}
+                      />
+                      {checkStringLength(product?.barcode, 20) && (
+                        <div className="text-sm text-red-500">
+                          Mã sản phẩm tối đa 20 kí tự
                         </div>
-                      }
-                      placeholder="Nhập tay hoặc dùng máy quét"
-                      value={product?.barcode ? product?.barcode : ""}
-                      onChange={(e) => {
-                        setProduct({ ...product, barcode: e.target.value })
-                      }}
-                    />
+                      )}
+                    </div>
                     <PrimaryInput
                       title="Đơn vị tính"
                       placeholder="Nhập đơn vị tính"

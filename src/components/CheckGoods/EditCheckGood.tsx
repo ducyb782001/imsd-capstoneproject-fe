@@ -25,6 +25,7 @@ import GeneralIcon from "../icons/GeneralIcon"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import DeleteDetail from "../DeleteDetail"
 import BigNumber from "bignumber.js"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -315,7 +316,11 @@ function EditCheckGood() {
               classNameBtn="w-[180px]"
               title={t("save_report")}
               handleClickSaveBtn={handleClickSaveBtn}
-              disabled={listChosenProduct?.length === 0 || submitted}
+              disabled={
+                listChosenProduct?.length === 0 ||
+                submitted ||
+                productCheckObject?.note?.length > 250
+              }
             >
               {t("save")}
             </ConfirmPopup>
@@ -354,6 +359,10 @@ function EditCheckGood() {
               })
             }}
           />
+
+          {checkStringLength(productCheckObject?.note, 250) && (
+            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+          )}
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
