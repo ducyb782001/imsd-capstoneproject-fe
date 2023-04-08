@@ -17,7 +17,7 @@ import UserIcon from "../icons/UserIcon"
 import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
 
-function MainNav({ userName = "", roleId = 3 }) {
+function MainNav({ userName = "" }) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -184,6 +184,17 @@ function MainNav({ userName = "", roleId = 3 }) {
     },
   ]
 
+  const [roleId, setRoleId] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (localStorage.getItem("roleId")) {
+        setRoleId(localStorage.getItem("roleId"))
+      }
+    }
+  }, [])
+  console.log(123, roleId)
+
   return (
     <div className="flex flex-col z-50 w-full md:w-[276px] h-min-content md:h-screen overflow-y-auto bg-white px-4 py-[6px] md:pt-7 md:pb-10 shadow-lg fixed top-0 bottom-0 left-0">
       <div className="items-center justify-between hidden h-full md:flex-col md:flex">
@@ -204,7 +215,7 @@ function MainNav({ userName = "", roleId = 3 }) {
           </div>
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
-            {(roleId === 1 || roleId === 2) && (
+            {(roleId == "1" || roleId == "2") && (
               <MenuItem
                 key={1}
                 icon={<DashboardIcon />}
@@ -224,7 +235,7 @@ function MainNav({ userName = "", roleId = 3 }) {
                   isActive={i?.isActive}
                 />
               ))}
-            {roleId === 1 && (
+            {roleId == "1" && (
               <MenuItem
                 key={7}
                 icon={<UserIcon />}

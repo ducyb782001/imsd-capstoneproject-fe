@@ -47,11 +47,18 @@ function Signup() {
     },
     {
       onSuccess: (data, error, variables) => {
-        toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        toast.success("Đăng kí thành công!")
-        setTimeout(() => {
-          router.push("/confirm-email")
-        }, 300)
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+          toast.success("Đăng kí thành công!")
+          setTimeout(() => {
+            router.push("/confirm-email")
+          }, 200)
+        } else {
+          toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
+          console.log(data)
+
+          toast.error(data?.response?.data)
+        }
       },
       onError: (data: any) => {
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
