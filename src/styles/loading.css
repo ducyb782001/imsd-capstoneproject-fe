@@ -1,5 +1,5 @@
 .loading-circle svg {
-  width: 48px;
+  width: 26px;
   transform-origin: center;
   animation: rotate 2s linear infinite;
 }

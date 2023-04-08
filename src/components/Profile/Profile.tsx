@@ -22,6 +22,7 @@ import { changePassword } from "../../apis/auth"
 import { format } from "date-fns"
 import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
 import { isValidPhoneNumber } from "../../hooks/useValidator"
+import { checkStringLength } from "../../lib"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function Profile() {
@@ -132,21 +133,28 @@ function Profile() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-73">
           <div>
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
-              <PrimaryInput
-                title={t("full_name")}
-                placeholder={t("enter_full_name")}
-                value={
-                  staffAccountObject?.userName
-                    ? staffAccountObject?.userName
-                    : ""
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    userName: e.target.value,
-                  })
-                }}
-              />
+              <div>
+                <PrimaryInput
+                  title={t("full_name")}
+                  placeholder={t("enter_full_name")}
+                  value={
+                    staffAccountObject?.userName
+                      ? staffAccountObject?.userName
+                      : ""
+                  }
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      userName: e.target.value,
+                    })
+                  }}
+                />
+                {checkStringLength(staffAccountObject?.userName, 100) && (
+                  <div className="text-sm text-red-500">
+                    Họ tên tối đa 100 kí tự
+                  </div>
+                )}
+              </div>
               <PrimaryInput
                 title={t("staff_position")}
                 value={
@@ -158,21 +166,29 @@ function Profile() {
                 }
                 readOnly={true}
               />
-              <PrimaryInput
-                title={t("staff_id")}
-                placeholder={t("enter_staff_id")}
-                value={
-                  staffAccountObject?.identity
-                    ? staffAccountObject?.identity
-                    : ""
-                }
-                onChange={(e) => {
-                  setStaffAccountObject({
-                    ...staffAccountObject,
-                    identity: e.target.value,
-                  })
-                }}
-              />
+              <div>
+                <PrimaryInput
+                  title={t("staff_id")}
+                  placeholder={t("enter_staff_id")}
+                  type="number"
+                  value={
+                    staffAccountObject?.identity
+                      ? staffAccountObject?.identity
+                      : ""
+                  }
+                  onChange={(e) => {
+                    setStaffAccountObject({
+                      ...staffAccountObject,
+                      identity: e.target.value,
+                    })
+                  }}
+                />
+                {checkStringLength(staffAccountObject?.identity, 12) && (
+                  <div className="text-sm text-red-500">
+                    CMND tối đa 12 kí tự
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 mt-7 gap-7 md:grid-cols-2">
@@ -251,21 +267,28 @@ function Profile() {
                 />
               </div>
             </div>
-            <PrimaryTextArea
-              className="mt-7"
-              title={t("detail_adderss")}
-              rows={4}
-              placeholder={t("enter_detail_address")}
-              value={
-                staffAccountObject?.address ? staffAccountObject?.address : ""
-              }
-              onChange={(e) => {
-                setStaffAccountObject({
-                  ...staffAccountObject,
-                  address: e.target.value,
-                })
-              }}
-            />
+            <div>
+              <PrimaryTextArea
+                className="mt-7"
+                title={t("detail_adderss")}
+                rows={4}
+                placeholder={t("enter_detail_address")}
+                value={
+                  staffAccountObject?.address ? staffAccountObject?.address : ""
+                }
+                onChange={(e) => {
+                  setStaffAccountObject({
+                    ...staffAccountObject,
+                    address: e.target.value,
+                  })
+                }}
+              />
+              {checkStringLength(staffAccountObject?.address, 250) && (
+                <div className="text-sm text-red-500">
+                  Địa chỉ tối đa 250 kí tự
+                </div>
+              )}
+            </div>
           </div>
           <div className="w-full h-auto">
             <div className="flex flex-col items-center justify-between h-full">
@@ -300,8 +323,11 @@ function Profile() {
           onClick={() => handleChangeProfile()}
           className="max-w-[182px] mt-6"
           disabled={
-            staffAccountObject?.phone &&
-            !!!isValidPhoneNumber(staffAccountObject?.phone)
+            (staffAccountObject?.phone &&
+              !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
+            staffAccountObject?.userName?.length > 100 ||
+            staffAccountObject?.identity?.length > 12 ||
+            staffAccountObject?.address?.length > 250
           }
         >
           {t("save")}
