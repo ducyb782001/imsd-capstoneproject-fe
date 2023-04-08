@@ -76,13 +76,14 @@ function InputEmailForgot() {
         <LeftBlock />
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-[#F6F5FA]">
           <div className="flex flex-col items-center justify-center w-full h-full px-4 ">
-            <div className="min-w-[440px] mt-6 flex flex-col items-center justify-center">
+            <div className="min-w-[440px] mt-6 flex flex-col items-center justify-center text-center">
               <div className="">
                 <KeyIcon />
               </div>
               <Title>Quên mật khẩu?</Title>
               <TextDescription className="mt-4">
-                Nhập tài khoản hòm thư đã liên kết với tài khoản của bạn!
+                Nhập tài khoản hòm thư đã liên kết với tài khoản của bạn! <br />{" "}
+                <span>(Đối với chủ kho)</span>
               </TextDescription>
             </div>
             <div className="w-7/12 bg-white rounded-md mt-7 h-2/5">
