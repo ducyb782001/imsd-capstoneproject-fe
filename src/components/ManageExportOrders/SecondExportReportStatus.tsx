@@ -106,9 +106,7 @@ function SecondExportReportStatus({ productImport }) {
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <Link
-                href={`/create-return-to-supplier-order/?exportId=${exportId}`}
-              >
+              <Link href={`/create-return-order/?exportId=${exportId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
                     Hoàn hàng
