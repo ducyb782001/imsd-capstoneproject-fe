@@ -18,10 +18,7 @@ import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 import { addNewProduct } from "../../apis/product-module"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import {
-  getListExportSupplier,
-  getListSupplier,
-} from "../../apis/supplier-module"
+import { getListSupplier } from "../../apis/supplier-module"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import { useTranslation } from "react-i18next"

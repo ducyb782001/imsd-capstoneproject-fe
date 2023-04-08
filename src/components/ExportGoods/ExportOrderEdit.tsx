@@ -26,6 +26,7 @@ import {
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -352,7 +353,11 @@ function ExportOrderEdit() {
                 classNameBtn="w-[120px]"
                 title={t("confirm_update")}
                 handleClickSaveBtn={handleClickUpdateBtn}
-                disabled={submitted || listChosenProduct?.length === 0}
+                disabled={
+                  submitted ||
+                  listChosenProduct?.length === 0 ||
+                  productImportObject?.note?.length > 250
+                }
               >
                 {t("update")}
               </ConfirmPopup>
@@ -407,6 +412,9 @@ function ExportOrderEdit() {
               })
             }}
           />
+          {checkStringLength(productImportObject?.note, 250) && (
+            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+          )}
         </div>
       </div>
       <div className="mt-4 bg-white block-border">

@@ -30,6 +30,7 @@ import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import GeneralIcon from "../icons/GeneralIcon"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import BarcodeIcon from "../icons/BarcodeIcon"
+import { checkStringLength } from "../../lib"
 
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
@@ -241,21 +242,29 @@ function EditProduct() {
             <GeneralIcon />
             <SmallTitle>{t("general_information")}</SmallTitle>
           </div>
-          <PrimaryInput
-            className="mt-6"
-            title={
-              <p>
-                {t("product_name")} <span className="text-red-500">*</span>
-              </p>
-            }
-            value={detailProduct?.productName ? detailProduct?.productName : ""}
-            onChange={(e) => {
-              setDetailProduct({
-                ...detailProduct,
-                productName: e.target.value,
-              })
-            }}
-          />
+          <div className="mt-6">
+            <PrimaryInput
+              title={
+                <p>
+                  {t("product_name")} <span className="text-red-500">*</span>
+                </p>
+              }
+              value={
+                detailProduct?.productName ? detailProduct?.productName : ""
+              }
+              onChange={(e) => {
+                setDetailProduct({
+                  ...detailProduct,
+                  productName: e.target.value,
+                })
+              }}
+            />
+            {checkStringLength(detailProduct?.productName, 100) && (
+              <div className="text-sm text-red-500">
+                Tên sản phẩm tối đa 100 kí tự
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div>
               <div className="mb-2 text-sm font-bold text-gray">
@@ -287,41 +296,57 @@ function EditProduct() {
                 setShowing={setTypeProduct}
               />
             </div>
-
-            <PrimaryInput
-              title={
-                <div className="flex gap-1">
-                  <p>{t("product code")}</p>
-                  <Tooltip
-                    content={
-                      <div>
-                        {t("product_can_not_duplicate")}
-                        <p>{t("head_of_product_code")}</p>
-                      </div>
-                    }
-                  >
-                    <InfoIcon />
-                  </Tooltip>
+            <div>
+              <PrimaryInput
+                title={
+                  <div className="flex gap-1">
+                    <p>{t("product code")}</p>
+                    <Tooltip
+                      content={
+                        <div>
+                          {t("product_can_not_duplicate")}
+                          <p>{t("head_of_product_code")}</p>
+                        </div>
+                      }
+                    >
+                      <InfoIcon />
+                    </Tooltip>
+                  </div>
+                }
+                value={
+                  detailProduct?.productCode ? detailProduct?.productCode : ""
+                }
+                onChange={(e) => {
+                  setDetailProduct({
+                    ...detailProduct,
+                    productCode: e.target.value,
+                  })
+                }}
+              />
+              {checkStringLength(detailProduct?.productCode, 20) && (
+                <div className="text-sm text-red-500">
+                  Mã sản phẩm tối đa 20 kí tự
                 </div>
-              }
-              value={
-                detailProduct?.productCode ? detailProduct?.productCode : ""
-              }
-              onChange={(e) => {
-                setDetailProduct({
-                  ...detailProduct,
-                  productCode: e.target.value,
-                })
-              }}
-            />
-            <PrimaryInput
-              title="Mã barcode"
-              value={detailProduct?.barcode ? detailProduct?.barcode : ""}
-              onChange={(e) => {
-                setDetailProduct({ ...detailProduct, barcode: e.target.value })
-              }}
-              accessoriesRight={<BarcodeIcon />}
-            />
+              )}
+            </div>
+            <div>
+              <PrimaryInput
+                title="Mã barcode"
+                value={detailProduct?.barcode ? detailProduct?.barcode : ""}
+                onChange={(e) => {
+                  setDetailProduct({
+                    ...detailProduct,
+                    barcode: e.target.value,
+                  })
+                }}
+                accessoriesRight={<BarcodeIcon />}
+              />
+              {checkStringLength(detailProduct?.barcode, 20) && (
+                <div className="text-sm text-red-500">
+                  Mã sản phẩm tối đa 20 kí tự
+                </div>
+              )}
+            </div>
             <PrimaryInput
               title={t("product_unit")}
               value={
@@ -642,7 +667,11 @@ function RightSideProductDetail({
             setProduct({ ...product, description: e.target.value })
           }}
         />
-
+        {checkStringLength(product?.description, 250) && (
+          <div className="text-sm text-red-500">
+            Ghi chú sản phẩm tối đa 250 kí tự
+          </div>
+        )}
         <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
           <p className="text-gray">{t("can_sale")}</p>
@@ -666,7 +695,15 @@ function RightSideProductDetail({
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
           title="Bạn có chắc chắn muốn chỉnh sửa sản phẩm không?"
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={disabled || warningStock || !product?.productName}
+          disabled={
+            disabled ||
+            warningStock ||
+            !product?.productName ||
+            product?.productName?.length > 100 ||
+            product?.barcode?.length > 20 ||
+            product?.productCode?.length > 20 ||
+            product?.description?.length > 250
+          }
         >
           {t("save_product")}
         </ConfirmPopup>

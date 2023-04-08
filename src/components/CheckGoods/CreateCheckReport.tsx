@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next"
 import CheckGoodIcon from "../icons/CheckGoodIcon"
 import BigNumber from "bignumber.js"
 import GeneralIcon from "../icons/GeneralIcon"
+import { checkStringLength } from "../../lib"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -319,6 +320,9 @@ function CreateCheckReport() {
               })
             }}
           />
+          {checkStringLength(productCheckObject?.note, 250) && (
+            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+          )}
         </div>
       </div>
       <div className="mt-4 mb-10 bg-white block-border">
@@ -344,7 +348,11 @@ function CreateCheckReport() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("confirm_import")}
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted || listChosenProduct?.length === 0}
+          disabled={
+            submitted ||
+            listChosenProduct?.length === 0 ||
+            productCheckObject?.note?.length > 250
+          }
         >
           {t("create_check_title")}
         </ConfirmPopup>

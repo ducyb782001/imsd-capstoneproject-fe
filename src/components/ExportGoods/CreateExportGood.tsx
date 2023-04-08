@@ -20,6 +20,7 @@ import { useRouter } from "next/router"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 import SearchProductExportDropdown from "./SearchProductExportDropdown"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import { checkStringLength } from "../../lib"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function CreateExportGood() {
@@ -389,6 +390,9 @@ function CreateExportGood() {
               })
             }}
           />
+          {checkStringLength(productExportObject?.note, 250) && (
+            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+          )}
         </div>
       </div>
       <div className="mt-4 bg-white block-border">
@@ -419,7 +423,11 @@ function CreateExportGood() {
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
           title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
-          disabled={submitted || listChosenProduct?.length === 0}
+          disabled={
+            submitted ||
+            listChosenProduct?.length === 0 ||
+            productExportObject?.note?.length > 250
+          }
         >
           {t("add_export_title")}
         </ConfirmPopup>

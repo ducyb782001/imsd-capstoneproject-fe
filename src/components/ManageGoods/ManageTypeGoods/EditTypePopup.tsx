@@ -15,6 +15,7 @@ import {
   getTypeGoodDetail,
   updateTypeGood,
 } from "../../../apis/type-good-module"
+import { checkStringLength } from "../../../lib"
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function EditTypePopup({ className = "", id }) {
@@ -100,30 +101,48 @@ function EditTypePopup({ className = "", id }) {
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    title={
-                      <div>
-                        Tên loại sản phẩm{" "}
-                        <span className="text-red-500">*</span>
+                  <div>
+                    <PrimaryInput
+                      title={
+                        <div>
+                          Tên loại sản phẩm{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      }
+                      value={typeName ? typeName : ""}
+                      onChange={(event) => setTypeName(event.target.value)}
+                    />
+                    {checkStringLength(typeName, 100) && (
+                      <div className="text-sm text-red-500">
+                        Tên loại sản phẩm tối đa 100 kí tự
                       </div>
-                    }
-                    value={typeName ? typeName : ""}
-                    onChange={(event) => setTypeName(event.target.value)}
-                  />
+                    )}
+                  </div>
                 </div>
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
-                  <PrimaryInput
-                    title="Mô tả loại sản phẩm"
-                    value={description ? description : ""}
-                    onChange={(event) => setDescription(event.target.value)}
-                  />
+                  <div>
+                    <PrimaryInput
+                      title="Mô tả loại sản phẩm"
+                      value={description ? description : ""}
+                      onChange={(event) => setDescription(event.target.value)}
+                    />
+                    {checkStringLength(description, 250) && (
+                      <div className="text-sm text-red-500">
+                        Tên loại sản phẩm tối đa 250 kí tự
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-4 px-6 mt-3 mb-4">
                   <PrimaryBtn
                     className="w-[200px]"
                     onClick={handleSaveBtn}
-                    disabled={!typeName}
+                    disabled={
+                      !typeName ||
+                      typeName?.length > 100 ||
+                      description?.length > 250
+                    }
                   >
                     Lưu
                   </PrimaryBtn>

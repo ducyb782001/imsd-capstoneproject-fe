@@ -39,7 +39,10 @@ function SecondImportReportStatus({ productImport }) {
         {
           Header: t("product_name"),
           accessor: (data: any) => (
-            <p className="truncate-2-line max-w-[100px]">
+            <p
+              title={data?.product?.productName}
+              className="truncate-2-line max-w-[100px]"
+            >
               {data?.product?.productName}
             </p>
           ),
