@@ -217,10 +217,12 @@ function CreateStaff() {
                     </p>
                   }
                   placeholder={t("enter_username")}
+                  value={staffAccountObject?.userCode || ""}
                   onChange={(e) => {
+                    const userInput = e.target.value?.trim().replace(/\s+/g, "")
                     setStaffAccountObject({
                       ...staffAccountObject,
-                      userCode: e.target.value,
+                      userCode: userInput,
                     })
                   }}
                 />

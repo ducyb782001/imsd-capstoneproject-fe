@@ -443,7 +443,7 @@ function ListQuantitiveExport({
   listProductExport,
   setListProductExport,
 }) {
-  const [quantity, setQuantity] = useState(0)
+  const [quantity, setQuantity] = useState()
   const [inStockData, setInStockData] = useState<any>()
 
   const handleOnChangeAmount = (value, data) => {

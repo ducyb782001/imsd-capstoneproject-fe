@@ -7,7 +7,10 @@ function FilterLabel({ dataLabel, handleRemoveFilter, itemIndex }) {
   return (
     <div className="flex items-center rounded bg-primary px-3 py-[8px]">
       {dataLabel && (
-        <p className="mr-6 text-white">
+        <p
+          title={`${dataLabel.applied}: ${dataLabel.value}`}
+          className="mr-6 text-white max-w-[300px] truncate-2-line"
+        >
           {dataLabel.applied}:&nbsp;{dataLabel.value}&nbsp;
         </p>
       )}

@@ -569,7 +569,7 @@ function RenderUnit({ data }) {
         ? data?.product?.measuredUnits.filter(
             (i) => i.measuredUnitId === data?.measuredUnitId,
           )[0].measuredUnitName
-        : data?.defaultMeasuredUnit}
+        : data?.defaultMeasuredUnit || "---"}
     </p>
   )
 }
