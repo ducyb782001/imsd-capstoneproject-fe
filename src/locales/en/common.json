@@ -300,5 +300,13 @@
   "cancel_order": "Cancel order",
   "export_number_0": "Product has an export quantity of 0. Please delete that product to continue",
   "warning_amount_export": "Export quantity is greater than stock quantity",
-  "warning_price_export": "The export price is less than the import price"
+  "warning_price_export": "The export price is less than the import price",
+  "note_warning": "Notes up to 250 characters",
+  "edit_check_succeed": "Edit inventory checking order successfully!",
+  "staff_created_report": "Staff created",
+  "date_balance": "Balanced date",
+  "detail": "Details",
+  "search_by_name_and_barcode": "Search by product name or scan barcode",
+  "ton": "Exist",
+  "vnd": "dong"
 }

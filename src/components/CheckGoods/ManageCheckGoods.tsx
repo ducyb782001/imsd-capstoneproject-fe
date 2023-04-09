@@ -32,7 +32,7 @@ function ManageCheckGoods() {
         },
 
         {
-          Header: t("staff_created"),
+          Header: t("staff_created_report"),
           accessor: (data: any) => <p>{data?.createdBy?.userName || "---"}</p>,
         },
         {
@@ -47,7 +47,7 @@ function ManageCheckGoods() {
         },
 
         {
-          Header: t("check_date"),
+          Header: t("date_balance"),
           accessor: (data: any) => (
             <p>
               {data?.updated

@@ -5,6 +5,8 @@ import React, { useEffect, useRef, useState } from "react"
 import useScanDetection from "../../hooks/useScanDetection"
 import { searchProduct } from "../../lib/search"
 import SearchIcon from "../icons/SearchIcon"
+import { useTranslation } from "react-i18next"
+import { t } from "i18next"
 
 function SearchProductExportDropdown({
   title = "",
@@ -14,6 +16,8 @@ function SearchProductExportDropdown({
   textDefault,
   placeholder,
 }) {
+  const { t } = useTranslation()
+
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -92,9 +96,7 @@ function SearchProductExportDropdown({
             type="text"
             className="w-full py-3 pl-10 pr-3 border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
             placeholder={
-              placeholder
-                ? placeholder
-                : "Tìm kiếm theo tên sản phẩm hoặc quét mã barcode"
+              placeholder ? placeholder : t("search_by_name_and_barcode")
             }
             value={searchInput ? searchInput : ""}
             onChange={(e) => {
@@ -156,14 +158,15 @@ function DropDownItem({ data, setShowing }) {
       </div>
       <div className="text-end">
         <p>
-          Giá bán:{" "}
+          {t("sell_price")}:{" "}
           {data?.sellingPrice
             ? new BigNumber(data?.sellingPrice).toFormat(0)
             : "0"}{" "}
-          đ
+          {t("vnd")}
         </p>
         <p className="text-blue">
-          Tồn: {data?.inStock ? new BigNumber(data?.inStock).toFormat(0) : "0"}
+          {t("ton")}:{" "}
+          {data?.inStock ? new BigNumber(data?.inStock).toFormat(0) : "0"}
         </p>
       </div>
     </div>

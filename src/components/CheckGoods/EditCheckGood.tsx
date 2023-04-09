@@ -260,7 +260,7 @@ function EditCheckGood() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success(t("approve_check"))
+          toast.success(t("edit_check_succeed"))
           router.push("/inventory-checking-order-detail/" + checkId)
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -361,7 +361,7 @@ function EditCheckGood() {
           />
 
           {checkStringLength(productCheckObject?.note, 250) && (
-            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+            <div className="text-sm text-red-500">{t("note_warning")}</div>
           )}
         </div>
       </div>
