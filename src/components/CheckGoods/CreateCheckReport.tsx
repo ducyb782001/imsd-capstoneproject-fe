@@ -321,7 +321,7 @@ function CreateCheckReport() {
             }}
           />
           {checkStringLength(productCheckObject?.note, 250) && (
-            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+            <div className="text-sm text-red-500">{t("note_warning")}</div>
           )}
         </div>
       </div>

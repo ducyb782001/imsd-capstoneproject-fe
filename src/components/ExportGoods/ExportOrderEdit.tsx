@@ -15,7 +15,6 @@ import Table from "../Table"
 import Tooltip from "../ToolTip"
 import ChooseStaffDropdown from "../ImportGoods/ChooseStaffDropdown"
 import ChooseUnitImport from "../ImportGoods/ChooseUnitImport"
-import SearchProductImportDropdown from "../ImportGoods/SearchProductImportDropdown"
 import { useRouter } from "next/router"
 import SecondaryBtn from "../SecondaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
@@ -27,6 +26,7 @@ import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
 import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount"
 import { checkStringLength } from "../../lib"
+import SearchProductExportDropdown from "./SearchProductExportDropdown"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -413,7 +413,7 @@ function ExportOrderEdit() {
             }}
           />
           {checkStringLength(productImportObject?.note, 250) && (
-            <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+            <div className="text-sm text-red-500">{t("note_warning")}</div>
           )}
         </div>
       </div>
@@ -422,7 +422,7 @@ function ExportOrderEdit() {
           <ExportGoodsIcon />
           <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
         </div>
-        <SearchProductImportDropdown
+        <SearchProductExportDropdown
           listDropdown={listProduct?.data}
           textDefault={t("supplier")}
           placeholder={t("search.searchInGoods")}

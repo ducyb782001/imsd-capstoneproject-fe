@@ -28,6 +28,8 @@ export const meUrl = `${baseUrl}/Users/GetUserDetail`
 
 export const notMeUrl = `${baseUrl}/Authentication/RevokeToken?token=`
 
+export const resendEmailUrl = `${baseUrl}/Authentication/ResendEmail`
+
 //Product url
 
 export const allProductUrl = `${baseUrl}/Products/Get`
