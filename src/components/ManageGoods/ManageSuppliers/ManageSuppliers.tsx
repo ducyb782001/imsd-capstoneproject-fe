@@ -50,14 +50,7 @@ function ManageSuppliers({ ...props }) {
         },
         {
           Header: t("address"),
-          accessor: (data: any) => (
-            <p
-              title={data?.address || "---"}
-              className="truncate-2-line max-w-[250px]"
-            >
-              {data?.address || "---"}
-            </p>
-          ),
+          accessor: (data: any) => <RenderAddress data={data} />,
         },
         {
           Header: "Trạng thái",
@@ -222,5 +215,30 @@ function ImportExportButton({
       {accessoriesLeft && <div>{accessoriesLeft}</div>}
       {children}
     </button>
+  )
+}
+
+function RenderAddress(data) {
+  const [fullAddressRes, setFullAddressRes] = useState("")
+
+  useEffect(() => {
+    if (!data) return
+
+    const { address, ward, district, city } = data.data
+
+    const fullAddress = [address, ward?.name, district?.name, city?.name]
+      .filter(Boolean)
+      .join(",")
+
+    setFullAddressRes(fullAddress)
+  }, [data])
+
+  return (
+    <p
+      title={data?.data?.address || "---"}
+      className="truncate-2-line max-w-[250px]"
+    >
+      {fullAddressRes || "---"}
+    </p>
   )
 }

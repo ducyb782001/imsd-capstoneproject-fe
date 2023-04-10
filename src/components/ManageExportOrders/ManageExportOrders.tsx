@@ -34,7 +34,11 @@ function ManageExportOrders() {
         },
         {
           Header: t("note"),
-          accessor: (data: any) => <p>{data?.note || "---"}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line md:max-w-[300px]">
+              {data?.note || "---"}
+            </p>
+          ),
         },
         {
           Header: t("export_date"),

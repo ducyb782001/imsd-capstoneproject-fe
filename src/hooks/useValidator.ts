@@ -9,6 +9,6 @@ export function isValidGmail(gmail: string): boolean {
 }
 
 export function isValidFullName(name: string): boolean {
-  var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  var regex = /^[\p{L} ]{1,100}$/u
   return regex.test(name)
 }

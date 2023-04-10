@@ -21,7 +21,7 @@ import { checkPassword, checkSamePassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
 import { format } from "date-fns"
 import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
-import { isValidPhoneNumber } from "../../hooks/useValidator"
+import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import { checkStringLength } from "../../lib"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
@@ -135,7 +135,11 @@ function Profile() {
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <div>
                 <PrimaryInput
-                  title={t("full_name")}
+                  title={
+                    <p>
+                      {t("full_name")} <span className="text-red-500">*</span>
+                    </p>
+                  }
                   placeholder={t("enter_full_name")}
                   value={
                     staffAccountObject?.userName
@@ -143,17 +147,22 @@ function Profile() {
                       : ""
                   }
                   onChange={(e) => {
+                    const userName = e.target.value
+                      ?.trimStart()
+                      .replace(/\s{2,}/g, " ")
                     setStaffAccountObject({
                       ...staffAccountObject,
-                      userName: e.target.value,
+                      userName: userName,
                     })
                   }}
                 />
-                {checkStringLength(staffAccountObject?.userName, 100) && (
-                  <div className="text-sm text-red-500">
-                    Họ tên tối đa 100 kí tự
-                  </div>
-                )}
+                {staffAccountObject?.userName &&
+                  !isValidFullName(staffAccountObject?.userName) && (
+                    <div className="text-sm text-red-500">
+                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
+                      kí tự
+                    </div>
+                  )}
               </div>
               <PrimaryInput
                 title={t("staff_position")}
@@ -327,7 +336,9 @@ function Profile() {
               !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
             staffAccountObject?.userName?.length > 100 ||
             staffAccountObject?.identity?.length > 12 ||
-            staffAccountObject?.address?.length > 250
+            staffAccountObject?.address?.length > 250 ||
+            !!!staffAccountObject?.userName ||
+            !isValidFullName(staffAccountObject?.userName)
           }
         >
           {t("save")}

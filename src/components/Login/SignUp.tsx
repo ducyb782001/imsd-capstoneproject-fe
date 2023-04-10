@@ -96,9 +96,7 @@ function Signup() {
     })
 
     // @ts-ignore
-    resendEmailMutation.mutate({
-      email: userEmail,
-    })
+    resendEmailMutation.mutate(userEmail)
   }
 
   const resendEmailMutation = useMutation(
@@ -111,14 +109,9 @@ function Signup() {
           toast.dismiss(TOAST_RESEND_EMAIL)
           toast.success("Gửi lại thư xác nhận thành công!")
           setTime(60)
-          // setTimeout(() => {
-          //   router.push("/confirm-email")
-          // }, 200)
         } else {
           toast.dismiss(TOAST_RESEND_EMAIL)
-          toast.error(
-            data?.response?.data || "Có lỗi xảy ra, vui lòng thử lại sau",
-          )
+          toast.error("Có lỗi xảy ra, vui lòng thử lại sau")
           setTime(60)
         }
       },

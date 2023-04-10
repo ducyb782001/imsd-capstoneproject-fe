@@ -34,11 +34,15 @@ function ManageImportGoods() {
         },
         {
           Header: t("note"),
-          accessor: (data: any) => <p>{data?.note}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line md:max-w-[300px]">{data?.note}</p>
+          ),
         },
         {
           Header: t("supplier"),
-          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line">{data?.supplier?.supplierName}</p>
+          ),
         },
         {
           Header: t("created_date"),

@@ -79,7 +79,7 @@ function Login() {
     router.push("/signup")
   }
   const handleForgotPass = () => {
-    router.push("/input-forgot-email")
+    router.push("/forgot-password")
   }
 
   useEffect(() => {
@@ -113,7 +113,10 @@ function Login() {
               />
             </div>
             <div className="flex justify-end w-full mt-2 text-violet-500">
-              <UnderlineText className="font-medium" onClick={handleForgotPass}>
+              <UnderlineText
+                className="font-medium"
+                onClick={() => router.push("/forgot-password")}
+              >
                 Quên mật khẩu?
               </UnderlineText>
             </div>

@@ -21,7 +21,6 @@ export const changePassword = (password) =>
 
 export const resendEmail = (email) => {
   return postAPI({
-    url: resendEmailUrl,
-    data: email,
+    url: `${resendEmailUrl}?email=${email}`,
   })
 }

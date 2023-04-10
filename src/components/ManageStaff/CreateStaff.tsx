@@ -18,7 +18,7 @@ import router from "next/router"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import { checkPassword } from "../../lib/check-password"
-import { isValidPhoneNumber } from "../../hooks/useValidator"
+import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import { checkSameUserCode, checkStringLength } from "../../lib"
 import useDebounce from "../../hooks/useDebounce"
 
@@ -160,20 +160,30 @@ function CreateStaff() {
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <div>
                 <PrimaryInput
-                  title={t("full_name")}
+                  title={
+                    <p>
+                      {t("full_name")} <span className="text-red-500">*</span>
+                    </p>
+                  }
                   placeholder={t("enter_full_name")}
+                  value={staffAccountObject?.userName || ""}
                   onChange={(e) => {
+                    const userName = e.target.value
+                      ?.trimStart()
+                      .replace(/\s{2,}/g, " ")
                     setStaffAccountObject({
                       ...staffAccountObject,
-                      userName: e.target.value,
+                      userName: userName,
                     })
                   }}
                 />
-                {checkStringLength(staffAccountObject?.userName, 100) && (
-                  <div className="text-sm text-red-500">
-                    Họ tên tối đa 100 kí tự
-                  </div>
-                )}
+                {staffAccountObject?.userName &&
+                  !isValidFullName(staffAccountObject?.userName) && (
+                    <div className="text-sm text-red-500">
+                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
+                      kí tự
+                    </div>
+                  )}
               </div>
               <SelectRoleDropdown
                 title={t("staff_position")}
@@ -401,7 +411,9 @@ function CreateStaff() {
                     staffAccountObject?.userName?.length > 100 ||
                     staffAccountObject?.identity?.length > 12 ||
                     staffAccountObject?.address?.length > 250 ||
-                    isSameUserCode
+                    isSameUserCode ||
+                    !!!staffAccountObject?.userName ||
+                    !isValidFullName(staffAccountObject?.userName)
                   }
                 >
                   {t("save")}

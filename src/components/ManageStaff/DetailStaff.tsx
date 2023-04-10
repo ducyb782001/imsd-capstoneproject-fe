@@ -21,7 +21,7 @@ import Switch from "react-switch"
 import DetailStaffSkeleton from "./DetailStaffSkeleton"
 import GeneralIcon from "../icons/GeneralIcon"
 import PasswordIcon from "../icons/PasswordIcon"
-import { isValidPhoneNumber } from "../../hooks/useValidator"
+import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import Page401 from "../401"
 import GreenStatus from "../ReturnGood/GreenStatus"
 import YellowStatus from "../ReturnGood/YellowStatus"
@@ -208,7 +208,11 @@ function DetailStaff() {
             <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
               <div>
                 <PrimaryInput
-                  title={t("full_name")}
+                  title={
+                    <p>
+                      {t("full_name")} <span className="text-red-500">*</span>
+                    </p>
+                  }
                   placeholder={t("enter_full_name")}
                   value={
                     staffAccountObject?.userName
@@ -216,17 +220,23 @@ function DetailStaff() {
                       : ""
                   }
                   onChange={(e) => {
+                    const userName = e.target.value
+                      ?.trimStart()
+                      .replace(/\s{2,}/g, " ")
+
                     setStaffAccountObject({
                       ...staffAccountObject,
-                      userName: e.target.value,
+                      userName: userName,
                     })
                   }}
                 />
-                {checkStringLength(staffAccountObject?.userName, 100) && (
-                  <div className="text-sm text-red-500">
-                    Họ tên tối đa 100 kí tự
-                  </div>
-                )}
+                {staffAccountObject?.userName &&
+                  !isValidFullName(staffAccountObject?.userName) && (
+                    <div className="text-sm text-red-500">
+                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
+                      kí tự
+                    </div>
+                  )}
               </div>
               <SelectRoleDropdown
                 title={t("position")}
@@ -247,22 +257,6 @@ function DetailStaff() {
                 <div className="mb-3 text-sm font-bold text-gray">
                   {t("status")}
                 </div>
-                {/* <div className="h-[40px] mt-4">
-                  <Switch
-                    onChange={() => {
-                      setStatusStaff(!statusStaff)
-                    }}
-                    readOnly={true}
-                    checked={statusStaff}
-                    width={44}
-                    height={24}
-                    className="ml-2 !opacity-100"
-                    uncheckedIcon={null}
-                    checkedIcon={null}
-                    offColor="#CBCBCB"
-                    onColor="#6A44D2"
-                  />
-                </div> */}
                 {statusStaff === true && (
                   <GreenStatus status="Đang hoạt động" />
                 )}
@@ -431,7 +425,9 @@ function DetailStaff() {
               !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
             staffAccountObject?.userName?.length > 100 ||
             staffAccountObject?.identity?.length > 12 ||
-            staffAccountObject?.address?.length > 250
+            staffAccountObject?.address?.length > 250 ||
+            !!!staffAccountObject?.userName ||
+            !isValidFullName(staffAccountObject?.userName)
           }
         >
           {t("save")}

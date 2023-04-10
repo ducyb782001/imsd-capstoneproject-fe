@@ -37,7 +37,11 @@ function ManageReturnProductToSupplier() {
         },
         {
           Header: t("supplier"),
-          accessor: (data: any) => <p>{data?.supplier?.supplierName}</p>,
+          accessor: (data: any) => (
+            <p className="truncate-2-line md:max-w-[200px]">
+              {data?.supplier?.supplierName}
+            </p>
+          ),
         },
         {
           Header: t("bill_create_user"),
@@ -59,9 +63,7 @@ function ManageReturnProductToSupplier() {
         {
           Header: "Giá trị trả hàng",
           accessor: (data: any) => (
-            <p className="text-center">
-              {new BigNumber(data?.total).toFormat()} đ
-            </p>
+            <p>{new BigNumber(data?.total).toFormat()} đ</p>
           ),
         },
         {
@@ -76,8 +78,12 @@ function ManageReturnProductToSupplier() {
           ),
         },
         {
-          Header: "Ghi chú",
-          accessor: (data: any) => <p>{data?.note}</p>,
+          Header: "Lý do",
+          accessor: (data: any) => (
+            <p title={data?.note} className="truncate-2-line md:max-w-[100px]">
+              {data?.note || "---"}
+            </p>
+          ),
         },
         {
           Header: " ",
