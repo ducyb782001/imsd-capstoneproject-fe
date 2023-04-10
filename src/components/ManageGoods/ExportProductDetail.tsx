@@ -119,7 +119,7 @@ function ExportProductDetail() {
                 #{productImport?.exportCode}
               </h1>
               <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
-                Hoàn thành
+                {t("complete")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
@@ -128,7 +128,7 @@ function ExportProductDetail() {
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
-                    Hoàn hàng
+                    {t("hoanhang")}
                   </SecondaryBtn>
                 </a>
               </Link>
@@ -173,7 +173,7 @@ function ExportProductDetail() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhân viên:</h1>
+              <h1 className="text-xl font-semibold">{t("staff")}:</h1>
             </div>
             <PrimaryInput
               value={productImport?.user?.userName}
@@ -183,10 +183,10 @@ function ExportProductDetail() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
+            {t("created_report_import")}:{" "}
             {productImport?.createdDate
               ? format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")
               : format(new Date(), "dd/MM/yyyy HH:mm")}
@@ -194,7 +194,7 @@ function ExportProductDetail() {
           <PrimaryTextArea
             rows={7}
             className="mt-4"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
             readOnly={true}
@@ -204,7 +204,7 @@ function ExportProductDetail() {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3">
           <ExportGoodsIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm xuất đi</h1>
+          <h1 className="text-xl font-semibold">{t("export_product_infor")}</h1>
         </div>
         <div className="mt-4 table-style">
           <Table
@@ -215,7 +215,7 @@ function ExportProductDetail() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">{t("price_overall")}</div>
-          {new BigNumber(productImport?.totalPrice).toFormat(0)} đ
+          {new BigNumber(productImport?.totalPrice).toFormat(0)} {t("vnd")}
         </div>
       </div>
     </div>

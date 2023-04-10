@@ -104,9 +104,12 @@ function ManageGoods({ ...props }) {
           accessor: (data: any) => (
             <div className="flex justify-center">
               {data?.status ? (
-                <GreenStatus className="w-fit" status="Đang giao dịch" />
+                <GreenStatus className="w-fit" status={t("on_sale")} />
               ) : (
-                <RedStatus className="w-fit" status="Ngừng giao dịch" />
+                <RedStatus
+                  className="text-center w-fit"
+                  status={t("off_sale")}
+                />
               )}
             </div>
           ),

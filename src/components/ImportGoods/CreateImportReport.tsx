@@ -40,11 +40,11 @@ function CreateImportReport() {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.image || "/images/default-product-image.jpg"}
@@ -54,13 +54,13 @@ function CreateImportReport() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">{data?.productName}</p>
           ),
         },
         {
-          Header: "SL nhập",
+          Header: t("import_number"),
           accessor: (data: any) => (
             <ListQuantitiveImport
               data={data}
@@ -70,7 +70,7 @@ function CreateImportReport() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => (
             <ListUnitImport
               data={data}
@@ -80,7 +80,7 @@ function CreateImportReport() {
           ),
         },
         {
-          Header: "Đơn giá",
+          Header: t("price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-2">
               <ListPriceImport
@@ -93,7 +93,7 @@ function CreateImportReport() {
           ),
         },
         {
-          Header: "Chiết khấu",
+          Header: t("discount"),
           accessor: (data: any) => (
             <div className="flex items-center justify-center gap-1">
               <ListDiscountImport
@@ -106,7 +106,7 @@ function CreateImportReport() {
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <CountTotalPrice
               data={data}
@@ -253,7 +253,7 @@ function CreateImportReport() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm đơn nhập hàng thành công")
+          toast.success(t("create_import_order_success"))
           router.push("/manage-import-orders")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -262,7 +262,7 @@ function CreateImportReport() {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -276,13 +276,11 @@ function CreateImportReport() {
     const count = countUndefinedOrEmptyAmount(listProductImport)
 
     if (count > 0) {
-      toast.error(
-        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
-      )
+      toast.error(t("export_number_0"))
       return
     }
 
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
 
@@ -349,7 +347,7 @@ function CreateImportReport() {
     <div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-7525">
         <div>
-          <h1 className="text-2xl font-semibold">Tạo hóa đơn nhập hàng</h1>
+          <h1 className="text-2xl font-semibold">{t("create_import_order")}</h1>
           <div className="flex justify-center mt-6">
             <StepBar
               createdDate={format(
@@ -360,14 +358,14 @@ function CreateImportReport() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Chọn nhà cung cấp</h1>
-              <Tooltip content="Chọn nhà cung cấp để hiển thị mặt hàng tương ứng">
+              <h1 className="text-xl font-semibold">{t("choose_supplier")}</h1>
+              <Tooltip content={t("choose_supplier_to_choose_product")}>
                 <InfoIcon />
               </Tooltip>
             </div>
             <AddChooseSupplierDropdown
               listDropdown={listNhaCungCap}
-              textDefault={"Nhà cung cấp"}
+              textDefault={t("supplier")}
               showing={nhaCungCapSelected}
               setShowing={setNhaCungCapSelected}
               isLoadingSupplier={isLoadingSupplier}
@@ -376,15 +374,17 @@ function CreateImportReport() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn: {format(Date.now(), "dd/MM/yyyy")}
+            {t("created_report_import")}: {format(Date.now(), "dd/MM/yyyy")}
           </div>
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <div className="mt-3 text-sm font-bold text-gray">
+            {t("choose_staff")}
+          </div>
           <ChooseStaffDropdown
             listDropdown={listStaff}
-            textDefault={userData?.userName || "Chọn nhân viên"}
+            textDefault={userData?.userName || t("choose_staff")}
             showing={staffSelected}
             setShowing={setStaffSelected}
             isLoadingStaff={isLoadingSupplier}
@@ -393,7 +393,7 @@ function CreateImportReport() {
             <PrimaryTextArea
               rows={4}
               className="mt-2"
-              title="Ghi chú hóa đơn"
+              title={t("note_report")}
               onChange={(e) => {
                 setProductImportObject({
                   ...productImportObject,
@@ -402,9 +402,7 @@ function CreateImportReport() {
               }}
             />
             {checkStringLength(productImportObject?.note, 250) && (
-              <div className="text-sm text-red-500">
-                Ghi chú tối đa 250 kí tự
-              </div>
+              <div className="text-sm text-red-500">{t("note_warning")}</div>
             )}
           </div>
         </div>
@@ -412,12 +410,12 @@ function CreateImportReport() {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ImportGoodIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
         </div>
         <SearchProductImportDropdown
           listDropdown={listProductBySupplierImport?.data}
           placeholder={t("search.searchInGoods")}
-          textDefault={"Nhà cung cấp"}
+          textDefault={t("supplier")}
           showing={productChosen}
           setShowing={setProductChosen}
         />
@@ -431,12 +429,12 @@ function CreateImportReport() {
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
           <div className="text-base font-semibold">
-            Tổng giá trị đơn hàng: {new BigNumber(totalPriceSend).toFormat(0)} đ
+            {t("price_overall")} {new BigNumber(totalPriceSend).toFormat(0)} đ
           </div>
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn tạo phiếu nhập hàng không?"
+          title={t("create_export_alert")}
           handleClickSaveBtn={handleClickSaveBtn}
           disabled={
             submitted ||
@@ -444,7 +442,7 @@ function CreateImportReport() {
             productImportObject?.note?.length > 250
           }
         >
-          Tạo hóa đơn nhập hàng
+          {t("create_import_order")}
         </ConfirmPopup>
       </div>
     </div>
@@ -469,7 +467,7 @@ function ListQuantitiveImport({
     })
     setListProductImport(newList)
   }
-
+  const { t } = useTranslation()
   const renderWarningImport = () => {
     const product = listProductImport?.filter(
       (i) => i.productId === data?.productId,
@@ -481,7 +479,7 @@ function ListQuantitiveImport({
       return (
         overAmount && (
           <p className="absolute text-xs text-dangerous">
-            Số lượng nhập vượt định mức
+            {t("import_over_amount")}
           </p>
         )
       )
@@ -498,7 +496,7 @@ function ListQuantitiveImport({
       return (
         overAmount && (
           <p className="absolute text-xs text-dangerous">
-            Số lượng nhập vượt định mức
+            {t("import_over_amount")}
           </p>
         )
       )
@@ -622,10 +620,10 @@ function CountTotalPrice({ data, listProductImport }) {
   useEffect(() => {
     handleSetPrice()
   }, [listProductImport])
-
+  const { t } = useTranslation()
   return (
     <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer md:px-auto bg-successBtn">
-      {new BigNumber(price).toFormat(0)} đ
+      {new BigNumber(price).toFormat(0)} {t("vnd")}
     </div>
   )
 }

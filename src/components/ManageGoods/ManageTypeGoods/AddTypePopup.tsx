@@ -46,7 +46,7 @@ function AddTypePopup({ className = "", children }) {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success(t("add_type_success"))
-        queryClient.refetchQueries("getListTypeGood")
+        queryClient.invalidateQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)
@@ -98,7 +98,7 @@ function AddTypePopup({ className = "", children }) {
                     />
                     {checkStringLength(typeName, 100) && (
                       <div className="text-sm text-red-500">
-                        Tên loại sản phẩm tối đa 100 kí tự
+                        {t("max_length_category")}
                       </div>
                     )}
                   </div>
@@ -111,7 +111,7 @@ function AddTypePopup({ className = "", children }) {
                     />
                     {checkStringLength(description, 250) && (
                       <div className="text-sm text-red-500">
-                        Tên loại sản phẩm tối đa 250 kí tự
+                        {t("note_category_length")}
                       </div>
                     )}
                   </div>

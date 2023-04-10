@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 import { motion } from "framer-motion"
-import { appWithTranslation } from "next-i18next"
+import { appWithTranslation, useTranslation } from "next-i18next"
 import React, { useEffect, useRef, useState } from "react"
 import useScanDetection from "../../hooks/useScanDetection"
 import { searchProduct } from "../../lib/search"
@@ -78,7 +78,7 @@ function SearchProductImportDropdown({
       },
     },
   }
-
+  const { t } = useTranslation()
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
@@ -92,9 +92,7 @@ function SearchProductImportDropdown({
             type="text"
             className="w-full py-3 pl-10 pr-3 border rounded outline-none border-grayLight focus:border-primary hover:border-primary smooth-transform"
             placeholder={
-              placeholder
-                ? placeholder
-                : "Tìm kiếm theo tên sản phẩm hoặc quét mã barcode"
+              placeholder ? placeholder : t("search_by_name_and_barcode")
             }
             value={searchInput ? searchInput : ""}
             onChange={(e) => {
@@ -135,6 +133,7 @@ function SearchProductImportDropdown({
 export default SearchProductImportDropdown
 
 function DropDownItem({ data, setShowing }) {
+  const { t } = useTranslation()
   return (
     <div
       onClick={(e) => {
@@ -159,11 +158,13 @@ function DropDownItem({ data, setShowing }) {
       </div>
       <div className="text-end">
         <p>
-          Giá nhập:{" "}
-          {data?.costPrice ? new BigNumber(data?.costPrice).toFormat(0) : "0"} đ
+          {t("cost_price")}:{" "}
+          {data?.costPrice ? new BigNumber(data?.costPrice).toFormat(0) : "0"}{" "}
+          {t("vnd")}
         </p>
         <p className="text-blue">
-          Tồn: {data?.inStock ? new BigNumber(data?.inStock).toFormat(0) : "0"}
+          {t("ton")}:{" "}
+          {data?.inStock ? new BigNumber(data?.inStock).toFormat(0) : "0"}
         </p>
       </div>
     </div>

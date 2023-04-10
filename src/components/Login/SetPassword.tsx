@@ -92,8 +92,8 @@ function SetPassword() {
                           <div>
                             Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự
                             <h1>
-                              Phải bao gồm chữ in hoa, in thường, số, không được
-                              để trống
+                              Phải bao gồm chữ in hoa, in thường, số, kí tự đặc
+                              biệt và không được để trống
                             </h1>
                           </div>
                         }
@@ -106,9 +106,9 @@ function SetPassword() {
                 />
                 {!canChangePassword && userPassword && (
                   <p className="mt-1 text-sm text-red-500">
-                    * Password must be at least 8 characters with at least 1
-                    Upper Case, 1 lower case, 1 special character and 1 numeric
-                    character
+                    * Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự Phải
+                    bao gồm chữ in hoa, in thường, số, kí tự đặc biệt và không
+                    được để trống
                   </p>
                 )}
                 <PasswordInput

@@ -261,7 +261,7 @@ function EditProduct() {
             />
             {checkStringLength(detailProduct?.productName, 100) && (
               <div className="text-sm text-red-500">
-                Tên sản phẩm tối đa 100 kí tự
+                {t("product_max_length")}
               </div>
             )}
           </div>
@@ -325,7 +325,7 @@ function EditProduct() {
               />
               {checkStringLength(detailProduct?.productCode, 20) && (
                 <div className="text-sm text-red-500">
-                  Mã sản phẩm tối đa 20 kí tự
+                  {t("max_product_code")}
                 </div>
               )}
             </div>
@@ -343,7 +343,7 @@ function EditProduct() {
               />
               {checkStringLength(detailProduct?.barcode, 20) && (
                 <div className="text-sm text-red-500">
-                  Mã sản phẩm tối đa 20 kí tự
+                  {t("barcode_max_length")}
                 </div>
               )}
             </div>
@@ -621,10 +621,12 @@ function RightSideProductDetail({
           <SmallTitle>{t("additional_information")}</SmallTitle>
         </div>
 
-        <div className="mt-4 mb-2 text-sm font-bold text-gray">Ngưỡng tồn</div>
+        <div className="mt-4 mb-2 text-sm font-bold text-gray">
+          {t("max_int")}
+        </div>
         <div className="flex items-center w-full gap-2">
           <PrimaryInput
-            placeholder="Min"
+            placeholder={t("below")}
             type="number"
             min="0"
             value={
@@ -639,7 +641,7 @@ function RightSideProductDetail({
           />
           <p>-</p>
           <PrimaryInput
-            placeholder="Max"
+            placeholder={t("above")}
             type="number"
             min="0"
             value={
@@ -655,7 +657,7 @@ function RightSideProductDetail({
         </div>
         {warningStock && (
           <div className="mt-1 text-xs text-red-500">
-            Ngưỡng tồn tối đa phải lớn hơn ngưỡng tồn tối thiểu
+            {t("above_than_below")}
           </div>
         )}
         <PrimaryTextArea
@@ -668,9 +670,7 @@ function RightSideProductDetail({
           }}
         />
         {checkStringLength(product?.description, 250) && (
-          <div className="text-sm text-red-500">
-            Ghi chú sản phẩm tối đa 250 kí tự
-          </div>
+          <div className="text-sm text-red-500">{t("note_product_warn")}</div>
         )}
         <p className="mt-4">{t("status")}</p>
         <div className="flex items-center justify-between">
@@ -693,7 +693,7 @@ function RightSideProductDetail({
       <div className="flex gap-4 mt-4 bg-white block-border">
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
-          title="Bạn có chắc chắn muốn chỉnh sửa sản phẩm không?"
+          title={t("edit_confirm_product")}
           handleClickSaveBtn={handleClickSaveBtn}
           disabled={
             disabled ||
@@ -777,9 +777,7 @@ function AdditionUnitRow({
         </div>
       </div>
       {warning && (
-        <p className="text-xs text-red-500">
-          Tên của đơn vị quy đổi phải khác tên của đơn vị mặc định
-        </p>
+        <p className="text-xs text-red-500">{t("name_same_unnit")}</p>
       )}
     </div>
   )

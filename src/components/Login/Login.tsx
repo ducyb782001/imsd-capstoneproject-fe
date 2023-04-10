@@ -100,7 +100,9 @@ function Login() {
         <div className="flex flex-col items-center justify-center w-full h-full px-4 bg-white">
           <div className="min-w-full md:min-w-[440px]">
             <div className="text-2xl md:text-4xl">Đăng nhập</div>
-            <p className="mt-4">Chào mừng quay trở lại! Xin mời đăng nhập!</p>
+            <p className="mt-4">
+              Chào mừng bạn đã quay trở lại! Xin mời đăng nhập!
+            </p>
             <div className="flex flex-col w-full gap-6 mt-11">
               <PrimaryInput
                 title="Tên đăng nhập"
@@ -108,7 +110,7 @@ function Login() {
                 onChange={(event) => setUserEmail(event.target.value)}
               />
               <PasswordInput
-                title="Password"
+                title="Mật khẩu"
                 onChange={(event) => setUserPassword(event.target.value)}
               />
             </div>

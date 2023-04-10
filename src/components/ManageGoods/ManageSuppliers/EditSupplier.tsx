@@ -247,13 +247,13 @@ function EditSupplier() {
           />
           {checkStringLength(supplier?.supplierName, 100) && (
             <div className="text-sm text-red-500">
-              Tên nhà cung cấp tối đa 100 kí tự
+              {t("max_supplier_number")}
             </div>
           )}
         </div>
         <div>
           <div className="mb-2 text-sm font-bold text-gray">
-            Trạng thái giao dịch
+            {t("status_transaction")}
           </div>
           <Switch
             onChange={() => setSupplierStatus(!supplierStatus)}
@@ -284,7 +284,7 @@ function EditSupplier() {
           />
           {supplier?.supplierPhone &&
             !!!isValidPhoneNumber(supplier?.supplierPhone) && (
-              <p className="text-red-500">Sai định dạng</p>
+              <p className="text-red-500">{t("wrong_valid")}</p>
             )}
         </div>
         <div>
@@ -297,7 +297,7 @@ function EditSupplier() {
           />
           {supplier?.supplierEmail &&
             !!!isValidGmail(supplier?.supplierEmail) && (
-              <p className="text-red-500">Sai định dạng</p>
+              <p className="text-red-500">{t("wrong_valid")}</p>
             )}
         </div>
       </div>
@@ -306,21 +306,21 @@ function EditSupplier() {
         <CityDropDown
           title={t("city")}
           listDropdown={listCity}
-          textDefault={supplier?.city?.name || "Chọn tỉnh"}
+          textDefault={supplier?.city?.name || t("choose_city")}
           showing={citySelected}
           setShowing={setCitySelected}
         />
         <DistrictDropDown
           title={t("district")}
           listDropdown={listDistrict}
-          textDefault={supplier?.district?.name || "Chọn thành phố"}
+          textDefault={supplier?.district?.name || t("choose_district")}
           showing={districtSelected}
           setShowing={setDistrictSelected}
         />
         <WardDropDown
           title={t("ward")}
           listDropdown={listWard}
-          textDefault={supplier?.ward?.name || "Chọn xã"}
+          textDefault={supplier?.ward?.name || t("choose_ward")}
           showing={wardSelected}
           setShowing={setWardSelected}
         />
@@ -335,7 +335,7 @@ function EditSupplier() {
           }}
         />
         {checkStringLength(supplier?.address, 250) && (
-          <div className="text-sm text-red-500">Địa chỉ tối đa 250 kí tự</div>
+          <div className="text-sm text-red-500">{t("max_address_length")}</div>
         )}
       </div>
       <div>
@@ -348,7 +348,7 @@ function EditSupplier() {
           }}
         />
         {checkStringLength(supplier?.note, 250) && (
-          <div className="text-sm text-red-500">Ghi chú tối đa 250 kí tự</div>
+          <div className="text-sm text-red-500">{t("note_warning")}</div>
         )}
       </div>
       <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">

@@ -48,8 +48,8 @@ function AddSupplierPopup({ className = "" }) {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("add_supplier_success"))
-          queryClient.refetchQueries("getListStaff")
-          queryClient.refetchQueries("getListSupplier")
+          queryClient.invalidateQueries("getListStaff")
+          queryClient.invalidateQueries("getListSupplier")
           close()
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -98,7 +98,7 @@ function AddSupplierPopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm nhanh nhà cung cấp</SmallTitle>
+                  <SmallTitle>{t("quick_add_supplier")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
@@ -121,7 +121,7 @@ function AddSupplierPopup({ className = "" }) {
                     />
                     {checkStringLength(supplier?.supplierName, 100) && (
                       <div className="text-sm text-red-500">
-                        Tên nhà cung cấp tối đa 100 kí tự
+                        {t("max_supplier_number")}
                       </div>
                     )}
                   </div>
@@ -130,7 +130,8 @@ function AddSupplierPopup({ className = "" }) {
                   <PrimaryInput
                     title={
                       <div>
-                        Số điện thoại <span className="text-red-500">*</span>
+                        {t("phone_number")}{" "}
+                        <span className="text-red-500">*</span>
                       </div>
                     }
                     onChange={(e) => {
@@ -143,7 +144,7 @@ function AddSupplierPopup({ className = "" }) {
                   />
                   {supplier?.supplierPhone &&
                     !!!isValidPhoneNumber(supplier?.supplierPhone) && (
-                      <p className="text-red-500">Sai định dạng</p>
+                      <p className="text-red-500">{t("wrong_valid")}</p>
                     )}
                 </div>
 

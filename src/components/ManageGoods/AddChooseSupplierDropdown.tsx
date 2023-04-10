@@ -114,7 +114,7 @@ function AddChooseSupplierDropdown({
               onClick={toggleOpenMenu}
               onChange={(e) => setSearchInput(e.target.value)}
               className=""
-              placeholder={"Tìm theo tên hoặc SĐT"}
+              placeholder={t("seach_by_name_phone")}
             />
 
             <div

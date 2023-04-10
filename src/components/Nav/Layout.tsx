@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import EngFlagIcon from "../icons/EngFlagIcon"
 import VnFlagIcon from "../icons/VnFlagIcon"
 import { getRoleId } from "../../lib/getRoleId"
+
 function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
 
@@ -52,6 +53,7 @@ function Layout({ headTitle = "", ...props }) {
   }, [i18n.language])
   // const roleId = getRoleId()
   const [roleId, setRoleId] = useState("")
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setRoleId(localStorage.getItem("roleId"))

@@ -22,6 +22,7 @@ import AddChooseSupplierDropdown from "../ManageGoods/AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "../ManageGoods/AddChooseTypeDropdown"
 import BigNumber from "bignumber.js"
 import { checkStringLength } from "../../lib"
+import { useTranslation } from "react-i18next"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 interface Product {
@@ -36,6 +37,7 @@ interface Product {
 }
 
 function AddProductPopup({ className = "" }) {
+  const { t } = useTranslation()
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [product, setProduct] = useState<Product>()
@@ -75,17 +77,17 @@ function AddProductPopup({ className = "" }) {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Thêm mới sản phẩm thành công!")
+          toast.success(t("add_product_success"))
           queryClient.refetchQueries("getListProductBySupplier")
           close()
         } else {
           if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data || "Error")
+            toast.error(data?.response?.data || t("error_occur"))
           } else {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Đã có lỗi xảy ra! Xin hãy thử lại.",
+                t("error_occur"),
             )
           }
         }
@@ -95,7 +97,7 @@ function AddProductPopup({ className = "" }) {
 
   const handleSaveBtn = (event) => {
     event.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     // @ts-ignore
@@ -158,7 +160,7 @@ function AddProductPopup({ className = "" }) {
         onClick={open}
       >
         <AddPlusIcon />
-        <p className="text-[#4794F8] text-base">Thêm nhanh sản phẩm</p>
+        <p className="text-[#4794F8] text-base">{t("quickly_add_product")}</p>
       </button>
       <AnimatePresence>
         {showDialog && (
@@ -181,17 +183,18 @@ function AddProductPopup({ className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm nhanh sản phẩm</SmallTitle>
+                  <SmallTitle>{t("quickly_add_product")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <div>
                     <PrimaryInput
-                      placeholder="Nhập tên sản phẩm"
+                      placeholder={t("enter_produc_name")}
                       title={
                         <p>
-                          Tên sản phẩm <span className="text-red-500">*</span>
+                          {t("product_name")}{" "}
+                          <span className="text-red-500">*</span>
                         </p>
                       }
                       value={product?.productName || ""}
@@ -201,18 +204,18 @@ function AddProductPopup({ className = "" }) {
                     />
                     {checkStringLength(product?.productName, 100) && (
                       <div className="text-sm text-red-500">
-                        Tên sản phẩm tối đa 100 kí tự
+                        {t("Product name up to 100 characters")}
                       </div>
                     )}
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <div>
                       <p className="mb-2 text-sm font-bold text-gray">
-                        Nhà cung cấp <span className="text-red-500">*</span>
+                        {t("supplier")} <span className="text-red-500">*</span>
                       </p>
                       <AddChooseSupplierDropdown
                         listDropdown={listNhaCungCap}
-                        textDefault={"Chọn nhà cung cấp"}
+                        textDefault={t("choose_supplier")}
                         showing={nhaCungCapSelected}
                         setShowing={setNhaCungCapSelected}
                         isLoadingSupplier={isLoadingSupplier}
@@ -220,11 +223,12 @@ function AddProductPopup({ className = "" }) {
                     </div>
                     <div>
                       <p className="mb-2 text-sm font-bold text-gray">
-                        Loại sản phẩm <span className="text-red-500">*</span>
+                        {t("type.typeGoods")}{" "}
+                        <span className="text-red-500">*</span>
                       </p>
                       <AddChooseTypeDropdown
                         listDropdown={listTypeProduct}
-                        textDefault={"Chọn loại sản phẩm"}
+                        textDefault={t("choose_type")}
                         showing={typeProduct}
                         setShowing={setTypeProduct}
                       />
@@ -235,14 +239,12 @@ function AddProductPopup({ className = "" }) {
                       <PrimaryInput
                         title={
                           <div className="flex gap-1">
-                            <p>Mã sản phẩm</p>
+                            <p>{t("product code")}</p>
                             <Tooltip
                               content={
                                 <div>
-                                  Mã không trùng lặp giữa các sản phẩm
-                                  <p>
-                                    Nếu để trống, mã sản phẩm sẽ có tiền tố SP
-                                  </p>
+                                  {t("product_can_not_duplicate")}
+                                  <p>{t("head_of_product_code")}</p>
                                 </div>
                               }
                             >
@@ -257,11 +259,11 @@ function AddProductPopup({ className = "" }) {
                             productCode: e.target.value,
                           })
                         }}
-                        placeholder="Nhập mã sản phẩm"
+                        placeholder={t("enter_product_code")}
                       />
                       {checkStringLength(product?.productCode, 20) && (
                         <div className="text-sm text-red-500">
-                          Mã sản phẩm tối đa 20 kí tự
+                          {t("max_product_code")}
                         </div>
                       )}
                     </div>
@@ -271,17 +273,13 @@ function AddProductPopup({ className = "" }) {
                           <div className="flex gap-1">
                             <p>Mã vạch/ Barcode</p>
                             <Tooltip
-                              content={
-                                <div>
-                                  Nếu để trống, mã vạch sẽ trùng với mã sản phẩm
-                                </div>
-                              }
+                              content={<div>{t("barcode_warning")}</div>}
                             >
                               <InfoIcon />
                             </Tooltip>
                           </div>
                         }
-                        placeholder="Nhập tay hoặc dùng máy quét"
+                        placeholder={t("use_scanner")}
                         value={product?.barcode ? product?.barcode : ""}
                         onChange={(e) => {
                           setProduct({ ...product, barcode: e.target.value })
@@ -289,13 +287,13 @@ function AddProductPopup({ className = "" }) {
                       />
                       {checkStringLength(product?.barcode, 20) && (
                         <div className="text-sm text-red-500">
-                          Mã sản phẩm tối đa 20 kí tự
+                          {t("barcode_max_length")}
                         </div>
                       )}
                     </div>
                     <PrimaryInput
-                      title="Đơn vị tính"
-                      placeholder="Nhập đơn vị tính"
+                      title={t("product_unit")}
+                      placeholder={t("enter_unit")}
                       value={
                         product?.defaultMeasuredUnit
                           ? product?.defaultMeasuredUnit
@@ -310,7 +308,7 @@ function AddProductPopup({ className = "" }) {
                     />
                     <div className="hidden md:block" />
                     <PrimaryInput
-                      title="Giá nhập"
+                      title={t("cost_price")}
                       type="number"
                       min="0"
                       value={
@@ -325,7 +323,7 @@ function AddProductPopup({ className = "" }) {
                       accessoriesRight="đ"
                     />
                     <PrimaryInput
-                      title="Giá bán"
+                      title={t("sell_price")}
                       type="number"
                       min="0"
                       value={
@@ -350,10 +348,10 @@ function AddProductPopup({ className = "" }) {
                     onClick={handleSaveBtn}
                     disabled={disabled}
                   >
-                    Thêm sản phẩm
+                    {t("add_product")}
                   </PrimaryBtn>
                   <SecondaryBtn className="w-[70px]" onClick={close}>
-                    Thoát
+                    {t("exit")}
                   </SecondaryBtn>
                 </div>
               </motion.div>

@@ -188,7 +188,7 @@ function AddSupplier() {
             />
             {checkStringLength(supplier?.supplierName, 100) && (
               <div className="text-sm text-red-500">
-                Tên nhà cung cấp tối đa 100 kí tự
+                {t("max_supplier_number")}
               </div>
             )}
           </div>
@@ -210,7 +210,7 @@ function AddSupplier() {
               />
               {supplier?.supplierPhone &&
                 !!!isValidPhoneNumber(supplier?.supplierPhone) && (
-                  <p className="text-red-500">Sai định dạng</p>
+                  <p className="text-red-500">{t("wrong_valid")}</p>
                 )}
             </div>
             <div>
@@ -223,7 +223,7 @@ function AddSupplier() {
               />
               {supplier?.supplierEmail &&
                 !!!isValidGmail(supplier?.supplierEmail) && (
-                  <p className="text-red-500">Sai định dạng</p>
+                  <p className="text-red-500">{t("wrong_valid")}</p>
                 )}
             </div>
           </div>
@@ -270,7 +270,7 @@ function AddSupplier() {
             />
             {checkStringLength(supplier?.address, 250) && (
               <div className="text-sm text-red-500">
-                Địa chỉ tối đa 250 kí tự
+                {t("max_address_length")}
               </div>
             )}
           </div>
@@ -283,9 +283,7 @@ function AddSupplier() {
               }}
             />
             {checkStringLength(supplier?.note, 250) && (
-              <div className="text-sm text-red-500">
-                Ghi chú tối đa 250 kí tự
-              </div>
+              <div className="text-sm text-red-500">{t("note_warning")}</div>
             )}
           </div>
           <div className="flex flex-col items-center justify-end w-full gap-4 mt-6 md:flex-row">
