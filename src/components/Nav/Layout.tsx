@@ -4,7 +4,6 @@ import HorizontalNav from "../HorizontalNav"
 import MainNav from "./MainNav"
 import cookie from "cookie"
 import useGetMe from "../../hooks/useGetMe"
-import BigNumber from "bignumber.js"
 function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
 
@@ -16,14 +15,11 @@ function Layout({ headTitle = "", ...props }) {
   }, [cookie])
 
   const [userName, setUserName] = useState("")
-  const [roleId, setRoleId] = useState<number>()
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userNameCurrent = localStorage.getItem("userName")
-      const roleIdCurrent = localStorage.getItem("roleId")
       setUserName(userNameCurrent)
-      setRoleId(new BigNumber(roleIdCurrent).toNumber())
     }
   }, [])
 

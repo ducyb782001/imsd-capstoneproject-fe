@@ -16,6 +16,7 @@ import CheckGoodsIcon from "../icons/CheckGoodsIcon"
 import UserIcon from "../icons/UserIcon"
 import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
+import { getRoleId } from "../../lib/getRoleId"
 
 function MainNav({ userName = "" }) {
   const router = useRouter()
@@ -184,16 +185,7 @@ function MainNav({ userName = "" }) {
     },
   ]
 
-  const [roleId, setRoleId] = useState<any>()
-  // let roleId = ""
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      if (localStorage.getItem("roleId")) {
-        setRoleId(localStorage.getItem("roleId"))
-      }
-    }
-  }, [])
-  // const roleId = localStorage.getItem("roleId")
+  const roleId = getRoleId()
 
   return (
     <div className="flex flex-col z-50 w-full md:w-[276px] h-min-content md:h-screen overflow-y-auto bg-white px-4 py-[6px] md:pt-7 md:pb-10 shadow-lg fixed top-0 bottom-0 left-0">
