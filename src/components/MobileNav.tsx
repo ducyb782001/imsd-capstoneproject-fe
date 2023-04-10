@@ -16,7 +16,7 @@ import DashboardIcon from "./icons/DashboardIcon"
 import { getRoleId } from "../lib/getRoleId"
 import UserIcon from "./icons/UserIcon"
 
-function MobileNav({ changeLanguage, showingLanguage }) {
+function MobileNav({ changeLanguage, showingLanguage, roleId = "" }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -241,7 +241,7 @@ function MobileNav({ changeLanguage, showingLanguage }) {
       transition: { staggerChildren: 0.05, staggerDirection: -1 },
     },
   }
-  const roleId = getRoleId()
+  // const roleId = getRoleId()
 
   return (
     <div ref={node} className="relative">
