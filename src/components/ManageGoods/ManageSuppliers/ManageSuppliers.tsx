@@ -228,7 +228,7 @@ function RenderAddress(data) {
 
     const fullAddress = [address, ward?.name, district?.name, city?.name]
       .filter(Boolean)
-      .join(",")
+      .join(", ")
 
     setFullAddressRes(fullAddress)
   }, [data])

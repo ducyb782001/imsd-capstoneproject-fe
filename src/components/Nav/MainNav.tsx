@@ -16,8 +16,14 @@ import CheckGoodsIcon from "../icons/CheckGoodsIcon"
 import UserIcon from "../icons/UserIcon"
 import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
+import { getRoleId } from "../../lib/getRoleId"
 
-function MainNav({ userName = "" }) {
+function MainNav({
+  roleId = "",
+  userName = "",
+  changeLanguage,
+  showingLanguage,
+}) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -184,17 +190,6 @@ function MainNav({ userName = "" }) {
     },
   ]
 
-  const [roleId, setRoleId] = useState<any>()
-  // let roleId = ""
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      if (localStorage.getItem("roleId")) {
-        setRoleId(localStorage.getItem("roleId"))
-      }
-    }
-  }, [])
-  // const roleId = localStorage.getItem("roleId")
-
   return (
     <div className="flex flex-col z-50 w-full md:w-[276px] h-min-content md:h-screen overflow-y-auto bg-white px-4 py-[6px] md:pt-7 md:pb-10 shadow-lg fixed top-0 bottom-0 left-0">
       <div className="items-center justify-between hidden h-full md:flex-col md:flex">
@@ -253,7 +248,11 @@ function MainNav({ userName = "" }) {
       </div>
 
       <div className="md:hidden">
-        <MobileNav />
+        <MobileNav
+          changeLanguage={changeLanguage}
+          showingLanguage={showingLanguage}
+          roleId={roleId}
+        />
       </div>
     </div>
   )
