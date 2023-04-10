@@ -6,16 +6,17 @@ import IconHamberger from "./icons/IconHamberger"
 import IconCloseDialog from "./icons/IconCloseDialog"
 import Line from "./Line"
 import UserDropdownMobile from "./UserDropdownMobile"
-import DashboardIcon from "./icons/DashboardIcon"
 import ManageGoodsIcon from "./icons/ManageGoodsIcon"
 import ImportGoodsIcon from "./icons/ImportGoodsIcon"
 import ExportGoodsIcon from "./icons/ExportGoodsIcon"
 import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
-import UserIcon from "./icons/UserIcon"
 import { useTranslation } from "react-i18next"
+import DashboardIcon from "./icons/DashboardIcon"
+import { getRoleId } from "../lib/getRoleId"
+import UserIcon from "./icons/UserIcon"
 
-function MobileNav() {
+function MobileNav({ changeLanguage, showingLanguage }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -137,8 +138,10 @@ function MobileNav() {
         router.asPath === "/manage-import-orders" ||
         router.pathname === "/import-order-detail/[importId]" ||
         router.pathname === "/import-order-edit/[importId]" ||
+        router.asPath.includes("/import-product-detail/") ||
         router.asPath === "/create-import-order",
     },
+
     {
       id: 4,
       name: t("export good"),
@@ -148,6 +151,7 @@ function MobileNav() {
         router.asPath === "/manage-export-orders" ||
         router.pathname === "/export-order-detail/[exportId]" ||
         router.asPath === "/create-export-order" ||
+        router.asPath.includes("/export-product-detail/") ||
         router.pathname === "/export-order-edit/[exportId]",
     },
     {
@@ -157,8 +161,9 @@ function MobileNav() {
       icon: <ReturnGoodsIcon />,
       isActive:
         router.asPath === "/manage-return-products" ||
-        router.asPath === "/create-return-to-supplier-order" ||
-        router.asPath === "/create-return-order" ||
+        router.asPath.includes("/create-return-to-supplier-order") ||
+        router.asPath.includes("/create-return-order") ||
+        router.asPath.includes("/return-product-detail") ||
         router.asPath === "/manage-return-product-to-supplier" ||
         router.pathname === "/return-order-detail/[returnId]" ||
         router.pathname === "/return-to-supplier-order-detail/[returnId]",
@@ -171,6 +176,7 @@ function MobileNav() {
       isActive:
         router.asPath === "/manage-inventory-checking" ||
         router.asPath === "/create-inventory-checking-order" ||
+        router.asPath.includes("/check-product-detail/") ||
         router.pathname === "/inventory-checking-order-detail/[checkId]" ||
         router.pathname === "/edit-inventory-checking-order/[checkId]",
       href: null,
@@ -235,13 +241,17 @@ function MobileNav() {
       transition: { staggerChildren: 0.05, staggerDirection: -1 },
     },
   }
+  const roleId = getRoleId()
 
   return (
     <div ref={node} className="relative">
       <motion.div className="w-full">
         <div className={`flex items-center justify-between h-full w-full`}>
           <IconHamberger onClick={toggleHoverMenu} />
-          <UserDropdownMobile />
+          <UserDropdownMobile
+            showingLanguage={showingLanguage}
+            changeLanguage={changeLanguage}
+          />
         </div>
         <motion.div
           initial={false}
@@ -280,6 +290,15 @@ function MobileNav() {
                 <Line className="mt-5 mb-3" />
 
                 <div className="flex flex-col gap-[6px]">
+                  {(roleId == "1" || roleId == "2") && (
+                    <MenuItem
+                      key={1}
+                      // icon={<DashboardIcon />}
+                      name={t("dashboard")}
+                      href="/dashboard"
+                      isActive={router.asPath.includes("/dashboard")}
+                    />
+                  )}
                   {mainMenu &&
                     mainMenu.map((i) => (
                       <MobileMenuItem
@@ -291,6 +310,19 @@ function MobileNav() {
                         isActive={i?.isActive}
                       />
                     ))}
+                  {roleId == "1" && (
+                    <MenuItem
+                      key={7}
+                      icon={<UserIcon />}
+                      name={t("staff")}
+                      href="/manage-staff"
+                      isActive={
+                        router.asPath.includes("/manage-staff") ||
+                        router.asPath.includes("/create-staff") ||
+                        router.asPath.includes("/edit-staff")
+                      }
+                    />
+                  )}
                 </div>
               </div>
             </div>

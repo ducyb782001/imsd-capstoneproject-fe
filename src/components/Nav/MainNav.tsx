@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
 import { getRoleId } from "../../lib/getRoleId"
 
-function MainNav({ userName = "" }) {
+function MainNav({ userName = "", changeLanguage, showingLanguage }) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -245,7 +245,10 @@ function MainNav({ userName = "" }) {
       </div>
 
       <div className="md:hidden">
-        <MobileNav />
+        <MobileNav
+          changeLanguage={changeLanguage}
+          showingLanguage={showingLanguage}
+        />
       </div>
     </div>
   )
