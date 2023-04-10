@@ -96,9 +96,7 @@ function Signup() {
     })
 
     // @ts-ignore
-    resendEmailMutation.mutate({
-      email: userEmail,
-    })
+    resendEmailMutation.mutate(userEmail)
   }
 
   const resendEmailMutation = useMutation(

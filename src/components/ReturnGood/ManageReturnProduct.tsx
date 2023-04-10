@@ -45,8 +45,14 @@ function ManageReturnProducts() {
         {
           Header: "Giá trị trả hàng",
           accessor: (data: any) => (
-            <p className="text-center">
-              {new BigNumber(data?.total).toFormat()} đ
+            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+          ),
+        },
+        {
+          Header: "Lý do",
+          accessor: (data: any) => (
+            <p title={data?.note} className="truncate-2-line md:max-w-[100px]">
+              {data?.note || "---"}
             </p>
           ),
         },

@@ -22,5 +22,7 @@ export default function handler(
   res: NextApiResponse<Data>,
 ) {
   const result = imageKit.getAuthenticationParameters()
+  console.log(result)
+
   res.send(result)
 }
