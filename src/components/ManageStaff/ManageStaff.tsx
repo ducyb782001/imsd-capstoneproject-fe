@@ -331,19 +331,3 @@ function DetailImportProduct({ data }) {
     </div>
   )
 }
-
-function ManageStaffSkeleton() {
-  return (
-    <div>
-      <div className="flex justify-end">
-        <div className="w-[240px] h-[50px] skeleton-loading" />
-      </div>
-      <div className="mt-2 bg-white block-border">
-        <div className="h-[66px] w-full skeleton-loading" />
-        <div className="mt-4">
-          <TableSkeleton />
-        </div>
-      </div>
-    </div>
-  )
-}

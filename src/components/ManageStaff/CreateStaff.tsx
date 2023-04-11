@@ -180,8 +180,7 @@ function CreateStaff() {
                 {staffAccountObject?.userName &&
                   !isValidFullName(staffAccountObject?.userName) && (
                     <div className="text-sm text-red-500">
-                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
-                      kí tự
+                      {t("full_name_warning")}
                     </div>
                   )}
               </div>
@@ -212,7 +211,7 @@ function CreateStaff() {
 
                 {checkStringLength(staffAccountObject?.identity, 12) && (
                   <div className="text-sm text-red-500">
-                    CMND tối đa 12 kí tự
+                    {t("identity_max")}
                   </div>
                 )}
               </div>
@@ -241,7 +240,7 @@ function CreateStaff() {
                 ) : (
                   isSameUserCode && (
                     <div className="text-sm text-red-500">
-                      Tên đăng nhập không khả dụng hoặc vượt quá 24 kí tự
+                      {t("user_code_max")}
                     </div>
                   )
                 )}
@@ -266,9 +265,7 @@ function CreateStaff() {
                 />
                 {!canChangePassword && staffAccountObject?.password && (
                   <p className="mt-1 text-sm text-red-500">
-                    * Password must be at least 8 characters with at least 1
-                    Upper Case, 1 lower case, 1 special character and 1 numeric
-                    character
+                    {t("password_warnnig")}
                   </p>
                 )}
               </div>
@@ -288,7 +285,7 @@ function CreateStaff() {
                 />
                 {staffAccountObject?.phone &&
                   !!!isValidPhoneNumber(staffAccountObject?.phone) && (
-                    <p className="text-red-500">Sai định dạng</p>
+                    <p className="text-red-500">{t("wrong_valid")}</p>
                   )}
               </div>
               <SelectGenderDropdown
@@ -350,7 +347,7 @@ function CreateStaff() {
               />
               {checkStringLength(staffAccountObject?.address, 250) && (
                 <div className="text-sm text-red-500">
-                  Địa chỉ tối đa 250 kí tự
+                  {t("max_address_length")}
                 </div>
               )}
             </div>

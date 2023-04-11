@@ -125,18 +125,18 @@ function DetailStaff() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Chỉnh sửa nhân viên thành công")
+          toast.success(t("edit_staff_succeed"))
           queryClient.invalidateQueries("getDetailStaff")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data?.message[0] || t("error_occur"))
           } else {
             toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -146,7 +146,7 @@ function DetailStaff() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     // @ts-ignore
@@ -160,12 +160,10 @@ function DetailStaff() {
     {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Change password success!")
+          toast.success(t("change_password_succeed"))
         } else {
           toast.error(
-            data?.response?.data?.message ||
-              data?.message ||
-              "Opps! Something went wrong...",
+            data?.response?.data?.message || data?.message || t("error_occur"),
           )
         }
       },
@@ -181,13 +179,6 @@ function DetailStaff() {
       })
     }
   }
-
-  // useEffect(() => {
-  //   setStaffAccountObject({
-  //     ...staffAccountObject,
-  //     status: statusStaff,
-  //   })
-  // }, [statusStaff])
 
   const canChangePassword = checkPassword(newPassword)
   const confirmChange = checkSamePassword(newPassword, confirmPassword)
@@ -233,8 +224,7 @@ function DetailStaff() {
                 {staffAccountObject?.userName &&
                   !isValidFullName(staffAccountObject?.userName) && (
                     <div className="text-sm text-red-500">
-                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
-                      kí tự
+                      {t("full_name_warning")}
                     </div>
                   )}
               </div>
@@ -258,10 +248,10 @@ function DetailStaff() {
                   {t("status")}
                 </div>
                 {statusStaff === true && (
-                  <GreenStatus status="Đang hoạt động" />
+                  <GreenStatus status={t("on_progress")} />
                 )}
                 {statusStaff === false && (
-                  <YellowStatus status="Ngừng hoạt động" />
+                  <YellowStatus status={t("off_progress")} />
                 )}
               </div>
             </div>
@@ -295,7 +285,7 @@ function DetailStaff() {
                 />
                 {checkStringLength(staffAccountObject?.identity, 12) && (
                   <div className="text-sm text-red-500">
-                    CMND tối đa 12 kí tự
+                    {t("identity_max")}
                   </div>
                 )}
               </div>
@@ -318,7 +308,7 @@ function DetailStaff() {
                 />
                 {staffAccountObject?.phone &&
                   !!!isValidPhoneNumber(staffAccountObject?.phone) && (
-                    <p className="text-red-500">Sai định dạng</p>
+                    <p className="text-red-500">{t("wrong_valid")}</p>
                   )}
               </div>
               <SelectGenderDropdown
@@ -327,8 +317,8 @@ function DetailStaff() {
                   staffAccountObject?.gender ? t("male") : t("female")
                 }
                 listDropdown={[
-                  { id: true, value: "Nam" },
-                  { id: false, value: "Nữ" },
+                  { id: true, value: t("male") },
+                  { id: false, value: t("female") },
                 ]}
                 showing={gender}
                 setShowing={setGender}
@@ -383,7 +373,7 @@ function DetailStaff() {
               />
               {checkStringLength(staffAccountObject?.address, 250) && (
                 <div className="text-sm text-red-500">
-                  Địa chỉ tối đa 250 kí tự
+                  {t("max_address_length")}
                 </div>
               )}
             </div>
@@ -447,8 +437,7 @@ function DetailStaff() {
             />
             {!canChangePassword && newPassword && (
               <p className="mt-1 text-sm text-red-500">
-                * Password must be at least 8 characters with at least 1 Upper
-                Case, 1 lower case, 1 special character and 1 numeric character
+                {t("password_warnnig")}
               </p>
             )}
           </div>
@@ -459,9 +448,7 @@ function DetailStaff() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {!confirmChange && confirmPassword && (
-              <p className="mt-1 text-sm text-red-500">
-                Mật khẩu phải trùng nhau
-              </p>
+              <p className="mt-1 text-sm text-red-500">{t("same_password")}</p>
             )}
           </div>
         </div>

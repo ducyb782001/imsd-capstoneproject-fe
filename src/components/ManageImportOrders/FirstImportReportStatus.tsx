@@ -179,7 +179,7 @@ function FirstImportReportStatus({ productImport }) {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp</h1>
+              <h1 className="text-xl font-semibold">{t("supplier")}</h1>
             </div>
             <div className="px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
               {productImport?.supplier?.supplierName}
@@ -188,16 +188,16 @@ function FirstImportReportStatus({ productImport }) {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           {productImport && (
             <div className="text-sm font-medium text-center text-gray">
-              Ngày tạo đơn:{" "}
+              {t("created_report_import")}:{" "}
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
 
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
           <div className="flex items-center justify-between gap-1 px-4 py-3 border rounded cursor-pointer border-grayLight hover:border-primary smooth-transform">
             <div className="flex items-center gap-1">
               <p className="text-gray">{productImport?.user?.userName}</p>
@@ -206,7 +206,7 @@ function FirstImportReportStatus({ productImport }) {
           <PrimaryTextArea
             rows={4}
             className="mt-2"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             value={productImport?.note}
             readOnly={true}
           />
@@ -215,7 +215,7 @@ function FirstImportReportStatus({ productImport }) {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ImportGoodIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
         </div>
         <div className="mt-4 table-style">
           <Table
@@ -225,8 +225,8 @@ function FirstImportReportStatus({ productImport }) {
           />
         </div>
         <div className="flex items-center justify-end gap-5 mt-6">
-          <div className="text-base font-semibold">Tổng giá trị đơn hàng:</div>
-          {new BigNumber(productImport?.totalCost).toFormat()} đ
+          <div className="text-base font-semibold">{t("price_overall")}:</div>
+          {new BigNumber(productImport?.totalCost).toFormat()} {t("vnd")}
         </div>
       </div>
     </div>

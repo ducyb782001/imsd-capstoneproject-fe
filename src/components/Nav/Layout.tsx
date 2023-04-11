@@ -19,15 +19,6 @@ function Layout({ headTitle = "", ...props }) {
     }
   }, [cookie])
 
-  const [userName, setUserName] = useState("")
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userNameCurrent = localStorage.getItem("userName")
-      setUserName(userNameCurrent)
-    }
-  }, [])
-
   const { data } = useGetMe()
   const [showingLanguage, setShowingLanguage] = useState<any>()
   const { i18n } = useTranslation()
@@ -64,7 +55,6 @@ function Layout({ headTitle = "", ...props }) {
     <div className="flex bg-[#F6F5FA] w-full">
       <MainNav
         roleId={roleId}
-        userName={userName}
         changeLanguage={changeLanguage}
         showingLanguage={showingLanguage}
       />
@@ -72,8 +62,8 @@ function Layout({ headTitle = "", ...props }) {
         changeLanguage={changeLanguage}
         showingLanguage={showingLanguage}
         headTitle={headTitle}
-        userName={userName}
         avatar={data?.image}
+        userName={data?.userName}
       />
       <div className="w-full min-h-screen pt-[44px] md:pt-[71px] md:pl-[276px]">
         <div className="flex flex-col justify-between w-full h-full px-4 pt-3 pb-6 md:p-7 text-grayDark">

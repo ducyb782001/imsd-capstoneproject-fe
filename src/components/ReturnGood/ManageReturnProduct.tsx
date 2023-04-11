@@ -43,13 +43,15 @@ function ManageReturnProducts() {
           ),
         },
         {
-          Header: "Giá trị trả hàng",
+          Header: t("value_return_money"),
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+            <p className="whitespace-nowrap">
+              {new BigNumber(data?.total).toFormat()} đ
+            </p>
           ),
         },
         {
-          Header: "Lý do",
+          Header: t("reason"),
           accessor: (data: any) => (
             <p title={data?.note} className="truncate-2-line md:max-w-[100px]">
               {data?.note || "---"}
@@ -111,14 +113,14 @@ function ManageReturnProducts() {
               className="max-w-[230px]"
               accessoriesLeft={<PlusIcon />}
             >
-              Hoàn hàng
+              {t("hoanhang")}
             </PrimaryBtn>
           </a>
         </Link>
       </div>
       <div className="mt-2 bg-white block-border">
         <SearchInput
-          placeholder={"Tìm theo mã đơn trả hàng, người tạo đơn"}
+          placeholder={t("search_by_return")}
           onChange={(e) => setSearchParam(e.target.value)}
           className="w-full mb-4"
         />

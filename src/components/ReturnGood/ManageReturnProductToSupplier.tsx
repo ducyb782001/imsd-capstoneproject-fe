@@ -60,24 +60,28 @@ function ManageReturnProductToSupplier() {
           ),
         },
         {
-          Header: "Giá trị trả hàng",
+          Header: t("value_return_money"),
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.total).toFormat()} đ</p>
+            <p className="whitespace-nowrap">
+              {new BigNumber(data?.total).toFormat()} đ
+            </p>
           ),
         },
         {
-          Header: "Trạng thái",
+          Header: t("status"),
           accessor: (data: any) => (
             <div className="flex justify-center w-full">
-              {data?.state === 0 && <YellowStatus status="Đang trả hàng" />}
+              {data?.state === 0 && (
+                <YellowStatus status={t("in_return_progress")} />
+              )}
               {data?.state === 1 && (
-                <GreenStatus status="Đã nhập lại hàng trả" />
+                <GreenStatus status={t("reimport_succeed")} />
               )}
             </div>
           ),
         },
         {
-          Header: "Lý do",
+          Header: t("reason"),
           accessor: (data: any) => (
             <p title={data?.note} className="truncate-2-line md:max-w-[100px]">
               {data?.note || "---"}
@@ -172,14 +176,6 @@ function ManageReturnProductToSupplier() {
     const listRemove = listFilter.filter((i, index) => index !== itemIndex)
     setListFilter(listRemove)
   }
-
-  // const handleExportProduct = () => {
-  //   const dateTime = Date().toLocaleString() + ""
-  //   const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-  //   const workbook = XLSX.utils.book_new()
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-  //   XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  // }
 
   return (
     <div>
