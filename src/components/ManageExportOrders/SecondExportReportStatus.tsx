@@ -109,7 +109,7 @@ function SecondExportReportStatus({ productImport }) {
               <Link href={`/create-return-order/?exportId=${exportId}`}>
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
-                    Hoàn hàng
+                    {t("hoanhang")}
                   </SecondaryBtn>
                 </a>
               </Link>

@@ -162,7 +162,7 @@ function SupplierDetail() {
           </div>
           <PrimaryBtn
             onClick={handleEditSupplier}
-            className="bg-successBtn border-successBtn active:bg-greenDark max-w-[300px]"
+            className="bg-successBtn border-successBtn active:bg-greenDark max-w-[220px]"
           >
             {t("edit_supplier")}
           </PrimaryBtn>

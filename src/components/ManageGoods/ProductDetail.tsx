@@ -45,11 +45,11 @@ function ProductDetail() {
           </h1>
           {detailProduct?.status ? (
             <div className="font-medium text-center text-white border border-green-500 rounded-lg bg-green-50">
-              <h1 className="m-2 ml-3 text-green-500">Đang giao dịch</h1>
+              <h1 className="m-2 ml-3 text-green-500">{t("on_sale")}</h1>
             </div>
           ) : (
             <div className="font-medium text-center text-white border border-red-500 rounded-lg bg-red-50">
-              <h1 className="m-2 ml-3 text-red-500">Ngừng giao dịch</h1>
+              <h1 className="m-2 ml-3 text-red-500">{t("off_sale")}</h1>
             </div>
           )}
         </div>
@@ -60,7 +60,7 @@ function ProductDetail() {
             }
             className="bg-successBtn border-successBtn active:bg-greenDark"
           >
-            Chỉnh sửa sản phẩm
+            {t("edit_product")}
           </PrimaryBtn>
         </div>
       </div>
@@ -78,7 +78,7 @@ function ProductDetail() {
               }
             />
             <ProductInfo
-              title={"Mã barcode"}
+              title={"Mã/barcode"}
               data={detailProduct?.barcode ? detailProduct?.barcode : "---"}
             />
             <ProductInfo
@@ -132,13 +132,13 @@ function ProductDetail() {
               }
             />
             <ProductInfo
-              title={"Ngưỡng tồn nhỏ nhất"}
+              title={t("min_stock")}
               data={new BigNumber(
                 detailProduct?.minStock ? detailProduct?.minStock : 0,
               ).toFormat(0)}
             />
             <ProductInfo
-              title={"Ngưỡng tồn giới hạn"}
+              title={t("max_stock")}
               data={new BigNumber(
                 detailProduct?.maxStock ? detailProduct?.maxStock : 0,
               ).toFormat(0)}
@@ -164,7 +164,7 @@ function ProductDetail() {
                   alt="product-image"
                   src="/images/image-default.png"
                 />
-                <p>Sản phẩm chưa có ảnh</p>
+                <p>{t("no_image")}</p>
               </>
             )}
           </div>
@@ -225,12 +225,6 @@ function HistoryProduct({ data }) {
             </p>
           ),
         },
-        // {
-        //   Header: "Giá thay đổi",
-        //   accessor: (data: any) => (
-        //     <p className="text-center">{data?.priceDifferential || "0"} đ</p>
-        //   ),
-        // },
         {
           Header: t("recorded_date"),
           accessor: (data: any) => (

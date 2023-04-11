@@ -105,7 +105,7 @@ function ReturnImportDetail() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_IMPORT_PRODUCT_TYPE_ID)
-          toast.success(t("success_import"))
+          toast.success(t("import_product_return_success"))
           queryClient.invalidateQueries("getDetailReturnImport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {

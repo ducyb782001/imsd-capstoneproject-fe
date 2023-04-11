@@ -29,11 +29,11 @@ function ReturnProductDetail() {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("numerical_order"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -43,7 +43,7 @@ function ReturnProductDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName || "---"}
@@ -51,7 +51,7 @@ function ReturnProductDetail() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productCode || "---"}
@@ -59,11 +59,11 @@ function ReturnProductDetail() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => <RenderUnit data={data} />,
         },
         {
-          Header: "SL trả",
+          Header: t("return_amount"),
           accessor: (data: any) => <p>{data?.amount}</p>,
         },
       ],
@@ -106,7 +106,7 @@ function ReturnProductDetail() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_IMPORT_PRODUCT_TYPE_ID)
-          toast.success(t("success_import"))
+          toast.success(t("import_product_return_success"))
           queryClient.invalidateQueries("getDetailReturnImport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
@@ -139,19 +139,22 @@ function ReturnProductDetail() {
             </SecondaryBtn>
             {detailReturnImport?.state === 0 && (
               <PrimaryBtn onClick={handleClickImportReturnGood}>
-                Nhập lại hàng trả
+                {t("reimport")}
               </PrimaryBtn>
             )}
           </div>
         </div>
         <div className="text-center">
           {detailReturnImport?.state === 0 && (
-            <YellowStatus className="max-w-[150px]" status="Đang trả hàng" />
+            <YellowStatus
+              className="max-w-[150px]"
+              status={t("in_return_progress")}
+            />
           )}
           {detailReturnImport?.state === 1 && (
             <GreenStatus
               className="max-w-[200px]"
-              status="Đã nhập lại hàng trả"
+              status={t("reimport_succeed")}
             />
           )}
         </div>
@@ -187,7 +190,7 @@ function ReturnProductDetail() {
           </div>
           <div className="hidden md:block" />
           <div>
-            <div className="text-gray">Lý do (ảnh)</div>
+            <div className="text-gray">{t("reasone_img")}</div>
             <img
               alt="reason-img"
               className="max-h-[200px] object-cover max-w-[350px]"

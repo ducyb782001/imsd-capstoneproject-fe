@@ -20,6 +20,8 @@ import * as XLSX from "xlsx/xlsx"
 import EditIcon from "../../icons/EditIcon"
 import TableSkeleton from "../../Skeleton/TableSkeleton"
 import { useTranslation } from "react-i18next"
+import GreenStatus from "../../ReturnGood/GreenStatus"
+import YellowStatus from "../../ReturnGood/YellowStatus"
 
 function ManageSuppliers({ ...props }) {
   const { t } = useTranslation()
@@ -53,20 +55,12 @@ function ManageSuppliers({ ...props }) {
           accessor: (data: any) => <RenderAddress data={data} />,
         },
         {
-          Header: "Trạng thái",
+          Header: t("status"),
           accessor: (data: any) =>
             data?.status ? (
-              <div className="flex justify-center">
-                <div className="px-3 py-2 font-bold text-center text-white bg-green-500 rounded-md w-fit">
-                  {t("on_sale")}
-                </div>
-              </div>
+              <GreenStatus status={t("on_sale")} />
             ) : (
-              <div className="flex justify-center">
-                <div className="px-2 py-2 font-bold text-center text-white rounded-md bg-gray w-fit">
-                  {t("off_sale")}
-                </div>
-              </div>
+              <YellowStatus status={t("off_sale")} />
             ),
         },
         {
@@ -141,14 +135,6 @@ function ManageSuppliers({ ...props }) {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listSupplierExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
       <div className="flex items-center justify-end">
@@ -198,25 +184,6 @@ function ManageSuppliers({ ...props }) {
 }
 
 export default ManageSuppliers
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 
 function RenderAddress(data) {
   const [fullAddressRes, setFullAddressRes] = useState("")

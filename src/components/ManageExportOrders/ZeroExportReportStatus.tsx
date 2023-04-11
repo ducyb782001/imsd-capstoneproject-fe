@@ -122,7 +122,7 @@ function ZeroExportReportStatus({ productImportObject }) {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("export_approve_success"))
-          queryClient.refetchQueries("getDetailProductExport")
+          queryClient.invalidateQueries("getDetailProductExport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])
@@ -158,7 +158,7 @@ function ZeroExportReportStatus({ productImportObject }) {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           toast.success(t("export_deny_success"))
-          queryClient.refetchQueries("getDetailProductExport")
+          queryClient.invalidateQueries("getDetailProductExport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data?.message[0])

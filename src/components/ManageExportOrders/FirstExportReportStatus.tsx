@@ -140,7 +140,7 @@ function FirstExportReportStatus({ productImport }) {
               <ConfirmPopup
                 className="!w-fit"
                 classNameBtn="w-[120px]"
-                title={t("confirm_import")}
+                title={t("confirm_succeed_export")}
                 handleClickSaveBtn={handleClickApproveBtn}
               >
                 {t("export")}

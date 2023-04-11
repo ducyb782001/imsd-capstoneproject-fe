@@ -5,7 +5,7 @@ import ShowPasswordIcon from "./icons/ShowPasswordIcon"
 function PasswordInput({
   className = "",
   title = null,
-  placeholder = "Nhập mật khẩu vào đây",
+  placeholder = "Nhập mật khẩu",
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false)

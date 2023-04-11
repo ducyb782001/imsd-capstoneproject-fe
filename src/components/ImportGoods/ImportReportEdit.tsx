@@ -97,7 +97,7 @@ function ImportReportEdit() {
                 listProductImport={listProductImport}
                 setListProductImport={setListProductImport}
               />
-              <p>đ</p>
+              <p>{t("vnd")}</p>
             </div>
           ),
         },
@@ -264,9 +264,7 @@ function ImportReportEdit() {
     const count = countUndefinedOrEmptyAmount(listProductImport)
 
     if (count > 0) {
-      toast.error(
-        "Sản phẩm có số lượng xuất là 0. Vui lòng xóa sản phẩm đó để tiếp tục",
-      )
+      toast.error(t("export_number_0"))
       return
     }
     toast.loading(t("operation_process"), {
@@ -438,9 +436,7 @@ function ImportReportEdit() {
               }}
             />
             {checkStringLength(productImportObject?.note, 250) && (
-              <div className="text-sm text-red-500">
-                Ghi chú tối đa 250 kí tự
-              </div>
+              <div className="text-sm text-red-500">{t("note_warning")}</div>
             )}
           </div>
         </div>
@@ -493,7 +489,7 @@ function ListQuantitiveImport({
     })
     setListProductImport(newList)
   }
-
+  const { t } = useTranslation()
   const renderWarningImport = () => {
     if (data?.product) {
       const product = listProductImport?.filter(
@@ -506,7 +502,7 @@ function ListQuantitiveImport({
         return (
           overAmount && (
             <p className="absolute text-xs text-dangerous">
-              Số lượng nhập vượt định mức
+              {t("import_over_amount")}
             </p>
           )
         )
@@ -523,7 +519,7 @@ function ListQuantitiveImport({
         return (
           overAmount && (
             <p className="absolute text-xs text-dangerous">
-              Số lượng nhập vượt định mức
+              {t("import_over_amount")}
             </p>
           )
         )
@@ -539,7 +535,7 @@ function ListQuantitiveImport({
         return (
           overAmount && (
             <p className="absolute text-xs text-dangerous">
-              Số lượng nhập vượt định mức
+              {t("import_over_amount")}
             </p>
           )
         )
@@ -556,7 +552,7 @@ function ListQuantitiveImport({
         return (
           overAmount && (
             <p className="absolute text-xs text-dangerous">
-              Số lượng nhập vượt định mức
+              {t("import_over_amount")}
             </p>
           )
         )
@@ -680,10 +676,10 @@ function CountTotalPrice({ data, listProductImport }) {
   useEffect(() => {
     handleSetPrice()
   }, [listProductImport])
-
+  const { t } = useTranslation()
   return (
     <div className="px-4 py-2 text-center text-white rounded-md cursor-pointer bg-successBtn">
-      {new BigNumber(price).toFormat(0)} đ
+      {new BigNumber(price).toFormat(0)} {t("vnd")}
     </div>
   )
 }

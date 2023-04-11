@@ -16,6 +16,7 @@ import {
   updateTypeGood,
 } from "../../../apis/type-good-module"
 import { checkStringLength } from "../../../lib"
+import { useTranslation } from "react-i18next"
 const TOAST_CREATED_TYPE_ID = "toast-created-type-id"
 
 function EditTypePopup({ className = "", id }) {
@@ -24,11 +25,11 @@ function EditTypePopup({ className = "", id }) {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
-
+  const { t } = useTranslation()
   const [typeName, setTypeName] = useState("")
   const [description, setDescription] = useState("")
   const handleSaveBtn = () => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_TYPE_ID,
     })
     // @ts-ignore
@@ -59,13 +60,12 @@ function EditTypePopup({ className = "", id }) {
     {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
-        toast.success("Chỉnh sửa thành công!")
+        toast.success(t("edit_category_success"))
         queryClient.refetchQueries("getListTypeGood")
       },
       onError: (data: any) => {
-        console.log("login error", data)
         toast.dismiss(TOAST_CREATED_TYPE_ID)
-        toast.error("Có lỗi xảy ra! Xin kiểm tra lại!")
+        toast.error(t("error_occur"))
       },
     },
   )
@@ -96,7 +96,7 @@ function EditTypePopup({ className = "", id }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Thêm loại sản phẩm</SmallTitle>
+                  <SmallTitle>{t("edit_category")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
@@ -105,7 +105,7 @@ function EditTypePopup({ className = "", id }) {
                     <PrimaryInput
                       title={
                         <div>
-                          Tên loại sản phẩm{" "}
+                          {t("name_type")}{" "}
                           <span className="text-red-500">*</span>
                         </div>
                       }
@@ -114,7 +114,7 @@ function EditTypePopup({ className = "", id }) {
                     />
                     {checkStringLength(typeName, 100) && (
                       <div className="text-sm text-red-500">
-                        Tên loại sản phẩm tối đa 100 kí tự
+                        {t("max_length_category")}
                       </div>
                     )}
                   </div>
@@ -122,13 +122,13 @@ function EditTypePopup({ className = "", id }) {
                 <div className="px-6 mt-3 text-base text-[#4F4F4F] py-5">
                   <div>
                     <PrimaryInput
-                      title="Mô tả loại sản phẩm"
+                      title={t("description_type")}
                       value={description ? description : ""}
                       onChange={(event) => setDescription(event.target.value)}
                     />
                     {checkStringLength(description, 250) && (
                       <div className="text-sm text-red-500">
-                        Tên loại sản phẩm tối đa 250 kí tự
+                        {t("note_category_length")}
                       </div>
                     )}
                   </div>
@@ -144,9 +144,9 @@ function EditTypePopup({ className = "", id }) {
                       description?.length > 250
                     }
                   >
-                    Lưu
+                    {t("save")}
                   </PrimaryBtn>
-                  <SecondaryBtn className="w-[70px]">Thoát</SecondaryBtn>
+                  <SecondaryBtn className="w-[70px]">{t("exit")}</SecondaryBtn>
                 </div>
               </motion.div>
             </MotionDialogContent>

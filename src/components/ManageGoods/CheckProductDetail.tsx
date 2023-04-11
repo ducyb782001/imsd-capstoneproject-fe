@@ -115,7 +115,6 @@ function CheckProductDetail() {
       enabled: !!detailCode,
     },
   ])
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (

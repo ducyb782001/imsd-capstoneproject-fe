@@ -216,7 +216,7 @@ function ZeroImportReportStatus({ isLoadingReport, productImport }) {
                 title={t("cancel_confirm_import")}
                 handleClickSaveBtn={handleClickCancelBtn}
               >
-                Hủy đơn
+                {t("deny_order")}
               </ConfirmPopup>
               <SecondaryBtn
                 className="w-[100px]"

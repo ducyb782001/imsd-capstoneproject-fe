@@ -67,7 +67,7 @@ function Signup() {
       },
       onError: (data: any) => {
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        toast.error("Something when wrong")
+        toast.error("Có lỗi xảy ra, vui lòng thử lại")
       },
     },
   )
@@ -117,7 +117,7 @@ function Signup() {
       },
       onError: (data: any) => {
         toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-        toast.error("Something when wrong")
+        toast.error("Có lỗi xảy ra, vui lòng thử lại")
       },
     },
   )
@@ -215,9 +215,9 @@ function Signup() {
                 />
                 {!canChangePassword && userPassword && (
                   <p className="mt-1 text-sm text-red-500">
-                    * Password must be at least 8 characters with at least 1
-                    Upper Case, 1 lower case, 1 special character and 1 numeric
-                    character
+                    * Mật khẩu phải chứa ít nhất 8 và không quá 32 kí tự Phải
+                    bao gồm chữ in hoa, in thường, số, kí tự đặc biệt và không
+                    được để trống
                   </p>
                 )}
                 <PasswordInput

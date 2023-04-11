@@ -4,6 +4,7 @@ import { searchName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import LoadingBlockSkeleton from "../Skeleton/LoadingBlockSkeleton"
+import { useTranslation } from "react-i18next"
 
 function ChooseStaffDropdown({
   title = null,
@@ -65,7 +66,7 @@ function ChooseStaffDropdown({
       },
     },
   }
-
+  const { t } = useTranslation()
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
@@ -106,7 +107,7 @@ function ChooseStaffDropdown({
               onClick={toggleOpenMenu}
               onChange={(e) => setSearchInput(e.target.value)}
               className=""
-              placeholder="Tìm kiếm theo tên"
+              placeholder={t("search.search")}
             />
             <div
               id="list-dropdown"

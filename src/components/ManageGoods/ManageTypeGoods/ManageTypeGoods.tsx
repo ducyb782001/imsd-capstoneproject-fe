@@ -39,24 +39,30 @@ function ManageTypeGoods() {
           Header: t("name_type"),
           accessor: (data: any) => (
             <div>
-              <p title={data?.categoryName || ""} className="truncate-2-line">
+              <p
+                title={data?.categoryName || ""}
+                className="max-w-[500px] truncate-2-line"
+              >
                 {data?.categoryName ? data?.categoryName : "---"}
               </p>
             </div>
           ),
         },
         {
-          Header: "Mô tả",
+          Header: t("mota"),
           accessor: (data: any) => {
             return (
-              <div title={data?.description || ""} className="truncate-2-line">
+              <div
+                title={data?.description || ""}
+                className="truncate-2-line max-w-[500px]"
+              >
                 {data?.description ? data?.description : "---"}
               </div>
             )
           },
         },
         {
-          Header: "Chỉnh sửa",
+          Header: t("edit"),
           accessor: (data: any) => {
             return (
               <div className="flex items-center gap-2">
@@ -150,22 +156,3 @@ function ManageTypeGoods() {
 }
 
 export default ManageTypeGoods
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}

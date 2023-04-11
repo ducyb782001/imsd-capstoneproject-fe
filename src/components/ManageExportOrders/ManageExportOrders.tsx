@@ -172,14 +172,6 @@ function ManageExportOrders() {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
       <div className="flex items-center justify-end">
@@ -198,7 +190,7 @@ function ManageExportOrders() {
         <div className="flex flex-col">
           <div className="grid grid-cols-1 items-center justify-between w-full gap-1 md:grid-cols-[70%_28%] mb-4">
             <SearchInput
-              placeholder={"Tìm theo mã đơn xuất"}
+              placeholder={t("search.searchInExport")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />

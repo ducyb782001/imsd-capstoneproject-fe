@@ -142,7 +142,7 @@ function ImportProductDetail() {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
-                Hoàn thành
+                {t("complete")}
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -151,7 +151,7 @@ function ImportProductDetail() {
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
-                    Trả hàng
+                    {t("approve_return")}
                   </SecondaryBtn>
                 </a>
               </Link>
@@ -161,7 +161,7 @@ function ImportProductDetail() {
                 }}
                 className="w-[120px]"
               >
-                Thoát
+                {t("exit")}
               </PrimaryBtn>
             </div>
           </div>
@@ -196,7 +196,7 @@ function ImportProductDetail() {
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-xl font-semibold">Nhà cung cấp:</h1>
+              <h1 className="text-xl font-semibold">{t("supplier")}:</h1>
             </div>
             <PrimaryInput
               readOnly={true}
@@ -206,20 +206,20 @@ function ImportProductDetail() {
         </div>
         <div className="bg-white block-border">
           <h1 className="text-xl font-semibold text-center">
-            Thông tin bổ sung
+            {t("additional_information")}
           </h1>
           <div className="text-sm font-medium text-center text-gray">
-            Ngày tạo đơn:{" "}
+            {t("created_report_import")}:{" "}
             {productImport?.createdDate
               ? format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")
               : format(new Date(), "dd/MM/yyyy HH:mm")}
           </div>
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
           <PrimaryInput value={productImport?.user?.email} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
-            title="Ghi chú hóa đơn"
+            title={t("note_report")}
             placeholder={productImport?.note}
             value={productImport?.note}
           />
@@ -228,7 +228,7 @@ function ImportProductDetail() {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ImportGoodIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm nhập vào</h1>
+          <h1 className="text-xl font-semibold">{t("import_product_list")}</h1>
         </div>
         <div className="mt-4 table-style">
           <Table
