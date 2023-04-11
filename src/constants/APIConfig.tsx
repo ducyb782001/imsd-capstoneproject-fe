@@ -137,3 +137,5 @@ export const getDashboardDataUrl = `${baseUrl}/Dashboard/GetData`
 export const getDashboardChartDataUrl = `${baseUrl}/Dashboard/GetChartData`
 
 export const getDashboardDataByTimeUrl = `${baseUrl}/Dashboard/GetDataByTimePeriod`
+
+export const uploadImageUrl = `${baseUrl}/Users/UploadImage`

@@ -5,8 +5,6 @@ import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
 import SelectGenderDropdown from "../Profile/SelectGenderDropdown"
-import { IKImage } from "imagekitio-react"
-import AddImage from "../AddImage"
 import SelectRoleDropdown from "../Profile/SelectRoleDropdown"
 import Tooltip from "../ToolTip"
 import InfoIcon from "../icons/InfoIcon"
@@ -21,15 +19,14 @@ import { checkPassword } from "../../lib/check-password"
 import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import { checkSameUserCode, checkStringLength } from "../../lib"
 import useDebounce from "../../hooks/useDebounce"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
-const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function CreateStaff() {
   const { t } = useTranslation()
   const [gender, setGender] = useState<any>()
-  const [loadingImage, setLoadingImage] = useState(false)
-  const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -37,19 +34,6 @@ function CreateStaff() {
     id: 3,
     value: t("seller"),
   })
-
-  const onErrorUpload = (error: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    console.log("Run upload error", error)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    console.log("Run onsucces here")
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
 
   useEffect(() => {
     if (gender) {
@@ -150,6 +134,16 @@ function CreateStaff() {
       enabled: !!userCodeCheck,
     },
   ])
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        image: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
 
   return (
     <div>
@@ -359,23 +353,10 @@ function CreateStaff() {
                   {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
-                  <AddImage
-                    onError={onErrorUpload}
-                    onSuccess={onSuccessUpload}
-                    imageUploaded={imageUploaded}
-                    setLoadingImage={setLoadingImage}
-                    toastLoadingId={TOAST_UPLOAD_IMAGE}
-                  >
-                    {loadingImage ? (
-                      <div className="w-full h-[176px] flex items-center justify-center">
-                        <Loading />
-                      </div>
-                    ) : imageUploaded ? (
-                      <IKImage className="rounded" src={imageUploaded} />
-                    ) : (
-                      ""
-                    )}
-                  </AddImage>
+                  <UploadImage
+                    imageUrlResponse={imageUrlResponse}
+                    onChange={(e) => handleUploadImage(e)}
+                  />
                 </div>
               </div>
             </div>

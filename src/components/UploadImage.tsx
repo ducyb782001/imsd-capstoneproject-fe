@@ -1,55 +1,42 @@
 import React from "react"
 import CameraIcon from "./icons/CameraIcon"
-import UploadIcon from "./icons/UploadIcon"
-import { IKUpload } from "imagekitio-react"
 import Loading from "./Loading"
 import { useTranslation } from "react-i18next"
-import { toast } from "react-toastify"
 
-function AddImage({
-  children,
-  imageUploaded,
-  onError,
-  onSuccess,
+function UploadImage({
+  imageUrlResponse,
   className = "input-img",
   loadingImage = false,
-  setLoadingImage,
-  toastLoadingId = "",
+  onChange = null,
+  classNameImage = "",
 }) {
   return (
     <label
       // htmlFor="input-file"
       className={`cursor-pointer ${className}`}
     >
+      <input onChange={onChange} type="file" accept="image/*" />
       {loadingImage ? (
         <div className="w-full min-h-[176px] flex items-center justify-center">
           <Loading />
         </div>
-      ) : imageUploaded ? (
+      ) : imageUrlResponse ? (
         <div className="flex flex-col items-center justify-center w-max">
-          {children}
+          <img
+            src={imageUrlResponse}
+            placeholder="blur"
+            alt={"avatar"}
+            className={`rounded w-full h-full object-cover ${classNameImage}`}
+          />
         </div>
       ) : (
-        <div>
-          <AddImageBtn />
-        </div>
+        <AddImageBtn />
       )}
-      <IKUpload
-        onChange={(e) => {
-          // console.log(e.target.value)
-          toast.loading("Thao tác đang được xử lý ... ", {
-            toastId: toastLoadingId,
-          })
-          setLoadingImage(true)
-        }}
-        onError={onError}
-        onSuccess={onSuccess}
-      />
     </label>
   )
 }
 
-export default AddImage
+export default UploadImage
 
 function AddImageBtn() {
   const { t } = useTranslation()

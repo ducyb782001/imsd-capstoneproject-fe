@@ -37,7 +37,7 @@ function ManageStaff() {
             <div className="w-[35px] h-[35px] rounded-xl">
               <img
                 className="object-cover w-full h-full rounded-xl"
-                src={data?.img || "/images/default-product-image.jpg"}
+                src={data?.image || "/images/default-product-image.jpg"}
                 alt="image-product"
               />
             </div>

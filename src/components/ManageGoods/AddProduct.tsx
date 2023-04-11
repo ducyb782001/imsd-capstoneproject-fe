@@ -10,9 +10,6 @@ import Tooltip from "../ToolTip"
 import PrimaryBtn from "../PrimaryBtn"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
-import { IKImage } from "imagekitio-react"
-import AddImage from "../AddImage"
-import Loading from "../Loading"
 import { useMutation, useQueries } from "react-query"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
@@ -27,9 +24,10 @@ import GeneralIcon from "../icons/GeneralIcon"
 import BarcodeIcon from "../icons/BarcodeIcon"
 import BigNumber from "bignumber.js"
 import { checkStringLength } from "../../lib"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
-const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 interface Product {
   productId: number
@@ -56,7 +54,6 @@ function AddProduct() {
   const [listUnits, setListUnits] = useState([])
   const [newType, setNewType] = useState<string>("")
   const [newDetail, setNewDetail] = useState<string>("")
-  const [imageUploaded, setImageUploaded] = useState("")
   const [nhaCungCapSelected, setNhaCungCapSelected] = useState<any>()
   const [typeProduct, setTypeProduct] = useState<any>()
   const [isEnabled, setIsEnabled] = useState(true)
@@ -78,14 +75,6 @@ function AddProduct() {
       setNewDetail("")
     }
   }
-  useEffect(() => {
-    if (imageUploaded) {
-      setProduct({
-        ...product,
-        image: imageUploaded,
-      })
-    }
-  }, [imageUploaded])
 
   useEffect(() => {
     if (listUnits) {
@@ -455,8 +444,6 @@ function AddProduct() {
       <RightSideProductDetail
         product={product}
         setProduct={setProduct}
-        imageUploaded={imageUploaded}
-        setImageUploaded={setImageUploaded}
         nhaCungCapSelected={nhaCungCapSelected}
         typeProduct={typeProduct}
         handleAddProduct={handleAddNewProduct}
@@ -472,8 +459,6 @@ export default AddProduct
 function RightSideProductDetail({
   product,
   setProduct,
-  imageUploaded,
-  setImageUploaded,
   nhaCungCapSelected,
   typeProduct,
   handleAddProduct,
@@ -481,22 +466,17 @@ function RightSideProductDetail({
   setIsEnabled,
 }) {
   const [disabled, setDisabled] = useState(true)
-  const [loadingImage, setLoadingImage] = useState(false)
   const [warningStock, setWarningStock] = useState(false)
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
 
-  const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    console.log("Run onsucces here")
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setProduct({
+        ...product,
+        image: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
 
   useEffect(() => {
     if (
@@ -533,23 +513,10 @@ function RightSideProductDetail({
 
         <div className="flex justify-center md:justify-start">
           <div className="flex items-center justify-center border rounded-2xl border-primary w-[150px] h-[150px] mt-5">
-            <AddImage
-              onError={onErrorUpload}
-              onSuccess={onSuccessUpload}
-              imageUploaded={imageUploaded}
-              setLoadingImage={setLoadingImage}
-              toastLoadingId={TOAST_UPLOAD_IMAGE}
-            >
-              {loadingImage ? (
-                <div className="w-full h-[176px] flex items-center justify-center">
-                  <Loading />
-                </div>
-              ) : imageUploaded ? (
-                <IKImage src={imageUploaded} />
-              ) : (
-                ""
-              )}
-            </AddImage>
+            <UploadImage
+              imageUrlResponse={imageUrlResponse}
+              onChange={(e) => handleUploadImage(e)}
+            />
           </div>
         </div>
       </div>

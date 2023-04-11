@@ -10,8 +10,6 @@ import Tooltip from "../ToolTip"
 import GarbageIcon from "../icons/GarbageIcon"
 import AddUnitIcon from "../icons/AddUnitIcon"
 import ReadOnlyField from "../ReadOnlyField"
-import { IKImage } from "imagekitio-react"
-import AddImage from "../AddImage"
 import ConfirmPopup from "../ConfirmPopup"
 import { useRouter } from "next/router"
 import { useMutation, useQueries, useQueryClient } from "react-query"
@@ -19,18 +17,16 @@ import { getProductDetail, updateProduct } from "../../apis/product-module"
 import BigNumber from "bignumber.js"
 import { toast } from "react-toastify"
 import { getListExportTypeGood } from "../../apis/type-good-module"
-import {
-  getListExportSupplier,
-  getListSupplier,
-} from "../../apis/supplier-module"
+import { getListSupplier } from "../../apis/supplier-module"
 import { useTranslation } from "react-i18next"
-import defaultProductImage from "../images/default-product-image.jpg"
 import AddChooseSupplierDropdown from "./AddChooseSupplierDropdown"
 import AddChooseTypeDropdown from "./AddChooseTypeDropdown"
 import GeneralIcon from "../icons/GeneralIcon"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
 import BarcodeIcon from "../icons/BarcodeIcon"
 import { checkStringLength } from "../../lib"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
@@ -529,10 +525,6 @@ function EditProduct() {
       </div>
       <RightSideProductDetail
         imageUploaded={imageUploaded}
-        onErrorUpload={onErrorUpload}
-        onSuccessUpload={onSuccessUpload}
-        setLoadingImage={setLoadingImage}
-        loadingImage={loadingImage}
         setIsEnabled={setIsEnabled}
         isEnabled={isEnabled}
         handleClickSaveBtn={handleClickSaveBtn}
@@ -547,10 +539,6 @@ export default EditProduct
 
 function RightSideProductDetail({
   imageUploaded,
-  onErrorUpload,
-  onSuccessUpload,
-  setLoadingImage,
-  loadingImage,
   setIsEnabled,
   isEnabled,
   handleClickSaveBtn,
@@ -559,6 +547,17 @@ function RightSideProductDetail({
 }) {
   const [disabled, setDisabled] = useState(true)
   const [warningStock, setWarningStock] = useState(false)
+
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setProduct({
+        ...product,
+        image: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
 
   useEffect(() => {
     if (product?.productName?.trim() == "" || product?.productName == null) {
@@ -589,29 +588,12 @@ function RightSideProductDetail({
               imageUploaded ? "border-transparent" : "border-primary"
             }  w-[150px] h-[150px]`}
           >
-            <AddImage
-              onError={onErrorUpload}
-              onSuccess={onSuccessUpload}
-              imageUploaded={imageUploaded}
-              setLoadingImage={setLoadingImage}
-              toastLoadingId={TOAST_UPLOAD_IMAGE}
-            >
-              {loadingImage ? (
-                <div className="w-full h-[176px] flex items-center justify-center">
-                  <IKImage
-                    src={`https://ik.imagekit.io/imsd/default-product-image_01tG1fPUP.jpg`}
-                    className="!w-[170px] !h-[170px] rounded-md"
-                  />
-                </div>
-              ) : imageUploaded ? (
-                <IKImage
-                  src={imageUploaded}
-                  className="!w-[170px] !h-[170px] rounded-md"
-                />
-              ) : (
-                ""
-              )}
-            </AddImage>
+            <UploadImage
+              imageUrlResponse={
+                imageUrlResponse ? imageUrlResponse : product?.image
+              }
+              onChange={(e) => handleUploadImage(e)}
+            />
           </div>
         </div>
       </div>
