@@ -120,7 +120,7 @@ function SecondImportReportStatus({ productImport }) {
               >
                 <a>
                   <SecondaryBtn className="max-w-[120px]">
-                    Trả hàng
+                    {t("return good")}
                   </SecondaryBtn>
                 </a>
               </Link>
@@ -171,7 +171,7 @@ function SecondImportReportStatus({ productImport }) {
               {format(new Date(productImport?.createdDate), "dd/MM/yyyy HH:mm")}
             </div>
           )}
-          <div className="mt-3 text-sm font-bold text-gray">Nhân viên</div>
+          <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
           <PrimaryInput value={productImport?.user?.email} readOnly={true} />
           <PrimaryTextArea
             rows={4}

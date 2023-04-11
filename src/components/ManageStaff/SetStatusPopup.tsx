@@ -13,6 +13,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import SmallTitle from "../SmallTitle"
 import Switch from "react-switch"
 import { activeStaffModule, deactiveStaffModule } from "../../apis/user-module"
+import { useTranslation } from "react-i18next"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function SetStatusPopup({ data, className = "" }) {
@@ -23,12 +24,12 @@ function SetStatusPopup({ data, className = "" }) {
       setChecked(data?.status)
     }
   }, [data])
-
+  const { t } = useTranslation()
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
   const handleChangeStatus = () => {
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
     if (checked == false) {
@@ -47,7 +48,7 @@ function SetStatusPopup({ data, className = "" }) {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Kích hoạt tài khoản thành công")
+          toast.success(t("same_password"))
           queryClient.refetchQueries("getListTypeGood")
           setShowDialog(false)
           setChecked(true)
@@ -56,9 +57,7 @@ function SetStatusPopup({ data, className = "" }) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           queryClient.refetchQueries("getListTypeGood")
           toast.error(
-            data?.response?.data?.message ||
-              data?.message ||
-              "Opps! Something went wrong...",
+            data?.response?.data?.message || data?.message || t("error_occur"),
           )
         }
       },
@@ -75,7 +74,7 @@ function SetStatusPopup({ data, className = "" }) {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
-          toast.success("Vô hiệu hóa tài khoản thành công")
+          toast.success(t("deactive_staff"))
           queryClient.refetchQueries("getListTypeGood")
           setShowDialog(false)
           setChecked(false)
@@ -84,9 +83,7 @@ function SetStatusPopup({ data, className = "" }) {
           toast.dismiss(TOAST_CREATED_PRODUCT_TYPE_ID)
           queryClient.refetchQueries("getListTypeGood")
           toast.error(
-            data?.response?.data?.message ||
-              data?.message ||
-              "Opps! Something went wrong...",
+            data?.response?.data?.message || data?.message || t("error_occur"),
           )
         }
       },
@@ -134,25 +131,23 @@ function SetStatusPopup({ data, className = "" }) {
                 animate={{ y: 0 }}
               >
                 <div className="flex items-center justify-between p-4 md:p-6 bg-[#F6F5FA] rounded-t-lg">
-                  <SmallTitle>Xác nhận</SmallTitle>
+                  <SmallTitle>{t("confirm")}</SmallTitle>
                   <CloseDialogIcon onClick={close} className="cursor-pointer" />
                 </div>
 
                 <div className="flex flex-col items-center px-6 py-5 mt-3">
                   {checked ? <WarningCircleIcon /> : <ApproveIcon />}
                   <p className="text-base text-[#4F4F4F] ">
-                    {checked
-                      ? "Bạn muốn vô hiệu hóa tài khoản này không?"
-                      : "Bạn muốn kích hoạt tài khoản này không?"}
+                    {checked ? t("deactive_account") : t("active_account")}
                   </p>
                 </div>
 
                 <div className="grid w-full grid-cols-2 gap-5 min-w-[340px] px-6 mt-3 mb-4">
                   <SecondaryBtn className="" onClick={handleCloseBtn}>
-                    Hủy
+                    {t("cancel")}
                   </SecondaryBtn>
                   <PrimaryBtn className="" onClick={handleChangeStatus}>
-                    Đồng ý
+                    {t("confirm")}
                   </PrimaryBtn>
                 </div>
               </motion.div>

@@ -22,11 +22,11 @@ function ReturnExportDetail() {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -36,7 +36,7 @@ function ReturnExportDetail() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productName || "---"}
@@ -44,7 +44,7 @@ function ReturnExportDetail() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productCode || "---"}
@@ -52,28 +52,30 @@ function ReturnExportDetail() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => <RenderUnit data={data} />,
         },
         {
-          Header: "SL trả",
+          Header: t("return_amount"),
           accessor: (data: any) => <p>{data?.amount}</p>,
         },
         {
-          Header: "Đơn giá trả",
+          Header: t("return_price"),
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.price || 0).toFormat()} đ</p>
+            <p className="whitespace-nowrap">
+              {new BigNumber(data?.price || 0).toFormat()} {t("vnd")}
+            </p>
           ),
         },
         {
-          Header: "Thành tiền",
+          Header: t("total_price"),
           accessor: (data: any) => (
             <div className="flex items-center gap-1">
-              <div className="px-3 py-2 text-center text-white rounded-md bg-successBtn">
+              <div className="px-3 py-2 text-center text-white rounded-md whitespace-nowrap bg-successBtn">
                 {new BigNumber(data.amount)
                   .multipliedBy(data.price)
                   .toFormat(0)}{" "}
-                đ
+                {t("vnd")}
               </div>
             </div>
           ),
@@ -149,7 +151,7 @@ function ReturnExportDetail() {
           </div>
           <div className="hidden md:block" />
           <div>
-            <div className="text-gray">Lý do (ảnh)</div>
+            <div className="text-gray">{t("reasone_img")}</div>
             <img
               alt="reason-img"
               className="max-h-[200px] object-cover max-w-[350px]"

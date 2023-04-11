@@ -74,12 +74,10 @@ function Profile() {
     {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Update profile success!")
+          toast.success(t("update_profile_success"))
         } else {
           toast.error(
-            data?.response?.data?.message ||
-              data?.message ||
-              "Opps! Something went wrong...",
+            data?.response?.data?.message || data?.message || t("error_occur"),
           )
         }
       },
@@ -100,12 +98,10 @@ function Profile() {
     {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
-          toast.success("Change password success!")
+          toast.success(t("change_password_succeed"))
         } else {
           toast.error(
-            data?.response?.data?.message ||
-              data?.message ||
-              "Opps! Something went wrong...",
+            data?.response?.data?.message || data?.message || t("error_occur"),
           )
         }
       },
@@ -159,8 +155,7 @@ function Profile() {
                 {staffAccountObject?.userName &&
                   !isValidFullName(staffAccountObject?.userName) && (
                     <div className="text-sm text-red-500">
-                      Họ tên không chứa số, kí tự đặc biệt và không vượt quá 100
-                      kí tự
+                      {t("full_name_warning")}
                     </div>
                   )}
               </div>
@@ -194,7 +189,7 @@ function Profile() {
                 />
                 {checkStringLength(staffAccountObject?.identity, 12) && (
                   <div className="text-sm text-red-500">
-                    CMND tối đa 12 kí tự
+                    {t("identity_max")}
                   </div>
                 )}
               </div>
@@ -228,7 +223,7 @@ function Profile() {
                 />
                 {staffAccountObject?.phone &&
                   !!!isValidPhoneNumber(staffAccountObject?.phone) && (
-                    <p className="text-red-500">Sai định dạng</p>
+                    <p className="text-red-500">{t("wrong_valid")}</p>
                   )}
               </div>
             </div>
@@ -294,7 +289,7 @@ function Profile() {
               />
               {checkStringLength(staffAccountObject?.address, 250) && (
                 <div className="text-sm text-red-500">
-                  Địa chỉ tối đa 250 kí tự
+                  {t("max_address_length")}
                 </div>
               )}
             </div>
@@ -359,9 +354,7 @@ function Profile() {
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <p className="h-6 mt-1 text-sm text-red-500">
-              {!canChangePassword &&
-                newPassword &&
-                "* Password must be at least 8 characters with at least 1 Upper Case, 1 lower case, 1 special character and 1 numeric character"}
+              {!canChangePassword && newPassword && t("password_warnnig")}
             </p>
           </div>
           <div>
@@ -371,9 +364,7 @@ function Profile() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {!confirmChange && confirmPassword && (
-              <p className="mt-1 text-sm text-red-500">
-                Mật khẩu phải trùng nhau
-              </p>
+              <p className="mt-1 text-sm text-red-500">{t("same_password")}</p>
             )}
           </div>
         </div>

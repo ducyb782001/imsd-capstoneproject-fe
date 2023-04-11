@@ -181,19 +181,6 @@ function ZeroImportReportStatus({ isLoadingReport, productImport }) {
     cancelImportMutation.mutate(productImport?.importId)
   }
 
-  // useQueries([
-  //   {
-  //     queryKey: ["getDetailProductImport", importId],
-  //     queryFn: async () => {
-  //       const response = await getDetailImportProduct(importId)
-  //       setProductImport(response?.data)
-  //       setIsLoadingReport(response?.data?.isLoading)
-  //       return response?.data
-  //     },
-  //     enabled: !!importId,
-  //   },
-  // ])
-
   return isLoadingReport ? (
     <ImportReportSkeleton />
   ) : (

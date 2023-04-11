@@ -67,7 +67,7 @@ function ChooseRoleDropdown({
   return (
     <motion.div className="relative text-[#4F4F4F]">
       <div ref={node}>
-        {title && <p className="mb-1 text-sm text-gray font-bold">{title}</p>}
+        {title && <p className="mb-1 text-sm font-bold text-gray">{title}</p>}
 
         <div
           onClick={toggleOpenMenu}
@@ -119,21 +119,6 @@ function DropDownItem({ data, setShowing }) {
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
       {data?.name || data}
-    </div>
-  )
-}
-
-function DropdownSearch({ className = "", ...props }) {
-  return (
-    <div className={`relative w-full ${className} border-b border-grayLight`}>
-      <div className="absolute top-3 left-3">
-        <SearchIcon />
-      </div>
-      <input
-        {...props}
-        type="text"
-        className="w-full py-3 pl-10 pr-3 outline-none smooth-transform"
-      />
     </div>
   )
 }

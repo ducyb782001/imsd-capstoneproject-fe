@@ -41,7 +41,9 @@ function ManageImportGoods() {
         {
           Header: t("supplier"),
           accessor: (data: any) => (
-            <p className="truncate-2-line">{data?.supplier?.supplierName}</p>
+            <p className="truncate-2-line md:max-w-[250px]">
+              {data?.supplier?.supplierName}
+            </p>
           ),
         },
         {
@@ -53,7 +55,9 @@ function ManageImportGoods() {
         {
           Header: t("total_cost"),
           accessor: (data: any) => (
-            <p>{new BigNumber(data?.totalCost).toFormat()} đ</p>
+            <p className="whitespace-nowrap">
+              {new BigNumber(data?.totalCost).toFormat(0)} đ
+            </p>
           ),
         },
         {
@@ -207,14 +211,6 @@ function ManageImportGoods() {
     },
   ])
 
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listImportProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
-
   return (
     <div>
       <div className="flex items-center justify-end">
@@ -233,7 +229,7 @@ function ManageImportGoods() {
         <div className="flex flex-col">
           <div className="grid grid-cols-1 items-center justify-between w-full gap-2 md:grid-cols-[50%_23%_23%] mb-4">
             <SearchInput
-              placeholder={"Tìm theo mã đơn nhập, tên NCC"}
+              placeholder={t("search_by_import_code")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full"
             />
@@ -295,25 +291,6 @@ function ManageImportGoods() {
 }
 
 export default ManageImportGoods
-
-function ImportExportButton({
-  accessoriesLeft,
-  children,
-  onClick = null,
-  className = "",
-  ...props
-}) {
-  return (
-    <button
-      {...props}
-      onClick={onClick}
-      className={`text-base text-primary max-w-[120px] px-2 py-3 flex gap-2 items-center ${className}`}
-    >
-      {accessoriesLeft && <div>{accessoriesLeft}</div>}
-      {children}
-    </button>
-  )
-}
 
 function StatusDisplay({ data }) {
   const { t } = useTranslation()

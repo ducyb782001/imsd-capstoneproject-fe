@@ -40,11 +40,11 @@ function CreateReturnGood() {
       Header: " ",
       columns: [
         {
-          Header: "STT",
+          Header: t("no"),
           accessor: (data: any, index) => <p>{index + 1}</p>,
         },
         {
-          Header: "Ảnh",
+          Header: t("image"),
           accessor: (data: any) => (
             <img
               src={data?.product?.image || "/images/default-product-image.jpg"}
@@ -54,7 +54,7 @@ function CreateReturnGood() {
           ),
         },
         {
-          Header: "Tên sản phẩm",
+          Header: t("product_name"),
           accessor: (data: any) => (
             <p
               title={data?.product?.productName}
@@ -65,7 +65,7 @@ function CreateReturnGood() {
           ),
         },
         {
-          Header: "Mã sản phẩm",
+          Header: t("product code"),
           accessor: (data: any) => (
             <p className="truncate-2-line max-w-[100px]">
               {data?.product?.productCode || "---"}
@@ -73,11 +73,11 @@ function CreateReturnGood() {
           ),
         },
         {
-          Header: "Đơn vị",
+          Header: t("unit"),
           accessor: (data: any) => <RenderUnit data={data} />,
         },
         {
-          Header: "SL trả",
+          Header: t("return_amount"),
           accessor: (data: any) => (
             <ListQuantitiveImport
               data={data}
@@ -87,7 +87,7 @@ function CreateReturnGood() {
           ),
         },
         {
-          Header: "Đơn giá gốc",
+          Header: t("selling_price"),
           accessor: (data: any) => <p className="text-blue">{data?.price} đ</p>,
         },
       ],
@@ -117,13 +117,13 @@ function CreateReturnGood() {
 
   const onErrorUpload = (error: any) => {
     toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.error("Upload image false")
+    toast.error(t("upload_image_false"))
     setLoadingImage(false)
   }
 
   const onSuccessUpload = (res: any) => {
     toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.success("Upload image success")
+    toast.success(t("upload_image_success"))
     setImageUploaded(res?.url)
     setProductImportObject({
       ...productImportObject,
@@ -195,16 +195,16 @@ function CreateReturnGood() {
       onSuccess: (data, error, variables) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_CREATED_RETURN_GOODS_ID)
-          toast.success("Trả hàng thành công")
+          toast.success(t("return_product_succeed"))
           router.push("/manage-return-product-to-supplier")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
-            toast.error(data?.response?.data?.message[0])
+            toast.error(data?.response?.data?.message[0] || t("error_occur"))
           } else {
             toast.error(
               data?.response?.data?.message ||
                 data?.message ||
-                "Opps! Something went wrong...",
+                t("error_occur"),
             )
           }
         }
@@ -217,11 +217,11 @@ function CreateReturnGood() {
     const count = countUndefinedOrEmptyAmount(listProductImport)
 
     if (!totalPriceSend || count === listProductImport.length) {
-      toast.error("Phải trả sản phẩm hoặc trả tiền")
+      toast.error(t("return_product_warning"))
       return
     }
 
-    toast.loading("Thao tác đang được xử lý ... ", {
+    toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_RETURN_GOODS_ID,
     })
     const submittedData = {
@@ -244,7 +244,6 @@ function CreateReturnGood() {
           importId || reportChosen?.importId,
         )
         setProductImport(response?.data)
-        // setListChosenProduct(response?.data?.importOrderDetails)
         return response?.data
       },
       enabled: !!importId || !!reportChosen?.importId,
@@ -317,31 +316,33 @@ function CreateReturnGood() {
       <div className="w-full mt-6 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ReturnGoodsIcon />
-          <SmallTitle>Thông tin đơn trả</SmallTitle>
+          <SmallTitle>{t("info_return_pro")}</SmallTitle>
         </div>
         <div className="grid grid-cols-1 gap-5 mt-4 md:grid-cols-2">
           <ChooseImportReportDropdown
             title={
               <p>
-                Đơn trả <span className="text-red-500">*</span>
+                {t("return_order_good")} <span className="text-red-500">*</span>
               </p>
             }
             listDropdown={importId ? [] : listImportReport?.data}
-            textDefault={productImport?.importCode || "Chọn đơn trả"}
+            textDefault={
+              productImport?.importCode || t("choose_return_order_good")
+            }
             showing={reportChosen}
             setShowing={setReportChosen}
           />
           <div>
-            <p className="mb-2 text-sm font-bold text-gray">Nhà cung cấp</p>
+            <p className="mb-2 text-sm font-bold text-gray">{t("supplier")}</p>
             <div className="mt-2">
               {productImport?.supplier?.supplierName} -{" "}
               {productImport?.supplier?.supplierPhone}
             </div>
           </div>
           <ChooseStaffDropdown
-            title="Nhân viên tạo đơn"
+            title={t("staff_created")}
             listDropdown={listStaff}
-            textDefault={userData?.userName || "Chọn nhân viên"}
+            textDefault={userData?.userName || t("choose_staff")}
             showing={staffSelected}
             setShowing={setStaffSelected}
             isLoadingStaff={isLoadingStaff}
@@ -351,7 +352,7 @@ function CreateReturnGood() {
           <div>
             <PrimaryTextArea
               rows={4}
-              title="Lý do trả hàng"
+              title={t("return_reason")}
               onChange={(e) => {
                 setProductImportObject({
                   ...productImportObject,
@@ -361,11 +362,15 @@ function CreateReturnGood() {
               className="w-full"
             />
             {checkStringLength(productImportObject?.note, 250) && (
-              <div className="text-sm text-red-500">Lý do tối đa 250 kí tự</div>
+              <div className="text-sm text-red-500">
+                {t("return_reason_warning")}
+              </div>
             )}
           </div>
           <div>
-            <p className="mb-2 text-sm font-bold text-gray">Chọn lý do (ảnh)</p>
+            <p className="mb-2 text-sm font-bold text-gray">
+              {t("reasone_img")}
+            </p>
             <ChooseFileReason
               onError={onErrorUpload}
               onSuccess={onSuccessUpload}
@@ -390,7 +395,9 @@ function CreateReturnGood() {
       <div className="mt-4 bg-white block-border">
         <div className="flex items-center gap-3 mb-4">
           <ReturnGoodIcon />
-          <h1 className="text-xl font-semibold">Thông tin sản phẩm trả</h1>
+          <h1 className="text-xl font-semibold">
+            {t("return_product_detail")}
+          </h1>
         </div>
         {isLoadingListProduct ? (
           <div>
@@ -410,14 +417,14 @@ function CreateReturnGood() {
         )}
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title="Bạn có chắc chắn muốn trả không?"
+          title={t("re_confirm_return")}
           handleClickSaveBtn={handleClickSaveBtn}
           disabled={
             !productImportObject?.importId ||
             productImportObject?.note?.length > 250
           }
         >
-          Trả hàng
+          {t("return good")}
         </ConfirmPopup>
       </div>
     </div>
