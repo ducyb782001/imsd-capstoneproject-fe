@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react"
-import Loading from "../Loading"
 import PasswordInput from "../PasswordInput"
 import PrimaryBtn from "../PrimaryBtn"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
 import SelectGenderDropdown from "./SelectGenderDropdown"
-import { IKImage } from "imagekitio-react"
-import AddImage from "../AddImage"
-import Tooltip from "../ToolTip"
-import InfoIcon from "../icons/InfoIcon"
-import { useMutation, useQueries } from "react-query"
-import { useRouter } from "next/router"
-import { getDetailStaff } from "../../apis/user-module"
+import { useMutation, useQueries, useQueryClient } from "react-query"
 import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
 import { updateProfile } from "../../apis/profile-module"
@@ -23,12 +16,13 @@ import { format } from "date-fns"
 import DetailStaffSkeleton from "../ManageStaff/DetailStaffSkeleton"
 import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import { checkStringLength } from "../../lib"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function Profile() {
   const { t } = useTranslation()
   const [gender, setGender] = useState({ id: 1, value: "Nam" })
-  const [birthDate, setBirthDate] = useState<any>(new Date())
   const [loadingImage, setLoadingImage] = useState(false)
   const [imageUploaded, setImageUploaded] = useState("")
   const [staffAccountObject, setStaffAccountObject] = useState<any>()
@@ -67,6 +61,7 @@ function Profile() {
     }
   }, [imageUploaded])
 
+  const queryClient = useQueryClient()
   const updateProfileMutation = useMutation(
     async (dataUpdate) => {
       return await updateProfile(dataUpdate)
@@ -75,6 +70,7 @@ function Profile() {
       onSuccess: (data) => {
         if (data?.status >= 200 && data?.status < 300) {
           toast.success(t("update_profile_success"))
+          queryClient.invalidateQueries("getMeQuery")
         } else {
           toast.error(
             data?.response?.data?.message || data?.message || t("error_occur"),
@@ -119,6 +115,16 @@ function Profile() {
 
   const canChangePassword = checkPassword(newPassword)
   const confirmChange = checkSamePassword(newPassword, confirmPassword)
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        image: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
 
   return isLoading ? (
     <DetailStaffSkeleton />
@@ -301,23 +307,14 @@ function Profile() {
                   {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
-                  <AddImage
-                    onError={onErrorUpload}
-                    onSuccess={onSuccessUpload}
-                    imageUploaded={imageUploaded}
-                    setLoadingImage={setLoadingImage}
-                    toastLoadingId={TOAST_UPLOAD_IMAGE}
-                  >
-                    {loadingImage ? (
-                      <div className="w-full h-[176px] flex items-center justify-center">
-                        <Loading />
-                      </div>
-                    ) : imageUploaded ? (
-                      <IKImage className="rounded" src={imageUploaded} />
-                    ) : (
-                      ""
-                    )}
-                  </AddImage>
+                  <UploadImage
+                    imageUrlResponse={
+                      imageUrlResponse
+                        ? imageUrlResponse
+                        : staffAccountObject?.image
+                    }
+                    onChange={(e) => handleUploadImage(e)}
+                  />
                 </div>
               </div>
             </div>

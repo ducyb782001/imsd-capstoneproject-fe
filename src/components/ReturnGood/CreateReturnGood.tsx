@@ -28,6 +28,8 @@ import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount
 import ReturnGoodIcon from "../icons/ReturnGoodIcon"
 import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 import { checkStringLength } from "../../lib"
+import useUploadImage from "../../hooks/useUploadImage"
+import UploadImage from "../UploadImage"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -114,23 +116,6 @@ function CreateReturnGood() {
       setUserData(JSON.parse(userData))
     }
   }, [])
-
-  const onErrorUpload = (error: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.error(t("upload_image_false"))
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.success(t("upload_image_success"))
-    setImageUploaded(res?.url)
-    setProductImportObject({
-      ...productImportObject,
-      media: res.url,
-    })
-    setLoadingImage(false)
-  }
 
   useEffect(() => {
     if (staffSelected) {
@@ -303,6 +288,17 @@ function CreateReturnGood() {
     }
   }, [productImport])
 
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setProductImportObject({
+        ...productImportObject,
+        media: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
+
   return (
     <div>
       <div className="flex items-center justify-end w-full">
@@ -371,24 +367,10 @@ function CreateReturnGood() {
             <p className="mb-2 text-sm font-bold text-gray">
               {t("reasone_img")}
             </p>
-            <ChooseFileReason
-              onError={onErrorUpload}
-              onSuccess={onSuccessUpload}
-              imageUploaded={imageUploaded}
-              loadingImage={loadingImage}
-              setLoadingImage={setLoadingImage}
-              toastLoadingId={TOAST_UPLOAD_IMAGE}
-            >
-              {loadingImage ? (
-                <div className="w-full h-[176px] flex items-center justify-center">
-                  <Loading />
-                </div>
-              ) : imageUploaded ? (
-                <IKImage src={imageUploaded} />
-              ) : (
-                ""
-              )}
-            </ChooseFileReason>
+            <UploadImage
+              imageUrlResponse={imageUrlResponse}
+              onChange={(e) => handleUploadImage(e)}
+            />
           </div>
         </div>
       </div>

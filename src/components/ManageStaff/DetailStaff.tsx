@@ -6,8 +6,6 @@ import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
 import SelectGenderDropdown from "../Profile/SelectGenderDropdown"
-import { IKImage } from "imagekitio-react"
-import AddImage from "../AddImage"
 import SelectRoleDropdown from "../Profile/SelectRoleDropdown"
 import { useMutation, useQueries, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
@@ -17,7 +15,6 @@ import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import { checkPassword, checkSamePassword } from "../../lib/check-password"
 import { changePassword } from "../../apis/auth"
-import Switch from "react-switch"
 import DetailStaffSkeleton from "./DetailStaffSkeleton"
 import GeneralIcon from "../icons/GeneralIcon"
 import PasswordIcon from "../icons/PasswordIcon"
@@ -26,6 +23,8 @@ import Page401 from "../401"
 import GreenStatus from "../ReturnGood/GreenStatus"
 import YellowStatus from "../ReturnGood/YellowStatus"
 import { checkStringLength } from "../../lib"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
@@ -182,6 +181,16 @@ function DetailStaff() {
 
   const canChangePassword = checkPassword(newPassword)
   const confirmChange = checkSamePassword(newPassword, confirmPassword)
+
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setStaffAccountObject({
+        ...staffAccountObject,
+        image: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
 
   return isLoadingReport ? (
     <DetailStaffSkeleton />
@@ -385,23 +394,14 @@ function DetailStaff() {
                   {t("image_staff")}
                 </div>
                 <div className="flex items-center justify-center border rounded border-primary w-[200px] h-[200px]">
-                  <AddImage
-                    onError={onErrorUpload}
-                    onSuccess={onSuccessUpload}
-                    imageUploaded={imageUploaded}
-                    setLoadingImage={setLoadingImage}
-                    toastLoadingId={TOAST_UPLOAD_IMAGE}
-                  >
-                    {loadingImage ? (
-                      <div className="w-full h-[176px] flex items-center justify-center">
-                        <Loading />
-                      </div>
-                    ) : imageUploaded ? (
-                      <IKImage className="rounded" src={imageUploaded} />
-                    ) : (
-                      ""
-                    )}
-                  </AddImage>
+                  <UploadImage
+                    imageUrlResponse={
+                      imageUrlResponse
+                        ? imageUrlResponse
+                        : staffAccountObject?.image
+                    }
+                    onChange={(e) => handleUploadImage(e)}
+                  />
                 </div>
               </div>
             </div>

@@ -28,6 +28,8 @@ import { countUndefinedOrEmptyAmount } from "../../hooks/useCountUndefinedAmount
 import ReturnGoodIcon from "../icons/ReturnGoodIcon"
 import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 import { checkStringLength } from "../../lib"
+import UploadImage from "../UploadImage"
+import useUploadImage from "../../hooks/useUploadImage"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -124,9 +126,6 @@ function CreateReturnExportGood() {
   const [listProductImport, setListProductImport] = useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const [loadingImage, setLoadingImage] = useState(false)
-  const [imageUploaded, setImageUploaded] = useState("")
-
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   const [productImport, setProductImport] = useState<any>()
@@ -137,23 +136,6 @@ function CreateReturnExportGood() {
       setUserData(JSON.parse(userData))
     }
   }, [])
-
-  const onErrorUpload = (error: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.error(t("upload_image_false"))
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    toast.success(t("upload_image_success"))
-    setImageUploaded(res?.url)
-    setProductImportObject({
-      ...productImportObject,
-      media: res.url,
-    })
-    setLoadingImage(false)
-  }
 
   useEffect(() => {
     if (staffSelected) {
@@ -325,6 +307,17 @@ function CreateReturnExportGood() {
     }
   }, [productImport])
 
+  const { imageUrlResponse, handleUploadImage } = useUploadImage()
+
+  useEffect(() => {
+    if (imageUrlResponse) {
+      setProductImportObject({
+        ...productImportObject,
+        media: imageUrlResponse,
+      })
+    }
+  }, [imageUrlResponse])
+
   return (
     <div>
       <div className="flex items-center justify-end w-full">
@@ -386,25 +379,10 @@ function CreateReturnExportGood() {
             <p className="mb-2 text-sm font-bold text-gray">
               {t("reasone_img")}
             </p>
-            <ChooseFileReason
-              onError={onErrorUpload}
-              onSuccess={onSuccessUpload}
-              imageUploaded={imageUploaded}
-              loadingImage={loadingImage}
-              setLoadingImage={setLoadingImage}
-              toastLoadingId={TOAST_UPLOAD_IMAGE}
-            >
-              {loadingImage ? (
-                <div className="w-full h-[176px] flex items-center justify-center">
-                  <Loading />
-                </div>
-              ) : imageUploaded ? (
-                <IKImage src={imageUploaded} />
-              ) : (
-                ""
-              )}
-              {/* <SecondaryBtn className="w-[150px]">Chọn file</SecondaryBtn> */}
-            </ChooseFileReason>
+            <UploadImage
+              imageUrlResponse={imageUrlResponse}
+              onChange={(e) => handleUploadImage(e)}
+            />
           </div>
         </div>
       </div>
