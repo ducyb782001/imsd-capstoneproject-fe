@@ -512,6 +512,7 @@ function ListQuantitiveImport({
       <div className="flex items-center gap-1">
         <PrimaryInput
           className="w-[60px]"
+          classNameInput="!px-2"
           type="number"
           min="0"
           placeholder="0"
@@ -664,7 +665,8 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
 
   return (
     <PrimaryInput
-      className="w-[50px]"
+      className="w-[44px]"
+      classNameInput="!px-2"
       type="number"
       min="0"
       placeholder="0"

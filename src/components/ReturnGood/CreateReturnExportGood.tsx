@@ -456,6 +456,7 @@ function ListQuantitiveImport({
         className="w-[60px] "
         type="number"
         min="0"
+        classNameInput="!px-2"
         placeholder="0"
         value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
         onChange={(e) => {

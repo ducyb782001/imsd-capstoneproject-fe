@@ -385,6 +385,7 @@ function ListActualStock({ data, listProductCheck, setListProductCheck }) {
       className="w-[70px]"
       type="number"
       min="0"
+      classNameInput="!px-2"
       placeholder="---"
       value={
         BigNumber(actualStock).isGreaterThanOrEqualTo(0) ? actualStock : ""
