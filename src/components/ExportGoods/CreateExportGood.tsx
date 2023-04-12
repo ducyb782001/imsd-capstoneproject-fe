@@ -509,11 +509,11 @@ function ListQuantitiveExport({
 }
 
 function ListPriceExport({ data, listProductExport, setListProductExport }) {
-  const [costPrice, setCostPrice] = useState()
+  const [costPrice, setCostPrice] = useState<any>()
 
   useEffect(() => {
     if (data) {
-      setCostPrice(data?.sellingPrice)
+      setCostPrice(BigNumber(data?.sellingPrice).toFormat(0))
     }
   }, [data])
   const { t } = useTranslation()

@@ -16,7 +16,7 @@ import UserIcon from "./icons/UserIcon"
 import LogoutIcon from "./icons/LogoutIcon"
 import LanguageDropdown from "./Nav/LanguageDropdown"
 
-function UserDropdownMobile({ showingLanguage, changeLanguage }) {
+function UserDropdownMobile() {
   const [showDialog, setShowDialog] = useState(false)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
@@ -48,10 +48,7 @@ function UserDropdownMobile({ showingLanguage, changeLanguage }) {
   }
   return (
     <div className="flex items-center justify-end gap-3">
-      <LanguageDropdown
-        showing={showingLanguage}
-        changeLanguage={changeLanguage}
-      />
+      <LanguageDropdown />
       <div onClick={open} className="flex items-center">
         <AvatarIcon />
         <p className="text-grayDark">
