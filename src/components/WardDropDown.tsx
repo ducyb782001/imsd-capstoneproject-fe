@@ -122,7 +122,12 @@ export default WardDropDown
 function DropDownItem({ data, setShowing }) {
   return (
     <div
-      onClick={() => setShowing(data)}
+      onClick={() =>
+        setShowing({
+          id: data?.code,
+          name: data?.name,
+        })
+      }
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
       {data?.name || data}

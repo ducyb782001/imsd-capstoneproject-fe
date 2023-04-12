@@ -63,7 +63,6 @@ function EditSupplier() {
         if (supplierId) {
           const response = await getSupplierDetail(supplierId)
           setSupplier(response?.data)
-          const supplier = response?.data
 
           // setSupplierDetail({
           //   address: supplier?.address,
@@ -76,8 +75,8 @@ function EditSupplier() {
           // })
 
           setCitySelected(response?.data?.city)
-          setDistrictSelected(response?.dasta?.district)
-          setWardSelected(response?.dasta?.ward)
+          setDistrictSelected(response?.data?.district)
+          setWardSelected(response?.data?.ward)
 
           setSupplierStatus(response?.data?.status)
           return response?.data
@@ -94,27 +93,27 @@ function EditSupplier() {
       },
     },
     {
-      queryKey: ["getListDistrict", citySelected],
+      queryKey: ["getListDistrict", citySelected?.id],
       queryFn: async () => {
-        if (citySelected) {
-          const response = await getListDistrictByCode(citySelected?.code)
+        if (citySelected?.id) {
+          const response = await getListDistrictByCode(citySelected?.id)
           setListDistrict(response?.data?.data?.data)
           return response?.data?.data
         }
       },
-      enabled: !!citySelected,
+      enabled: !!citySelected?.id,
     },
     {
-      queryKey: ["getListWards", districtSelected],
+      queryKey: ["getListWards", districtSelected?.id],
       queryFn: async () => {
-        if (districtSelected) {
-          const response = await getListWardByCode(districtSelected?.code)
+        if (districtSelected?.id) {
+          const response = await getListWardByCode(districtSelected?.id)
           setListWard(response?.data?.data?.data)
 
           return response?.data?.data
         }
       },
-      enabled: !!districtSelected,
+      enabled: !!districtSelected?.id,
     },
   ])
 
@@ -128,10 +127,10 @@ function EditSupplier() {
         name: citySelected?.name,
       },
     })
-  }, [citySelected])
+  }, [citySelected?.id])
 
   useEffect(() => {
-    setWardSelected(undefined)
+    // setWardSelected(undefined)
     setSupplier({
       ...supplier,
       district: {
@@ -139,7 +138,7 @@ function EditSupplier() {
         name: districtSelected?.name,
       },
     })
-  }, [districtSelected])
+  }, [districtSelected?.id])
 
   useEffect(() => {
     setSupplier({
@@ -149,7 +148,8 @@ function EditSupplier() {
         name: wardSelected?.name,
       },
     })
-  }, [wardSelected])
+  }, [wardSelected?.id])
+  console.log(wardSelected)
 
   const editSupplierMutation = useMutation(
     async (edittedSupplier) => {
@@ -188,12 +188,6 @@ function EditSupplier() {
   }, [supplierStatus])
 
   const handleEditSupplier = () => {
-    setDisabled(true)
-
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
-
     // check null
     const submittedData = {
       address: supplier?.address,
@@ -217,6 +211,11 @@ function EditSupplier() {
       submittedData["ward"] = supplier?.ward
     }
 
+    setDisabled(true)
+
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
     // @ts-ignore
     editSupplierMutation.mutate(submittedData)
   }
@@ -320,7 +319,9 @@ function EditSupplier() {
         <WardDropDown
           title={t("ward")}
           listDropdown={listWard}
-          textDefault={supplier?.ward?.name || t("choose_ward")}
+          textDefault={
+            supplier?.ward?.name || wardSelected?.name || t("choose_ward")
+          }
           showing={wardSelected}
           setShowing={setWardSelected}
         />

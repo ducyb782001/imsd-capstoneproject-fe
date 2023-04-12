@@ -563,6 +563,7 @@ function ListQuantitiveImport({
   return (
     <div className="relative">
       <PrimaryInput
+        classNameInput="!px-1"
         className="w-[60px]"
         type="number"
         min="0"
@@ -633,7 +634,8 @@ function ListDiscountImport({ data, listProductImport, setListProductImport }) {
 
   return (
     <PrimaryInput
-      className="w-[50px]"
+      className="w-[44px]"
+      classNameInput="!px-2"
       type="number"
       min="0"
       placeholder="0"

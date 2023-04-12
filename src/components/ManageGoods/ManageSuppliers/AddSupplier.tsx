@@ -63,7 +63,7 @@ function AddSupplier() {
       queryKey: ["getListDistrict", citySelected],
       queryFn: async () => {
         if (citySelected) {
-          const response = await getListDistrictByCode(citySelected?.code)
+          const response = await getListDistrictByCode(citySelected?.id)
           setListDistrict(response?.data?.data?.data)
           return response?.data?.data
         }
@@ -74,7 +74,7 @@ function AddSupplier() {
       queryKey: ["getListWards", districtSelected],
       queryFn: async () => {
         if (districtSelected) {
-          const response = await getListWardByCode(districtSelected?.code)
+          const response = await getListWardByCode(districtSelected?.id)
           setListWard(response?.data?.data?.data)
 
           return response?.data?.data
@@ -90,7 +90,7 @@ function AddSupplier() {
     setSupplier({
       ...supplier,
       city: {
-        id: citySelected?.code,
+        id: citySelected?.id,
         name: citySelected?.name,
       },
     })
@@ -101,7 +101,7 @@ function AddSupplier() {
     setSupplier({
       ...supplier,
       district: {
-        id: districtSelected?.code,
+        id: districtSelected?.id,
         name: districtSelected?.name,
       },
     })
@@ -111,7 +111,7 @@ function AddSupplier() {
     setSupplier({
       ...supplier,
       ward: {
-        id: wardSelected?.code,
+        id: wardSelected?.id,
         name: wardSelected?.name,
       },
     })

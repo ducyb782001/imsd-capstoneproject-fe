@@ -58,9 +58,13 @@ function ManageSuppliers({ ...props }) {
           Header: t("status"),
           accessor: (data: any) =>
             data?.status ? (
-              <GreenStatus status={t("on_sale")} />
+              <div className="flex justify-center">
+                <GreenStatus status={t("on_sale")} />
+              </div>
             ) : (
-              <YellowStatus status={t("off_sale")} />
+              <div className="flex justify-center">
+                <YellowStatus status={t("off_sale")} />
+              </div>
             ),
         },
         {
