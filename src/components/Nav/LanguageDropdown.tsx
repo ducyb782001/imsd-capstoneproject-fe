@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useState } from "react"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import EngFlagIcon from "../icons/EngFlagIcon"
 import VnFlagIcon from "../icons/VnFlagIcon"
+import { useTranslation } from "react-i18next"
 
 const listResult = [
   { id: 1, name: "Tiếng Việt", code: "vi", logo: <VnFlagIcon /> },
   { id: 2, name: "English", code: "en", logo: <EngFlagIcon /> },
 ]
 
-function LanguageDropdown({ showing, changeLanguage, title = "" }) {
+function LanguageDropdown({ title = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const toggleOpenMenu = () => {
@@ -57,6 +58,26 @@ function LanguageDropdown({ showing, changeLanguage, title = "" }) {
       },
     },
   }
+  const { i18n } = useTranslation()
+
+  const [showingLanguage, setShowingLanguage] = useState<any>()
+  useEffect(() => {
+    if (i18n.language === "en") {
+      setShowingLanguage({
+        id: 2,
+        name: "English",
+        code: "en",
+        logo: <EngFlagIcon />,
+      })
+    } else if (i18n.language === "vi") {
+      setShowingLanguage({
+        id: 1,
+        name: "Tiếng Việt",
+        code: "vi",
+        logo: <VnFlagIcon />,
+      })
+    }
+  }, [i18n.language])
 
   return (
     <motion.div className="relative text-[#4F4F4F]">
@@ -67,8 +88,10 @@ function LanguageDropdown({ showing, changeLanguage, title = "" }) {
           className="flex items-center justify-between gap-1 cursor-pointer"
         >
           <div className="flex items-center gap-2">
-            <div>{showing?.logo}</div>
-            <p className="text-base font-medium text-black">{showing?.name}</p>
+            <div>{showingLanguage?.logo}</div>
+            <p className="text-base font-medium text-black">
+              {showingLanguage?.name}
+            </p>
             <div className={`${isOpen && "rotate-180"} smooth-transform`}>
               <ArrowDownIcon color="#373737" />
             </div>
@@ -93,11 +116,7 @@ function LanguageDropdown({ showing, changeLanguage, title = "" }) {
           className="smooth-transform z-50 flex min-w-[150px] flex-col gap-1  bg-[#fff] py-3  max-h-[250px] overflow-y-auto border border-grayLight rounded-md"
         >
           {listResult?.map((i) => (
-            <DropDownItem
-              key={i?.id}
-              data={i}
-              changeLanguage={changeLanguage}
-            />
+            <DropDownItem key={i?.id} data={i} />
           ))}
         </div>
       </motion.div>
@@ -107,7 +126,11 @@ function LanguageDropdown({ showing, changeLanguage, title = "" }) {
 
 export default LanguageDropdown
 
-function DropDownItem({ data, changeLanguage }) {
+function DropDownItem({ data }) {
+  const { i18n } = useTranslation()
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng)
+  }
   return (
     <div
       onClick={() => {

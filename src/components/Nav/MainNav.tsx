@@ -18,12 +18,7 @@ import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
 import { getRoleId } from "../../lib/getRoleId"
 
-function MainNav({
-  roleId = "",
-  userName = "",
-  changeLanguage,
-  showingLanguage,
-}) {
+function MainNav({ roleId = "" }) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -210,7 +205,7 @@ function MainNav({
           </div>
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
-            {(roleId == "1" || roleId == "2") && (
+            {/* {(roleId == "1" || roleId == "2") && (
               <MenuItem
                 key={1}
                 icon={<DashboardIcon />}
@@ -218,7 +213,7 @@ function MainNav({
                 href="/dashboard"
                 isActive={router.asPath.includes("/dashboard")}
               />
-            )}
+            )} */}
             {mainMenu &&
               mainMenu.map((i) => (
                 <MenuItem
@@ -248,11 +243,7 @@ function MainNav({
       </div>
 
       <div className="md:hidden">
-        <MobileNav
-          changeLanguage={changeLanguage}
-          showingLanguage={showingLanguage}
-          roleId={roleId}
-        />
+        <MobileNav roleId={roleId} />
       </div>
     </div>
   )

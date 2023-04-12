@@ -16,7 +16,7 @@ import DashboardIcon from "./icons/DashboardIcon"
 import { getRoleId } from "../lib/getRoleId"
 import UserIcon from "./icons/UserIcon"
 
-function MobileNav({ changeLanguage, showingLanguage, roleId = "" }) {
+function MobileNav({ roleId = "" }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -248,10 +248,7 @@ function MobileNav({ changeLanguage, showingLanguage, roleId = "" }) {
       <motion.div className="w-full">
         <div className={`flex items-center justify-between h-full w-full`}>
           <IconHamberger onClick={toggleHoverMenu} />
-          <UserDropdownMobile
-            showingLanguage={showingLanguage}
-            changeLanguage={changeLanguage}
-          />
+          <UserDropdownMobile />
         </div>
         <motion.div
           initial={false}

@@ -1,13 +1,9 @@
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import HorizontalNav from "../HorizontalNav"
 import MainNav from "./MainNav"
 import cookie from "cookie"
 import useGetMe from "../../hooks/useGetMe"
-import { useTranslation } from "react-i18next"
-import EngFlagIcon from "../icons/EngFlagIcon"
-import VnFlagIcon from "../icons/VnFlagIcon"
-import { getRoleId } from "../../lib/getRoleId"
 
 function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
@@ -20,47 +16,25 @@ function Layout({ headTitle = "", ...props }) {
   }, [cookie])
 
   const { data } = useGetMe()
-  const [showingLanguage, setShowingLanguage] = useState<any>()
-  const { i18n } = useTranslation()
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
-  }
-  useEffect(() => {
-    if (i18n.language === "en") {
-      setShowingLanguage({
-        id: 2,
-        name: "English",
-        code: "en",
-        logo: <EngFlagIcon />,
-      })
-    } else if (i18n.language === "vi") {
-      setShowingLanguage({
-        id: 1,
-        name: "Tiếng Việt",
-        code: "vi",
-        logo: <VnFlagIcon />,
-      })
-    }
-  }, [i18n.language])
-  // const roleId = getRoleId()
+
   const [roleId, setRoleId] = useState("")
 
-  useEffect(() => {
+  const setUpRole = useCallback(() => {
     if (typeof window !== "undefined") {
       setRoleId(localStorage.getItem("roleId"))
     }
   }, [])
 
+  useEffect(() => {
+    setUpRole()
+  }, [])
+  console.count("layout ")
+  console.log("Roleid: ", roleId)
+
   return (
     <div className="flex bg-[#F6F5FA] w-full">
-      <MainNav
-        roleId={roleId}
-        changeLanguage={changeLanguage}
-        showingLanguage={showingLanguage}
-      />
+      <MainNav roleId={roleId} />
       <HorizontalNav
-        changeLanguage={changeLanguage}
-        showingLanguage={showingLanguage}
         headTitle={headTitle}
         avatar={data?.image}
         userName={data?.userName}
