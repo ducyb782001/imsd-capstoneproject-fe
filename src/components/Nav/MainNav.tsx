@@ -205,7 +205,7 @@ function MainNav({ roleId = "" }) {
           </div>
           <Line className="mt-2" />
           <div className="flex flex-col gap-1 mt-2">
-            {/* {(roleId == "1" || roleId == "2") && (
+            {(roleId == "1" || roleId == "2") && (
               <MenuItem
                 key={1}
                 icon={<DashboardIcon />}
@@ -213,7 +213,7 @@ function MainNav({ roleId = "" }) {
                 href="/dashboard"
                 isActive={router.asPath.includes("/dashboard")}
               />
-            )} */}
+            )}
             {mainMenu &&
               mainMenu.map((i) => (
                 <MenuItem
