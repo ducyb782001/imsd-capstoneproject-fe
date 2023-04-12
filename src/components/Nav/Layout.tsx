@@ -28,8 +28,6 @@ function Layout({ headTitle = "", ...props }) {
   useEffect(() => {
     setUpRole()
   }, [])
-  console.count("layout ")
-  console.log("Roleid: ", roleId)
 
   return (
     <div className="flex bg-[#F6F5FA] w-full">

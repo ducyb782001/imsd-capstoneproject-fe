@@ -525,11 +525,11 @@ function ListQuantitiveImport({
 }
 
 function ListPriceImport({ data, listProductImport, setListProductImport }) {
-  const [costPrice, setCostPrice] = useState()
+  const [costPrice, setCostPrice] = useState<any>()
 
   useEffect(() => {
     if (data) {
-      setCostPrice(data?.costPrice)
+      setCostPrice(BigNumber(data?.costPrice).toFormat(0))
     }
   }, [data])
 

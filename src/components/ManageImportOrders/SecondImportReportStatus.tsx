@@ -59,7 +59,7 @@ function SecondImportReportStatus({ productImport }) {
             <div>
               {data?.measuredUnit
                 ? data?.measuredUnit?.measuredUnitName
-                : data?.defaultMeasuredUnit}
+                : data?.defaultMeasuredUnit || "---"}
             </div>
           ),
         },
