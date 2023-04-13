@@ -243,10 +243,9 @@ function CreateStaff() {
                 <PasswordInput
                   title={
                     <div className="flex gap-1">
-                      <h1>{t("password")}</h1>
-                      <Tooltip content={<div>{t("password_default")}</div>}>
-                        <InfoIcon />
-                      </Tooltip>
+                      <h1>
+                        {t("password")} <span className="text-red-500">*</span>
+                      </h1>
                     </div>
                   }
                   onChange={(e) => {

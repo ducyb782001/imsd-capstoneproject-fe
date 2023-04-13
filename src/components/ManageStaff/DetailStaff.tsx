@@ -431,7 +431,12 @@ function DetailStaff() {
         <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-7">
           <div>
             <PasswordInput
-              title={t("new_password")}
+              title={
+                <div>
+                  {t("new_password")}
+                  <span className="text-red-500"> *</span>
+                </div>
+              }
               placeholder={t("enter_new_password")}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -443,7 +448,12 @@ function DetailStaff() {
           </div>
           <div>
             <PasswordInput
-              title={t("re_password")}
+              title={
+                <div>
+                  {t("re_password")}
+                  <span className="text-red-500"> *</span>
+                </div>
+              }
               placeholder={t("enter_re_password")}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
