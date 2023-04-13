@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import UserDropdown from "./UserDropdown"
 import LanguageDropdown from "./Nav/LanguageDropdown"
-import VnFlagIcon from "./icons/VnFlagIcon"
-import { useTranslation } from "react-i18next"
-import EngFlagIcon from "./icons/EngFlagIcon"
 
 function HorizontalNav({ avatar = null, headTitle = "", userName = "" }) {
   return (
