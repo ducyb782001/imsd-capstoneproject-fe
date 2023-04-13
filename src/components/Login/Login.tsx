@@ -50,7 +50,7 @@ function Login() {
       },
       onError: (data: any) => {
         toast.dismiss(TOAST_LOGIN)
-        toast.error("Email hoặc mật khẩu sai!")
+        toast.error("Tên đăng nhập hoặc mật khẩu sai!")
       },
     },
   )
@@ -77,9 +77,6 @@ function Login() {
   }
   const handleSignUp = () => {
     router.push("/signup")
-  }
-  const handleForgotPass = () => {
-    router.push("/forgot-password")
   }
 
   useEffect(() => {
