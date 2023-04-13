@@ -13,7 +13,6 @@ import ReturnGoodsIcon from "./icons/ReturnGoodsIcon"
 import CheckGoodsIcon from "./icons/CheckGoodsIcon"
 import { useTranslation } from "react-i18next"
 import DashboardIcon from "./icons/DashboardIcon"
-import { getRoleId } from "../lib/getRoleId"
 import UserIcon from "./icons/UserIcon"
 
 function MobileNav({ roleId = "" }) {

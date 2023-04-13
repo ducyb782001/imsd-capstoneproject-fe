@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useLayoutEffect, useState } from "react"
 import HorizontalNav from "../HorizontalNav"
 import MainNav from "./MainNav"
 import cookie from "cookie"
@@ -7,27 +7,23 @@ import useGetMe from "../../hooks/useGetMe"
 
 function Layout({ headTitle = "", ...props }) {
   const router = useRouter()
+  const [roleId, setRoleId] = useState("")
 
   useEffect(() => {
     const cookies = cookie.parse(window.document.cookie)
     if (!cookies.token) {
       router.push("/login")
     }
-  }, [cookie])
+  }, [])
 
-  const { data } = useGetMe()
-
-  const [roleId, setRoleId] = useState("")
-
-  const setUpRole = useCallback(() => {
-    if (typeof window !== "undefined") {
-      setRoleId(localStorage.getItem("roleId"))
+  useLayoutEffect(() => {
+    const cookies = cookie.parse(window.document.cookie)
+    if (cookies.roleId) {
+      setRoleId(cookies.roleId)
     }
   }, [])
 
-  useEffect(() => {
-    setUpRole()
-  }, [])
+  const { data } = useGetMe()
 
   return (
     <div className="flex bg-[#F6F5FA] w-full">

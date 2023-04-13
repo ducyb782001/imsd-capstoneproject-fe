@@ -44,6 +44,10 @@ function UserDropdownMobile() {
       maxAge: -1, // Expire the cookie immediately.
       path: "/",
     })
+    window.document.cookie = cookie.serialize("roleId", "", {
+      maxAge: -1, // Expire the cookie immediately.
+      path: "/",
+    })
     browserRedirectToIndexAfterSignOut()
   }
   return (

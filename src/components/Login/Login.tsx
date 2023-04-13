@@ -40,6 +40,7 @@ function Login() {
             maxAge: maxAge,
             path: "/",
           })
+          window.document.cookie = cookie.serialize("roleId", roleId)
         }
         toast.dismiss(TOAST_LOGIN)
         toast.success("Đăng nhập thành công!")
