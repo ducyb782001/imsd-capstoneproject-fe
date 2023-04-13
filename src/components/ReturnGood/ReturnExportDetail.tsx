@@ -147,7 +147,10 @@ function ReturnExportDetail() {
               title={t("staff_created")}
               data={`${detailReturnImport?.user?.userName}`}
             />
-            <ProductInfo title={t("note")} data={detailReturnImport?.note} />
+            <ProductInfo
+              title={t("note")}
+              data={detailReturnImport?.note || "---"}
+            />
           </div>
           <div className="hidden md:block" />
           <div>
@@ -175,7 +178,7 @@ function ReturnExportDetail() {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={detailReturnImport?.returnsOrderDetails}
+            data={detailReturnImport?.returnsOrderDetail}
           />
         </div>
       </div>
