@@ -17,9 +17,6 @@ import ChooseImportReportDropdown from "./ChooseImportReportDropdown"
 import SmallTitle from "../SmallTitle"
 import { useTranslation } from "react-i18next"
 import PrimaryBtn from "../PrimaryBtn"
-import ChooseFileReason from "../ChooseFileReason"
-import Loading from "../Loading"
-import { IKImage } from "imagekitio-react"
 import {
   createReturnGoods,
   getListProductAvailable,
@@ -32,7 +29,6 @@ import useUploadImage from "../../hooks/useUploadImage"
 import UploadImage from "../UploadImage"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
-const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 
 function CreateReturnGood() {
   const { t } = useTranslation()

@@ -16,6 +16,7 @@ import YellowStatus from "./YellowStatus"
 import GreenStatus from "./GreenStatus"
 import { toast } from "react-toastify"
 import { importReturnProduct } from "../../apis/import-product-module"
+import ConfirmPopup from "../ConfirmPopup"
 
 const TOAST_IMPORT_PRODUCT_TYPE_ID = "toast-import-product-type-id"
 
@@ -106,7 +107,7 @@ function ReturnImportDetail() {
         if (data?.status >= 200 && data?.status < 300) {
           toast.dismiss(TOAST_IMPORT_PRODUCT_TYPE_ID)
           toast.success(t("import_product_return_success"))
-          queryClient.invalidateQueries("getDetailReturnImport")
+          queryClient.refetchQueries("getDetailReturnImport")
         } else {
           if (typeof data?.response?.data?.message !== "string") {
             toast.error(data?.response?.data || "Error")
@@ -137,9 +138,14 @@ function ReturnImportDetail() {
               {t("exit")}
             </SecondaryBtn>
             {detailReturnImport?.state === 0 && (
-              <PrimaryBtn onClick={handleClickImportReturnGood}>
+              <ConfirmPopup
+                className="!w-fit"
+                // classNameBtn="w-[120px]"
+                title={t("confirm_import_return_order")}
+                handleClickSaveBtn={handleClickImportReturnGood}
+              >
                 {t("reimport")}
-              </PrimaryBtn>
+              </ConfirmPopup>
             )}
           </div>
         </div>

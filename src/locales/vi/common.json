@@ -378,5 +378,6 @@
   "re_confirm_return": "Bạn có chắc chắn muốn trả không?",
   "info_return_pro": "Thông tin đơn trả",
   "value_return_money": "Giá trị trả hàng",
-  "search_by_return": "Tìm theo mã đơn trả hàng, người tạo đơn"
+  "search_by_return": "Tìm theo mã đơn trả hàng, người tạo đơn",
+  "confirm_import_return_order": "Bạn có chắc chắn hàng đã được nhập lại vào kho?"
 }

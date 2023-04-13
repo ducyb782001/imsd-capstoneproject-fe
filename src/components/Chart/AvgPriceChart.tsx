@@ -3,7 +3,6 @@ import { Line } from "react-chartjs-2"
 import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js"
 import YearTimeDropdown from "./YearTimeDropdown"
-import BigNumber from "bignumber.js"
 import { useTranslation } from "react-i18next"
 
 Chart.register(CategoryScale)

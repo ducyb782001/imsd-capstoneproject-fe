@@ -378,5 +378,6 @@
   "re_confirm_return": "Are you sure you want to pay?",
   "info_return_pro": "Information for returns",
   "value_return_money": "Return value",
-  "search_by_return": "Search by return code, order creator"
+  "search_by_return": "Search by return code, order creator",
+  "confirm_import_return_order": "Are you sure the item has been re-imported into the warehouse?"
 }
