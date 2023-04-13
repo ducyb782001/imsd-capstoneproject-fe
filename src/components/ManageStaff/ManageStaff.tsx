@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useLayoutEffect, useState } from "react"
 import PlusIcon from "../icons/PlusIcon"
 import PrimaryBtn from "../PrimaryBtn"
 import SearchInput from "../SearchInput"
@@ -6,7 +6,6 @@ import ShowLabelBar from "../Filter/ShowLabelBar"
 import Table from "../Table"
 import Pagination from "../Pagination"
 import Link from "next/link"
-import ShowDetailIcon from "../icons/ShowDetailIcon"
 import useDebounce from "../../hooks/useDebounce"
 import { useQueries } from "react-query"
 import ChooseStatusDropdown from "../ImportGoods/ChooseStatusDropdown"
@@ -17,9 +16,6 @@ import SetStatusPopup from "./SetStatusPopup"
 import { useTranslation } from "react-i18next"
 import ShowDetail from "../ShowDetail"
 import Page401 from "../401"
-import ImportExportButton from "../ImportExportButton"
-import DownloadIcon from "../icons/DownloadIcon"
-import ModalExportExcel from "../ExportExcel/ModalExportExcel"
 
 function ManageStaff() {
   const { t } = useTranslation()
@@ -106,8 +102,6 @@ function ManageStaff() {
   const [newList, setNewList] = useState([])
   const [isLoadingListExport, setIsLoadingListExport] = useState(true)
 
-  const [typeExportExcel, setTypeExportExcel] = useState()
-
   useEffect(() => {
     if (roleSelected) {
       // Them logic check id cua nha cung cap phai khac thi moi them vao list
@@ -169,7 +163,7 @@ function ManageStaff() {
   }
 
   const [userData, setUserData] = useState<any>()
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window !== "undefined") {
       const userData = localStorage.getItem("userData")
       if (userData != "undefined") {

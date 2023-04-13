@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react"
 import ArrowDownIcon from "./icons/ArrowDownIcon"
 import cookie from "cookie"
 import AvatarIcon from "./icons/AvatarIcon"
-import { useMutation, useQuery } from "react-query"
-import { getUserData, logout } from "../apis/auth"
+import { useMutation } from "react-query"
+import { logout } from "../apis/auth"
 import { browserRedirectToIndexAfterSignOut } from "../lib/redirect"
 import { useTranslation } from "react-i18next"
 
@@ -13,7 +13,6 @@ function UserDropdown({ avatar = null, userName = "" }) {
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
-  const [userData, setUserData] = useState<any>({})
 
   const toggleOpenMenu = () => {
     toggleOpen(!isOpen)

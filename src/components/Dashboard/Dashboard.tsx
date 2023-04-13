@@ -1,12 +1,6 @@
-import BigNumber from "bignumber.js"
-import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
-import { useQueries, useQuery } from "react-query"
-import {
-  getDashboardByTime,
-  getDashboardChartData,
-  getDashBoardData,
-} from "../../apis/dashboard-module"
+import React, { useEffect, useLayoutEffect, useState } from "react"
+import { useQuery } from "react-query"
+import { getDashBoardData } from "../../apis/dashboard-module"
 import Page401 from "../401"
 import ExportDashboardIcon from "../icons/ExportDashboardIcon"
 import ExportReturnDashboardIcon from "../icons/ExportReturnDashboardIcon"
@@ -16,14 +10,12 @@ import ImportReturnDashboardIcon from "../icons/ImportReturnDashboardIcon"
 import ProductDashboardIcon from "../icons/ProductDashboardIcon"
 import SpentDashboardIcon from "../icons/SpentDashboardIcon"
 import UserDasboardIcon from "../icons/UserDasboardIcon"
-import UserIcon from "../icons/UserIcon"
 import InfoDashboardCard from "./InfoDashboardCard"
 import InventoryChart from "./InventoryChart"
 import SaleChart from "./SaleChart"
 import SubMenu from "./SubMenu"
 import SummaryRevenue from "./SummaryRevenue"
 import { useTranslation } from "react-i18next"
-import DashboardCardSkeleton from "../Skeleton/DashboardCardSkeleton"
 
 function Dashboard() {
   const { t } = useTranslation()
@@ -35,7 +27,7 @@ function Dashboard() {
 
   const [userData, setUserData] = useState<any>()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window !== "undefined") {
       const userData = localStorage.getItem("userData")
       if (userData != "undefined") {
