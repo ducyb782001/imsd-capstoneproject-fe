@@ -297,7 +297,7 @@ function ShowDetailHistory({ data }) {
   ) {
     return (
       <div>
-        <Link href={`/return-product-detail?returnCode=` + a}>
+        <Link href={`/return-product-detail/` + a}>
           <p className="cursor-pointer text-blue">{a}</p>
         </Link>
       </div>

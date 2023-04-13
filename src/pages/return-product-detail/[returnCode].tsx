@@ -1,7 +1,7 @@
 import React from "react"
-import Layout from "../components/Nav/Layout"
 import { useTranslation } from "react-i18next"
-import ReturnProductDetail from "../components/ManageGoods/ReturnProductDetail"
+import Layout from "../../components/Nav/Layout"
+import ReturnProductDetail from "../../components/ManageGoods/ReturnProductDetail"
 
 function returnProductDetail() {
   const { t } = useTranslation()
