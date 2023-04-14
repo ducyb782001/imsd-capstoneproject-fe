@@ -220,7 +220,7 @@ function ReturnProductDetail() {
           <Table
             pageSizePagination={10}
             columns={columns}
-            data={detailReturnImport?.returnsOrderDetails}
+            data={detailReturnImport?.returnsOrderDetail}
           />
         </div>
       </div>
