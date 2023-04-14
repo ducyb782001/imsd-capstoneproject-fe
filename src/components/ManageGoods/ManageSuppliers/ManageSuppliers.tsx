@@ -157,7 +157,7 @@ function ManageSuppliers({ ...props }) {
         <div className="flex flex-col gap-4">
           <div className="grid items-center justify-between w-full gap-4 md:grid-cols-3">
             <SearchInput
-              placeholder={"Tìm kiếm bằng tên nhà cung cấp, SĐT"}
+              placeholder={t("search_in_supplier")}
               onChange={(e) => setSearchParam(e.target.value)}
               className="w-full col-span-3"
             />

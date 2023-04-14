@@ -1,13 +1,12 @@
 import React from "react"
 import Layout from "../components/Nav/Layout"
 import CreateReturnExportGood from "../components/ReturnGood/CreateReturnExportGood"
+import { useTranslation } from "react-i18next"
 
 function createReturnReport() {
+  const { t } = useTranslation()
   return (
-    // <Layout headTitle="Trả hàng về nhà cung cấp">
-    //   <CreateReturnExportGood />
-    // </Layout>
-    <Layout headTitle="Trả hàng về kho">
+    <Layout headTitle={t("return_to_ware")}>
       <CreateReturnExportGood />
     </Layout>
   )

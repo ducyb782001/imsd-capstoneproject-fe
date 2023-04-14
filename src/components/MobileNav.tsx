@@ -73,13 +73,13 @@ function MobileNav({ roleId = "" }) {
   const subMenuReturnGoods = [
     {
       id: 1,
-      name: "Trả hàng về nhà cung cấp",
+      name: t("return_to_supp"),
       href: "/manage-return-product-to-supplier",
       isActive: router.asPath === "/manage-return-product-to-supplier",
     },
     {
       id: 2,
-      name: "Khách trả",
+      name: t("customer_return"),
       href: "/manage-return-products",
       isActive: router.asPath === "/manage-return-products",
     },

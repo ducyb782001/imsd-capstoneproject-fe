@@ -2,11 +2,11 @@
   "personal_imformation": "Personal information",
   "signOut": "Sign out",
   "dashboard": "Dashboard",
-  "manageGoods": "Manage goods",
+  "manageGoods": "Manage products",
   "product": "Products",
   "supplier": "Suppliers",
   "type": {
-    "typeGoods": "Type of goods",
+    "typeGoods": "Type of product",
     "type": "Type"
   },
   "search": {
@@ -21,10 +21,10 @@
     "searchInExport": "Search by export code, supplier name",
     "searchInCheck": "Search by stocktake code"
   },
-  "import good": "Import goods",
-  "export good": "Export goods",
-  "return good": "Return goods",
-  "check good": "Check goods",
+  "import good": "Import products",
+  "export good": "Export products",
+  "return good": "Return products",
+  "check good": "Check products",
   "staff": "Staff",
   "list_import_report": "Import list",
   "list_export_report": "Export list",
@@ -348,7 +348,7 @@
   "reimport": "Reimport returns",
   "reimport_succeed": "Reimported returns",
   "reasone_img": "Reason (photo)",
-  "search_by_import_code": "Search by single import code, NCC name",
+  "search_by_import_code": "Search by single import code, supplier name",
   "full_name_warning": "Full name does not contain numbers, special characters and cannot exceed 100 characters",
   "identity_max": "CMND tối đa 12 kí tự",
   "user_code_max": "Username is unavailable or exceeds 24 characters",
@@ -379,5 +379,18 @@
   "info_return_pro": "Information for returns",
   "value_return_money": "Return value",
   "search_by_return": "Search by return code, order creator",
-  "confirm_import_return_order": "Are you sure the item has been re-imported into the warehouse?"
+  "confirm_import_return_order": "Are you sure the item has been re-imported into the warehouse?",
+  "edit_profile": "Edit profile",
+  "list_staff": "List staff",
+  "list_manage_import": "List import order",
+  "list_category": "List category",
+  "dashboard_tong": "Dashboard",
+  "create_new_staff_good": "Create new staff",
+  "return_to_supp": "Return products to supplier",
+  "return_to_ware": "Return to warehouse",
+  "detail_inventory_checking": "Inventory checking detail",
+  "edit_staff_title": "Edit staff",
+  "customer_return": "Customer return",
+  "search_in_supplier": "Search by supplier name, phone number",
+  "return_supplier_title": "List of return orders to suppliers"
 }

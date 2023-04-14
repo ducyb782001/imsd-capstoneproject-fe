@@ -379,5 +379,17 @@
   "info_return_pro": "Thông tin đơn trả",
   "value_return_money": "Giá trị trả hàng",
   "search_by_return": "Tìm theo mã đơn trả hàng, người tạo đơn",
-  "confirm_import_return_order": "Bạn có chắc chắn hàng đã được nhập lại vào kho?"
+  "confirm_import_return_order": "Bạn có chắc chắn hàng đã được nhập lại vào kho?",
+  "edit_profile": "Chỉnh sửa hồ sơ",
+  "list_staff": "Danh sách nhân viên",
+  "list_manage_import": "Danh sách phiếu nhập hàng",
+  "list_category": "Danh sách loại sản phẩm",
+  "dashboard_tong": "Tổng quan",
+  "create_new_staff_good": "Tạo nhân viên mới",
+  "return_to_supp": "Trả hàng về nhà cung cấp",
+  "return_to_ware": "Trả hàng về kho",
+  "detail_inventory_checking": "Chi tiết đơn kiểm hàng",
+  "edit_staff_title": "Chỉnh sửa nhân viên",
+  "customer_return": "Khách trả",
+  "search_in_supplier": "Tìm kiếm bằng tên nhà cung cấp, SĐT"
 }

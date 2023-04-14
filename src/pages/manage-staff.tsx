@@ -1,10 +1,12 @@
 import React from "react"
 import ManageStaff from "../components/ManageStaff/ManageStaff"
 import Layout from "../components/Nav/Layout"
+import { useTranslation } from "react-i18next"
 
-function manageStaff(props) {
+function manageStaff() {
+  const { t } = useTranslation()
   return (
-    <Layout headTitle="Danh sách nhân viên">
+    <Layout headTitle={t("list_staff")}>
       <ManageStaff />
     </Layout>
   )

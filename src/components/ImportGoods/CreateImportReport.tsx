@@ -514,6 +514,8 @@ function ListQuantitiveImport({
         value={BigNumber(quantity).isGreaterThanOrEqualTo(0) ? quantity : ""}
         onChange={(e) => {
           e.stopPropagation()
+          console.log(e)
+
           const value = e.target.value < 0 ? 0 : e.target.value
           setQuantity(value)
           handleOnChangeAmount(value, data)
