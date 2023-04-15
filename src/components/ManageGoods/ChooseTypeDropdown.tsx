@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
-import { search } from "../../lib/search"
+import { searchByCategoryName } from "../../lib/search"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import SearchIcon from "../icons/SearchIcon"
 import { useTranslation } from "react-i18next"
@@ -16,7 +16,7 @@ function ChooseTypeDropdown({
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
-  const listResult = search(searchInput, listDropdown)
+  const listResult = searchByCategoryName(searchInput, listDropdown)
 
   const toggleOpenMenu = () => {
     if (listDropdown?.length > 0) {

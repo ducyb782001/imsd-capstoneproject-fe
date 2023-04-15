@@ -28,7 +28,7 @@ import EditDetail from "../EditDetail"
 import GreenStatus from "../ReturnGood/GreenStatus"
 import RedStatus from "../ReturnGood/RedStatus"
 
-function ManageGoods({ ...props }) {
+function ManageGoods() {
   const { t } = useTranslation()
   const columns = [
     {
@@ -264,14 +264,6 @@ function ManageGoods({ ...props }) {
       },
     },
   ])
-
-  const handleExportProduct = () => {
-    const dateTime = Date().toLocaleString() + ""
-    const worksheet = XLSX.utils.json_to_sheet(listProductExport?.data)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-    XLSX.writeFile(workbook, "DataSheet" + dateTime + ".xlsx")
-  }
 
   return (
     <div>

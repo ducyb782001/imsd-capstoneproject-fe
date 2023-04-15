@@ -350,12 +350,7 @@ function CreateExportGood() {
         <div>
           <h1 className="text-2xl font-semibold">{t("add_export_title")}</h1>
           <div className="flex justify-center mt-6">
-            <StepBar
-              createdDate={format(
-                parseISO(new Date().toISOString()),
-                "dd/MM/yyyy HH:mm",
-              )}
-            />
+            <StepBar />
           </div>
           <div className="w-full p-6 mt-6 bg-white block-border">
             <div className="flex items-center gap-2 mb-4">
@@ -376,9 +371,6 @@ function CreateExportGood() {
           <h1 className="text-xl font-semibold text-center">
             {t("additional_information")}
           </h1>
-          <div className="text-sm font-medium text-center text-gray">
-            {t("created_report_import")} {format(Date.now(), "dd/MM/yyyy")}
-          </div>
           <PrimaryTextArea
             rows={8}
             className="mt-5"

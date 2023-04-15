@@ -295,9 +295,6 @@ function CreateCheckReport() {
             <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
-          <div className="mb-3 text-sm font-medium text-left text-gray">
-            {t("check_date")}: {format(Date.now(), "dd/MM/yyyy HH:MM")}
-          </div>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}

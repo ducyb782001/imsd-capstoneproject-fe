@@ -707,7 +707,7 @@ function AdditionUnitRow({
 
   useEffect(() => {
     if (
-      (newType && newType.trim.toLowerCase()()) ===
+      (newType && newType.toLowerCase().trim()) ===
       (product?.defaultMeasuredUnit &&
         product?.defaultMeasuredUnit.toLowerCase().trim())
     ) {
