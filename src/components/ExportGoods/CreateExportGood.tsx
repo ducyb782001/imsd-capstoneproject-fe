@@ -505,7 +505,7 @@ function ListPriceExport({ data, listProductExport, setListProductExport }) {
 
   useEffect(() => {
     if (data) {
-      setCostPrice(BigNumber(data?.sellingPrice).toFormat(0))
+      setCostPrice(data?.sellingPrice)
     }
   }, [data])
   const { t } = useTranslation()

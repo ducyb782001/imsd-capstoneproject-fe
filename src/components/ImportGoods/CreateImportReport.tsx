@@ -523,7 +523,7 @@ function ListPriceImport({ data, listProductImport, setListProductImport }) {
 
   useEffect(() => {
     if (data) {
-      setCostPrice(BigNumber(data?.costPrice).toFormat(0))
+      setCostPrice(data?.costPrice)
     }
   }, [data])
 

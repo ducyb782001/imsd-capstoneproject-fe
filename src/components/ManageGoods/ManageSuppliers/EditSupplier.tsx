@@ -149,7 +149,7 @@ function EditSupplier() {
       },
     })
   }, [wardSelected?.id])
-  console.log(wardSelected)
+  console.log(supplier)
 
   const editSupplierMutation = useMutation(
     async (edittedSupplier) => {

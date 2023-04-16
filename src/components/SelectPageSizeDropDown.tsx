@@ -54,6 +54,7 @@ function SelectPageSizeDropDown({ setPageSize, pageSize }) {
   return (
     <motion.div className="relative">
       <div
+        ref={node}
         onClick={toggleOpenMenu}
         className="flex items-center justify-between h-8 gap-1 px-2 border rounded cursor-pointer border-grayLight"
       >
