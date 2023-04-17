@@ -103,7 +103,7 @@ function ChooseImportReportDropdown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder={t("search.search")}
+          placeholder={"Tìm kiếm theo mã nhập hàng, tên, SĐT nhà cung cấp"}
         />
         <div
           id="list-dropdown"
@@ -126,7 +126,11 @@ function DropDownItem({ data, setShowing }) {
       onClick={() => setShowing(data)}
       className="w-full px-4 py-3 text-sm cursor-pointer bg-opacity-20 hover:bg-[#EFEAFA] smooth-transform"
     >
-      {data?.importCode || data}
+      {data?.importCode +
+        " - " +
+        data?.supplier?.supplierName +
+        ": " +
+        data?.supplier?.supplierPhone || "---"}
     </div>
   )
 }

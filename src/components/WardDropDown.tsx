@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { search } from "../lib/search"
 import ArrowDownIcon from "./icons/ArrowDownIcon"
 import SearchIcon from "./icons/SearchIcon"
+import { useTranslation } from "react-i18next"
 
 function WardDropDown({
   title = null,
@@ -63,6 +64,7 @@ function WardDropDown({
       },
     },
   }
+  const { t } = useTranslation()
 
   return (
     <motion.div className="relative text-[#4F4F4F]">
@@ -102,7 +104,7 @@ function WardDropDown({
           onClick={toggleOpenMenu}
           onChange={(e) => setSearchInput(e.target.value)}
           className=""
-          placeholder="Search"
+          placeholder={t("search.search")}
         />
         <div
           id="list-dropdown"

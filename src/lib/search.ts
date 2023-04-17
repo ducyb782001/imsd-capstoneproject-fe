@@ -62,22 +62,6 @@ export function searchProduct(searchInput: string, list: []) {
   return result
 }
 
-export function searchImportCode(searchInput: string, list: []) {
-  let result
-  if (!searchInput) {
-    return list
-  }
-  if (searchInput) {
-    result = list.filter((i) =>
-      // @ts-ignore
-      i?.importCode.toLowerCase().includes(searchInput.toLowerCase()),
-    )
-  } else {
-    result = []
-  }
-  return result
-}
-
 export function searchExportCode(searchInput: string, list: []) {
   let result
   if (!searchInput) {
@@ -88,6 +72,51 @@ export function searchExportCode(searchInput: string, list: []) {
       // @ts-ignore
       i?.exportCode.toLowerCase().includes(searchInput.toLowerCase()),
     )
+  } else {
+    result = []
+  }
+  return result
+}
+
+export function searchImportCode(searchInput: string, list: []) {
+  let result
+  if (!searchInput) {
+    return list
+  }
+  if (searchInput) {
+    // result = list.filter((i) =>
+    //   // @ts-ignore
+    //   i?.importCode.toLowerCase().includes(searchInput.toLowerCase()),
+    // )
+
+    result = list?.filter(function (item) {
+      // @ts-ignore
+      if (item.importCode.toLowerCase().includes(searchInput.toLowerCase())) {
+        return item
+      }
+      // @ts-ignore
+      if (item?.supplier?.supplierName) {
+        if (
+          // @ts-ignore
+          item?.supplier?.supplierName
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        ) {
+          return item
+        }
+      }
+      // @ts-ignore
+      if (item?.supplier?.supplierPhone) {
+        if (
+          // @ts-ignore
+          item?.supplier?.supplierPhone
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        ) {
+          return item
+        }
+      }
+    })
   } else {
     result = []
   }

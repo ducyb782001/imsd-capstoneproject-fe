@@ -82,7 +82,7 @@ function CreateImportReport() {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <ListPriceImport
                 data={data}
                 listProductImport={listProductImport}
@@ -173,9 +173,6 @@ function CreateImportReport() {
       setProductImportObject({
         ...productImportObject,
         supplierId: nhaCungCapSelected?.supplierId,
-      })
-      setProductImportObject({
-        ...productImportObject,
         state: 0,
       })
     }

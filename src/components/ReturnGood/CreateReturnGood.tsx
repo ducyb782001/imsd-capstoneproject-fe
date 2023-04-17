@@ -100,8 +100,6 @@ function CreateReturnGood() {
   const [listProductImport, setListProductImport] = useState<any>([])
   const [productImportObject, setProductImportObject] = useState<any>()
   const [totalPriceSend, setTotalPriceSend] = useState<any>()
-  const [loadingImage, setLoadingImage] = useState(false)
-  const [imageUploaded, setImageUploaded] = useState("")
   const [isLoadingStaff, setIsLoadingStaff] = useState(true)
 
   const [productImport, setProductImport] = useState<any>()

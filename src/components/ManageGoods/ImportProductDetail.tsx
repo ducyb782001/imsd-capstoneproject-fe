@@ -108,7 +108,6 @@ function ImportProductDetail() {
     },
   ]
 
-  useState<any>([])
   const [productImport, setProductImport] = useState<any>()
   const [isLoadingReport, setIsLoadingReport] = useState(true)
 
@@ -135,10 +134,6 @@ function ImportProductDetail() {
       enabled: !!detailCode,
     },
   ])
-
-  const handleClickOutBtn = () => {
-    router.back()
-  }
 
   return isLoadingReport ? (
     <ImportReportSkeleton />
@@ -225,7 +220,7 @@ function ImportProductDetail() {
               : format(new Date(), "dd/MM/yyyy HH:mm")}
           </div>
           <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
-          <PrimaryInput value={productImport?.user?.email} />
+          <PrimaryInput value={productImport?.user?.userName} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"

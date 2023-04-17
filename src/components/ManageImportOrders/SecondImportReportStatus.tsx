@@ -182,7 +182,7 @@ function SecondImportReportStatus({ productImport }) {
             </div>
           )}
           <div className="mt-3 text-sm font-bold text-gray">{t("staff")}</div>
-          <PrimaryInput value={productImport?.user?.email} readOnly={true} />
+          <PrimaryInput value={productImport?.user?.userName} readOnly={true} />
           <PrimaryTextArea
             rows={4}
             className="mt-2"
