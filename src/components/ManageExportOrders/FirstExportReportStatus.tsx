@@ -130,7 +130,7 @@ function FirstExportReportStatus({ productImport }) {
                 #{productImport?.exportCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                {t("waiting_for_export")}
+                {t("in_export")}
               </div>
             </div>
             <div className="flex items-center justify-end gap-4">

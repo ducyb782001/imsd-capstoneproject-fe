@@ -392,5 +392,7 @@
   "edit_staff_title": "Edit staff",
   "customer_return": "Customer return",
   "search_in_supplier": "Search by supplier name, phone number",
-  "return_supplier_title": "List of return orders to suppliers"
+  "return_supplier_title": "List of return orders to suppliers",
+  "haomon": "Wearing out",
+  "out_of_date": "Out of date"
 }

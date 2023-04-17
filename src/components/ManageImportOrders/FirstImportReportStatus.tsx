@@ -148,7 +148,7 @@ function FirstImportReportStatus({ productImport }) {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-[#F5E6D8] border border-[#D69555] text-[#D69555] rounded-2xl">
-                {t("wait_get_product")}
+                {t("in_import")}
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">

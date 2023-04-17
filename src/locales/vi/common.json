@@ -391,5 +391,7 @@
   "detail_inventory_checking": "Chi tiết đơn kiểm hàng",
   "edit_staff_title": "Chỉnh sửa nhân viên",
   "customer_return": "Khách trả",
-  "search_in_supplier": "Tìm kiếm bằng tên nhà cung cấp, SĐT"
+  "search_in_supplier": "Tìm kiếm bằng tên nhà cung cấp, SĐT",
+  "haomon": "Hao mòn",
+  "out_of_date": "Hết hạn sử dụng"
 }

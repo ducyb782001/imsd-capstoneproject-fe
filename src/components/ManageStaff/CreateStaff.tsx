@@ -384,7 +384,8 @@ function CreateStaff() {
                     !!!staffAccountObject?.userCode ||
                     (staffAccountObject?.phone &&
                       !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
-                    (!canChangePassword && staffAccountObject?.password) ||
+                    !canChangePassword ||
+                    !staffAccountObject?.password ||
                     staffAccountObject?.userName?.length > 100 ||
                     staffAccountObject?.identity?.length > 12 ||
                     staffAccountObject?.address?.length > 250 ||

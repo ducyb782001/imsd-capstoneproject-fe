@@ -9,7 +9,8 @@ function ReasonDropdown({ showing, setShowing, textDefault = "" }) {
   const listDropdown = [
     { id: 1, value: t("other") },
     { id: 2, value: t("damaged") },
-    // { id: 3, value: t("return") },
+    { id: 3, value: t("out_of_date") },
+    { id: 4, value: t("haomon") },
   ]
   const node = useRef()
   const [isOpen, toggleOpen] = useState(false)

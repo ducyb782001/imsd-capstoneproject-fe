@@ -111,7 +111,7 @@ function SecondImportReportStatus({ productImport }) {
                 #{productImport?.importCode}
               </h1>
               <div className="px-4 py-1 bg-green-100 border border-[#3DBB65] text-[#3DBB65] font-bold rounded-2xl">
-                {t("final")}
+                {t("complete")}
               </div>
             </div>
             <div className="flex items-center gap-4">

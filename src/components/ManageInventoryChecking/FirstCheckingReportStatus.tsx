@@ -52,7 +52,7 @@ function FirstCheckingReportStatus({ productCheckObject }) {
               <p className="text-center">
                 {data?.measuredUnitId
                   ? data?.measuredUnit.measuredUnitName
-                  : data?.product?.defaultMeasuredUnit}
+                  : data?.product?.defaultMeasuredUnit || "---"}
               </p>
             </div>
           ),

@@ -295,6 +295,9 @@ function CreateCheckReport() {
             <GeneralIcon />
             <h1 className="text-xl font-semibold">{t("report_infor")}</h1>
           </div>
+          <div className="mb-2 text-sm font-bold text-gray">
+            {t("choose_staff")}
+          </div>
           <div className="w-64">
             <ChooseStaffDropdown
               listDropdown={listStaff}
