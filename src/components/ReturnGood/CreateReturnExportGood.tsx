@@ -30,6 +30,7 @@ import ReturnGoodsIcon from "../icons/ReturnGoodsIcon"
 import { checkStringLength } from "../../lib"
 import UploadImage from "../UploadImage"
 import useUploadImage from "../../hooks/useUploadImage"
+import UnitToolTip from "../UnitToolTip"
 
 const TOAST_CREATED_RETURN_GOODS_ID = "toast-created-return-goods-id"
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
@@ -552,12 +553,21 @@ function CountTotalPrice({ data, listProductImport }) {
 
 function RenderUnit({ data }) {
   return (
-    <p className="truncate-2-line max-w-[100px]">
-      {data?.measuredUnitId
-        ? data?.product?.measuredUnits.filter(
-            (i) => i.measuredUnitId === data?.measuredUnitId,
-          )[0].measuredUnitName
-        : data?.defaultMeasuredUnit || "---"}
-    </p>
+    <UnitToolTip
+      content={
+        data?.measuredUnitId &&
+        `1 ${data?.measuredUnit?.measuredUnitName} = ${
+          data?.measuredUnit?.measuredUnitValue
+        } ${data?.defaultMeasuredUnit || "-"}`
+      }
+    >
+      <p className="truncate-2-line max-w-[100px]">
+        {data?.measuredUnitId
+          ? data?.product?.measuredUnits.filter(
+              (i) => i.measuredUnitId === data?.measuredUnitId,
+            )[0].measuredUnitName
+          : data?.defaultMeasuredUnit || "---"}
+      </p>
+    </UnitToolTip>
   )
 }

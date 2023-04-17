@@ -1,13 +1,13 @@
-import React, { useState } from "react"
+import React from "react"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import { useRouter } from "next/router"
 import { BigNumber } from "bignumber.js"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import UnitToolTip from "../UnitToolTip"
 
 function ThirdImportReportStatus({ productImport }) {
   const { t } = useTranslation()
@@ -50,11 +50,20 @@ function ThirdImportReportStatus({ productImport }) {
         {
           Header: t("unit"),
           accessor: (data: any) => (
-            <div>
-              {data?.measuredUnit
-                ? data?.measuredUnit?.measuredUnitName
-                : data?.defaultMeasuredUnit || "---"}
-            </div>
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {
@@ -91,9 +100,6 @@ function ThirdImportReportStatus({ productImport }) {
       ],
     },
   ]
-
-  const router = useRouter()
-  const { importId } = router.query
 
   return (
     <div>

@@ -1,13 +1,13 @@
-import React, { useState } from "react"
+import React from "react"
 import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
-import { useRouter } from "next/router"
 import { BigNumber } from "bignumber.js"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import UnitToolTip from "../UnitToolTip"
 
 function ThirdExportReportStatus({ productExport }) {
   const { t } = useTranslation()
@@ -42,6 +42,25 @@ function ThirdExportReportStatus({ productExport }) {
           Header: t("export_number"),
           accessor: (data: any) => (
             <div>{data?.amount ? data?.amount : "---"}</div>
+          ),
+        },
+        {
+          Header: t("unit"),
+          accessor: (data: any) => (
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {
@@ -81,7 +100,6 @@ function ThirdExportReportStatus({ productExport }) {
       ],
     },
   ]
-  const router = useRouter()
 
   return (
     <div>

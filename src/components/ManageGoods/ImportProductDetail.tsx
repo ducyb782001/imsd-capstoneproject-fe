@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import SecondaryBtn from "../SecondaryBtn"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import UnitToolTip from "../UnitToolTip"
 
 function ImportProductDetail() {
   const { t } = useTranslation()
@@ -56,11 +57,20 @@ function ImportProductDetail() {
         {
           Header: t("unit"),
           accessor: (data: any) => (
-            <div>
-              {data?.measuredUnit
-                ? data?.measuredUnit?.measuredUnitName
-                : data?.defaultMeasuredUnit}
-            </div>
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {

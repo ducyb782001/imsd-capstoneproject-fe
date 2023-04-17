@@ -10,6 +10,7 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import UnitToolTip from "../UnitToolTip"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function FirstExportReportStatus({ productImport }) {
@@ -47,6 +48,25 @@ function FirstExportReportStatus({ productImport }) {
             <div className="text-center">
               {data?.amount ? data?.amount : "---"}
             </div>
+          ),
+        },
+        {
+          Header: t("unit"),
+          accessor: (data: any) => (
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {

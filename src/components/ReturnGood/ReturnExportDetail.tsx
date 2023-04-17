@@ -11,6 +11,7 @@ import { getDetailReturnImport } from "../../apis/return-product-module"
 import { useQueries } from "react-query"
 import ReturnTitleIcon from "../icons/ReturnTitleIcon"
 import GeneralInformationIcon from "../icons/GeneralInformationIcon"
+import UnitToolTip from "../UnitToolTip"
 
 function ReturnExportDetail() {
   const { t } = useTranslation()
@@ -198,12 +199,21 @@ function ProductInfo({ title = "", data = "" }) {
 
 function RenderUnit({ data }) {
   return (
-    <p className="truncate-2-line max-w-[100px]">
-      {data?.measuredUnitId
-        ? data?.product?.measuredUnits.filter(
-            (i) => i.measuredUnitId === data?.measuredUnitId,
-          )[0].measuredUnitName
-        : data?.defaultMeasuredUnit}
-    </p>
+    <UnitToolTip
+      content={
+        data?.measuredUnitId &&
+        `1 ${data?.measuredUnit?.measuredUnitName} = ${
+          data?.measuredUnit?.measuredUnitValue
+        } ${data?.defaultMeasuredUnit || "-"}`
+      }
+    >
+      <p className="truncate-2-line max-w-[100px]">
+        {data?.measuredUnitId
+          ? data?.product?.measuredUnits.filter(
+              (i) => i.measuredUnitId === data?.measuredUnitId,
+            )[0].measuredUnitName
+          : data?.defaultMeasuredUnit}
+      </p>
+    </UnitToolTip>
   )
 }

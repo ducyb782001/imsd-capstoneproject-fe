@@ -17,6 +17,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import ExportReportSkeleton from "../Skeleton/ExportReportSkeleton"
 import { useTranslation } from "react-i18next"
 import ExportGoodsIcon from "../icons/ExportGoodsIcon"
+import UnitToolTip from "../UnitToolTip"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
 function ZeroExportReportStatus({ productImportObject }) {
@@ -57,11 +58,20 @@ function ZeroExportReportStatus({ productImportObject }) {
         {
           Header: t("unit"),
           accessor: (data: any) => (
-            <div>
-              {data?.measuredUnit
-                ? data?.measuredUnit?.measuredUnitName
-                : data?.defaultMeasuredUnit}
-            </div>
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {

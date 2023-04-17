@@ -1,15 +1,13 @@
 import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { useMutation, useQueries, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { toast } from "react-toastify"
 import {
   approveImportProduct,
   denyImportProduct,
-  getDetailImportProduct,
 } from "../../apis/import-product-module"
 import ConfirmPopup from "../ConfirmPopup"
-import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import StepBar from "../StepBar"
 import Table from "../Table"
@@ -18,6 +16,7 @@ import SecondaryBtn from "../SecondaryBtn"
 import ImportReportSkeleton from "../Skeleton/ImportReportSkeleton"
 import { useTranslation } from "react-i18next"
 import ImportGoodIcon from "../icons/ImportGoodIcon"
+import UnitToolTip from "../UnitToolTip"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -61,11 +60,20 @@ function ZeroImportReportStatus({ isLoadingReport, productImport }) {
         {
           Header: t("unit"),
           accessor: (data: any) => (
-            <div>
-              {data?.measuredUnit
-                ? data?.measuredUnit?.measuredUnitName
-                : data?.defaultMeasuredUnit || "---"}
-            </div>
+            <UnitToolTip
+              content={
+                data?.measuredUnit &&
+                `1 ${data?.measuredUnit?.measuredUnitName} = ${
+                  data?.measuredUnit?.measuredUnitValue
+                } ${data?.defaultMeasuredUnit || "-"}`
+              }
+            >
+              <div>
+                {data?.measuredUnit
+                  ? data?.measuredUnit?.measuredUnitName
+                  : data?.defaultMeasuredUnit || "---"}
+              </div>
+            </UnitToolTip>
           ),
         },
         {
