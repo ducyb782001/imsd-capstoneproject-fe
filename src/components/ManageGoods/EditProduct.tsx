@@ -67,8 +67,6 @@ function EditProduct() {
   const [isEnabled, setIsEnabled] = useState(true)
 
   const [imageUploaded, setImageUploaded] = useState("")
-  const [loadingImage, setLoadingImage] = useState(false)
-
   const [listNhaCungCap, setListNhaCungCap] = useState<any>()
   const [listTypeProduct, setListTypeProduct] = useState([])
 
@@ -92,23 +90,10 @@ function EditProduct() {
     if (listUnits) {
       setDetailProduct({
         ...detailProduct,
-        measuredUnits: [...listOldUnits, ...listUnits],
+        measuredUnits: [...listUnits],
       })
     }
   }, [listUnits])
-
-  const onErrorUpload = (error: any) => {
-    console.log("upload error", error)
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
 
   const router = useRouter()
   const { productId } = router.query
@@ -136,7 +121,11 @@ function EditProduct() {
       queryFn: async () => {
         if (productId) {
           const response = await getProductDetail(productId)
-          setDetailProduct(response?.data)
+          if (response?.data) {
+            setListOldUnits(response?.data?.measuredUnits)
+            response.data.measuredUnits = []
+            setDetailProduct(response.data)
+          }
           setIsEnabled(response?.data?.status)
           return response?.data
         }
@@ -180,7 +169,6 @@ function EditProduct() {
   useEffect(() => {
     if (detailProduct) {
       setImageUploaded(detailProduct?.image)
-      setListOldUnits(detailProduct?.measuredUnits)
     }
   }, [detailProduct])
 
@@ -221,6 +209,7 @@ function EditProduct() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_EDIT_PRODUCT_TYPE_ID,
     })
@@ -786,7 +775,7 @@ function TableUnitRow({ data, listUnits, setListUnits, itemIndex }) {
         placeholder="10"
         title={t("number_in_unit")}
         value={data?.measuredUnitValue ? data?.measuredUnitValue : 0}
-        type="number"
+        // type="number"
         readOnly
       />
       <div className="h-[46px] flex items-center justify-center cursor-pointer">
@@ -813,7 +802,7 @@ function TableOldUnitRow({ data }) {
         classNameInput="text-xs md:text-sm rounded-md bg-[#F8F9FB] text-black border-[#DFE3E8] focus:border-[#DFE3E8]"
         placeholder="10"
         title={t("number_in_unit")}
-        value={data?.measuredUnitName}
+        value={data?.measuredUnitValue}
         type="number"
         readOnly
       />
