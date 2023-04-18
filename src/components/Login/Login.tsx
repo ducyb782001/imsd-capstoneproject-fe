@@ -105,11 +105,14 @@ function Login() {
               <PrimaryInput
                 title="Tên đăng nhập"
                 placeholder="Nhập tên đăng nhập"
-                onChange={(event) => setUserEmail(event.target.value)}
+                onChange={(e) => {
+                  const email = e.target.value.trim()
+                  setUserEmail(email)
+                }}
               />
               <PasswordInput
                 title="Mật khẩu"
-                onChange={(event) => setUserPassword(event.target.value)}
+                onChange={(e) => setUserPassword(e.target.value)}
               />
             </div>
             <div className="flex justify-end w-full mt-2 text-violet-500">
