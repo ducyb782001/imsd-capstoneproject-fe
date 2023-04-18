@@ -7,6 +7,7 @@ import {
   listStaffUrl,
   signUpUrl,
   updateExportProductUrl,
+  updateProfileUrl,
   updateStaffUrl,
 } from "../constants/APIConfig"
 import {
@@ -63,7 +64,7 @@ export const updateStaff = (updatedStaff) => {
 
 export const updateProfile = (updatedStaff) => {
   return patchAPI({
-    url: `${updateStaffUrl}`,
+    url: `${updateProfileUrl}`,
     data: updatedStaff,
   })
 }

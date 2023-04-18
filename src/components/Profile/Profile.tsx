@@ -5,7 +5,7 @@ import PrimaryInput from "../PrimaryInput"
 import PrimaryTextArea from "../PrimaryTextArea"
 import SmallTitle from "../SmallTitle"
 import SelectGenderDropdown from "./SelectGenderDropdown"
-import { useMutation, useQueries, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { useTranslation } from "react-i18next"
 import useGetMe from "../../hooks/useGetMe"
 import { updateProfile } from "../../apis/profile-module"
@@ -18,7 +18,7 @@ import { isValidFullName, isValidPhoneNumber } from "../../hooks/useValidator"
 import { checkStringLength } from "../../lib"
 import UploadImage from "../UploadImage"
 import useUploadImage from "../../hooks/useUploadImage"
-const TOAST_UPLOAD_IMAGE = "toast-upload-image"
+import { updateStaff } from "../../apis/user-module"
 
 function Profile() {
   const { t } = useTranslation()
@@ -38,20 +38,6 @@ function Profile() {
     setImageUploaded(data?.image)
   }, [data])
 
-  const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
-    console.log("Run onsucces here")
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
-
   useEffect(() => {
     if (imageUploaded) {
       setStaffAccountObject({
@@ -64,7 +50,7 @@ function Profile() {
   const queryClient = useQueryClient()
   const updateProfileMutation = useMutation(
     async (dataUpdate) => {
-      return await updateProfile(dataUpdate)
+      return await updateStaff(dataUpdate)
     },
     {
       onSuccess: (data) => {
