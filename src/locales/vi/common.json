@@ -393,5 +393,7 @@
   "customer_return": "Khách trả",
   "search_in_supplier": "Tìm kiếm bằng tên nhà cung cấp, SĐT",
   "haomon": "Hao mòn",
-  "out_of_date": "Hết hạn sử dụng"
+  "out_of_date": "Hết hạn sử dụng",
+  "confirm_check_good": "Bạn có chắc chắn muốn tạo đơn kiểm hàng",
+  "check_product_warning": "Có sản phẩm kiểm không thay đổi số lượng, vui lòng xóa sản phẩm để tiếp tục"
 }

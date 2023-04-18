@@ -394,5 +394,7 @@
   "search_in_supplier": "Search by supplier name, phone number",
   "return_supplier_title": "List of return orders to suppliers",
   "haomon": "Wearing out",
-  "out_of_date": "Out of date"
+  "out_of_date": "Out of date",
+  "confirm_check_good": "Are you sure you want to create a check order",
+  "check_product_warning": "There are products that do not change the quantity, please delete the product to continue"
 }

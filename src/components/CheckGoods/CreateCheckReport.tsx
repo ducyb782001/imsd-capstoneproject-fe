@@ -19,6 +19,7 @@ import CheckGoodIcon from "../icons/CheckGoodIcon"
 import BigNumber from "bignumber.js"
 import GeneralIcon from "../icons/GeneralIcon"
 import { checkStringLength } from "../../lib"
+import { countQuantity } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -262,6 +263,13 @@ function CreateCheckReport() {
 
   const handleClickSaveBtn = (event) => {
     event?.preventDefault()
+    // const count = countQuantity(listProductCheck)
+
+    // if (count > 0) {
+    //   toast.error(t("check_product_warning"))
+    //   return
+    // }
+
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
@@ -344,7 +352,7 @@ function CreateCheckReport() {
         </div>
         <ConfirmPopup
           classNameBtn="bg-successBtn border-successBtn active:bg-greenDark mt-10"
-          title={t("confirm_import")}
+          title={t("confirm_check_good")}
           handleClickSaveBtn={handleClickSaveBtn}
           disabled={
             submitted ||
@@ -366,7 +374,7 @@ function RenderCurrentStock({ data }) {
 }
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
-  const [actualStock, setActualStock] = useState(0)
+  const [actualStock, setActualStock] = useState()
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductCheck
     const newList = list.map((item) => {
