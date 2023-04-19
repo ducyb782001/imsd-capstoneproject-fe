@@ -71,7 +71,7 @@ function CreateCheckReport() {
         {
           Header: t("actual_stock"),
           accessor: (data: any) => (
-            <div className="flex items-center max-w-[100px]">
+            <div className="flex items-center justify-center ">
               <ListActualStock
                 data={data}
                 listProductCheck={listProductCheck}
@@ -83,7 +83,7 @@ function CreateCheckReport() {
         {
           Header: t("deviated"),
           accessor: (data: any) => (
-            <div className="w-[70px]">
+            <div className="flex justify-center">
               <CountDeviated data={data} listProductCheck={listProductCheck} />
             </div>
           ),
