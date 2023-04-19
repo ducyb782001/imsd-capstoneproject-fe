@@ -66,11 +66,33 @@ function Profile() {
     },
   )
 
+  const updateOwnerMutation = useMutation(
+    async (dataUpdate) => {
+      return await updateProfile(dataUpdate)
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status >= 200 && data?.status < 300) {
+          toast.success(t("update_profile_success"))
+          queryClient.invalidateQueries("getMeQuery")
+        } else {
+          toast.error(
+            data?.response?.data?.message || data?.message || t("error_occur"),
+          )
+        }
+      },
+    },
+  )
+
   const handleChangeProfile = () => {
     // Change profile validate
-
-    // @ts-ignore
-    updateProfileMutation.mutate(staffAccountObject)
+    if (staffAccountObject?.userCode) {
+      // @ts-ignore
+      updateProfileMutation.mutate(staffAccountObject)
+    } else {
+      // @ts-ignore
+      updateOwnerMutation.mutate(staffAccountObject)
+    }
   }
 
   const changePasswordMutation = useMutation(

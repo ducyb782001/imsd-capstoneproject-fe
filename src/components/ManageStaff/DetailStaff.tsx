@@ -25,7 +25,6 @@ import YellowStatus from "../ReturnGood/YellowStatus"
 import { checkStringLength } from "../../lib"
 import UploadImage from "../UploadImage"
 import useUploadImage from "../../hooks/useUploadImage"
-import { updateProfile } from "../../apis/profile-module"
 
 const TOAST_UPLOAD_IMAGE = "toast-upload-image"
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
@@ -61,22 +60,6 @@ function DetailStaff() {
       })
     }
   }, [selectRole])
-
-  const onErrorUpload = (error: any) => {
-    console.log("Run upload error", error)
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-
-    setLoadingImage(false)
-  }
-
-  const onSuccessUpload = (res: any) => {
-    // setImages([...images, res.filePath])
-    console.log("Run onsucces here")
-    toast.dismiss(TOAST_UPLOAD_IMAGE)
-
-    setImageUploaded(res.url)
-    setLoadingImage(false)
-  }
 
   useEffect(() => {
     if (imageUploaded) {
@@ -119,7 +102,7 @@ function DetailStaff() {
 
   const updateStaffMutation = useMutation(
     async (staff) => {
-      return await updateProfile(staff)
+      return await updateStaff(staff)
     },
     {
       onSuccess: (data, error, variables) => {

@@ -62,6 +62,7 @@ export const updateStaff = (updatedStaff) => {
   })
 }
 
+// Chi danh cho owner
 export const updateProfile = (updatedStaff) => {
   return patchAPI({
     url: `${updateProfileUrl}`,

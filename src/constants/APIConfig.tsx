@@ -5,8 +5,6 @@
 
 export const baseUrl = `http://lamluoihoc-001-site1.etempurl.com/api`
 
-// export const baseUrl = `https://localhost:7265/api`
-
 // New city, district API
 export const provinceUrl = `https://vn-public-apis.fpo.vn`
 
