@@ -43,7 +43,11 @@ function ExportOrderEdit() {
           Header: t("image"),
           accessor: (data: any) => (
             <img
-              src={data?.product?.image || "/images/default-product-image.jpg"}
+              src={
+                data?.product?.image ||
+                data?.image ||
+                "/images/default-product-image.jpg"
+              }
               alt="product-image"
               className="object-cover w-[40px] h-[40px] rounded-md"
             />
