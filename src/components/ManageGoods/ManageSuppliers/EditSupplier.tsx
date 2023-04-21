@@ -118,8 +118,8 @@ function EditSupplier() {
   ])
 
   useEffect(() => {
-    setDistrictSelected(undefined)
-    setWardSelected(undefined)
+    // setDistrictSelected(undefined)
+    // setWardSelected(undefined)
     setSupplier({
       ...supplier,
       city: {
@@ -149,7 +149,6 @@ function EditSupplier() {
       },
     })
   }, [wardSelected?.id])
-  console.log(supplier)
 
   const editSupplierMutation = useMutation(
     async (edittedSupplier) => {
