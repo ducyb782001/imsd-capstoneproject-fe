@@ -115,7 +115,7 @@ function RevenueDashboardCard({
       <div>
         <p className="text-lg">{title}</p>
         <p className="text-[#28A745] text-xl mt-1">
-          {new BigNumber(value).toFormat()}
+          {new BigNumber(value).toFormat(0)}
           {token && " đ"}
         </p>
       </div>

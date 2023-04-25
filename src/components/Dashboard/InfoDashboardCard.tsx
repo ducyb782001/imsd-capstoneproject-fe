@@ -12,7 +12,7 @@ function InfoDashboardCard({
       <p className="text-lg">{title}</p>
       <div className="flex items-center justify-between mt-1">
         <p className="text-[#28A745] text-2xl">
-          {new BigNumber(value).toFormat()}
+          {new BigNumber(value).toFormat(0)}
           {token && " đ"}
         </p>
         {!!icon && icon}

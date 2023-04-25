@@ -341,6 +341,7 @@
   "name_same_unnit": "Tên của đơn vị quy đổi phải khác tên của đơn vị mặc định",
   "quick_add_supplier": "Thêm nhanh nhà cung cấp",
   "edit_confirm_product": "Bạn có chắc chắn muốn chỉnh sửa sản phẩm không?",
+  "add_product_confirm": "Bạn có chắc chắn muốn thêm mới sản phẩm không?",
   "min_stock": "Ngưỡng tồn nhỏ nhất",
   "max_stock": "Ngưỡng tồn lớn nhất",
   "no_image": "Sản phẩm chưa có ảnh",

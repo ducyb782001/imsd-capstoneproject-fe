@@ -26,6 +26,7 @@ import BigNumber from "bignumber.js"
 import { checkStringLength } from "../../lib"
 import UploadImage from "../UploadImage"
 import useUploadImage from "../../hooks/useUploadImage"
+import ConfirmPopup from "../ConfirmPopup"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -595,13 +596,14 @@ function RightSideProductDetail({
         </div>
       </div>
       <div className="flex gap-4 mt-4 bg-white block-border">
-        <PrimaryBtn
-          className="bg-successBtn border-successBtn active:bg-greenDark"
-          onClick={handleAddProduct}
+        <ConfirmPopup
+          classNameBtn="bg-successBtn border-successBtn active:bg-greenDark"
+          title={t("add_product_confirm")}
+          handleClickSaveBtn={handleAddProduct}
           disabled={disabled || warningStock}
         >
           {t("add_product")}
-        </PrimaryBtn>
+        </ConfirmPopup>
       </div>
     </div>
   )

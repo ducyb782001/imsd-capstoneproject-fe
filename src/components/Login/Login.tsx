@@ -44,7 +44,7 @@ function Login() {
         }
         toast.dismiss(TOAST_LOGIN)
         toast.success("Đăng nhập thành công!")
-        setDisabled(true)
+        setDisabled(false)
         setTimeout(() => {
           router.push("/")
         }, 300)
@@ -52,16 +52,17 @@ function Login() {
       onError: (data: any) => {
         toast.dismiss(TOAST_LOGIN)
         toast.error("Tên đăng nhập hoặc mật khẩu sai!")
+        setDisabled(false)
       },
     },
   )
 
   const handleLogin = (e) => {
     e.preventDefault()
+    setDisabled(true)
     toast.loading("Thao tác đang được xử lý ... ", {
       toastId: TOAST_LOGIN,
     })
-    const paramLogin = ""
     if (emailRegex.test(userEmail)) {
       // @ts-ignore
       loginMutation.mutate({
