@@ -163,8 +163,7 @@ function AddProduct() {
     },
   )
 
-  const handleAddNewProduct = (event) => {
-    event.preventDefault()
+  const handleAddNewProduct = () => {
     toast.loading(t("operation_process"), {
       toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
     })
