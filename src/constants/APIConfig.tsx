@@ -1,9 +1,9 @@
 // export const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Dev baseUrl
-// export const baseUrl = `https://imsdservice.azurewebsites.net/api`
+export const baseUrl = `https://imsdservice.azurewebsites.net/api`
 
-export const baseUrl = `http://alyxmotminh-001-site1.atempurl.com`
+// export const baseUrl = `http://alyxmotminh-001-site1.atempurl.com`
 
 // New city, district API
 export const provinceUrl = `https://vn-public-apis.fpo.vn`
