@@ -78,7 +78,7 @@ function FirstCheckingReportStatus({ productCheckObject }) {
               )
                 ? "-"
                 : "+"}
-              {data?.amountDifferential || "---"}
+              {data?.amountDifferential}
             </p>
           ),
         },

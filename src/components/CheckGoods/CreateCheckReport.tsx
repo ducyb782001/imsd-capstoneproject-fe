@@ -19,7 +19,6 @@ import CheckGoodIcon from "../icons/CheckGoodIcon"
 import BigNumber from "bignumber.js"
 import GeneralIcon from "../icons/GeneralIcon"
 import { checkStringLength } from "../../lib"
-import { countQuantity } from "../../hooks/useCountUndefinedAmount"
 
 const TOAST_CREATED_PRODUCT_TYPE_ID = "toast-created-product-type-id"
 
@@ -164,7 +163,10 @@ function CreateCheckReport() {
       const list = listChosenProduct.map((item) => {
         const currentStock = listProductCheck.find(
           (i) => i.productId == item.productId,
-        )?.inStock
+        )?.currentStock
+        const actualStock = listProductCheck.find(
+          (i) => i.productId == item.productId,
+        )?.actualStock
         const measuredUnitId = listProductCheck.find(
           (i) => i.productId == item.productId,
         )?.measuredUnitId
@@ -177,7 +179,7 @@ function CreateCheckReport() {
           productId: item.productId,
           measuredUnitId: measuredUnitId,
           currentStock: currentStock,
-          actualStock: 0,
+          actualStock: actualStock,
           note: note,
         }
       })
@@ -270,18 +272,19 @@ function CreateCheckReport() {
     //   return
     // }
 
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
     const submittedData = {
       ...productCheckObject,
       stocktakeId: 0,
       stocktakeCode: "string",
     }
-
     if (!staffSelected) {
       submittedData["createdId"] = userData.userId
     }
+    console.log(123, submittedData)
+
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
 
     createStockTakeMutation.mutate(submittedData)
   }
@@ -375,6 +378,7 @@ function RenderCurrentStock({ data }) {
 
 function ListActualStock({ data, listProductCheck, setListProductCheck }) {
   const [actualStock, setActualStock] = useState()
+
   const handleOnChangeDiscount = (value, data) => {
     const list = listProductCheck
     const newList = list.map((item) => {
@@ -443,7 +447,7 @@ function CountDeviated({ data, listProductCheck }) {
 
   return (
     <div className="px-2 py-2 text-center text-white rounded-md bg-successBtn">
-      {deviated}
+      {deviated || "--"}
     </div>
   )
 }

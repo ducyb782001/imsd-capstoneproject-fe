@@ -79,9 +79,7 @@ function ZeroCheckingReportStatus({ productCheckObject }) {
         {
           Header: t("actual_stock"),
           accessor: (data: any) => (
-            <div className="text-center">
-              {data?.actualStock ? data?.actualStock : "---"}
-            </div>
+            <div className="text-center">{data?.actualStock}</div>
           ),
         },
         {
@@ -93,7 +91,7 @@ function ZeroCheckingReportStatus({ productCheckObject }) {
               )
                 ? "-"
                 : "+"}
-              {data?.amountDifferential ? data?.amountDifferential : "---"}
+              {data?.amountDifferential}
             </div>
           ),
         },
