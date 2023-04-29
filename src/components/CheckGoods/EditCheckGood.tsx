@@ -351,7 +351,7 @@ function EditCheckGood() {
           </p>
           <div className="w-64">
             <ChooseStaffDropdown
-              listDropdown={listStaff}
+              listDropdown={[]}
               textDefault={productCheckObject?.createdBy?.userName}
               showing={staffSelected}
               setShowing={setStaffSelected}
