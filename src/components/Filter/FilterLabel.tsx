@@ -9,7 +9,7 @@ function FilterLabel({ dataLabel, handleRemoveFilter, itemIndex }) {
       {dataLabel && (
         <p
           title={`${dataLabel.applied}: ${dataLabel.value}`}
-          className="mr-6 text-white max-w-[300px] truncate-2-line"
+          className="mr-6 text-white max-w-[400px] truncate-2-line"
         >
           {dataLabel.applied}:&nbsp;{dataLabel.value}&nbsp;
         </p>

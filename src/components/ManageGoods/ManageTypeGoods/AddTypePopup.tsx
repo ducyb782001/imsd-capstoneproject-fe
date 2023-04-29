@@ -46,12 +46,16 @@ function AddTypePopup({ className = "", children }) {
       onSuccess: (data, error, variables) => {
         toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.success(t("add_type_success"))
+        setTypeName("")
+        setDescription("")
         queryClient.invalidateQueries("getListTypeGood")
       },
       onError: (data: any) => {
         console.log("login error", data)
         toast.dismiss(TOAST_CREATED_TYPE_ID)
         toast.error(t("error_occur"))
+        setTypeName("")
+        setDescription("")
       },
     },
   )
