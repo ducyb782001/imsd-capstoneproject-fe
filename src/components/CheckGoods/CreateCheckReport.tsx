@@ -282,11 +282,11 @@ function CreateCheckReport() {
     }
     console.log(123, submittedData)
 
-    // toast.loading(t("operation_process"), {
-    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    // })
+    toast.loading(t("operation_process"), {
+      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    })
 
-    // createStockTakeMutation.mutate(submittedData)
+    createStockTakeMutation.mutate(submittedData)
   }
 
   return (

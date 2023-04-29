@@ -15,6 +15,7 @@ import { MotionDialogContent } from "./MotionDialogContent"
 import UserIcon from "./icons/UserIcon"
 import LogoutIcon from "./icons/LogoutIcon"
 import LanguageDropdown from "./Nav/LanguageDropdown"
+import { useTranslation } from "react-i18next"
 
 function UserDropdownMobile() {
   const [showDialog, setShowDialog] = useState(false)
@@ -50,6 +51,7 @@ function UserDropdownMobile() {
     })
     browserRedirectToIndexAfterSignOut()
   }
+  const { t } = useTranslation()
   return (
     <div className="flex items-center justify-end gap-3">
       <LanguageDropdown />
@@ -98,12 +100,12 @@ function UserDropdownMobile() {
                 <div className="px-6">
                   <MenuItem
                     icon={<UserIcon />}
-                    label="Profile"
+                    label={t("personal_imformation")}
                     href="/profile"
                   />
                   <MenuItem
                     icon={<LogoutIcon />}
-                    label="Log Out"
+                    label={t("signOut")}
                     onClick={signOut}
                   />
                 </div>
