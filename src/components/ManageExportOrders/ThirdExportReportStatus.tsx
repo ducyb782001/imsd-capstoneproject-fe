@@ -41,7 +41,9 @@ function ThirdExportReportStatus({ productExport }) {
         {
           Header: t("export_number"),
           accessor: (data: any) => (
-            <div>{data?.amount ? data?.amount : "---"}</div>
+            <div className="text-center">
+              {data?.amount ? new BigNumber(data?.amount).toFormat(0) : "---"}
+            </div>
           ),
         },
         {
@@ -66,9 +68,9 @@ function ThirdExportReportStatus({ productExport }) {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <div>
-              <p className="text-center">{data?.price} đ</p>
-            </div>
+            <p className="text-center">
+              {data?.price ? new BigNumber(data?.price).toFormat(0) : 0} đ
+            </p>
           ),
         },
         {

@@ -46,7 +46,7 @@ function FirstExportReportStatus({ productImport }) {
           Header: t("export_number"),
           accessor: (data: any) => (
             <div className="text-center">
-              {data?.amount ? data?.amount : "---"}
+              {data?.amount ? new BigNumber(data?.amount).toFormat(0) : "---"}
             </div>
           ),
         },
@@ -72,7 +72,9 @@ function FirstExportReportStatus({ productImport }) {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <p className="text-center">{data?.price ? data?.price : "---"} đ</p>
+            <p className="text-center">
+              {data?.price ? new BigNumber(data?.price).toFormat(0) : 0} đ
+            </p>
           ),
         },
         {

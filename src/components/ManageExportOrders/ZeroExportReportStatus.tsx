@@ -52,7 +52,9 @@ function ZeroExportReportStatus({ productImportObject }) {
         {
           Header: t("export_number"),
           accessor: (data: any) => (
-            <div>{data?.amount ? data?.amount : "---"}</div>
+            <div>
+              {data?.amount ? new BigNumber(data?.amount).toFormat(0) : "---"}
+            </div>
           ),
         },
         {
@@ -77,7 +79,9 @@ function ZeroExportReportStatus({ productImportObject }) {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <p className="text-center">{data?.price} đ</p>
+            <p className="text-center">
+              {data?.price ? new BigNumber(data?.price).toFormat(0) : 0} đ
+            </p>
           ),
         },
         {

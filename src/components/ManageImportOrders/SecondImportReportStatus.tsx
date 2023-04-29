@@ -51,7 +51,9 @@ function SecondImportReportStatus({ productImport }) {
         {
           Header: t("import_number"),
           accessor: (data: any) => (
-            <div>{data?.amount ? data?.amount : "---"}</div>
+            <div>
+              {data?.amount ? new BigNumber(data?.amount).toFormat(0) : "---"}
+            </div>
           ),
         },
         {
@@ -76,7 +78,9 @@ function SecondImportReportStatus({ productImport }) {
         {
           Header: t("price"),
           accessor: (data: any) => (
-            <p className="text-center">{data?.costPrice} đ</p>
+            <p className="text-center">
+              {new BigNumber(data?.costPrice || 0).toFormat(0)} đ
+            </p>
           ),
         },
         {
