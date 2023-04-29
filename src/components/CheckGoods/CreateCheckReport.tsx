@@ -198,7 +198,7 @@ function CreateCheckReport() {
 
     for (let index = 0; index < listProductCheck.length; index++) {
       const product = listProductCheck[index]
-      if (product.actualStock === "" || product.actualStock === "undefined") {
+      if (product.actualStock === "" || product.actualStock === undefined) {
         setSubmitted(true)
         return
       }
@@ -282,11 +282,11 @@ function CreateCheckReport() {
     }
     console.log(123, submittedData)
 
-    toast.loading(t("operation_process"), {
-      toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
-    })
+    // toast.loading(t("operation_process"), {
+    //   toastId: TOAST_CREATED_PRODUCT_TYPE_ID,
+    // })
 
-    createStockTakeMutation.mutate(submittedData)
+    // createStockTakeMutation.mutate(submittedData)
   }
 
   return (
@@ -447,7 +447,7 @@ function CountDeviated({ data, listProductCheck }) {
 
   return (
     <div className="px-2 py-2 text-center text-white rounded-md bg-successBtn">
-      {deviated || "--"}
+      {deviated ? deviated : 0}
     </div>
   )
 }
