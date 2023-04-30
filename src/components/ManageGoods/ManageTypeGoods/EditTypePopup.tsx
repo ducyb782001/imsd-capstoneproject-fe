@@ -146,7 +146,9 @@ function EditTypePopup({ className = "", id }) {
                   >
                     {t("save")}
                   </PrimaryBtn>
-                  <SecondaryBtn className="w-[70px]">{t("exit")}</SecondaryBtn>
+                  <SecondaryBtn onClick={close} className="w-[70px]">
+                    {t("exit")}
+                  </SecondaryBtn>
                 </div>
               </motion.div>
             </MotionDialogContent>
