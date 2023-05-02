@@ -293,6 +293,7 @@ function ExportOrderEdit() {
           userId: detailReport?.user?.userId,
           exportOrderDetails: detailReport?.exportOrderDetails,
           note: detailReport?.note,
+          totalPrice: detailReport?.totalPrice,
         })
 
         setDetailResponse(response?.data)

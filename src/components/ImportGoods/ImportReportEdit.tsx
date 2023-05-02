@@ -291,6 +291,7 @@ function ImportReportEdit() {
           supplierId: detailReport?.supplier?.supplierId,
           importOrderDetails: detailReport?.importOrderDetails,
           note: detailReport?.note,
+          totalCost: detailReport?.totalCost,
         })
         setNhaCungCapSelected(response?.data?.supplier)
         setIsLoadingReport(response?.data?.isLoading)
