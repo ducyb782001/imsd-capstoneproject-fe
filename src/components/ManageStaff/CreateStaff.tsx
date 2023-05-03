@@ -87,7 +87,7 @@ function CreateStaff() {
     if (!staffAccountObject?.roleId) {
       submittedData["roleId"] = 3
     }
-    if (!staffAccountObject?.password) {
+    if (!staffAccountObject?.password || staffAccountObject?.password === "") {
       submittedData["password"] = "123456aA"
     }
     if (staffAccountObject?.gender === undefined) {
@@ -243,9 +243,10 @@ function CreateStaff() {
                 <PasswordInput
                   title={
                     <div className="flex gap-1">
-                      <h1>
-                        {t("password")} <span className="text-red-500">*</span>
-                      </h1>
+                      <h1>{t("password")}</h1>
+                      <Tooltip content={<div>{t("password_default")}</div>}>
+                        <InfoIcon />
+                      </Tooltip>
                     </div>
                   }
                   onChange={(e) => {
@@ -384,8 +385,7 @@ function CreateStaff() {
                     !!!staffAccountObject?.userCode ||
                     (staffAccountObject?.phone &&
                       !!!isValidPhoneNumber(staffAccountObject?.phone)) ||
-                    !canChangePassword ||
-                    !staffAccountObject?.password ||
+                    (!canChangePassword && staffAccountObject?.password) ||
                     staffAccountObject?.userName?.length > 100 ||
                     staffAccountObject?.identity?.length > 12 ||
                     staffAccountObject?.address?.length > 250 ||
