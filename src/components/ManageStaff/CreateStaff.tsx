@@ -88,7 +88,7 @@ function CreateStaff() {
       submittedData["roleId"] = 3
     }
     if (!staffAccountObject?.password || staffAccountObject?.password === "") {
-      submittedData["password"] = "123456aA"
+      submittedData["password"] = "123456aA@"
     }
     if (staffAccountObject?.gender === undefined) {
       submittedData["gender"] = true
