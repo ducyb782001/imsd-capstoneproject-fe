@@ -17,6 +17,7 @@ import "../styles/add-file-media.css"
 import "../styles/skeleton-loading.css"
 import { ThemeProvier } from "../context/ThemeContext"
 import "src/i18n/i18n"
+import Script from "next/script"
 
 function App({ Component, pageProps }) {
   // react query stop refetch when switch browser tabs
@@ -38,6 +39,27 @@ function App({ Component, pageProps }) {
     })
   }, [])
 
+  function TrackingWebsiteView() {
+    return (
+      <>
+        {/* Google tag (gtag.js) */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-84RDCELSTL`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-84RDCELSTL');
+        `}
+        </Script>
+      </>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -51,7 +73,6 @@ function App({ Component, pageProps }) {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
         />
       </Head>
-
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -63,6 +84,7 @@ function App({ Component, pageProps }) {
         draggable
         pauseOnHover
       />
+      <TrackingWebsiteView />
       <QueryClientProvider client={queryClient}>
         <ThemeProvier>
           <Component {...pageProps} />

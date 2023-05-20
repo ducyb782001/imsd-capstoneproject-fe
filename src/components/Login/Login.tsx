@@ -29,6 +29,7 @@ function Login() {
       onSuccess: (data, error, variables) => {
         if (typeof window !== "undefined") {
           const token = data?.data?.token?.accessToken
+          const refreshToken = data?.data?.token?.refreshToken
           const userName = data?.data?.userName
           const roleId = data?.data?.roleId
           const maxAge = data?.data?.expiresIn

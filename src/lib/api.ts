@@ -139,6 +139,7 @@ export const requestAPI = ({ ...options }) => {
   const onSuccess = (response) => response
   const onError = (error) => {
     // optionaly catch errors and add some additional logging here
+
     return error
   }
 
