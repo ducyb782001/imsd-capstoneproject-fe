@@ -5,14 +5,14 @@ import cookie from "cookie"
 function index() {
   const router = useRouter()
 
-  useEffect(() => {
-    const cookies = cookie.parse(window.document.cookie)
-    if (!cookies.token) {
-      router.push("/login")
-    } else {
-      router.push("/manage-products")
-    }
-  }, [cookie])
+  // useEffect(() => {
+  //   const cookies = cookie.parse(window.document.cookie)
+  //   if (!cookies.token) {
+  //     router.push("/login")
+  //   } else {
+  //     router.push("/manage-products")
+  //   }
+  // }, [cookie])
 
   return <p className="p-5">Redirecting...</p>
 }
